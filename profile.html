@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kegiatan Terbaru dan Penghargaan Komunitas</title>
+    <link rel="stylesheet" href="profile.css">
+    <style>
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 1px;
+            background-color: #333;
+            color: white;
+            width: 100%;
+            position: fixed; /* Membuat header tetap di atas */
+            top: 0;
+            left: 0;
+            z-index: 1000; /* Memastikan header selalu di atas elemen lainnya */
+        }
+
+        /* Memberikan margin-top pada konten agar tidak tertutup oleh header */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .content {
+            padding-top: 80px; /* Sesuaikan dengan tinggi header */
+        }
+
+        .time {
+            font-size: 2em;
+            color: #FFD700;
+        }
+        /* Memberikan margin-top pada konten agar tidak tertutup oleh header */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .content {
+            padding-top: 80px; /* Sesuaikan dengan tinggi header */
+        }
+
+        /* Styling untuk logo */
+        .logo img {
+            height: 60px; /* Sesuaikan ukuran logo */
+        }
+
+        /* Styling untuk link logo */
+        .logo a {
+            text-decoration: none;
+        }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #4a90e2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+      <!-- Logo that links to the homepage -->
+        <div class="logo">
+            <a href="index.html"> <!-- Change the href to your homepage -->
+                <img src="https://ugc.production.linktr.ee/9q61JHNRQeWpaf1kOZQn_0E7lrUu186o69rfR?io=true&size=avatar-v3_0" alt="Logo"> <!-- Replace 'logo.png' with your actual logo file -->
+            </a>
+        </div>
+        <div class="date-time" id="dateTime"></div>
+        <script>
+    function updateDateTime() {
+        const dateTimeElement = document.getElementById("dateTime");
+        const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        
+        const now = new Date();
+        const dayName = days[now.getDay()];
+        const day = now.getDate();
+        const month = months[now.getMonth()];
+        const year = now.getFullYear();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        
+        dateTimeElement.innerHTML = `${dayName}, ${day} ${month} ${year} <span class="time"><br>'${hours}:${minutes}:${seconds}</span>`;
+    }
+
+    setInterval(updateDateTime, 1000);
+    updateDateTime(); // Initial call to set the time immediately
+</script>
+    </header>
+    
+    <section class="kegiatan">
+        <h2>Kegiatan Terbaru</h2>
+        <div class="container">
+        <h1>Rincian Kegiatan Komunitas Sadulur Sepoor</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Kegiatan dan Tempat</th>
+                    <th>Tanggal Pelaksanaan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Disiplin Perlintasan di JPL 14 Bukit Duri</td>
+                    <td>04 Februari 2023</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Disiplin Perlintasan di JPL 11 Rajawali</td>
+                    <td>19 Februari 2023</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Kampanye Antisipasi Pelecehan Seksual di Stasiun Pasar Senen</td>
+                    <td>04 Maret 2023</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Kampanye Antisipasi Pelecehan Seksual di Stasiun Jakarta Kota</td>
+                    <td>19 Maret 2023</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Disiplin Perlintasan + Berbagi Takjil di JPL 17 Duren Kalibata</td>
+                    <td>01 April 2023</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Posko Angkutan Lebaran 2023 di Stasiun Gambir, Pasar Senen, Bekasi, Cikarang</td>
+                    <td>14 April – 02 Mei 2023</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Disiplin Perlintasan di JPL 1 Cikampek bersama Komunitas KBRC</td>
+                    <td>16 April 2023</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Disiplin Perlintasan di JPL 5 Angke</td>
+                    <td>03 Juni 2023</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>Disiplin Perlintasan di JPL 78 Bekasi</td>
+                    <td>18 Juni 2023</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>Disiplin Perlintasan di JPL 46 Pondok Jati</td>
+                    <td>05 Agustus 2023</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>Disiplin Perlintasan di JPL 23 Pasar Senen</td>
+                    <td>20 Agustus 2023</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>Posko Angkutan Nataru 2023 di Stasiun Gambir, Pasar Senen, Bekasi, Cikarang</td>
+                    <td>22 Desember – 31 Desember 2023</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>Disiplin Perlintasan di JPL 52 Kebayoran</td>
+                    <td>17 Februari 2024</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>Disiplin Perlintasan di JPL 14 Bukit Duri</td>
+                    <td>25 Februari 2024</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>Disiplin Perlintasan di JPL 78 Bekasi</td>
+                    <td>09 Maret 2024</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>Disiplin Perlintasan + Berbagi Takjil di JPL 11 Rajawali</td>
+                    <td>19 Maret 2024</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>Disiplin Perlintasan di JPL 29A Duri</td>
+                    <td>30 Maret 2024</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>Posko Angkutan Lebaran 2024 di Stasiun Gambir, Pasar Senen, Bekasi, Cikarang</td>
+                    <td>04 April – 09 April 2024</td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td>Disiplin Perlintasan di JPL 26N Cilebut</td>
+                    <td>11 Mei 2024</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+        <div class="kegiatan-item">
+            <h3>KEGIATAN SELANJUTNYA</h3>
+            <h3>Sosialisasi Anti Pelecehan Seksual</h3>
+            <p>Tanggal: 5 Oktober 2024</p>
+            <p>Lokasi: Stasiun Pasar Senen</p>
+    <div id="countdown"></div>
+    <script>
+        // Tanggal acara
+        const eventDate = new Date("2024-10-05T00:00:00");
+
+        function updateCountdown() {
+            const now = new Date();
+            const timeDiff = eventDate - now;
+            const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+            const countdownElement = document.getElementById("countdown");
+            if (daysDiff > 0) {
+                countdownElement.innerText = `${daysDiff} hari lagi`;
+            } else if (daysDiff === 0) {
+                countdownElement.innerText = "Hari ini!";
+            } else {
+                countdownElement.innerText = "Acara sudah lewat.";
+            }
+        }
+
+        // Update countdown setiap detik
+        setInterval(updateCountdown, 1000);
+        // Panggil fungsi untuk pertama kali
+        updateCountdown();
+    </script>
+        </div>
+    </section>
+            <div class="gallery-item">
+                <img src="https://i.imgur.com/AyU0H7H.jpeg" alt="Bakti Sosial">
+                <div class="desc">
+                    <h4>Bakti Sosial</h4>
+                    <p>Kegiatan sosial di Panti Asuhan XYZ dengan berbagai donasi dari anggota komunitas.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://i.imgur.com/ysOE0NJ.jpeg" alt="Penghargaan Komunitas">
+                <div class="desc">
+                    <h4>Uji coba LRT JABODEBEK Terbatas II</h4>
+                    <p>Komunitas kami meraih penghargaan atas kontribusi positif di masyarakat.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://i.imgur.com/NDEAe8Q.jpeg" alt="Penghargaan Komunitas">
+                <div class="desc">
+                    <h4>Penghargaan Terbaik 2024</h4>
+                    <p>Komunitas kami meraih penghargaan atas kontribusi positif di masyarakat.</p>
+                  </div>  
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 Sadulur Sepoor Indonesia. Semua hak dilindungi.</p>
+    </footer>
+</body>
+</html>
