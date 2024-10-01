@@ -296,15 +296,14 @@ textarea {
         font-size: 14px;
     }
 }
+/* Style untuk footer */
 footer {
+    background: #4682b4;
+    color: white;
     text-align: center;
-    padding: 20px;
-    background-color: #4682b4;
-    color: #fff;
-}
-
-footer p {
-    margin: 0;
+    padding: 1px;
+    width: 100%;
+    position: relative;
 }
 
 /* Responsive styles */
@@ -313,9 +312,12 @@ footer p {
         display: block;
         margin: 10px 0;
     }
-
-    header, footer {
+    header {
         text-align: right;
+        padding: 15px;
+    }
+    footer {
+        text-align: center;
         padding: 15px;
     }
 }
