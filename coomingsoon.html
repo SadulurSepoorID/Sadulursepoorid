@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upcoming Birthdays</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .birthday-list {
+            list-style: none;
+            padding: 0;
+        }
+        .birthday-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            width: 300px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .birthday-item.upcoming {
+            background-color: #e0ffe0;
+        }
+        .birthday-item h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+        .birthday-item p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #666;
+        }
+        .days-left {
+            color: #f44336;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Date Birthday October</h1>
+    <ul class="birthday-list" id="birthdayList">
+        <!-- Birthday items will be added here dynamically -->
+    </ul>
+
+    <script>
+        const friendsBirthdays = [
+            { name: "Nanda Risqi Ramadan", birthday: "2024-10-01" },
+            { name: "Diwa Anugrah Ramadhan", birthday: "2024-10-03" },
+            { name: "Moch. Fikri", birthday: "2024-10-04" },
+            { name: "Eliezer Clarence Nadek", birthday: "2024-10-06" },
+            { name: "Zya afif aulia", birthday: "2024-10-12" },
+            { name: "Miqdad Ifzal Rao", birthday: "2024-10-15" },
+            { name: "Nanda", birthday: "2024-10-01" },
+            { name: "Agung Dwi Prasetyo", birthday: "2024-10-25" },
+        ];
+
+        const today = new Date();
+        const birthdayList = document.getElementById("birthdayList");
+
+        function daysUntilBirthday(birthday) {
+            const birthdayDate = new Date(birthday);
+            birthdayDate.setFullYear(today.getFullYear());
+            if (birthdayDate < today) {
+                birthdayDate.setFullYear(today.getFullYear() + 1);
+            }
+            const timeDiff = birthdayDate - today;
+            return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+        }
+
+        friendsBirthdays.forEach(friend => {
+            const daysLeft = daysUntilBirthday(friend.birthday);
+            const li = document.createElement('li');
+            li.classList.add('birthday-item');
+            
+            if (daysLeft <= 7) {
+                li.classList.add('upcoming');
+                li.innerHTML = `
+                    <h2>${friend.name}</h2>
+                    <p>${new Date(friend.birthday).toLocaleDateString()}</p>
+                    <p class="days-left">${daysLeft} days left!</p>
+                `;
+            } else {
+                li.innerHTML = `
+                    <h2>${friend.name}</h2>
+                    <p>${new Date(friend.birthday).toLocaleDateString()}</p>
+                `;
+            }
+
+            birthdayList.appendChild(li);
+        });
+    </script>
+</body>
+</html>
