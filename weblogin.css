@@ -39,6 +39,16 @@ header {
     margin-bottom: 10px;
 }
 
+/* Peringatan */
+.warning {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
 /* Style untuk menu navigasi */
 nav {
     display: flex;

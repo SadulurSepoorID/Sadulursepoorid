@@ -3,87 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-        .login-container {
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        .login-container h2 {
-            text-align: center;
-        }
-        .login-container input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .login-container button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .login-container button:hover {
-            background-color: #0056b3;
-        }
-        .error-message {
-            color: red;
-            text-align: center;
-        }
-    </style>
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
-
     <div class="login-container">
         <h2>Login</h2>
-        <input type="text" id="username" placeholder="Enter Username" required>
-        <input type="password" id="password" placeholder="Enter Password" required>
-        <button onclick="login()">Login</button>
-        <p class="error-message" id="error-message"></p>
+        <form id="loginForm">
+            <input type="text" id="kta" placeholder="Nomor KTA" required>
+            <div class="password-container">
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="button" id="togglePassword" class="toggle-password">👁️</button>
+            </div>
+            <button type="submit" class="btn primary">Login</button>
+        </form>
+        <button id="backButton" class="btn secondary">Kembali</button>
     </div>
-
-<script>
-    // Tentukan username dan password yang valid dalam bentuk array
-    const validAccounts = [
-        { username: "SadulursepoorID", password: "ssid", name: "Sadulur Sepoor ID" },
-        { username: "Eskopss", password: "0098", name: "Anggota 1" },
-        { username: "anggota2", password: "password2", name: "Anggota 2" }
-        // Tambahkan akun lainnya sesuai kebutuhan
-    ];
-
-    function login() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const errorMessage = document.getElementById('error-message');
-
-        // Periksa apakah username dan password cocok dengan salah satu akun
-        const account = validAccounts.find(account => account.username === username && account.password === password);
-
-        if (account) {
-            errorMessage.textContent = "";  // Kosongkan pesan error
-            localStorage.setItem('loggedInUser', account.name);  // Simpan nama pengguna yang login
-            window.location.href = "Weblogin2.html";  // Arahkan ke halaman setelah login
-        } else {
-            errorMessage.textContent = "Username atau Password Salah.";
-        }
-    }
-</script>
-
+    <script src="account.js"></script>
+    <script src="login.js"></script>
 </body>
 </html>

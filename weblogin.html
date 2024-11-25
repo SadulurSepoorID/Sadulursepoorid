@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Dashboard Anggota</title>
     <link rel="stylesheet" href="weblogin.css">
 </head>
 <body>
-    <header>
-         <img src="https://i.ibb.co.com/Vgrtv9c/IMG-20240923-183645.png" alt="Foto Anggota" id="member-photo">
-        <h1 id="member-name">Fathir Ahmad Maulana</h1>
-        <p id="member-kta">Nomor KTA: 0098</p>
-    </header>
+      <header>
+        <h1 id="welcome-message"></h1>
+        <h1 id="member-name"></h1>
+        <p id="member-kta"></p>
+         <p id="warning-message" class="warning">🔒 Peringatan: Jangan bagikan informasi ini ke luar komunitas, karena ini adalah informasi pribadi yang hanya untuk anggota.</p>
+     </header>
 
     <nav>
         <a href="index.html">Log Out</a>
@@ -46,5 +46,20 @@
     <footer>
         <p>&copy; 2024 Sadulur Sepoor ID. Semua hak dilindungi.</p>
     </footer>
+        <script>
+        // Ambil data dari sessionStorage
+        const username = sessionStorage.getItem('username');
+        const kta = sessionStorage.getItem('kta');
+
+        // Validasi jika data tidak ada, kembalikan ke halaman login
+        if (!username || !kta) {
+            alert("Anda harus login terlebih dahulu!");
+            window.location.href = 'index.html';
+        }
+
+        // Tampilkan pesan selamat datang, nama dan nomor KTA
+        document.getElementById('welcome-message').textContent = `Selamat datang, ${username}`;
+        document.getElementById('member-kta').textContent = `Nomor KTA: ${kta}`;
+    </script>
 </body>
 </html>
