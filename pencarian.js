@@ -9,7 +9,7 @@ function search() {
 
     // Pengecekan khusus untuk input yang hanya "sensus"
     if (input === "sensus") {
-        window.location.href = "sensus2.html";
+        window.location.href = "notfound.html";
         return;
     }
     
