@@ -1,0 +1,102 @@
+/* General Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #1e90ff, #4682b4);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Container */
+.container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 600px;
+}
+
+/* Header */
+header h1 {
+  font-size: 2.8em;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.description {
+  font-size: 1.1em;
+  margin-bottom: 25px;
+  color: #f0f8ff;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 15px 20px;
+  border-radius: 10px;
+  line-height: 1.6;
+}
+
+/* Level Buttons */
+.levels {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.level {
+  text-decoration: none;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 1.5em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.level:hover {
+  background: #fff;
+  color: #1e90ff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Level-specific styles */
+.easy {
+  border: 2px solid #32cd32;
+}
+
+.medium {
+  border: 2px solid #ffa500;
+}
+
+.hard {
+  border: 2px solid #ff4500;
+}
+
+/* Footer - Back Button */
+footer {
+  margin-top: 20px;
+}
+
+.back-button {
+  text-decoration: none;
+  font-size: 1.2em;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  border: 2px solid #1e90ff;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: #fff;
+  color: #1e90ff;
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
