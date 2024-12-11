@@ -9,10 +9,13 @@ function search() {
 
     // Pengecekan khusus untuk input yang hanya "sensus"
     if (input === "sensus") {
-        window.location.href = "notfound.html";
+        window.location.href = "sensus3.html";
         return;
     }
-    
+    if (input === "gapeka") {
+        window.location.href = "gapeka.html";
+        return;
+    }
     const sections = document.querySelectorAll(".section");
     let found = false;
 

@@ -7,18 +7,53 @@
     <link rel="stylesheet" href="weblogin.css">
 </head>
 <body>
-      <header>
+    <header>
         <h1 id="welcome-message"></h1>
         <h1 id="member-name"></h1>
         <p id="member-kta"></p>
-         <p id="warning-message" class="warning">🔒 Peringatan: Jangan bagikan informasi ini ke luar komunitas, karena ini adalah informasi pribadi yang hanya untuk anggota.</p>
-     </header>
+        <p id="warning-message" class="warning">🔒 Peringatan: Jangan bagikan informasi ini ke luar komunitas, karena ini adalah informasi pribadi yang hanya untuk anggota.</p>
+    </header>
 
     <nav>
         <a href="index.html">Log Out</a>
         <a href="kegiatan.html">Kegiatan</a>
         <a href="absensi.html">Absensi</a>
     </nav>
+
+    <!-- Tambahkan div ini untuk berita terbaru -->
+    <section id="news-ticker">
+        <div class="news-wrapper">
+            <ul class="news-list">
+                <li>
+                    <a href="nataru.html">
+                        <img src="https://i.imgur.com/aFbmr0G.jpeg" alt="Berita 1">
+                        <div class="news-content">
+                            <h3>Ka Tambahan Nataru 2024/2025</h3>
+                            <p>Kereta api tambahan Nataru 2024/2025 merupakan layanan kereta api ekstra yang disediakan oleh PT Kereta Api Indonesia (KAI) untuk mengakomodasi lonjakan penumpang selama periode Natal dan Tahun Baru.</p>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="gapeka.html">
+                        <img src="https://i.imgur.com/TlAAAdS.jpeg" alt="Berita 2">
+                        <div class="news-content">
+                            <h3>Gapeka 2023</h3>
+                            <p>Gapeka 2023 mengacu pada sistem transportasi yang lebih efisien, dengan penyesuaian jadwal dan peningkatan layanan untuk meningkatkan kualitas dan kenyamanan perjalanan kereta api</p>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="berita1.html">
+                        <img src="https://i.imgur.com/GCksWx9.jpeg" alt="Berita 3">
+                        <div class="news-content">
+                            <h3>Lokomotif mutasi Divre to Daop</h3>
+                            <p>Program perawatan 6 lokomotif yang dikirim dari sumatera selatan, lebih tepat nya depo Kertapati.</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
 
     <section id="about">
         <div class="content-box">
@@ -39,7 +74,7 @@
         <div class="content-box">
             <h2>Ulang Tahun Anggota</h2>
             <p>Daftar ulang tahun anggota di bulan Oktober</p>
-            <a href="coomingsoon.html" class="btn">Baca Selengkapnya</a>
+            <a href="ultah.html" class="btn">Baca Selengkapnya</a>
         </div>
         <div class="content-box">
             <h2>MERCHANDISE</h2>
@@ -51,7 +86,8 @@
     <footer>
         <p>&copy; 2024 Sadulur Sepoor ID. Semua hak dilindungi.</p>
     </footer>
-        <script>
+
+    <script>
         // Ambil data dari sessionStorage
         const username = sessionStorage.getItem('username');
         const kta = sessionStorage.getItem('kta');
@@ -65,6 +101,55 @@
         // Tampilkan pesan selamat datang, nama dan nomor KTA
         document.getElementById('welcome-message').textContent = `Selamat datang, ${username}`;
         document.getElementById('member-kta').textContent = `Nomor KTA: ${kta}`;
+
+        let currentIndex = 0;
+
+        const newsList = document.querySelector('.news-list');
+        const items = document.querySelectorAll('.news-list li');
+        const totalItems = items.length;
+
+        function showSlide(index) {
+            newsList.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalItems;
+            showSlide(currentIndex);
+        }
+
+        // Set interval untuk otomatis slide
+        let slideInterval = setInterval(nextSlide, 5000);
+
+        // Fungsi untuk menghentikan animasi saat hover
+        newsList.addEventListener('mouseover', () => {
+            clearInterval(slideInterval);
+        });
+
+        // Fungsi untuk melanjutkan animasi saat hover keluar
+        newsList.addEventListener('mouseout', () => {
+            slideInterval = setInterval(nextSlide, 5000);
+        });
+
+        // Geser manual menggunakan swipe (untuk perangkat touch)
+        let startX = 0;
+        let endX = 0;
+
+        newsList.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        newsList.addEventListener('touchmove', (e) => {
+            endX = e.touches[0].clientX;
+        });
+
+        newsList.addEventListener('touchend', () => {
+            if (startX - endX > 50) {
+                nextSlide();
+            } else if (endX - startX > 50) {
+                currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+                showSlide(currentIndex);
+            }
+        });
     </script>
 </body>
 </html>
