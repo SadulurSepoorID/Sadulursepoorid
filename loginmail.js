@@ -1,43 +1,49 @@
-// Pastikan untuk mengimpor accounts.js di file HTML (di bawah <script>)
+// Fungsi menampilkan notifikasi custom
+    function showCustomAlert() {
+      const alertBox = document.getElementById('customAlert');
+      alertBox.classList.remove('hidden');
+      alertBox.classList.add('show');
 
-document.getElementById('loginForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // Mencegah form reload otomatis
+      setTimeout(() => {
+        alertBox.classList.remove('show');
+        setTimeout(() => alertBox.classList.add('hidden'), 400);
+      }, 3000);
 
-    const kta = document.getElementById('kta').value.trim();
-    const password = document.getElementById('password').value.trim();
+      document.getElementById('loginForm').reset();
+    }
 
-    // Cari akun yang cocok berdasarkan KTA dan Password
-    const account = validAccounts.find(acc => acc.kta === kta && acc.password === password);
+    // Event submit form login
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
 
-    if (account) {
-        // Simpan data ke sessionStorage
+      const kta = document.getElementById('kta').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      const account = validAccounts.find(acc => acc.kta === kta && acc.password === password);
+
+      if (account) {
         sessionStorage.setItem('username', account.username);
         sessionStorage.setItem('kta', account.kta);
+        window.location.href = 'weblogin.html';
+      } else {
+        showCustomAlert();
+      }
+    });
 
-        // Arahkan ke halaman weblogin.html
-        window.location.href = 'https://sadulursepoorid.github.io/ssmail/';
-    } else {
-        // Jika login gagal
-        alert("Hanya bisa di akses pengurus! Silahkan kembali atau coba lagi jika anda pengurus (Password Salah)");
-        document.getElementById('loginForm').reset(); // Reset form
-    }
-});
+    // Tombol kembali
+    document.getElementById('backButton').addEventListener('click', function () {
+      window.location.href = 'index.html';
+    });
 
-// Fungsi kembali ke halaman login
-document.getElementById('backButton').addEventListener('click', function () {
-    window.location.href = 'index.html'; // Kembali ke halaman login
-});
-
-// Fungsi untuk toggle password visibility
-document.getElementById('togglePassword').addEventListener('click', function () {
-    const passwordField = document.getElementById('password');
-    const passwordFieldType = passwordField.getAttribute('type');
-
-    if (passwordFieldType === 'password') {
+    // Toggle mata password
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const passwordField = document.getElementById('password');
+      const type = passwordField.getAttribute('type');
+      if (type === 'password') {
         passwordField.setAttribute('type', 'text');
-        this.textContent = '🙈';  // Ubah ikon menjadi mata tertutup
-    } else {
+        this.textContent = '🙈';
+      } else {
         passwordField.setAttribute('type', 'password');
-        this.textContent = '👁️';  // Kembalikan ikon mata terbuka
-    }
-});
+        this.textContent = '👁️';
+      }
+    });

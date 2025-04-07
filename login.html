@@ -135,6 +135,34 @@
       background: rgba(0, 255, 255, 0.1);
     }
 
+    #customAlert {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #111927;
+  color: red;
+  border: 1px solid red;
+  padding: 1.2rem 1.8rem;
+  border-radius: 15px;
+  font-size: 1rem;
+  box-shadow: 0 0 25px rgba(255,0,0,0.4);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 9999;
+  text-align: center;
+  max-width: 90%;
+  width: fit-content;
+}
+
+#customAlert.show {
+  opacity: 1;
+}
+
+    .hidden {
+      display: none;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -165,7 +193,7 @@
         <label for="password">Kata Sandi</label>
         <div class="input-with-icon">
           <input type="password" id="password" placeholder="Masukkan kata sandi" required />
-          <button type="button" id="togglePassword" class="toggle-password">👁</button>
+          <button type="button" id="togglePassword" class="toggle-password">👁️</button>
         </div>
       </div>
       <button type="submit" class="login-btn">Masuk</button>
@@ -175,7 +203,12 @@
     </div>
   </div>
 
-  <!-- Script akun harus diimpor lebih dulu -->
+  <!-- Custom Alert -->
+  <div id="customAlert" class="hidden">
+    <p>Nomor KTA atau Password salah! Silakan coba lagi.</p>
+  </div>
+
+  <!-- Script -->
   <script src="account.js"></script>
   <script src="login.js"></script>
 </body>
