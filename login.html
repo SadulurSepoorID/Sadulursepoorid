@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1e1e2f, #232345);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      padding: 1rem;
+    }
+
+    .login-container {
+      background: #2c2c3e;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      width: 100%;
+      max-width: 400px;
+      animation: fadeIn 0.8s ease;
+      position: relative;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: cyan;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .input-with-icon {
+      display: flex;
+      align-items: center;
+      background: #1e1e30;
+      border-radius: 8px;
+      padding-right: 0.5rem;
+    }
+
+    .input-with-icon input {
+      flex: 1;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 8px 0 0 8px;
+      background: transparent;
+      color: white;
+      outline: none;
+    }
+
+    .toggle-password {
+      background: none;
+      border: none;
+      color: cyan;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0 0.5rem;
+    }
+
+    .styled-input {
+      width: 100%;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 8px;
+      background: #1e1e30;
+      color: white;
+      outline: none;
+    }
+
+    .styled-input:focus {
+      border: 1px solid cyan;
+      background: #282845;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 0.8rem;
+      background: cyan;
+      border: none;
+      border-radius: 10px;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background: #00ffffcc;
+    }
+
+    .bottom-text {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .bottom-text a {
+      color: cyan;
+      text-decoration: none;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: transparent;
+      border: 1px solid cyan;
+      color: cyan;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 255, 255, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .toggle-password {
+        font-size: 1rem;
+      }
+
+      .back-btn {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <button id="backButton" class="back-btn">← Kembali</button>
+    <h2>Login</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="kta">Nomor KTA</label>
+        <input class="styled-input" type="text" id="kta" placeholder="Masukkan nomor KTA" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Kata Sandi</label>
+        <div class="input-with-icon">
+          <input type="password" id="password" placeholder="Masukkan kata sandi" required />
+          <button type="button" id="togglePassword" class="toggle-password">👁</button>
+        </div>
+      </div>
+      <button type="submit" class="login-btn">Masuk</button>
+    </form>
+    <div class="bottom-text">
+      <a href="https://wa.me/6282112964343?text=Saya+lupa+password+akun+website+ss+(no+kta).">Lupa kata sandi?</a>
+    </div>
+  </div>
+
+  <!-- Script akun harus diimpor lebih dulu -->
+  <script src="account.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>

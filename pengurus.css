@@ -1,0 +1,64 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background-color: #4682b4;
+    color: #fff;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff6347;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#team {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 20px;
+}
+
+.member {
+    background-color: #fff;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 200px; /* Atur lebar sesuai kebutuhan */
+}
+
+.member img {
+    width: 100%;
+    height: auto;
+    border-radius: 10%; /* Membuat gambar berbentuk bulat */
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #4682b4;
+    color: #fff;
+    .social-media {
+    margin-top: 10px;
+}
+
+.social-media a {
+    text-decoration: none;
+    color: #007bff; /* Warna biru untuk tautan */
+    margin: 1px; /* Jarak antara tautan */
+}
+
+.social-media a:hover {
+    text-decoration: underline; /* Garis bawah saat di-hover */
+}

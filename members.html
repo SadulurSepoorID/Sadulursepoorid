@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Susunan Anggota</title>
+    <link rel="stylesheet" href="members.css"> <!-- Tambahkan link ke file CSS jika ada -->
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        #searchBox {
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .member {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .member:hover {
+            background-color: #f0f0f0;
+        }
+        .info h3 {
+            margin: 0 0 5px;
+        }
+        .info p {
+            margin: 5px 0;
+            color: #555;
+        }
+        #noResult {
+            text-align: center;
+            color: red;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Susunan Anggota</h1>
+            <input type="text" id="searchBox" placeholder="Cari nama anggota..." onkeyup="searchMember()">
+
+    <div id="noResult">Anggota tidak ditemukan</div>
+    </header>
+
+    <main>
+        <section id="members">
+            <!-- Anggota 1 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Herie Heryadi</h3>
+                    <p>Nomor KTA: 0001</p>
+                    <p>Domisili: Pademangan, Jakarta Utara</p>
+                </div>
+            </div>
+
+            <!-- Anggota 2 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Arjuna Pamungkas</h3>
+                    <p>Nomor KTA: 0004</p>
+                    <p>Domisili: Matraman, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 4 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Ridho Ariotama Adi Danuarta</h3>
+                    <p>Nomor KTA: 0086</p>
+                    <p>Domisili: Bekasi Utara, Bekasi</p>
+                </div>
+            </div>
+
+            <!-- Anggota 5 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Rizki Hidayat</h3>
+                    <p>Nomor KTA: 0029</p>
+                    <p>Domisili: Citayam, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 6 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Heri Susanto</h3>
+                    <p>Nomor KTA: 0082</p>
+                    <p>Domisili: Penggilingan, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 7 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Aldi Hadiansyah</h3>
+                    <p>Nomor KTA: 0122</p>
+                    <p>Domisili: Serang, Banten</p>
+                </div>
+            </div>
+
+            <!-- Anggota 8 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Hasan Al Ahwari</h3>
+                    <p>Nomor KTA: 0049</p>
+                    <p>Domisili: Lenteng Agung, Jakarta</p>
+                </div>
+            </div>
+
+            <!-- Anggota 9 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Mohammad Walid Ridho</h3>
+                    <p>Nomor KTA: 0087</p>
+                    <p>Domisili: Sawah Besar, Jakarta Pusat</p>
+                </div>
+            </div>
+
+            <!-- Anggota 10 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Salman Alparisi</h3>
+                    <p>Nomor KTA: 0014</p>
+                    <p>Domisili: Pasar Minggu, Jakarta Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 11 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Alfaro Azmi Triamantyo</h3>
+                    <p>Nomor KTA: 0031</p>
+                    <p>Domisili: Bojong Gede, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 12 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Agil Pramono</h3>
+                    <p>Nomor KTA: 0063</p>
+                    <p>Domisili: Tajur Halang, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 13 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Eki Apriandi</h3>
+                    <p>Nomor KTA: 0019</p>
+                    <p>Domisili: Cilodong, Depok</p>
+                </div>
+            </div>
+
+            <!-- Anggota 14 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Fathir Ahmad Maulana</h3>
+                    <p>Nomor KTA: 0098</p>
+                    <p>Domisili: Cakung, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 15 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Raikhan Luluh Saputra</h3>
+                    <p>Nomor KTA: 0108</p>
+                    <p>Domisili: Tajur Halang, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 16 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Rafa Putra</h3>
+                    <p>Nomor KTA: 0097</p>
+                    <p>Domisili: Bojong Gede, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 17 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Danureza Setiabudi</h3>
+                    <p>Nomor KTA: 0157</p>
+                    <p>Domisili: Bojong gede, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 18 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Rizieq Arsyad</h3>
+                    <p>Nomor KTA: 0063</p>
+                    <p>Domisili: Bekasi Utara, Bekasi</p>
+                </div>
+            </div>
+
+            <!-- Anggota 19 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Mohamad Ridwan</h3>
+                    <p>Nomor KTA: 0096</p>
+                    <p>Domisili: Cisauk, Tanggerang</p>
+                </div>
+            </div>
+
+            <!-- Anggota 20 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Johannaf Achsan Ard</h3>
+                    <p>Nomor KTA: 0161</p>
+                    <p>Domisili: Kalibata, Jakarta Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 21 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Nanda Risqi Ramadan</h3>
+                    <p>Nomor KTA: 0151</p>
+                    <p>Domisili: Matraman, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 22 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Ferdyansyah</h3>
+                    <p>Nomor KTA: 0069</p>
+                    <p>Domisili: Penggilingan, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 24 -->
+            <div class="member">
+                <div class="info">
+                    <h3>M. Raehan</h3>
+                    <p>Nomor KTA: 0112</p>
+                    <p>Domisili: Cakung, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 25 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Yudi Kuswara</h3>
+                    <p>Nomor KTA: 0075</p>
+                    <p>Domisili: Cipinang, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 26 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Rasya Birda</h3>
+                    <p>Nomor KTA: 0159</p>
+                    <p>Domisili: Makasar, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 27 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Farhan Aprian</h3>
+                    <p>Nomor KTA: 0034</p>
+                    <p>Domisili: Depok</p>
+                </div>
+            </div>
+
+            <!-- Anggota 30 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Ibnu Zaki</h3>
+                    <p>Nomor KTA: 0127</p>
+                    <p>Domisili: Bogor Utara, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 31 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Fauzi Albadri</h3>
+                    <p>Nomor KTA: 0163</p>
+                    <p>Domisili: Cilebut, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 32 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Moch. Fikri</h3>
+                    <p>Nomor KTA: 0132</p>
+                    <p>Domisili: Daan Mogot, Jakarta Barat</p>
+                </div>
+            </div>
+
+            <!-- Anggota 33 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Akhdan Yusuf Aditya</h3>
+                    <p>Nomor KTA: 0119</p>
+                    <p>Domisili: Duren Sawit, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 34 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Saipul Ajis</h3>
+                    <p>Nomor KTA: 0102</p>
+                    <p>Domisili: Jagakarsa, Jakaeya Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 35 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Ahmad Fauzan</h3>
+                    <p>Nomor KTA: 0139</p>
+                    <p>Domisili: Cengkareng, Jakarta Barat</p>
+                </div>
+            </div>
+
+            <!-- Anggota 36 -->
+            <div class="member">
+                <div class="info">
+                    <h3>David Sukmawan</h3>
+                    <p>Nomor KTA: 0160</p>
+                    <p>Domisili: Jagakarsa, Jakarta Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 37 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Sulthan Shadiq Andra Tusyahbi</h3>
+                    <p>Nomor KTA: 0113</p>
+                    <p>Domisili: Bojong Gede, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 38 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Allyffia Zahra Apriliani Putri</h3>
+                    <p>Nomor KTA: 0028</p>
+                    <p>Domisili: Bekasi Utara, Bekasi</p>
+                </div>
+            </div>
+
+            <!-- Anggota 39 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Daniel Edric</h3>
+                    <p>Nomor KTA: 0148</p>
+                    <p>Domisili: Bojongsari, Depok</p>
+                </div>
+            </div>
+
+            <!-- Anggota 40 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Zaenal Mustofa</h3>
+                    <p>Nomor KTA: 0050</p>
+                    <p>Domisili: Kalideres, Jakarta Barat</p>
+                </div>
+            </div>
+                       <!-- Anggota 41 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Ahmad Habibi</h3>
+                    <p>Nomor KTA: 0037</p>
+                    <p>Domisili: Bukit Duri, Jakarta Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 42 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Satrya Try Ardhyanto</h3>
+                    <p>Nomor KTA: 0101</p>
+                    <p>Domisili: Cakung, Jakarta Timur</p>
+                    </div>
+            </div>
+
+            <!-- Anggota 43 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Rizky Irmawansyah</h3>
+                    <p>Nomor KTA: 0025</p>
+                    <p>Domisili: Lenteng Agung, Jakarta Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 44 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Amir Aksar</h3>
+                    <p>Nomor KTA: 0110</p>
+                    <p>Domisili: Bojong Gede, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 45 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Almas Tito Rifa'i</h3>
+                    <p>Nomor KTA: 0144</p>
+                    <p>Domisili: Kemayoran, Jakarta Pusat</p>
+                </div>
+            </div>
+
+            <!-- Anggota 46 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Haidar Yahya</h3>
+                    <p>Nomor KTA: 0030</p>
+                    <p>Domisili: Cakung, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 47 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Kenzhie Emeraldy Wibowo</h3>
+                    <p>Nomor KTA: 0047</p>
+                    <p>Domisili: Medan Satria, Bekasi</p>
+                </div>
+            </div>
+
+            <!-- Anggota 48 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Yehezkiel Nathaniel Nailala</h3>
+                    <p>Nomor KTA: 0123</p>
+                    <p>Domisili: Depok</p>
+                </div>
+            </div>
+
+            <!-- Anggota 49 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Agung Dwi Prastyo</h3>
+                    <p>Nomor KTA: 0062</p>
+                    <p>Domisili: Jurangmangu, Tanggerang Selatan</p>
+                </div>
+            </div>
+            <!-- Anggota 50 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Adam Ramy Esfandiar</h3>
+                    <p>Nomor KTA: 0043</p>
+                    <p>Domisili: Citayam, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 51 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Daffa</h3>
+                    <p>Nomor KTA: 0014</p>
+                    <p>Domisili: Jatinegara, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 52 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Rubben Pradita</h3>
+                    <p>Nomor KTA: 0057</p>
+                    <p>Domisili: Tanggerang</p>
+                </div>
+            </div>
+
+            <!-- Anggota 53 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Andyka Rizky Sobar</h3>
+                    <p>Nomor KTA: 0007</p>
+                    <p>Domisili: Depok</p>
+                </div>
+            </div>
+
+            <!-- Anggota 54 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Faraz Kharisma</h3>
+                    <p>Nomor KTA: 0022</p>
+                    <p>Domisili: Depok</p>
+                </div>
+            </div>
+
+            <!-- Anggota 55 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Imam Arif Badawi</h3>
+                    <p>Nomor KTA: 0010</p>
+                    <p>Domisili: Cilebut, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 56 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Febri Fitrianto</h3>
+                    <p>Nomor KTA: 0020</p>
+                    <p>Domisili: Tanggerang</p>
+                </div>
+            </div>
+
+            <!-- Anggota 57 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Siraz</h3>
+                    <p>Nomor KTA: 0044</p>
+                    <p>Domisili: Dramaga, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 58 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Shalman Nur Aliv</h3>
+                    <p>Nomor KTA: 0165</p>
+                    <p>Domisili: Bojong Gede, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 59 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Khaidir</h3>
+                    <p>Nomor KTA: 0006</p>
+                    <p>Domisili: Bekasi Timur, Bekasi</p>
+                </div>
+            </div>
+
+            <!-- Anggota 60 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Zya Afif Aulia</h3>
+                    <p>Nomor KTA: 0162</p>
+                    <p>Domisili: Sawah Besar, Jakarta Pusat</p>
+                </div>
+            </div>
+
+            <!-- Anggota 61 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhamad Reza Hariyanto</h3>
+                    <p>Nomor KTA: 0052</p>
+                    <p>Domisili: Cipinang, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 62 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Rasyiqha Syafa Rabbanny</h3>
+                    <p>Nomor KTA: 0135</p>
+                    <p>Domisili: Pasar Minggu, Jakarta Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 63 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Arseja</h3>
+                    <p>Nomor KTA: 0147</p>
+                    <p>Domisili: Kebayoran Lama, Jakarta Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 64 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Hafiz</h3>
+                    <p>Nomor KTA: 0113</p>
+                    <p>Domisili: Depok</p>
+                </div>
+            </div>
+
+            <!-- Anggota 65 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Vhiky Jhaky</h3>
+                    <p>Nomor KTA: 0070</p>
+                    <p>Domisili: Penggilingan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 66 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Ricky Setiawan</h3>
+                    <p>Nomor KTA: 0056</p>
+                    <p>Domisili: Pondok Kelapa, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 67 -->
+            <div class="member">
+                <div class="info">
+                    <h3>M. Rizky Kemal</h3>
+                    <p>Nomor KTA: 0042</p>
+                    <p>Domisili: Kebayoran lama, Jakarta Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 68 -->
+            <div class="member">
+                <div class="info">
+                    <h3>M. Septian Maulana</h3>
+                    <p>Nomor KTA: 0012</p>
+                    <p>Domisili: Sukabumi</p>
+                </div>
+            </div>
+
+            <!-- Anggota 69 -->
+            <div class="member">
+                <div class="info">
+                    <h3>M. Gerry Aldiano</h3>
+                    <p>Nomor KTA: 0168</p>
+                    <p>Domisili: Bojong Gede, Bogor</p>
+                </div>
+            </div>
+
+            <!-- Anggota 70 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Reza Zulmi</h3>
+                    <p>Nomor KTA: 0085</p>
+                    <p>Domisili: Cakung, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 71 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Andhika Faris</h3>
+                    <p>Nomor KTA: 0027</p>
+                    <p>Domisili: Harjamukti, Bekasi</p>
+                </div>
+            </div>
+
+            <!-- Anggota 72 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Vincent Vasca Valentino</h3>
+                    <p>Nomor KTA: 0145</p>
+                    <p>Domisili: Bekasi</p>
+                </div>
+            </div>
+
+            <!-- Anggota 73 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Adyuta Rizki Fadhillah</h3>
+                    <p>Nomor KTA: 0117</p>
+                    <p>Domisili: Ragunan, Jakarta Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 74 -->
+            <div class="member">
+                <div class="info">
+                    <h3>M. Apriliyanto</h3>
+                    <p>Nomor KTA: 0092</p>
+                    <p>Domisili: Citayam</p>
+                </div>
+            </div>
+
+            <!-- Anggota 75 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Asyazid Prasetyo Alfandhi</h3>
+                    <p>Nomor KTA: 0068</p>
+                    <p>Domisili: Karawang</p>
+                </div>
+            </div>
+
+            <!-- Anggota 76 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Luthfi Azzam Dhiyaulhaq</h3>
+                    <p>Nomor KTA: 0079</p>
+                    <p>Domisili: Bekasi Timur, Bekasi</p>
+                </div>
+            </div>
+
+            <!-- Anggota 77 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Mochamad Putrama Wijaya</h3>
+                    <p>Nomor KTA: 0018</p>
+                    <p>Domisili: Ciputat Timur, Banten</p>
+                </div>
+            </div>
+
+            <!-- Anggota 78 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Diwa Anugrah Ramadhan</h3>
+                    <p>Nomor KTA: 0111</p>
+                    <p>Domisili: Lebak, Banten</p>
+                </div>
+            </div>
+
+            <!-- Anggota 79 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Fazlur Rahman</h3>
+                    <p>Nomor KTA: 0173</p>
+                    <p>Domisili: Menteng, Jakarta Pusat</p>
+                </div>
+            </div>
+
+            <!-- Anggota 80 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Iqbal Addin</h3>
+                    <p>Nomor KTA: 0015</p>
+                    <p>Domisili: lenteng Agung, Jakarta Selatan</p>
+                </div>
+            </div>
+
+            <!-- Anggota 81 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Muhammad Rafka Ihza Pahlevi</h3>
+                    <p>Nomor KTA: 0090</p>
+                    <p>Domisili: Cakung, Jakarta Timur</p>
+                </div>
+            </div>
+
+            <!-- Anggota 83 -->
+            <div class="member">
+                <div class="info">
+                    <h3>Dzulhijjatul Qoyimah</h3>
+                    <p>Nomor KTA: 0154</p>
+                    <p>Domisili: Babelan, Bekasi</p>
+                </div>
+            </div>
+
+            <!-- Anggota 84 -->
+            <div class="member">
+                <div class="info">
+                    <h3>M. Raivaldo Alif Putra</h3>
+                    <p>Nomor KTA: 0126</p>
+                    <p>Domisili: Bogor</p>
+                </div>
+            </div>
+            
+            <div class="member">
+        <div class="info">
+            <h3>M Hafizh Abdurraafi</h3>
+            <p>Nomor KTA: 0174</p>
+            <p>Domisili: Bogor</p>
+        </div>
+    </div>
+          
+            <div class="member">
+        <div class="info">
+            <h3>Dimitri Setya</h3>
+            <p>Nomor KTA: 0180</p>
+            <p>Domisili: Cawang</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Muhammad Nadhif Hisyam</h3>
+            <p>Nomor KTA: 0182</p>
+            <p>Domisili: Ciracas, Jakarta Timur</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Dzakir Rafiqi Afkar</h3>
+            <p>Nomor KTA: 0183</p>
+            <p>Domisili: Citayam, Bogor</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Rayhan Maulana</h3>
+            <p>Nomor KTA: 0186</p>
+            <p>Domisili: Bukit Duri, Jakarta Selatan</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Aldiko Araya</h3>
+            <p>Nomor KTA: 0188</p>
+            <p>Domisili: Bojong Gede, Bogor</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Alif Ryan Hakim</h3>
+            <p>Nomor KTA: 0191</p>
+            <p>Domisili: Bekasi</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Eliezer Clarence Nadek</h3>
+            <p>Nomor KTA: 0194</p>
+            <p>Domisili: Duren Sawit, Jakarta Timur</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Muhaimin Iskandar Khadafi</h3>
+            <p>Nomor KTA: 0196</p>
+            <p>Domisili: Bekasi</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Adam Maliqi Saputra</h3>
+            <p>Nomor KTA: 0204</p>
+            <p>Domisili: Sawah Besar, Jakarta Pusat</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Abi Dzar Ismail</h3>
+            <p>Nomor KTA: 0205</p>
+            <p>Domisili: Pengadegan, Jakarts Selatan</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Muhammad Sabiq Firdaus</h3>
+            <p>Nomor KTA: 0206</p>
+            <p>Domisili: Cempaka Putih, Jakarta Pusat</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Miqdad Ifzal Rao</h3>
+            <p>Nomor KTA: 0207</p>
+            <p>Domisili: Daop 1 Jakarta</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Muhammad Fahri</h3>
+            <p>Nomor KTA: 0209</p>
+            <p>Domisili: Bekasi</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Adnan Taqwa Junior</h3>
+            <p>Nomor KTA: 0211</p>
+            <p>Domisili: (isi domisili)</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Irfan Maulana Wirawijaya</h3>
+            <p>Nomor KTA: 0212</p>
+            <p>Domisili: Pamulang, Tanggerang Selatan</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>M. Alfazely Wibisono</h3>
+            <p>Nomor KTA: 0213</p>
+            <p>Domisili: Cakung, Jakarta Timur</p>
+        </div>
+    </div>
+    <div class="member">
+        <div class="info">
+            <h3>Rizky Aal Fathir</h3>
+            <p>Nomor KTA: 0214</p>
+            <p>Domisili: Depok</p>
+        </div>
+    </div>
+        </section>
+    </main>
+       <script>
+        function searchMember() {
+            // Ambil input dari kotak pencarian
+            let input = document.getElementById('searchBox').value.toLowerCase();
+            // Ambil semua elemen anggota
+            let members = document.getElementsByClassName('member');
+            let noResult = document.getElementById('noResult');
+            let found = false;
+
+            // Loop melalui semua anggota dan sembunyikan yang tidak sesuai dengan pencarian
+            for (let i = 0; i < members.length; i++) {
+                let name = members[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+
+                if (name.includes(input)) {
+                    members[i].style.display = 'block';  // Tampilkan anggota
+                    found = true;
+                } else {
+                    members[i].style.display = 'none';  // Sembunyikan anggota
+                }
+            }
+
+            // Tampilkan pesan jika tidak ada hasil yang ditemukan
+            if (!found) {
+                noResult.style.display = 'block';
+            } else {
+                noResult.style.display = 'none';
+            }
+        }
+    </script>
+
+    <footer>
+        <p>&copy; 2024 Sadulur Sepoor ID. Semua Hak Dilindungi.</p>
+    </footer>
+
+</body>
+</html>

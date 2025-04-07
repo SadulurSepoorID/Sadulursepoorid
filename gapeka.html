@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Galeri Dokumen PDF</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #0f0f1a;
+      color: #f5f5f5;
+    }
+
+    .header {
+      background: #141420;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
+    }
+
+    .header h1 {
+      font-size: 20px;
+      color: #00f0ff;
+      margin: 0;
+    }
+
+    .btn-kembali {
+      background: none;
+      border: 2px solid #00f0ff;
+      color: #00f0ff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+
+    .btn-kembali:hover {
+      background: #00f0ff;
+      color: #0f0f1a;
+    }
+
+    .pdf-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      padding: 30px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .pdf-card {
+      background: #141420;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
+      text-align: center;
+    }
+
+    .pdf-card h3 {
+      color: #00f0ff;
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+
+    .pdf-card iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .lihat-btn {
+      display: inline-block;
+      padding: 8px 14px;
+      color: #00f0ff;
+      border: 2px solid #00f0ff;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .lihat-btn:hover {
+      background: #00f0ff;
+      color: #0f0f1a;
+    }
+
+    @media (max-width: 768px) {
+      .pdf-card iframe {
+        height: 250px;
+      }
+
+      .pdf-card h3 {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Dokumen Gapeka 2025</h1>
+    <a href="weblogin.html" class="btn-kembali">← Kembali</a>
+  </div>
+
+  <div class="pdf-grid">
+    <div class="pdf-card">
+      <h3>Jadwal Ka Jarak Jauh</h3>
+      <iframe src="https://drive.google.com/file/d/1flqSp_zwuP6H_86BaIUKewfyW0zDEcGR/preview"></iframe>
+      <a href="https://drive.google.com/file/d/1flqSp_zwuP6H_86BaIUKewfyW0zDEcGR/view" target="_blank" class="lihat-btn">Lihat Full</a>
+    </div>
+    
+    <div class="pdf-card">
+      <h3>Jadwal Ka Lokal</h3>
+      <iframe src="https://drive.google.com/file/d/1GFnQob2NVIEJO0KWKMKpqKjKDl9b1z8V/preview"></iframe>
+      <a href="https://drive.google.com/file/d/1GFnQob2NVIEJO0KWKMKpqKjKDl9b1z8V/view" target="_blank" class="lihat-btn">Lihat Full</a>
+    </div>
+    
+    <div class="pdf-card">
+      <h3>Jadwal Ka Barang</h3>
+      <iframe src="https://drive.google.com/file/d/1G9Y7EqMqYKXA7ZQ3vHo5RW1oo5n3f7Yk/preview"></iframe>
+      <a href="https://drive.google.com/file/d/1G9Y7EqMqYKXA7ZQ3vHo5RW1oo5n3f7Yk/view" target="_blank" class="lihat-btn">Lihat Full</a>
+    </div>
+    
+    <div class="pdf-card">
+      <h3>Jadwal Langsiran L/R</h3>
+      <iframe src="https://drive.google.com/file/d/1G9eudtkTmlUcJHd5vNSYkLrt6kKIg83n/preview"></iframe>
+      <a href="https://drive.google.com/file/d/1G9eudtkTmlUcJHd5vNSYkLrt6kKIg83n/view" target="_blank" class="lihat-btn">Lihat Full</a>
+    </div>
+
+</div>
+
+</body>
+</html>

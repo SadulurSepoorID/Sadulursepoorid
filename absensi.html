@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Absensi Anggota</title>
+  <link rel="stylesheet" href="absensi.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Absensi Anggota Kegiatan</h1>
+    <p>Kegiatan: Sosialisasi perlintasan</p>
+    <p>Lokasi: JPL 17 Kemayoran</p>
+    <p>Tanggal: 14 Desember 2024</p>
+    <p>Silakan pilih status kehadiran Anda untuk kegiatan ini.</p>
+
+    <div class="buttons">
+      <a href="absennotfound.html" target="_blank" class="btn hadir">Saya Akan Hadir</a>
+      <button class="btn izin" id="izinButton">Saya Izin Tidak Hadir</button>
+    </div>
+
+    <!-- Modal untuk konfirmasi -->
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <p>Apakah Anda yakin untuk tidak hadir?</p>
+        <div class="modal-buttons">
+          <a href="https://forms.gle/41gcGbbab8Mq3mHp6" target="_blank" class="btn modal-btn yes">Ya</a>
+          <button class="btn modal-btn cancel" id="cancelButton">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="absensi.js"></script>
+</body>
+</html>

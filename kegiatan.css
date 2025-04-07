@@ -1,0 +1,145 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Mencegah scroll horizontal */
+    background-color: #f0f2f5;
+}
+
+.container {
+    max-width: 800px; /* atau 100% buat full lebar */
+    margin: 20px auto;
+    padding: 0 16px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    padding: 20px;
+    background-color: #007BFF;
+    color: #ffffff;
+    border-radius: 10px 10px 0 0;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.header p {
+    margin: 10px 0 0;
+    font-size: 16px;
+}
+
+/* KONTEN */
+.content {
+    padding: 20px;
+}
+
+.text-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.event {
+    border-bottom: 1px solid #eeeeee;
+    padding: 20px 0;
+    line-height: 1.6;
+    transition: background-color 0.3s ease;
+}
+
+.event:hover {
+    background-color: #f9f9f9;
+}
+
+/* TANGGAL */
+.date {
+    display: inline-block;
+    background-color: #e6f0ff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: #007BFF;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+/* SOSIAL MEDIA */
+.social {
+    text-align: center;
+    padding: 20px 10px;
+    flex-wrap: wrap;
+}
+
+.social a {
+    display: inline-block;
+    margin: 5px 10px;
+    text-decoration: none;
+    color: #007BFF;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+.social a:hover {
+    color: #0056b3;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    padding: 12px;
+    background-color: #007BFF;
+    color: #ffffff;
+    font-size: 14px;
+    position: relative; /* ganti dari fixed */
+    margin-top: 20px;
+    border-radius: 0 0 10px 10px;
+}
+
+/* RESPONSIVE MOBILE */
+@media (max-width: 600px) {
+    .container {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .header h1 {
+        font-size: 20px;
+    }
+
+    .header p {
+        font-size: 14px;
+    }
+
+    .date {
+        font-size: 13px;
+    }
+
+    .event {
+        padding: 15px 0;
+        font-size: 14px;
+    }
+
+    .social a {
+        font-size: 18px;
+        margin: 5px 8px;
+    }
+
+    .footer {
+        font-size: 12px;
+        padding: 10px;
+    }
+}

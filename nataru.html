@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Kereta Tambahan Nataru</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #1e90ff;
+            color: white;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .train {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .train:hover {
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #1e90ff;
+        }
+
+        .train ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .train ul li {
+            margin-bottom: 5px;
+        }
+
+        .train ul li span {
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .controls input, .controls select {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        @media (min-width: 768px) {
+            .controls {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .controls input, .controls select {
+                margin-bottom: 0;
+                max-width: 48%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Daftar Kereta Tambahan Nataru</h1>
+    <div class="container">
+        <div class="controls">
+            <input type="text" id="search-input" placeholder="Cari nama, nomor, relasi...">
+            <select id="sort-select">
+                <option value="nama-asc">Nama (A-Z)</option>
+                <option value="nama-desc">Nama (Z-A)</option>
+                <option value="nomor-asc">Nomor</option>
+                <option value="tercepat">Perjalanan Tercepat</option>
+                <option value="terlama">Perjalanan Terlama</option>
+                <option value="keberangkatan-terawal">Waktu Keberangkatan Terawal</option>
+                <option value="keberangkatan-terakhir">Waktu Keberangkatan Terakhir</option>
+                <option value="kedatangan-terawal">Waktu Kedatangan Terawal</option>
+                <option value="kedatangan-terakhir">Waktu Kedatangan Terakhir</option>
+            </select>
+        </div>
+        <div id="train-list"></div>
+    </div>
+
+   <script src="nataru.js"></script>
+</body>
+</html>

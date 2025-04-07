@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Anggota</title>
+    <link rel="stylesheet" href="weblogin.css">
+</head>
+<body>
+    <header>
+        <h1 id="welcome-message"></h1>
+        <p id="member-kta"></p>
+        <p id="warning-message" class="warning">
+  Peringatan: Jangan bagikan informasi ini ke luar komunitas, karena ini adalah informasi pribadi yang hanya untuk anggota.
+</p>
+    </header>
+
+    <div class="menu-toggle" onclick="toggleMenu()">☰ Menu</div>
+
+    <nav>
+        <a href="index.html">Log Out</a>
+        <a href="kegiatan.html">Kegiatan</a>
+        <a href="absen2.html">Absensi</a>
+    </nav>
+
+<section id="news-ticker">
+  <h2>Berita Terbaru</h2>
+  <h3>(<< Swipe Berita >>)</h3>
+  <br>
+  <div class="news-wrapper">
+    <ul class="news-list">
+      
+      <li class="news-slide">
+        <a href="gapeka.html">
+          <img src="https://i.imgur.com/TlAAAdS.jpeg" alt="Gapeka 2025">
+          <div class="news-content">
+            <h3>Gapeka 2025</h3>
+            <p>Peningkatan layanan dan penyesuaian jadwal untuk efisiensi perjalanan KA.</p>
+          </div>
+        </a>
+      </li>
+      
+      <li class="news-slide">
+        <a href="gapeka.html">
+          <img src="https://i.imgur.com/TlAAAdS.jpeg" alt="Gapeka 2025">
+          <div class="news-content">
+            <h3>Gapeka 2025</h3>
+            <p>Peningkatan layanan dan penyesuaian jadwal untuk efisiensi perjalanan KA.</p>
+          </div>
+        </a>
+      </li>
+      <!-- Tambah <li> untuk berita lainnya jika ada -->
+    </ul>
+  </div>
+</section>
+
+    <section id="about">
+        <div class="content-box">
+            <h2>Pencarian tentang Perkeretaapian</h2>
+            <p>Cari informasi tentang sarana, jadwal, stamformasi KA, dan berita.</p>
+            <a href="pencarian.html" class="btn">Mulai Pencarian</a>
+        </div>
+        <div class="content-box">
+            <h2>Struktur Anggota Aktif</h2>
+            <p>Daftar anggota Sadulur Sepoor Indonesia.</p>
+            <a href="https://bit.ly/DAFTARANGGOTASSID" class="btn">Baca Selengkapnya</a>
+        </div>
+        <div class="content-box">
+            <h2>Kuis seputar kereta api</h2>
+            <p>Permainan tanya jawab seru seputar perkeretaapian.</p>
+            <a href="levelquis.html" class="btn">Ayo Mulai!!!</a>
+        </div>
+        <div class="content-box">
+            <h2>Ulang Tahun Anggota</h2>
+            <p>Daftar ulang tahun anggota di bulan Oktober.</p>
+            <a href="ultah.html" class="btn">Baca Selengkapnya</a>
+        </div>
+        <div class="content-box">
+            <h2>MERCHANDISE</h2>
+            <p>Rapikan pakaianmu saat kegiatan internal Komunitas SADULUR SEPOOR :)</p>
+            <a href="payment.html" class="btn">Baca Selengkapnya</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Sadulur Sepoor ID. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.querySelector('nav').classList.toggle('show');
+        }
+
+        const username = sessionStorage.getItem('username');
+        const kta = sessionStorage.getItem('kta');
+
+        if (!username || !kta) {
+            alert("Anda harus login terlebih dahulu!");
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('welcome-message').textContent = `Selamat datang, ${username}`;
+        document.getElementById('member-kta').textContent = `Nomor KTA: ${kta}`;
+
+        let currentIndex = 0;
+        const newsList = document.querySelector('.news-list');
+        const items = document.querySelectorAll('.news-list li');
+        const totalItems = items.length;
+
+        function showSlide(index) {
+            newsList.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalItems;
+            showSlide(currentIndex);
+        }
+
+        let slideInterval = setInterval(nextSlide, 5000);
+
+        newsList.addEventListener('mouseover', () => clearInterval(slideInterval));
+        newsList.addEventListener('mouseout', () => slideInterval = setInterval(nextSlide, 5000));
+
+        let startX = 0;
+        let endX = 0;
+
+        newsList.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        newsList.addEventListener('touchmove', (e) => {
+            endX = e.touches[0].clientX;
+        });
+
+        newsList.addEventListener('touchend', () => {
+            if (startX - endX > 50) nextSlide();
+            else if (endX - startX > 50) {
+                currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+                showSlide(currentIndex);
+            }
+        });
+    </script>
+</body>
+</html>

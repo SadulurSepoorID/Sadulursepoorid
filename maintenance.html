@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Acces</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 700px;
+            padding: 40px;
+            border-radius: 20px;
+            background-color: rgba(0, 0, 50, 0.7);
+            box-shadow: 0 8px 20px rgba(0, 0, 50, 0.4);
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #00d2ff, 0 0 20px #3a7bd5, 0 0 30px #00d2ff, 0 0 40px #00d2ff, 0 0 50px #3a7bd5;
+            }
+            to {
+                text-shadow: 0 0 20px #3a7bd5, 0 0 30px #00d2ff, 0 0 40px #3a7bd5, 0 0 50px #00d2ff;
+            }
+        }
+
+        .animation-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            font-size: 150px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .footer {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .animation-container {
+                font-size: 100px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            .animation-container {
+                font-size: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="animation-container">🚫</div>
+        <h1>Kami Sedang Dalam Pemeliharaan</h1>
+        <p>Akses login sedang menjalani pemeliharaan. Kami akan segera kembali. Terima kasih atas kesabaran Anda!</p>
+        <p class="footer">– Sadulursepoor IT Team</p>
+    </div>
+
+</body>
+</html>

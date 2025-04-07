@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+        }
+
+        h2 {
+            text-align: center;
+            padding: 20px 0;
+            color: #21A609;
+            background-color: #e3f2fd;
+            margin: 0;
+        }
+
+        .table-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 16px;
+            min-width: 600px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #dddddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #C7FFBA;
+        }
+
+        tr:hover {
+            background-color: #4CAF50;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 768px) {
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            table, th, td {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+    <title>Data Table</title>
+</head>
+<body>
+
+<h2>TM 6000 Series</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Depo</th>
+            <th>Type</th>
+            <th>Manufacturer</th>
+            <th>Series</th>
+            <th>Line Japan</th>
+            <th>Kode</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>6001</td><td>Manggarai</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6101</td><td>Manggarai</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6005</td><td>Manggarai</td><td>GTO</td><td>Hitachi</td><td>CH-MR-146</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6105</td><td>Manggarai</td><td>GTO</td><td>Mitsubishi</td><td>TBL-2L-23</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6006</td><td>Manggarai</td><td>GTO</td><td>Mitsubishi</td><td>TBL-2L-23</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6106</td><td>Manggarai</td><td>GTO</td><td>Mitsubishi</td><td>TBL-2L-23</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6007</td><td>Bogor</td><td>GTO</td><td>Mitsubishi</td><td>TBL-2L-23</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6107</td><td>Bogor</td><td>VVVF</td><td>Hitachi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6008</td><td>Manggarai</td><td>VVVF</td><td>Hitachi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6108</td><td>Manggarai</td><td>GTO</td><td>Hitachi</td><td>CH-MR-146</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6011</td><td>Depok</td><td>GTO</td><td>Hitachi</td><td>CH-MR-146</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6111</td><td>Depok</td><td>GTO</td><td>Hitachi</td><td>CH-MR-146</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6012</td><td>Depok</td><td>GTO</td><td>Hitachi</td><td>CH-MR-146</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6112</td><td>Depok</td><td>GTO</td><td>Hitachi</td><td>CH-MR-146</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6013</td><td>Depok</td><td>GTO</td><td>Hitachi</td><td>CH-MR-146</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6113</td><td>Depok</td><td>GTO</td><td>Mitsubishi</td><td>TBL-2L-23</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6015</td><td>Manggarai</td><td>GTO</td><td>Mitsubishi</td><td>TBL-2L-23</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6115</td><td>Manggarai</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6016</td><td>Manggarai</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6116</td><td>Manggarai</td><td>VVVF</td><td>Hitachi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6017</td><td>Manggarai</td><td>VVVF</td><td>Hitachi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6117</td><td>Manggarai</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6018</td><td>Bukit Duri</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6118</td><td>Bukit Duri</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6019</td><td>Bukit Duri</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6119</td><td>Bukit Duri</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6020</td><td>Bogor</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6120</td><td>Bogor</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6021</td><td>Bogor</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.3</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6121</td><td>Bogor</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6022</td><td>Bukit Duri</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6122</td><td>Bukit Duri</td><td>AVF</td><td>Mitsubishi</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6023</td><td>Bogor</td><td>AVF</td><td>Mitsubishi</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6123</td><td>Bogor</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6024</td><td>Bukit Duri</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6124</td><td>Bukit Duri</td><td>AVF</td><td>Mitsubishi</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6025</td><td>Depok</td><td>AVF</td><td>Mitsubishi</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6125</td><td>Depok</td><td>AVF</td><td>Hitachi</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6026</td><td>Depok</td><td>AVF</td><td>Hitachi</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6126</td><td>Depok</td><td>AVF</td><td>Hitachi</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6027</td><td>Bogor</td><td>AVF</td><td>Hitachi</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6127</td><td>Bogor</td><td>VVVF</td><td>Hitachi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6029</td><td>Bukit Duri</td><td>VVVF</td><td>Hitachi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6129</td><td>Bukit Duri</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6030</td><td>Bogor</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6130</td><td>Bogor</td><td>VVVF</td><td>Hitachi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6031</td><td>Bukit Duri</td><td>VVVF</td><td>Hitachi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6131</td><td>Bukit Duri</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6032</td><td>Manggarai</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6132</td><td>Manggarai</td><td>VVVF</td><td>Mitsubishi</td><td>Lv.2</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6033</td><td>Depok</td><td>AVF</td><td>Hitachi</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6133</td><td>Depok</td><td>AVF</td><td>Mitsubishi</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6034</td><td>Depok</td><td>AVF</td><td>-</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+        <tr><td>6134</td><td>Depok</td><td>AVF</td><td>-</td><td>-</td><td>Chiyoda Line</td><td>TM</td></tr>
+    </tbody>
+</table>
+
+</body>
+</html>

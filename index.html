@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+    html {
+    scroll-behavior: smooth;
+}
+        .pengurus-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .pengurus-details {
+            flex-grow: 1;
+        }
+        .pengurus-photo {
+            margin-left: 20px;
+        }
+        .pengurus-photo img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header section -->
+    <header>
+        <nav>
+          <img src="https://i.imgur.com/9rAb7r7.png" alt="Logo" class="logo">
+            <div class="hamburger" onclick="toggleMenu()">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        </nav>
+    </header>
+<nav id="menu" class="menu">
+        <ul>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="http://www.google.com/url?q=http%3A%2F%2Fbit.ly%2FPendaftaranSadulurSepoor&sa=D&sntz=1&usg=AOvVaw2Y76CFGcM5kRmJ5jgzA-53">Register</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+     <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('active');
+        }
+    </script>
+    <!-- Main section -->
+    <main>
+      <section id="features">
+    <div class="feature">
+        <h3>APA ITU KOMUNITAS SADULUR SEPOOR ?</h3>
+        <p>Komunitas Railfans SADULUR SEPOOR yang lebih dikenal komunitas SS merupakan wadah bagi para pecinta kereta api Indonesia baik yang berasal  dari individu/perorangan maupun kelompok/komunitas/organisasi lainnya. Didirikan oleh Herie Heryadi, Arjuna Pamungkas, Aldino Arya Saputra, Habibi Muhammad Arkam dan Ahmad Suseno pada tanggal 19 Maret 2019 di Cikini Jakarta Pusat.</p>
+    </div>
+    <div class="feature">
+        <h3>VISI</h3>
+        <p>Menjadi komunitas yang di segani dan sebagai penggerak perubahan masyarakat perkeretaapian yang lebih baik dan disiplin, rasa memiliki yang tinggi, saling menghormati dan ikut serta menjaga aset aset perkeretaapian</p>
+    </div>
+    <div class="feature">
+        <h3>MISI</h3>
+        <p>Mendorong regulator dan operator untuk menghasilkan keputusan-keputusan yang memberi manfaat untuk perkeretaapian menjadi lebih baik.</p>
+        <p>Mengajak serta semua pengguna dan atau masyarakat untuk memahami dan mematuhi ketentuan-ketentuan yang telah ditetapkan Regulator dan Operator serta menanamkan rasa memiliki yang tinggi terhadap perkeretaapian</p>
+    </div>
+</section>
+
+        <section id="home">
+            <h1>Profil</h1>
+            <p>Yuk kita intip apa saja kegiatan yang sudah dilakukan Sadulur Sepoor terutama untuk masyarakat sekitar. Penasaran ya? di pencet tombol yang di bawah yaa</p>
+            <a href="profile.html" class="button">Profil</a>
+            </section>
+
+        <section id="home">
+            <h1>SSMAIL</h1>
+            <p>SSMAIL menyimpan berbagai file arsip resmi yang dapat diakses oleh anggota. Setiap dokumen disusun berdasarkan kategori dan dilengkapi dengan deskripsi singkat.</p>
+            <a href="loginmail.html" class="button">SSMAIL</a>
+            </section>
+
+        <section id="about">
+            <h2>Susunan Kepengurusan</h2>
+            <p>"Tak kenal maka tak sayang"</p>
+            <p>Tau kata-kata itu kan? nah... daripada emosional, mending kenalan sama pengurus yang sekarang</p>
+            <div class="pengurus-container">
+    <div class="pengurus-details">
+        <h3>Herie Haryadi</h3>
+        <p>Jabatan: Pembina & Penasehat Sadulur Sepoor</p>
+        <p>Domisili: Jakarta Utara</p>
+    </div>
+    <div class="pengurus-photo">
+        <img src="https://i.ibb.co.com/bmH1Dcz/IMG-20240923-184352.jpg">
+    </div>
+</div>
+
+<div class="pengurus-container">
+    <div class="pengurus-details">
+        <h3>Arjuna Pamungkas</h3>
+        <p>Jabatan: Ketua Sadulur Sepoor</p>
+        <p>Domisili: Jakarta Timur</p>
+    </div>
+    <div class="pengurus-photo">
+        <img src="https://i.ibb.co.com/WV5h00V/IMG-20240923-184411.jpg">
+    </div>
+   </div>
+   
+<div class="pengurus-container">
+    <div class="pengurus-details">
+        <h3>Mohammad Walid Ridho</h3>
+        <p>Jabatan: Wakil Ketua Sadulur Sepoor</p>
+        <p>Domisili: Jakarta Pusat</p>
+    </div>
+    <div class="pengurus-photo">
+        <img src="https://i.ibb.co.com/gP8vGGr/IMG-20240923-185525.jpg">
+    </div>
+   </div>
+   <a href="pengurus.html" class="button">Lihat Susunan Kepengurusan</a>
+        </section>
+        <section id="services">
+            <h2>Akun Media Sosial</h2>
+            <ul>
+            <a href="https://youtube.com/@sadulursepoor" target="_blank">Youtube</a>
+            <a href="https://www.tiktok.com/@sadulur.sepoor_official?_t=8puqjiITt58&_r=1" target="_blank">Tiktok</a>
+            <a href="https://www.instagram.com/sadulursepoor_id?igsh=bHNvcTI4ZmNiejBv" target="_blank">Instagram</a>
+            </ul>
+        </section>
+        
+<section id="contact" class="form-container">
+    <h2>Contact Us</h2>
+    <form action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="480fcbcf-de9e-4081-b5a6-3099c8b2de28">
+        <input type="text" id="name" name="name" placeholder="Your Name" required>
+        <input type="email" id="email" name="email" placeholder="Your Email" required>
+        <textarea id="message" name="message" rows="4" placeholder="Your Message" required></textarea>
+        <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+</section>
+    </main>
+
+    <!-- Footer section -->
+    <footer>
+        <p>&copy; 2024 Sadulur Sepoor ID. Semua Hak Dilindungi.</p>
+    </footer>
+
+</body>
+</html>
