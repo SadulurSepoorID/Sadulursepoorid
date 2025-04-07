@@ -1,137 +1,189 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Berita Ulang Tahun Anggota</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f8ff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daftar Ulang Tahun April 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        header {
-            background-color: #004080;
-            color: #ffffff;
-            padding: 20px;
-            text-align: center;
-        }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #e6f0fa, #ffffff);
+      color: #0d1b2a;
+      padding: 2rem;
+    }
 
-        header h1 {
-            margin: 0;
-            font-size: 2rem;
-        }
+    header {
+      background-color: #1d3557;
+      color: #fff;
+      padding: 2rem;
+      text-align: center;
+      font-size: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      line-height: 1.4;
+    }
 
-        .container {
-            padding: 20px;
-        }
+    @media (max-width: 600px) {
+      header {
+        font-size: 1.4rem;
+        padding: 1.5rem 1rem;
+      }
+    }
 
-        .birthday-section {
-            background-color: #ffffff;
-            border: 1px solid #004080;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+    .back-button {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      background-color: #1d3557;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
 
-        .birthday-section h2 {
-            margin-top: 0;
-            color: #004080;
-            font-size: 1.5rem;
-            text-align: center;
-        }
+    .back-button:hover {
+      background-color: #457b9d;
+    }
 
-        .birthday-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
 
-        .birthday-table th, .birthday-table td {
-            border: 1px solid #004080;
-            padding: 10px;
-            text-align: center;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-        .birthday-table th {
-            background-color: #004080;
-            color: #ffffff;
-        }
+    th, td {
+      padding: 1rem 1.5rem;
+      background: white;
+      text-align: left;
+      border: 1px solid #dee2e6;
+    }
 
-        .birthday-table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
+    th {
+      background-color: #a8dadc;
+      color: #1d3557;
+      font-weight: 600;
+    }
 
-        footer {
-            text-align: center;
-            background-color: #004080;
-            color: #ffffff;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
+    tr:not(:first-child):hover td {
+      background-color: #f1faff;
+    }
 
-        footer p {
-            margin: 0;
-            font-size: 0.9rem;
-        }
-    </style>
+    .badge {
+      padding: 0.4rem 0.8rem;
+      background-color: #1d3557;
+      color: white;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      white-space: normal;
+      display: inline-block;
+      max-width: 100%;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead {
+        display: none;
+      }
+      tr {
+        margin-bottom: 1rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 1rem;
+      }
+      td {
+        padding: 0.5rem 0;
+        text-align: right;
+        position: relative;
+        border: none;
+        word-wrap: break-word;
+      }
+      td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 1rem;
+        font-weight: bold;
+        text-align: left;
+      }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Berita Ulang Tahun Anggota</h1>
-    </header>
-    <div class="container">
-        <div class="birthday-section">
-            <h2>Daftar Ulang Tahun Anggota</h2>
-            <table class="birthday-table">
-                <thead>
-                    <tr>
-                        <th>Nama</th>
-                        <th>NIA</th>
-                        <th>Tanggal Ulang Tahun</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Ferdyansyah</td>
-                        <td>0069</td>
-                        <td>27 Desember 2024</td>
-                    </tr>
-                    <tr>
-                        <td>Raikhan Luluh Saputra</td>
-                        <td>0108</td>
-                        <td>11 Desember 2024</td>
-                    </tr>
-                    <tr>
-                        <td>Ahmad Fauzan</td>
-                        <td>0139</td>
-                        <td>27 Desember 2024</td>
-                    </tr>
-                    <tr>
-                        <td>Rizky Achmad Imam Bayhaki</td>
-                        <td>0140</td>
-                        <td>10 Desember 2024</td>
-                    </tr>
-                    <tr>
-                        <td>Danureza Setia Budi</td>
-                        <td>0157</td>
-                        <td>22 Desember 2024</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p style="text-align: center; margin-top: 15px;">
-                Selamat ulang tahun kepada seluruh anggota yang berulang tahun di bulan ini! 
-                Semoga panjang umur, sehat selalu, dan sukses dalam segala hal.
-            </p>
-        </div>
-    </div>
-    <footer>
-<p>&copy; 2024 Sadulur Sepoor ID. Semua hak dilindungi.</p>
-    </footer>
+  <header>Daftar Ulang Tahun Anggota - April 2025</header>
+  <main>
+    <a href="javascript:history.back()" class="back-button">&larr; Kembali</a>
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>NIA</th>
+          <th>Tanggal</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="birthdayTable"></tbody>
+    </table>
+  </main>
+  <script>
+    const birthdays = [
+      { nama: "Eki Apriandi solichan", nia: "0019", tanggal: "2025-04-08" },
+      { nama: "Farhanaprian", nia: "0032", tanggal: "2025-04-2" },
+      { nama: "Agil Pramono", nia: "0065", tanggal: "2025-04-27" },
+      { nama: "M Apriliyanto", nia: "0092", tanggal: "2025-04-22" },
+      { nama: "Fathir Ahmad Maulana", nia: "0098", tanggal: "2025-04-14" },
+      { nama: "Adhitya Prawira Yudha", nia: "0118", tanggal: "2025-04-11" },
+      { nama: "Kenzhie emeraldy wibowo", nia: "0128", tanggal: "2025-04-10" },
+      { nama: "Muhamad Fajri Ridho", nia: "0177", tanggal: "2025-04-17" },
+      { nama: "Muhammad Sabiq Firdaus", nia: "0206", tanggal: "2025-04-16" }
+    ];
+
+    const tableBody = document.getElementById("birthdayTable");
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    birthdays.forEach(person => {
+      const tr = document.createElement("tr");
+      const tglUlangTahun = new Date(person.tanggal);
+      tglUlangTahun.setHours(0, 0, 0, 0);
+
+      const selisihHari = Math.ceil((tglUlangTahun - today) / (1000 * 60 * 60 * 24));
+
+      let status;
+      if (selisihHari > 0) {
+        status = `${selisihHari} hari lagi`;
+      } else if (selisihHari === 0) {
+        status = `Hari ini ulang tahun !`;
+      } else {
+        status = `Sudah lewat`;
+      }
+
+      tr.innerHTML = `
+        <td data-label="Nama">${person.nama}</td>
+        <td data-label="NIA">${person.nia}</td>
+        <td data-label="Tanggal">${tglUlangTahun.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</td>
+        <td data-label="Status"><span class="badge">${status}</span></td>
+      `;
+      tableBody.appendChild(tr);
+    });
+  </script>
 </body>
 </html>
