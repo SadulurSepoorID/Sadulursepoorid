@@ -24,7 +24,7 @@
       if (account) {
         sessionStorage.setItem('username', account.username);
         sessionStorage.setItem('kta', account.kta);
-        window.location.href = 'weblogin.html';
+        window.location.href = 'https://sadulursepoorid.github.io/ssmail/';
       } else {
         showCustomAlert();
       }
