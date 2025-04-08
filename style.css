@@ -93,6 +93,29 @@ header {
     background-color: #555;
 }
 
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #222;
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    z-index: 9999;
+}
+
+.toast.show {
+    opacity: 1;
+    pointer-events: auto;
+    bottom: 50px;
+}
+
 nav ul {
     list-style-type: none;
 }

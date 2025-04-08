@@ -136,13 +136,88 @@
         
 <section id="contact" class="form-container">
     <h2>Contact Us</h2>
-    <form action="https://api.web3forms.com/submit" method="POST">
+    <form id="contact-form" action="https://api.web3forms.com/submit" method="POST">
         <input type="hidden" name="access_key" value="480fcbcf-de9e-4081-b5a6-3099c8b2de28">
+
         <input type="text" id="name" name="name" placeholder="Your Name" required>
         <input type="email" id="email" name="email" placeholder="Your Email" required>
         <textarea id="message" name="message" rows="4" placeholder="Your Message" required></textarea>
+
         <button type="submit" class="submit-btn">Send Message</button>
     </form>
+    <div id="toast" class="toast"></div>
+
+    <script>
+      function showToast(message, color = "#222") {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.style.backgroundColor = color;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 4000);
+}
+
+        document.getElementById("contact-form").addEventListener("submit", function (e) {
+            e.preventDefault(); // tahan pengiriman form
+
+            const email = document.getElementById("email").value.trim().toLowerCase();
+const message = document.getElementById("message").value.toLowerCase();
+const button = document.querySelector(".submit-btn");
+
+const blockedEmails = [
+    "kepo321@gmail.com",
+    "isengbanget@yahoo.com",
+    "spamtester@mail.com"
+];
+
+if (blockedEmails.includes(email)) {
+    showToast("Email ini telah diblokir. Gunakan email lain.", "#e74c3c");
+    button.disabled = false;
+    button.textContent = "Send Message";
+    return;
+}
+
+const blockedWords = ["anjing", "ajg", "anjg", "bego", "bodoh", "bdh", "bloon", "oon", "pea", "bangsat", "tolol", "tai", "kontol", "kntl", "kntol", "kontl", "memek", "mmk", "memk", "mmek", "idiot", "anjir", "anjay", "goblok", "gblk"];
+const containsBlockedWord = blockedWords.some(word => message.includes(word));
+if (containsBlockedWord) {
+    showToast("Pesan mengandung kata tidak sopan. Harap gunakan bahasa yang baik.", "#e74c3c");
+    
+    button.disabled = false;
+    button.textContent = "Send Message";
+    return;
+}
+
+            button.disabled = true;
+            button.textContent = "Checking email...";
+
+            // Panggil Abstract API
+            fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=91420962874f4900b45fd85b6ae29d5a&email=${email}`)
+                .then(res => res.json())
+                .then(data => {
+                    const status = data.deliverability;
+                    const isDisposable = data.is_disposable_email.value;
+                    const isValidFormat = data.is_valid_format.value;
+
+                    if (status !== "DELIVERABLE" || isDisposable || !isValidFormat) {
+                        showToast("Email ini tidak valid atau tidak aktif. Silakan gunakan email asli.", "#e74c3c");
+                        button.disabled = false;
+                        button.textContent = "Send Message";
+                        return;
+                    }
+
+                    // Jika lolos semua, submit form ke Web3Forms
+                    document.getElementById("contact-form").submit();
+                })
+                .catch(error => {
+                    showToast("Gagal mengecek email. Coba lagi nanti.", "#c0392b");
+                    button.disabled = false;
+                    button.textContent = "Send Message";
+                    console.error(error);
+                });
+        });
+    </script>
 </section>
     </main>
 
