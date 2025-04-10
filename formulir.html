@@ -142,7 +142,7 @@
         <option value="Muhammad Ridho Walid">Muhammad Ridho Walid</option>
         <option value="Ridho Ariotama">Ridho Ariotama</option>
         <option value="Fathir Ahmad Maulana">Fathir Ahmad Maulana</option>
-        <option value="Aldi Saputra">Aldi Saputra</option>
+        <option value="Aldi Hadiansyah">Aldi Hadiansyah</option>
       </select>
 
       <div class="buttons">
@@ -151,39 +151,92 @@
       </div>
 
       <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_next" value="https://sadulursepoor.github.io/thanks.html">
+      <input type="hidden" name="_next" value="https://sadulursepoorid.github.io/Sadulursepoorid/thanks.html">
     </form>
   </div>
 
-  <script>
-    const form = document.getElementById("wawancaraForm");
+<div id="alertBox" style="
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #e53232;
+  color: #ffffff;
+  border: 1px solid #ffbaba;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  z-index: 9999;
+  font-size: 16px;
+  font-family: 'Segoe UI', sans-serif;
+  max-width: 90%;
+  text-align: center;
+  animation: fadeInOut 4s ease forwards;
+">
+</div>
 
-    form.addEventListener("submit", function (e) {
-      let isValid = true;
-      const requiredFields = form.querySelectorAll("input[required], select[required]");
+<style>
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, -55%); }
+    10% { opacity: 1; transform: translate(-50%, -50%); }
+    90% { opacity: 1; transform: translate(-50%, -50%); }
+    100% { opacity: 0; transform: translate(-50%, -55%); }
+  }
+</style>
 
-      requiredFields.forEach((field) => {
-        if (!field.value.trim()) {
-          field.classList.add("invalid");
-          isValid = false;
-        } else {
-          field.classList.remove("invalid");
-        }
-      });
+ <script>
+  const form = document.getElementById("wawancaraForm");
+  const alertBox = document.getElementById("alertBox");
 
-      if (!isValid) {
-        e.preventDefault(); // Stop submit kalau ada kosong
+  const showAlert = (message) => {
+    alertBox.textContent = message;
+    alertBox.style.display = "block";
+    setTimeout(() => {
+      alertBox.style.display = "none";
+    }, 4000);
+  };
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    let isValid = true;
+    const requiredFields = form.querySelectorAll("input[required], select[required]");
+
+    requiredFields.forEach((field) => {
+      if (!field.value.trim()) {
+        field.classList.add("invalid");
+        isValid = false;
+        showAlert(`Kolom "${field.previousElementSibling.textContent}" tidak boleh kosong.`);
+      } else {
+        field.classList.remove("invalid");
       }
     });
 
-    // Biar merahnya hilang pas user mulai ngetik
-    document.querySelectorAll("input, select").forEach((el) => {
-      el.addEventListener("input", () => {
-        if (el.value.trim() !== "") {
-          el.classList.remove("invalid");
-        }
-      });
+    if (!isValid) return;
+
+    const email = document.getElementById("email").value;
+    try {
+      const response = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=91420962874f4900b45fd85b6ae29d5a&email=${encodeURIComponent(email)}`);
+      const data = await response.json();
+
+      if (data.deliverability !== "DELIVERABLE") {
+        showAlert("Email tidak valid atau tidak aktif. Silakan masukkan email yang benar.");
+        return;
+      }
+
+      form.submit(); // submit jika email valid
+    } catch (error) {
+      showAlert("Gagal validasi email: " + error.message);
+    }
+  });
+
+  document.querySelectorAll("input, select").forEach((el) => {
+    el.addEventListener("input", () => {
+      if (el.value.trim() !== "") {
+        el.classList.remove("invalid");
+      }
     });
-  </script>
+  });
+</script>
 </body>
 </html>
