@@ -1,0 +1,99 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background-color: #f4faff;
+  color: #002244;
+}
+
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px 40px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #004c99;
+  margin-bottom: 25px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+input[type="text"],
+input[type="email"],
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  border: 1px solid #ccddee;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 14px;
+  background-color: #fff;
+  transition: 0.3s ease;
+  margin-bottom: 12px;
+}
+
+/* Input error merah */
+input.invalid,
+select.invalid {
+  border-color: #ff4d4f !important;
+  background-color: #fff5f5;
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.15);
+}
+
+input.invalid::placeholder {
+  color: #ff4d4f;
+  opacity: 0.7;
+}
+
+fieldset {
+  border: none;
+  margin-top: 20px;
+  padding: 0;
+}
+
+legend {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #004c99;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.back-btn, .submit-btn {
+  text-decoration: none;
+  padding: 12px 24px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.back-btn {
+  background-color: #d9eaff;
+  color: #004c99;
+  border: 1px solid #a3c2f2;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #005fcc;
+}

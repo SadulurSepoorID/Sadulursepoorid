@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulir Wawancara</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f4faff;
+      color: #002244;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 30px 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #004c99;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border: 1px solid #ccddee;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+      background-color: #fff;
+      transition: 0.3s ease;
+      margin-bottom: 12px;
+    }
+
+    fieldset {
+      border: none;
+      margin-top: 20px;
+      padding: 0;
+    }
+
+    legend {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #004c99;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .back-btn, .submit-btn {
+      text-decoration: none;
+      padding: 12px 24px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      background-color: #d9eaff;
+      color: #004c99;
+      border: 1px solid #a3c2f2;
+    }
+
+    .submit-btn {
+      background-color: #007bff;
+      color: white;
+      transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #005fcc;
+    }
+
+    /* Efek error */
+    .invalid {
+      border-color: #ff4d4f !important;
+      background-color: #fff5f5;
+      box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.15);
+    }
+
+    .invalid::placeholder {
+      color: #ff4d4f;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Formulir Wawancara Komunitas</h1>
+    <form action="https://formsubmit.co/sadulursepoor@gmail.com" method="POST" id="wawancaraForm">
+      <label for="nama">Nama Lengkap</label>
+      <input type="text" id="nama" name="nama_lengkap" required placeholder="Masukkan nama lengkap" />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required placeholder="contoh@email.com" />
+
+      <label for="stasiun">Stasiun Terdekat</label>
+      <input type="text" id="stasiun" name="stasiun_terdekat" required placeholder="Stasiun apa?" />
+
+      <fieldset>
+        <legend>Sosial Media</legend>
+        <label for="ig">Instagram</label>
+        <input type="text" id="ig" name="instagram" placeholder="@username" />
+
+        <label for="wa">WhatsApp</label>
+        <input type="text" id="wa" name="whatsapp" placeholder="08xxxx" />
+
+        <label for="tiktok">TikTok</label>
+        <input type="text" id="tiktok" name="tiktok" placeholder="@username" />
+      </fieldset>
+
+      <label for="tanggal">Tanggal Wawancara</label>
+      <select id="tanggal" name="tanggal_wawancara" required>
+        <option value="" disabled selected>Pilih tanggal</option>
+        <option value="12 April 2025">12 April 2025</option>
+        <option value="13 April 2025">13 April 2025</option>
+      </select>
+
+      <label for="pewawancara">Nama Pewawancara</label>
+      <select id="pewawancara" name="nama_pewawancara" required>
+        <option value="" disabled selected>Pilih nama</option>
+        <option value="Muhammad Ridho Walid">Muhammad Ridho Walid</option>
+        <option value="Ridho Ariotama">Ridho Ariotama</option>
+        <option value="Fathir Ahmad Maulana">Fathir Ahmad Maulana</option>
+        <option value="Aldi Saputra">Aldi Saputra</option>
+      </select>
+
+      <div class="buttons">
+        <a href="index.html" class="back-btn">Kembali</a>
+        <button type="submit" class="submit-btn">Kirim</button>
+      </div>
+
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://sadulursepoor.github.io/thanks.html">
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("wawancaraForm");
+
+    form.addEventListener("submit", function (e) {
+      let isValid = true;
+      const requiredFields = form.querySelectorAll("input[required], select[required]");
+
+      requiredFields.forEach((field) => {
+        if (!field.value.trim()) {
+          field.classList.add("invalid");
+          isValid = false;
+        } else {
+          field.classList.remove("invalid");
+        }
+      });
+
+      if (!isValid) {
+        e.preventDefault(); // Stop submit kalau ada kosong
+      }
+    });
+
+    // Biar merahnya hilang pas user mulai ngetik
+    document.querySelectorAll("input, select").forEach((el) => {
+      el.addEventListener("input", () => {
+        if (el.value.trim() !== "") {
+          el.classList.remove("invalid");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
