@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kuis Perkeretaapian</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f8ff;
+      color: #003366;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 30px;
+      background: #ffffff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+    h1 {
+      text-align: center;
+      color: #00509e;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px 1px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .options input {
+      margin-right: 10px;
+    }
+    button {
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    .score {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <button onclick="window.location.href='weblogin.html'" style="margin: 20px 0; background-color: #007BFF; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; cursor: pointer;">
+  ← Kembali
+</button>
+    
+    <h1>Kuis Perkeretaapian</h1>
+    <form id="quizForm" action="https://formsubmit.co/fatirahmad067@gmail.com" method="POST">
+      <label for="nama">Nama Lengkap:</label>
+      <input type="text" id="nama" name="Nama" required />
+
+      <div id="quiz"></div>
+
+      <input type="hidden" name="_next" value="https://sadulursepoorid.github.io/Sadulursepoorid/thanksquiz.html">
+      <input type="hidden" id="skorField" name="Skor" />
+
+      <button type="submit">Kirim Jawaban</button>
+      <div class="score" id="scoreDisplay"></div>
+    </form>
+  </div>
+
+<script>
+  const questions = [
+    {
+      q: "Apa arti dari singkatan KRL?",
+      a: "Kereta Rel Listrik",
+      o: ["Kereta Rel Lokal", "Kereta Rel Listrik", "Kereta Rangkaian Listrik", "Kereta Rel Luar"]
+    },
+    {
+      q: "Lokomotif CC206 buatan negara mana?",
+      a: "Amerika Serikat",
+      o: ["Jerman", "Jepang", "Amerika Serikat", "Indonesia"]
+    },
+    {
+      q: "Apa nama jalur yang menghubungkan Jakarta dan Surabaya via Semarang?",
+      a: "Jalur Utara Jawa",
+      o: ["Jalur Selatan Jawa", "Jalur Tengah Jawa", "Jalur Utara Jawa", "Jalur Lingkar Jawa"]
+    },
+    {
+      q: "Berapa jumlah kabin masinis di rangkaian KRL?",
+      a: "2",
+      o: ["1", "2", "3", "4"]
+    },
+    {
+      q: "Sinyal berwarna merah pada jalur KA berarti?",
+      a: "Berhenti",
+      o: ["Jalan Terus", "Kurangi Kecepatan", "Berhenti", "Siap-Siap"]
+    },
+    {
+      q: "Kereta Argo Wilis melayani rute?",
+      a: "Bandung - Surabaya",
+      o: ["Jakarta - Surabaya", "Bandung - Surabaya", "Bandung - Yogyakarta", "Jakarta - Malang"]
+    },
+    {
+      q: "Apa fungsi dari wesel pada jalur KA?",
+      a: "Memindah arah jalur",
+      o: ["Menambah kecepatan", "Mengatur jadwal", "Memindah arah jalur", "Mengatur lampu sinyal"]
+    },
+    {
+      q: "Stasiun terbesar di Indonesia adalah?",
+      a: "Gambir",
+      o: ["Pasar Senen", "Bandung", "Surabaya Gubeng", "Gambir"]
+    },
+    {
+      q: "KA Logawa termasuk jenis KA?",
+      a: "Ekonomi",
+      o: ["Eksekutif", "Bisnis", "Ekonomi", "KRL"]
+    },
+    {
+      q: "Apa nama perusahaan yang mengelola KRL di Jabodetabek?",
+      a: "PT KCI",
+      o: ["PT KAI", "PT INKA", "PT MRT", "PT KCI"]
+    }
+  ];
+
+  const quizDiv = document.getElementById('quiz');
+  questions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.classList.add('question');
+    div.innerHTML = `<label>${i + 1}. ${q.q}</label>`;
+    q.o.forEach(opt => {
+      div.innerHTML += `
+        <div class="options">
+          <input type="radio" name="${q.q}" value="${opt}" required> ${opt}
+        </div>`;
+    });
+    quizDiv.appendChild(div);
+  });
+
+  const form = document.getElementById('quizForm');
+  form.addEventListener('submit', function(e) {
+    let score = 0;
+    let wrongAnswers = [];
+
+    questions.forEach((q, i) => {
+      const answer = form.querySelector(`input[name="${q.q}"]:checked`);
+      const selected = answer ? answer.value : '';
+      if (selected === q.a) {
+        score++;
+      } else {
+        wrongAnswers.push({
+          no: i + 1,
+          question: q.q,
+          yourAnswer: selected || '(Tidak Dijawab)',
+          correctAnswer: q.a
+        });
+      }
+    });
+
+    let resultHTML = `
+      <div style="margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px;">
+        <p style="font-size: 18px;"><strong>Skor Anda:</strong> ${score} dari 10</p>`;
+
+    if (wrongAnswers.length > 0) {
+      resultHTML += `<p><strong>Soal yang Anda jawab salah:</strong></p><ol>`;
+      wrongAnswers.forEach(item => {
+        resultHTML += `<li style="margin-bottom: 10px;">
+          <strong>${item.question}</strong><br>
+          Jawaban Anda: <span style="color: red">${item.yourAnswer}</span><br>
+          Jawaban Benar: <span style="color: green">${item.correctAnswer}</span>
+        </li>`;
+      });
+      resultHTML += `</ol>`;
+    } else {
+      resultHTML += `<p>Selamat! Semua jawaban Anda benar.</p>`;
+    }
+
+    resultHTML += `</div>`;
+    document.getElementById('scoreDisplay').innerHTML = resultHTML;
+    document.getElementById('skorField').value = `${score}/10`;
+  });
+</script>
+</body>
+</html>

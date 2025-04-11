@@ -1,0 +1,145 @@
+/* style-kuis-perkeretaapian.css */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom, #ffffff, #e0f0ff);
+  color: #003366;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 76, 153, 0.2);
+  margin-top: 40px;
+}
+
+h1 {
+  text-align: center;
+  color: #00509e;
+  margin-bottom: 30px;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin: 10px 0 5px;
+  font-size: 16px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px 1px;
+  margin-bottom: 20px;
+  border: 1.5px solid #b0d4ff;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #0077cc;
+  box-shadow: 0 0 5px rgba(0, 119, 204, 0.5);
+}
+
+.question {
+  margin-bottom: 25px;
+  padding: 18px 20px;
+  background-color: #f3f9ff;
+  border-left: 5px solid #0077cc;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 76, 153, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.question:hover {
+  background-color: #eaf4ff;
+  transform: scale(1.005);
+}
+
+.question label {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.option input[type="radio"] {
+  margin-right: 12px;
+  transform: scale(1.1);
+  accent-color: #0077cc;
+}
+
+.option label {
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  flex: 1;
+  margin: 0;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 14px;
+  background-color: #0077cc;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 25px;
+}
+
+button[type="submit"]:hover {
+  background-color: #005fa3;
+}
+
+#hasil {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #0077cc;
+  display: none;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .container {
+    padding: 15px;
+    margin-top: 20px;
+  }
+
+  input[type="text"],
+  button[type="submit"] {
+    font-size: 15px;
+  }
+
+  .question {
+    padding: 14px 16px;
+  }
+
+  label,
+  .question label {
+    font-size: 15px;
+  }
+
+  .option label {
+    font-size: 14px;
+  }
+
+  input[type="text"] {
+    padding: 10px 1px;
+  }
+}
