@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Anggota</title>
+    <link rel="stylesheet" href="guestlogin.css">
+</head>
+<body>
+    <header>
+        <h1 id="welcome-message"></h1>
+        <p id="member-kta"></p>
+        <p id="warning-message" class="warning">
+  Peringatan: Jangan bagikan informasi ini ke luar komunitas, karena ini adalah informasi pribadi yang hanya untuk anggota.
+</p>
+    </header>
+
+    <div class="menu-toggle" onclick="toggleMenu()">☰ Menu</div>
+
+    <nav>
+        <a href="index.html">Log Out</a>
+        <a href="kegiatan.html">Kegiatan</a>
+        <a href="https://sadulursepoorid.github.io/AbsensiSadulurSepoor/">Absensi</a>
+    </nav>
+
+<section id="news-ticker">
+  <h2>Berita Terbaru</h2>
+  <h3>(<< Swipe Berita >>)</h3>
+  <br>
+  <div class="news-wrapper">
+    <ul class="news-list">
+      
+      <li class="news-slide">
+        <a href="#" onclick="showPopup(); return false;">
+          <img src="https://i.imgur.com/TlAAAdS.jpeg" alt="Gapeka 2025">
+          <div class="news-content">
+            <h3>Gapeka 2025</h3>
+            <p>Ikutin jadwal terbaru sekarang makin mudah! Lewat fitur GAPEKA 2025, kamu bisa akses info jadwal kereta api yang sudah disesuaikan dengan grafik perjalanan yang telah di terapkan oleh PT KAI. Buat kamu yang aktif ngikutin dunia perkeretaapian, fitur ini wajib banget dicoba!.</p>
+          </div>
+        </a>
+      </li>
+      
+      <li class="news-slide">
+        <a href="#" onclick="showPopup(); return false;">
+          <img src="https://i.imgur.com/uBQUZGp.jpeg" alt="Gapeka 2025">
+          <div class="news-content">
+            <h3>Pola Dinas & Dukungan Krl Jabodetabek</h3>
+            <p>Sekarang cari nomor perjalanan KRL makin gampang! Dengan fitur Pola Dinas, kamu tinggal masukin nomor perka, dan langsung muncul info lengkapnya. Nggak perlu lagi buka file panjang-panjang, semuanya bisa kamu akses dengan cepat dan praktis.</p>
+          </div>
+        </a>
+      </li>
+      <!-- Tambah <li> untuk berita lainnya jika ada -->
+    </ul>
+  </div>
+</section>
+
+    <section id="about">
+        <div class="content-box">
+            <h2>Pencarian tentang Perkeretaapian</h2>
+            <p>Cari informasi tentang sarana, jadwal, stamformasi KA, dan berita.</p>
+            <a href="#" onclick="showPopup(); return false;" class="btn-no">Mulai Pencarian</a>
+        </div>
+        <div class="content-box">
+            <h2>Struktur Anggota Aktif</h2>
+            <p>Daftar anggota Sadulur Sepoor Indonesia.</p>
+            <a href="https://sadulursepoorid.github.io/Sadulursepooranggota/" class="btn">Cek Selengkapnya</a>
+        </div>
+        <div class="content-box">
+            <h2>Kuis seputar kereta api</h2>
+            <p>Permainan tanya jawab seru seputar perkeretaapian.</p>
+            <a href="quiz.html" class="btn">Ayo Mulai!!!</a>
+        </div>
+        <div class="content-box">
+            <h2>Ulang Tahun Anggota</h2>
+            <p>Daftar ulang tahun anggota di bulan Oktober.</p>
+            <a href="ultah.html" class="btn">Baca Selengkapnya</a>
+        </div>
+        <div class="content-box">
+            <h2>MERCHANDISE</h2>
+            <p>Rapikan pakaianmu saat kegiatan internal Komunitas SADULUR SEPOOR :)</p>
+            <a href="#" onclick="showPopup(); return false;" class="btn-no">Baca Selengkapnya</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Sadulur Sepoor ID. Semua Hak Dilindungi.</p>
+    </footer>
+    
+    <div id="popup-notif" class="popup-notif">
+  <div class="popup-content">
+    <h2>Akses Website Terbatas</h2>
+    <p>Beberapa fitur atau section hanya untuk anggota resmi. Silahkan kembali.</p>
+    <button onclick="closePopup()">Kembali</button>
+  </div>
+</div>
+
+    <script>
+        function toggleMenu() {
+            document.querySelector('nav').classList.toggle('show');
+        }
+
+        const username = sessionStorage.getItem('username');
+        const kta = sessionStorage.getItem('kta');
+
+        if (!username || !kta) {
+            alert("Anda harus login terlebih dahulu!");
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('welcome-message').textContent = `Selamat datang, ${username}`;
+        document.getElementById('member-kta').textContent = `Nomor KTA: 0000`;
+
+        let currentIndex = 0;
+        const newsList = document.querySelector('.news-list');
+        const items = document.querySelectorAll('.news-list li');
+        const totalItems = items.length;
+
+        function showSlide(index) {
+            newsList.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalItems;
+            showSlide(currentIndex);
+        }
+
+        let slideInterval = setInterval(nextSlide, 5000);
+
+        newsList.addEventListener('mouseover', () => clearInterval(slideInterval));
+        newsList.addEventListener('mouseout', () => slideInterval = setInterval(nextSlide, 5000));
+
+        let startX = 0;
+        let endX = 0;
+
+        newsList.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        newsList.addEventListener('touchmove', (e) => {
+            endX = e.touches[0].clientX;
+        });
+
+        newsList.addEventListener('touchend', () => {
+            if (startX - endX > 50) nextSlide();
+            else if (endX - startX > 50) {
+                currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+                showSlide(currentIndex);
+            }
+        });
+        
+        function showPopup() {
+  console.log("Menampilkan pop-up"); // Debug
+  document.getElementById("popup-notif").style.display = "flex";
+}
+
+function closePopup() {
+  console.log("Menutup pop-up"); // Debug
+  document.getElementById("popup-notif").style.display = "none";
+}
+    </script>
+</body>
+</html>

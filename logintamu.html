@@ -107,40 +107,15 @@
     }
 
     .bottom-text {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
 
-.left-links a,
-.right-links a {
-  color: cyan;
-  text-decoration: none;
-}
-
-@media (max-width: 480px) {
-  .bottom-text {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    text-align: center;
-  }
-
-  .left-links,
-  .right-links {
-    width: 48%;  /* Agar tiap link punya space */
-    margin-bottom: 0.5rem;
-  }
-
-  .right-links {
-    text-align: right; /* Posisikan Lupa kata sandi ke kanan */
-  }
-
-  .left-links {
-    text-align: left; /* Posisikan Login Tamu ke kiri */
-  }
-}
+    .bottom-text a {
+      color: cyan;
+      text-decoration: none;
+    }
 
     .back-btn {
       position: absolute;
@@ -237,11 +212,12 @@
 <body>
   <div class="login-container">
     <button id="backButton" class="back-btn">← Kembali</button>
-    <h2>Login</h2>
+    <br>
+    <h2>Login Tamu</h2>
     <form id="loginForm">
       <div class="form-group">
-        <label for="kta">Nomor KTA</label>
-        <input class="styled-input" type="text" id="kta" placeholder="Masukkan nomor KTA" required />
+        <label for="kta">ID Tamu</label>
+        <input class="styled-input" type="text" id="kta" placeholder="Masukkan ID Tamu" required />
       </div>
       <div class="form-group">
         <label for="password">Kata Sandi</label>
@@ -252,16 +228,7 @@
       </div>
       <button type="submit" class="login-btn">Masuk</button>
     </form>
-    
-   <!-- Ganti bagian bottom-text -->
-<div class="bottom-text">
-  <div class="left-links">
-    <a href="logintamu.html" class="login-link">Login Tamu</a>
-  </div>
-  <div class="right-links">
-    <a href="#" onclick="showForgotPassword()">Lupa kata sandi?</a>
-  </div>
-</div>
+    <!-- Ganti bagian ini -->
 
   <!-- Modal Verifikasi Lupa Sandi -->
   <div id="forgotPasswordModal" class="hidden"
@@ -292,12 +259,12 @@
 
   <!-- Custom Alert -->
   <div id="customAlert" class="hidden">
-    <p>Nomor KTA atau Password salah! Silakan coba lagi.</p>
+    <p>ID Tamu atau Password salah! Silakan coba lagi.</p>
   </div>
 
   <!-- Script -->
-  <script src="account.js"></script>
-  <script src="login.js"></script>
+  <script src="accountguest.js"></script>
+  <script src="logintamu.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
       const forgotInput = document.getElementById('forgotKTA');
