@@ -24,7 +24,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
   if (account) {
     sessionStorage.setItem('username', account.username);
     sessionStorage.setItem('kta', account.kta);
-    window.location.href = 'https://sadulursepoorid.github.io/ssmail/';
+    window.location.href = 'https://sadulursepoorid.github.io/ssmail';
   } else {
     showCustomAlert();
   }
