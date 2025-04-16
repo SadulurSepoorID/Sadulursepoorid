@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Struktur Kepengurusan</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4ff;
+      margin: 0;
+      padding: 0;
+      color: #1e3a8a;
+    }
+
+    header {
+      background-color: #1e3a8a;
+      color: white;
+      padding: 1rem 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+  flex: 1 1 auto;
+  text-align: left; /* ini tambahan */
+}
+
+    header a {
+      background-color: white;
+      color: #1e3a8a;
+      padding: 6px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    main {
+      padding: 1.5rem;
+      display: grid;
+      gap: 2rem;
+    }
+
+    .card {
+  background: linear-gradient(to right, #ffffff, #e4edff);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Efek hover */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Efek klik - hanya ada gradasi di bawah */
+.card:active {
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3); /* Gradasi biru di bawah card */
+}
+
+.card.selected {
+  box-shadow: 0 0 20px 6px rgba(0, 153, 255, 0.4);
+}
+
+.card:active::before {
+  content: "";
+  position: absolute;
+  bottom: -20px; /* Menempatkan efek di bawah card */
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(to right, rgba(0, 123, 255, 0.4), rgba(0, 123, 255, 0));
+  pointer-events: none;
+}
+
+@keyframes neonFlash {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+    .card-text {
+      flex: 1;
+      max-width: calc(100% - 140px);
+    }
+
+    .card-text h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #1d4ed8;
+    }
+
+    .nia {
+      font-size: 0.9rem;
+      color: #3b82f6;
+      margin-bottom: 0.6rem;
+    }
+
+    .info p {
+      margin: 6px 0;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .desc {
+      margin-top: 0.5rem;
+      font-style: italic;
+      color: #444;
+    }
+
+    .socials {
+      margin-top: 1rem;
+      display: flex;
+      gap: 14px;
+    }
+
+    .socials img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .card-photo {
+      width: 120px;
+      height: 160px;
+      flex-shrink: 0;
+    }
+
+    .card-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid #1e3a8a;
+    }
+
+    footer {
+      text-align: center;
+      color: #666;
+      font-size: 0.8rem;
+      margin: 2rem 0;
+    }
+    
+    .card *::selection {
+  background: transparent;
+  color: inherit;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+    @media (max-width: 480px) {
+  header {
+    flex-direction: column;
+    align-items: center; /* ubah dari flex-start jadi center */
+    gap: 0.5rem;
+  }
+
+  header h1 {
+    text-align: center;
+    width: 100%;
+  }
+}
+
+      main {
+        padding: 1rem;
+      }
+
+      .card {
+        flex-direction: row;
+        padding: 1rem;
+      }
+
+      .card-text {
+        max-width: 100%;
+      }
+
+      .card-photo {
+        width: 100px;
+        height: 130px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Struktur Kepengurusan <br> Sadulur Sepoor Indonesia</h1>
+    <a href="index.html">← Kembali</a>
+  </header>
+
+  <main>
+    <!-- Pembina & Penasehat -->
+<div class="card">
+  <div class="card-text">
+    <h2>Herie Heryadi</h2>
+    <div class="nia">SS-0001</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Pembina & Penasehat</p>
+      <p><strong>Tanggal Lahir:</strong> 9 Maret 1986</p>
+      <p><strong>Alamat:</strong> Pademangan, Jakarta Utara</p>
+    </div>
+    <div class="desc">
+      Beliau merupakan salah satu pendiri komunitas Sadulur Sepoor.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.instagram.com/denherie86?igsh=ZDI3d3hhcWNnOGFx" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.ibb.co.com/bmH1Dcz/IMG-20240923-184352.jpg" alt="Foto Herie Heryadi"/>
+  </div>
+</div>
+
+<!-- Arjuna Pamungkas -->
+<div class="card">
+  <div class="card-text">
+    <h2>Arjuna Pamungkas</h2>
+    <div class="nia">SS-0004</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Pembina & Penasehat</p>
+      <p><strong>Tanggal Lahir:</strong> Jakarta</p>
+      <p><strong>Alamat:</strong> Matraman, Jakarta Timur</p>
+    </div>
+    <div class="desc">
+      Beliau juga merupakan salah satu pendiri komunitas Sadulur Sepoor.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.google.com/url?q=https%3A%2F%2Finstagram.com%2Farjuna.huwae_&sa=D&sntz=1&usg=AOvVaw29E5rCrMlC3P4EmYpTvzqg" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.ibb.co.com/WV5h00V/IMG-20240923-184411.jpg" alt="Foto Arjuna Pamungkas"/>
+  </div>
+</div>
+
+<!-- Ketua Umum -->
+<div class="card">
+  <div class="card-text">
+    <h2>Mohammad Walid Ridho</h2>
+    <div class="nia">SS-0087</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Ketua Umum</p>
+      <p><strong>Tanggal Lahir:</strong> 14 September 2007</p>
+      <p><strong>Alamat:</strong> Sawah Besar, Jakarta Pusat</p>
+    </div>
+    <div class="desc">
+      M Walid Ridho lahir di Jakarta, saat ini beliau sedang melaksanakan magang di Humas KAI.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.google.com/url?q=https%3A%2F%2Finstagram.com%2Fridho_railfans_&sa=D&sntz=1&usg=AOvVaw0IMVDUeCMl-sRXH8Y1XUp3" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.ibb.co.com/gP8vGGr/IMG-20240923-185525.jpg" alt="Foto Mohammad Walid Ridho"/>
+  </div>
+</div>
+
+<!-- Wakil Ketua -->
+<div class="card">
+  <div class="card-text">
+    <h2>Ridho Ariotama Adi Danuarta</h2>
+    <div class="nia">SS-0086</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Wakil Ketua Umum</p>
+      <p><strong>Tanggal Lahir:</strong> 28 Januari 2003</p>
+    </div>
+    <div class="desc">
+      Ridho Ariotama Adi Danuarta lahir di Bekasi pada tanggal 28 Januari 2003.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.instagram.com/ridhoaad_?igsh=bm9vdDRvajZsZmph" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.ibb.co.com/pzWJtvC/IMG-20240923-184158.jpg" alt="Foto Ridho Ariotama Adi Danuarta"/>
+  </div>
+</div>
+
+<!-- Koordinator Sekretaris -->
+<div class="card">
+  <div class="card-text">
+    <h2>Rasyiqha Syafa Rabany</h2>
+    <div class="nia">SS-0135</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Sekretaris</p>
+      <p><strong>Tanggal Lahir:</strong> 17 Juli 2006</p>
+    </div>
+    <div class="desc">
+      Rasyiqha Syafa Rabany lahir di Jakarta pada tanggal 17 Juli 2006.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.instagram.com/rsyqha_?igsh=dmFnYnBhMDB5aXF4" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.ibb.co.com/b2QkJHF/IMG-20240923-183205.jpg" alt="Foto Rasyiqha Syafa Rabany"/>
+  </div>
+</div>
+<!-- Humas Internal -->
+<div class="card">
+  <div class="card-text">
+    <h2>Muhammad Rizky Hidayat</h2>
+    <div class="nia">SS-0027</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Humas Internal</p>
+      <p><strong>Tanggal Lahir:</strong> 29 September 2004</p>
+    </div>
+    <div class="desc">
+      Muhammad Rizky Hidayat lahir di Jakarta pada tanggal 29 September 2004.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.instagram.com/muh_rizky_h?igsh=MTJmOGlsMDF1ZWZoOA==" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.ibb.co.com/yQkcrzC/IMG-20240923-184337.jpg" alt="Foto Muhammad Rizky Hidayat"/>
+  </div>
+</div>
+
+<!-- Humas Eksternal -->
+<div class="card">
+  <div class="card-text">
+    <h2>Salman Alparisi</h2>
+    <div class="nia">SS-0014</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Humas Eksternal</p>
+      <p><strong>Tanggal Lahir:</strong> 21 Februari 2003</p>
+    </div>
+    <div class="desc">
+      Salman Alparisi lahir di Jakarta pada tanggal 21 Februari 2003.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.google.com/url?q=https%3A%2F%2Finstagram.com%2Fsalman_alparis2103&sa=D&sntz=1&usg=AOvVaw2dm8lqfPFJ2w8bf2LbkITC" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.imgur.com/0Yfritr.jpeg" alt="Foto Salman Alparisi"/>
+  </div>
+</div>
+
+<!-- Kordinator Keanggotaan -->
+<div class="card">
+  <div class="card-text">
+    <h2>Fathir Ahmad Mauana</h2>
+    <div class="nia">SS-0098</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Divisi Keanggotaan (SDM)</p>
+      <p><strong>Tanggal Lahir:</strong> 14 April 2007</p>
+    </div>
+    <div class="desc">
+      Fathir Ahmad Mauana lahir di Jakarta pada tanggal 14 April 2007.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.instagram.com/eskopss?igsh=a2ZmNDEwb24wZDZo" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.ibb.co.com/Vgrtv9c/IMG-20240923-183645.png" alt="Foto Fathir Ahmad Mauana"/>
+  </div>
+</div>
+
+<!-- Koordinator Kegiatan -->
+<div class="card">
+  <div class="card-text">
+    <h2>Eki Apriandi</h2>
+    <div class="nia">SS-0019</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Koordinator Kegiatan</p>
+      <p><strong>Tanggal Lahir:</strong> 8 April 1994</p>
+    </div>
+    <div class="desc">
+      Eki Apriandi lahir di Depok pada tanggal 8 April 1994.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.instagram.com/ekiapriandi_asli?igsh=OTZya256ODdxdXA5" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.imgur.com/8mNmF8o.jpeg" alt="Foto Eki Apriandi"/>
+  </div>
+</div>
+<!-- Divisi Kegiatan 2 -->
+<div class="card">
+  <div class="card-text">
+    <h2>Agil Pramono</h2>
+    <div class="nia">SS-0063</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Logistic & Kegiatan</p>
+      <p><strong>Tanggal Lahir:</strong> 27 April 2006</p>
+    </div>
+    <div class="desc">
+      Agil Pramono lahir di Tegal pada tanggal 27 April 2006.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.instagram.com/agllzqc._?igsh=MmtnMml1d2tidmty" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.ibb.co.com/xj4hcyr/IMG-20240923-202033.jpg" alt="Foto Agil Pramono"/>
+  </div>
+</div>
+
+<!-- Divisi Kegiatan 3 -->
+<div class="card">
+  <div class="card-text">
+    <h2>Aldi Hadiansyah</h2>
+    <div class="nia">SS-00122</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Logistic & Kegiatan</p>
+      <p><strong>Tanggal Lahir:</strong> 8 September 1997</p>
+    </div>
+    <div class="desc">
+      Aldi Hadiansyah lahir di Jakarta pada tanggal 8 September 1997.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.google.com/url?q=https%3A%2F%2Finstagram.com%2Faldirailfans137&sa=D&sntz=1&usg=AOvVaw3m7IBiaerZND2TjSpq1b6W" target="_blank">
+        <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.ibb.co.com/wQh3G1v/1000193004.jpg" alt="Foto Aldi Hadiansyah"/>
+  </div>
+</div>
+
+<!-- Divisi Kegiatan 4 -->
+<div class="card">
+  <div class="card-text">
+    <h2>Moch Fikri</h2>
+    <div class="nia">SS-0132</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Logistic & Kegiatan</p>
+      <p><strong>Tanggal Lahir:</strong> 04 Oktober 2006</p>
+    </div>
+    <div class="desc">
+      Moch Fikri lahir di Jakarta pada tanggal 04 Oktober 2006.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.google.com/url?q=https%3A%2F%2Finstagram.com%2Faldirailfans137&sa=D&sntz=1&usg=AOvVaw3m7IBiaerZND2TjSpq1b6W" target="_blank">
+      <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.imgur.com/JhNep24.jpeg" alt="Foto Moch Fikri"/>
+  </div>
+</div>
+
+<!-- Koordinator Dokumentasi -->
+<div class="card">
+  <div class="card-text">
+    <h2>Muhammad Alfazely Wibisono</h2>
+    <div class="nia">SS-0213</div>
+    <div class="info">
+      <p><strong>Jabatan:</strong> Koordinator Dokumentasi</p>
+      <p><strong>Tanggal Lahir:</strong> 11 Mei 2007</p>
+    </div>
+    <div class="desc">
+      Muhammad Alfazely Wibisono lahir di Jakarta pada tanggal 11 Mei 2007.
+    </div>
+    <div class="socials">
+      <a href="https://wa.me/6281234567890" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/30/25D366/whatsapp.png"/>
+      </a>
+      <a href="https://www.instagram.com/eskopss?igsh=a2ZmNDEwb24wZDZo" target="_blank">
+       <img src="https://img.icons8.com/color/30/instagram-new--v1.png"/>
+      </a>
+    </div>
+  </div>
+  <div class="card-photo">
+    <img src="https://i.imgur.com/NcJMy94.jpeg" alt="Foto Muhammad Alfazely Wibisono"/>
+  </div>
+</div>
+  </main>
+
+  <footer>
+    &copy; 2025 Sadulur Sepoor. All rights reserved.
+  </footer>
+  
+  <script>
+  const cards = document.querySelectorAll('.card');
+
+  cards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      e.stopPropagation(); // biar ga ikut trigger klik di body
+      cards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    cards.forEach(c => c.classList.remove('selected'));
+  });
+</script>
+</body>
+</html>
