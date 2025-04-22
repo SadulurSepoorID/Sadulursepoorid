@@ -1,201 +1,236 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Lokomotif dan Kereta Api</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        th, td {
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #4682b4;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .info {
-            font-style: italic;
-            margin-bottom: 20px;
-            color: #555;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Lokomotif & Kereta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }body {
+  background-color: #f9fbff;
+  color: #1f2d3d;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  background-color: #0066cc;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.back-button {
+  background-color: white;
+  color: #0066cc;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  margin: 0.5rem auto 0;
+}
+
+.datetime {
+  font-weight: 600;
+}
+
+main {
+  flex: 1;
+  padding: 2rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.search-box {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.search-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box input {
+  flex: 1;
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #0066cc;
+  border-radius: 10px;
+  outline: none;
+}
+
+.clear-button {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #888;
+  cursor: pointer;
+}
+
+.search-button {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #0066cc;
+  color: white;
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .search-box {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .search-input-container {
+    flex: 1;
+  }
+
+  .search-button {
+    margin-top: 0;
+    margin-left: 0.5rem;
+    width: auto;
+  }
+
+  .header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.results {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.result-item {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.status {
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  color: white;
+  display: inline-block;
+}
+
+.status.Program {
+  background-color: #999;
+}
+
+.status.Publish {
+  background-color: #007bff;
+}
+
+.status.Running {
+  background-color: #28a745;
+}
+
+.status.Finished {
+  background-color: #6c757d;
+}
+
+.suggestions-box {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+}
+
+.suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #e0f0ff;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #f1f3f6;
+  color: #888;
+  font-size: 0.875rem;
+}
+
+  </style>
 </head>
 <body>
-
-    <h1>Data Lokomotif dan Kereta Api</h1>
-    <p class="info">Selasa, 1 Oktober 2024 - Squad Daop 1 Jakarta Angkatan Sore-Malam</p>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Lokomotif</th>
-                <th>Nomor KA</th>
-                <th>Nama KA</th>
-                <th>Relasi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>CC 206 15 44 PWT</td>
-                <td>4</td>
-                <td>Argo Bromo Anggrek</td>
-                <td>GMR-SBI</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 03 CN</td>
-                <td>8</td>
-                <td>Argo Lawu</td>
-                <td>GMR-SLO</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 76 CPN</td>
-                <td>12</td>
-                <td>Argo Sindoro</td>
-                <td>GMR-SMT</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 84 YK</td>
-                <td>16</td>
-                <td>Argo Muria</td>
-                <td>GMR-SMT</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 79 CPN</td>
-                <td>56</td>
-                <td>Gajayana</td>
-                <td>GMR-ML</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 42 SDT</td>
-                <td>58</td>
-                <td>Brawijaya</td>
-                <td>GMR-ML</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 02 PWT</td>
-                <td>60</td>
-                <td>Bima</td>
-                <td>GMR-SGU</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 46 SDT</td>
-                <td>64</td>
-                <td>Sembrani</td>
-                <td>GMR-SBI</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 17 SDT</td>
-                <td>70</td>
-                <td>Taksaka Malam</td>
-                <td>GMR-YK</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 23 PWT</td>
-                <td>72/73</td>
-                <td>Purwojaya</td>
-                <td>GMR-KYA-CP</td>
-            </tr>
-            <tr>
-                <td>CC 203 95 08 PWT</td>
-                <td>78F/75A</td>
-                <td>Pandalungan</td>
-                <td>GMR-SBI-JR</td>
-            </tr>
-            <tr>
-                <td>CC 203 98 10 SDT</td>
-                <td>90</td>
-                <td>Mataram</td>
-                <td>PSE-SLO</td>
-            </tr>
-            <tr>
-                <td>CC 201 83 27 PWT</td>
-                <td>104</td>
-                <td>Singasari</td>
-                <td>PSE-BL</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 89 CPN</td>
-                <td>108/109</td>
-                <td>Jayabaya</td>
-                <td>PSE-SBI-ML</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 18 SDT</td>
-                <td>130</td>
-                <td>Gumarang</td>
-                <td>PSE-SBI</td>
-            </tr>
-            <tr>
-                <td>CC 203 95 09 PWT</td>
-                <td>136</td>
-                <td>Bogowonto</td>
-                <td>PSE-LPN</td>
-            </tr>
-            <tr>
-                <td>CC 203 98 13 SDT</td>
-                <td>216</td>
-                <td>Majapahit</td>
-                <td>PSE-ML</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 26 YK</td>
-                <td>218A</td>
-                <td>Jayakarta</td>
-                <td>PSE-SGU</td>
-            </tr>
-            <tr>
-                <td>CC 201 92 13 CPN</td>
-                <td>226f</td>
-                <td>Menoreh</td>
-                <td>PSE-SMT</td>
-            </tr>
-            <tr>
-                <td>CC 201 92 14 CPN</td>
-                <td>248</td>
-                <td>Progo</td>
-                <td>PSE-LPN</td>
-            </tr>
-            <tr>
-                <td>CC 203 01 05 SDT</td>
-                <td>256/253</td>
-                <td>Serayu</td>
-                <td>PSE-KYA-PWT</td>
-            </tr>
-            <tr>
-                <td>CC 203 98 06 CPN</td>
-                <td>258</td>
-                <td>Tawang Jaya</td>
-                <td>PSE-SMC</td>
-            </tr>
-            <tr>
-                <td>CC 206 13 31 YK</td>
-                <td>268</td>
-                <td>Cikuray</td>
-                <td>PSE-GRT</td>
-            </tr>
-        </tbody>
-    </table>
-
-</body>
+  <header>
+    <div class="top-row">
+      <button class="back-button" onclick="history.back()">&larr; Kembali</button>
+      <div class="datetime">
+        <span id="date"></span>
+        <span id="time"></span>
+      </div>
+    </div>
+    <h1 class="header-title">Pelacak Kereta Api</h1>
+  </header>  <main>
+    <div class="search-box">
+  <div class="search-input-container">
+    <input type="text" id="searchInput" placeholder="Cari Nama/Nomor KA atau Lokomotif..." />
+    <button class="clear-button" onclick="clearSearch()">&times;</button>
+    <div id="suggestions" class="suggestions-box"></div> <!-- Tambahan -->
+  </div>
+  <button class="search-button" onclick="handleSearch()">Cari</button>
+</div>
+    <div id="results" class="results"></div>
+  </main>  <footer>
+    <p>&copy; 2025 Sadulur Sepoor Indonesia. Semua Hak Dilindungi.</p>
+  </footer>  <script src="sensus.js"></script></body>
 </html>

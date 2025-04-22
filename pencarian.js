@@ -30,7 +30,7 @@ function search() {
 
     // Pengecekan khusus untuk input "sensus" atau "gapeka"
     if (input === "sensus") {
-        window.location.href = "sensus3.html";
+        window.location.href = "sensus.html";
         return;
     }
     if (input === "gapeka") {
