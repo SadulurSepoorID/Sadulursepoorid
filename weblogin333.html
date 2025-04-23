@@ -87,58 +87,84 @@
     </footer>
 
     <script>
-        function toggleMenu() {
-            document.querySelector('nav').classList.toggle('show');
-        }
+    function toggleMenu() {
+        document.querySelector('nav').classList.toggle('show');
+    }
 
-        const username = sessionStorage.getItem('username');
-        const kta = sessionStorage.getItem('kta');
+    const username = sessionStorage.getItem('username');
+    const kta = sessionStorage.getItem('kta');
 
-        if (!username || !kta) {
-            alert("Anda harus login terlebih dahulu!");
-            window.location.href = 'index.html';
-        }
+    if (!username || !kta) {
+        alert("Anda harus login terlebih dahulu!");
+        window.location.href = 'index.html';
+    }
 
-        document.getElementById('welcome-message').textContent = `Selamat datang, ${username}`;
-        document.getElementById('member-kta').textContent = `Nomor KTA: ${kta}`;
+    document.getElementById('welcome-message').textContent = `Selamat datang, ${username}`;
+    document.getElementById('member-kta').textContent = `Nomor KTA: ${kta}`;
 
-        let currentIndex = 0;
-        const newsList = document.querySelector('.news-list');
-        const items = document.querySelectorAll('.news-list li');
-        const totalItems = items.length;
+    // Slider Berita
+    let currentIndex = 0;
+    const newsList = document.querySelector('.news-list');
+    const items = document.querySelectorAll('.news-list li');
+    const totalItems = items.length;
 
-        function showSlide(index) {
-            newsList.style.transform = `translateX(-${index * 100}%)`;
-        }
+    function showSlide(index) {
+        newsList.style.transform = `translateX(-${index * 100}%)`;
+    }
 
-        function nextSlide() {
-            currentIndex = (currentIndex + 1) % totalItems;
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % totalItems;
+        showSlide(currentIndex);
+    }
+
+    let slideInterval = setInterval(nextSlide, 5000);
+
+    newsList.addEventListener('mouseover', () => clearInterval(slideInterval));
+    newsList.addEventListener('mouseout', () => slideInterval = setInterval(nextSlide, 5000));
+
+    let startX = 0;
+    let endX = 0;
+
+    newsList.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    });
+
+    newsList.addEventListener('touchmove', (e) => {
+        endX = e.touches[0].clientX;
+    });
+
+    newsList.addEventListener('touchend', () => {
+        if (startX - endX > 50) nextSlide();
+        else if (endX - startX > 50) {
+            currentIndex = (currentIndex - 1 + totalItems) % totalItems;
             showSlide(currentIndex);
         }
+    });
 
-        let slideInterval = setInterval(nextSlide, 5000);
+    // Tracking Aktivitas ke Discord Webhook
+    const webhookURL = "https://discord.com/api/webhooks/1364553794515636275/xj3ksAiKogYLHP7Kc3AQsEustFAzJDv_Q6Vkz4oCZVOONhtvVUVmGNOS27NnDobsF51Q";
 
-        newsList.addEventListener('mouseover', () => clearInterval(slideInterval));
-        newsList.addEventListener('mouseout', () => slideInterval = setInterval(nextSlide, 5000));
+    function kirimLogAktivitas(fitur) {
+        const payload = {
+            content: `**Aktivitas User**\nNama: ${username || "Tidak diketahui"}\nKTA: ${kta || "Tidak diketahui"}\nMengakses fitur: ${fitur}\nWaktu: ${new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })}`
+        };
 
-        let startX = 0;
-        let endX = 0;
+        fetch(webhookURL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        }).catch(error => console.error("Gagal kirim log ke Discord:", error));
+    }
 
-        newsList.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function () {
+            let fitur = this.closest('.content-box')?.querySelector('h2')?.textContent.trim();
+            if (!fitur) fitur = this.textContent.trim() || this.href;
+            kirimLogAktivitas(fitur);
         });
-
-        newsList.addEventListener('touchmove', (e) => {
-            endX = e.touches[0].clientX;
-        });
-
-        newsList.addEventListener('touchend', () => {
-            if (startX - endX > 50) nextSlide();
-            else if (endX - startX > 50) {
-                currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-                showSlide(currentIndex);
-            }
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
