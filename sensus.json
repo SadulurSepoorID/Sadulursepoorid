@@ -40,7 +40,7 @@
     "datang": "19:32"
   },
   {
-    "lokomotif": "n/a",
+    "lokomotif": "CC 206 13 17",
     "nomorKa": "6",
     "namaKa": "Argo Semeru",
     "relasi": "GMR-SGU",
@@ -64,7 +64,7 @@
     "datang": "03:20"
   },
   {
-    "lokomotif": "n/a",
+    "lokomotif": "CC 206 13 01",
     "nomorKa": "9",
     "namaKa": "Argo Wilis",
     "relasi": "SGU-BD",
@@ -184,7 +184,7 @@
   "datang": "11:10"
 },
 {
-  "lokomotif": "n/a",
+  "lokomotif": "CC 206 15 04",
   "nomorKa": "24",
   "namaKa": "Argo Merbabu",
   "relasi": "GMR-SMT",
@@ -216,7 +216,7 @@
   "datang": "19:16"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 203 98 13",
   "nomorKa": "28",
   "namaKa": "Argo Merbabu",
   "relasi": "GMR-SMT",
@@ -296,7 +296,7 @@
   "datang": "16:20"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 26",
   "nomorKa": "40",
   "namaKa": "Sembrani",
   "relasi": "GMR-SBI",
@@ -328,7 +328,7 @@
   "datang": "13:35"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 71",
   "nomorKa": "44",
   "namaKa": "Taksaka",
   "relasi": "GMR-YK",
@@ -352,7 +352,7 @@
   "datang": "13:50"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 07",
   "nomorKa": "47",
   "namaKa": "Taksaka",
   "relasi": "YK-GMR",
@@ -472,7 +472,7 @@
   "datang": "17:31"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 203 98 05",
   "nomorKa": "62",
   "namaKa": "Manahan",
   "relasi": "GMR-SLO",
@@ -568,7 +568,7 @@
   "datang": "02:47"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 201 89 05",
   "nomorKa": "74",
   "namaKa": "Fajar Utama Solo",
   "relasi": "PSE-SLO",
@@ -648,7 +648,7 @@
   "datang": "20:35"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 65",
   "nomorKa": "84",
   "namaKa": "Sancaka",
   "relasi": "YK-SGU",
@@ -656,7 +656,7 @@
   "datang": "10:45"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 65",
   "nomorKa": "85",
   "namaKa": "Sancaka",
   "relasi": "SGU-YK",
@@ -696,7 +696,7 @@
   "datang": "19:03"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 37",
   "nomorKa": "90",
   "namaKa": "Gaya Baru Malam Selatan",
   "relasi": "PSE-SGU",
@@ -720,7 +720,7 @@
   "datang": "10:45"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 01",
   "nomorKa": "93",
   "namaKa": "Jayabaya",
   "relasi": "ML-SBI",
@@ -824,7 +824,7 @@
   "datang": "04:32"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 201 83 06",
   "nomorKa": "106",
   "namaKa": "Gajahwong",
   "relasi": "PSE-LPN",
@@ -856,7 +856,7 @@
   "datang": "14:20"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 203 98 09",
   "nomorKa": "110",
   "namaKa": "Fajar Utama YK",
   "relasi": "PSE-YK",
@@ -896,7 +896,7 @@
   "datang": "12:50"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 203 98 08",
   "nomorKa": "115",
   "namaKa": "Sawunggalih",
   "relasi": "KTA-PSE",
@@ -920,7 +920,7 @@
   "datang": "08:27"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 36",
   "nomorKa": "118",
   "namaKa": "Gunungjati",
   "relasi": "GMR-SMT",
@@ -952,7 +952,7 @@
   "datang": "10:24"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 56",
   "nomorKa": "122",
   "namaKa": "Cakrabhuana",
   "relasi": "GMR-CN",
@@ -1000,7 +1000,7 @@
   "datang": "01:10"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 46",
   "nomorKa": "128",
   "namaKa": "Pangandaran",
   "relasi": "GMR-BJR",
@@ -1040,7 +1040,7 @@
   "datang": "10:21"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 02",
   "nomorKa": "133",
   "namaKa": "Parahyangan",
   "relasi": "BD-GMR",
@@ -1064,7 +1064,7 @@
   "datang": "09:40"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 51",
   "nomorKa": "136",
   "namaKa": "Parahyangan",
   "relasi": "GMR-BD",
@@ -1072,7 +1072,7 @@
   "datang": "13:18"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 206 13 32",
   "nomorKa": "137",
   "namaKa": "Parahyangan",
   "relasi": "BD-GMR",
@@ -1128,7 +1128,7 @@
   "datang": "17:03"
 },
 {
-  "lokomotif": "CC 201 83 07",
+  "lokomotif": "CC 20",
   "nomorKa": "144",
   "namaKa": "Madiun Jaya",
   "relasi": "PSE-MN",
@@ -1136,16 +1136,16 @@
   "datang": "06:05"
 },
 {
-  "lokomotif": "CC 20",
-  "nomorKa": "145",
+  "lokomotif": "CC 203 95 07",
+  "nomorKa": "146",
   "namaKa": "Blambangan Ekspres",
   "relasi": "PSE-SBI",
   "berangkat": "12:10",
   "datang": "22:15"
 },
 {
-  "lokomotif": "CC 20",
-  "nomorKa": "146",
+  "lokomotif": "CC 203 95 07",
+  "nomorKa": "147",
   "namaKa": "Blambangan Ekspres",
   "relasi": "SBI-KTG",
   "berangkat": "22:25",
@@ -1153,7 +1153,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "147",
+  "nomorKa": "148",
   "namaKa": "Blambangan Ekspres",
   "relasi": "KTG-SBI",
   "berangkat": "15:45",
@@ -1161,7 +1161,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "148",
+  "nomorKa": "145",
   "namaKa": "Blambangan Ekspres",
   "relasi": "SBI-PSE",
   "berangkat": "22:10",
@@ -1200,16 +1200,16 @@
   "datang": "03:15"
 },
 {
-  "lokomotif": "CC 20",
-  "nomorKa": "153",
+  "lokomotif": "CC 206 13 05",
+  "nomorKa": "156",
   "namaKa": "Ranggajati",
   "relasi": "JR-SGU",
   "berangkat": "05:45",
   "datang": "09:09"
 },
 {
-  "lokomotif": "CC 20",
-  "nomorKa": "154",
+  "lokomotif": "CC 206 13 05",
+  "nomorKa": "153",
   "namaKa": "Ranggajati",
   "relasi": "SGU-CN",
   "berangkat": "09:45",
@@ -1217,7 +1217,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "155",
+  "nomorKa": "154",
   "namaKa": "Ranggajati",
   "relasi": "CN-SGU",
   "berangkat": "07:00",
@@ -1225,7 +1225,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "156",
+  "nomorKa": "155",
   "namaKa": "Ranggajati",
   "relasi": "SGU-JR",
   "berangkat": "16:58",
@@ -1233,7 +1233,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "157",
+  "nomorKa": "158",
   "namaKa": "Wijaya Kusuma",
   "relasi": "CP-SGU",
   "berangkat": "15:20",
@@ -1241,7 +1241,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "158",
+  "nomorKa": "159",
   "namaKa": "Wijaya Kusuma",
   "relasi": "SGU-KTG",
   "berangkat": "23:48",
@@ -1249,7 +1249,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "159",
+  "nomorKa": "160",
   "namaKa": "Wijaya Kusuma",
   "relasi": "KTG-SGU",
   "berangkat": "11:00",
@@ -1257,7 +1257,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "160",
+  "nomorKa": "157",
   "namaKa": "Wijaya Kusuma",
   "relasi": "SGU-CP",
   "berangkat": "17:20",
@@ -1272,7 +1272,7 @@
   "datang": "18:33"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 201 83 23",
   "nomorKa": "162",
   "namaKa": "Bangunkarta",
   "relasi": "PSE-JG",
@@ -1304,7 +1304,7 @@
   "datang": "09:20"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 201 89 07",
   "nomorKa": "166",
   "namaKa": "Dharmawangsa Ekspres",
   "relasi": "PSE-SBI",
@@ -1353,7 +1353,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "172",
+  "nomorKa": "174",
   "namaKa": "Ciremai",
   "relasi": "CKP-BD",
   "berangkat": "13:20",
@@ -1369,7 +1369,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "174",
+  "nomorKa": "172",
   "namaKa": "Ciremai",
   "relasi": "CKP-SMT",
   "berangkat": "19:10",
@@ -1400,7 +1400,7 @@
   "datang": "05:48"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 201 78 03",
   "nomorKa": "178",
   "namaKa": "Tawangjaya Premium",
   "relasi": "PSE-SMT",
@@ -1457,7 +1457,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "185",
+  "nomorKa": "191",
   "namaKa": "Kamandaka",
   "relasi": "SMT-TG",
   "berangkat": "18:20",
@@ -1465,7 +1465,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "186",
+  "nomorKa": "190",
   "namaKa": "Kamandaka",
   "relasi": "TG-PWT",
   "berangkat": "20:42",
@@ -1473,7 +1473,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "187",
+  "nomorKa": "194",
   "namaKa": "Kamandaka",
   "relasi": "CP-KYA",
   "berangkat": "13:05",
@@ -1481,7 +1481,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "188",
+  "nomorKa": "195",
   "namaKa": "Kamandaka",
   "relasi": "KYA-TG",
   "berangkat": "14:10",
@@ -1489,7 +1489,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "189",
+  "nomorKa": "196",
   "namaKa": "Kamandaka",
   "relasi": "TG-SMT",
   "berangkat": "16:36",
@@ -1497,7 +1497,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "190",
+  "nomorKa": "197",
   "namaKa": "Kamandaka",
   "relasi": "SMT-TG",
   "berangkat": "06:00",
@@ -1505,7 +1505,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "191",
+  "nomorKa": "198",
   "namaKa": "Kamandaka",
   "relasi": "TG-KYA",
   "berangkat": "08:11",
@@ -1513,7 +1513,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "192",
+  "nomorKa": "199",
   "namaKa": "Kamandaka",
   "relasi": "KYA-CP",
   "berangkat": "10:59",
@@ -1521,7 +1521,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "193",
+  "nomorKa": "185",
   "namaKa": "Joglosemarkerto",
   "relasi": "PWT-TG",
   "berangkat": "17:30",
@@ -1529,7 +1529,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "194",
+  "nomorKa": "186",
   "namaKa": "Joglosemarkerto",
   "relasi": "TG-SLO",
   "berangkat": "19:29",
@@ -1537,7 +1537,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "195",
+  "nomorKa": "187",
   "namaKa": "Joglosemarkerto",
   "relasi": "SLO-TG",
   "berangkat": "05:10",
@@ -1545,7 +1545,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "196",
+  "nomorKa": "188",
   "namaKa": "Joglosemarkerto",
   "relasi": "TG-SLO",
   "berangkat": "09:47",
@@ -1553,7 +1553,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "197",
+  "nomorKa": "189",
   "namaKa": "Joglosemarkerto",
   "relasi": "SLO-SMT",
   "berangkat": "15:50",
@@ -1561,7 +1561,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "198",
+  "nomorKa": "193",
   "namaKa": "Joglosemarkerto",
   "relasi": "SLO-TG",
   "berangkat": "06:10",
@@ -1569,7 +1569,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "199",
+  "nomorKa": "192",
   "namaKa": "Joglosemarkerto",
   "relasi": "TG-SLO",
   "berangkat": "12:03",
@@ -1577,7 +1577,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "200",
+  "nomorKa": "201",
   "namaKa": "Joglosemarkerto",
   "relasi": "YK-CP",
   "berangkat": "10:20",
@@ -1585,7 +1585,7 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "201",
+  "nomorKa": "202",
   "namaKa": "Joglosemarkerto",
   "relasi": "CP-YK",
   "berangkat": "06:00",
@@ -1593,148 +1593,200 @@
 },
 {
   "lokomotif": "CC 20",
-  "nomorKa": "202",
+  "nomorKa": "203",
   "namaKa": "Tegal Bahari",
   "relasi": "TG-PSE",
   "berangkat": "16:00",
-  "datang": "20:30"
-},
+  "datang": "20:30"},
 {
-  "lokomotif": "CC 20",
-  "nomorKa": "203",
+  "lokomotif": "CC 206 13 40",
+  "nomorKa": "204",
   "namaKa": "Tegal Bahari",
   "relasi": "PSE-TG",
   "berangkat": "10:40",
-  "datang": "15:05"
-},
+  "datang": "15:05"},
 {
   "lokomotif": "CC 20",
-  "nomorKa": "204F",
-  "namaKa": "Baturaden Ekspres",
+  "nomorKa": "208F",
+  "namaKa": "Baturraden Ekspres",
   "relasi": "PWT-KYA",
   "berangkat": "18:55",
-  "datang": "19:18"
-},
+  "datang": "19:18"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "205F",
-  "namaKa": "Baturaden Ekspres",
+  "namaKa": "Baturraden Ekspres",
   "relasi": "KYA-BD",
   "berangkat": "19:40",
-  "datang": "02:10"
-},
+  "datang": "02:10"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "206F",
-  "namaKa": "Baturaden Ekspres",
+  "namaKa": "Baturraden Ekspres",
   "relasi": "BD-KYA",
   "berangkat": "07:55",
-  "datang": "13:18"
-},
+  "datang": "13:18"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "207F",
   "namaKa": "Baturraden Ekspres",
   "relasi": "KYA-PWT",
   "berangkat": "13:39",
-  "datang": "14:04"
-},
+  "datang": "14:04"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "209",
   "namaKa": "Mutiara Timur",
   "relasi": "SBI-KTG",
   "berangkat": "09:00",
-  "datang": "15:30"
-},
+  "datang": "15:30"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "210",
   "namaKa": "Mutiara Timur",
   "relasi": "KTG-SBI",
   "berangkat": "22:00",
-  "datang": "04:10"
-},
+  "datang": "04:10"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "211F",
   "namaKa": "Mutiara Timur",
   "relasi": "SGU-KTG",
   "berangkat": "21:50",
-  "datang": "03:40"
-},
+  "datang": "03:40"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "212F",
   "namaKa": "Mutiara Timur",
   "relasi": "KTG-SGU",
   "berangkat": "08:40",
-  "datang": "14:38"
-},
+  "datang": "14:38"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "213",
   "namaKa": "Kaligung",
   "relasi": "SMC-BB",
   "berangkat": "08:40",
-  "datang": "11:07"
-},
+  "datang": "11:07"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "214",
   "namaKa": "Kaligung",
   "relasi": "BB-SMC",
   "berangkat": "11:50",
-  "datang": "15:00"
-},
+  "datang": "15:00"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "215",
   "namaKa": "Kaligung",
   "relasi": "SMC-TG",
   "berangkat": "17:20",
-  "datang": "19:31"
-},
+  "datang": "19:31"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "216",
   "namaKa": "Kaligung",
   "relasi": "BB-SMC",
   "berangkat": "04:50",
-  "datang": "07:18"
-},
+  "datang": "07:18"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "217",
   "namaKa": "Kaligung",
   "relasi": "SMC-CNP",
   "berangkat": "05:00",
-  "datang": "08:50"
-},
+  "datang": "08:50"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "218",
   "namaKa": "Kaligung",
   "relasi": "CNP-SMC",
   "berangkat": "09:20",
-  "datang": "13:43"
-},
+  "datang": "13:43"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "219",
   "namaKa": "Kaligung",
   "relasi": "SMC-TG",
   "berangkat": "14:45",
-  "datang": "17:00"
-},
+  "datang": "17:00"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "220",
   "namaKa": "Kaligung",
   "relasi": "TG-SMC",
   "berangkat": "17:55",
-  "datang": "20:06"
-},
+  "datang": "20:06"},
+{
+  "lokomotif": "CC 20",
+  "nomorKa": "221F",
+  "namaKa": "Kaligung",
+  "relasi": "SMC-TG",
+  "berangkat": "21:00",
+  "datang": "23:35"},
+{
+  "lokomotif": "CC 20",
+  "nomorKa": "222F",
+  "namaKa": "Kaligung",
+  "relasi": "TG-SMC",
+  "berangkat": "20:30",
+  "datang": "22:43"},
+{
+  "lokomotif": "CC 20",
+  "nomorKa": "223",
+  "namaKa": "Pangrango",
+  "relasi": "SI-BOO",
+  "berangkat": "05:10",
+  "datang": "06:57"},
+{
+  "lokomotif": "CC 20",
+  "nomorKa": "224",
+  "namaKa": "Pangrango",
+  "relasi": "BOO-SI",
+  "berangkat": "07:45",
+  "datang": "09:30"},
+{
+  "lokomotif": "CC 20",
+  "nomorKa": "225",
+  "namaKa": "Pangrango",
+  "relasi": "SI-BOO",
+  "berangkat": "10:30",
+  "datang": "12:15"},
+{
+  "lokomotif": "CC 20",
+  "nomorKa": "226",
+  "namaKa": "Pangrango",
+  "relasi": "BOO-SI",
+  "berangkat": "12:40",
+  "datang": "14:25"},
+{
+  "lokomotif": "CC 20",
+  "nomorKa": "227",
+  "namaKa": "Pangrango",
+  "relasi": "SI-BOO",
+  "berangkat": "14:50",
+  "datang": "16:35"},
+{
+  "lokomotif": "CC 20",
+  "nomorKa": "228",
+  "namaKa": "Pangrango",
+  "relasi": "BOO-SI",
+  "berangkat": "17:00",
+  "datang": "18:45"},
+{
+  "lokomotif": "CC 20",
+  "nomorKa": "229",
+  "namaKa": "Pangrango",
+  "relasi": "SI-BOO",
+  "berangkat": "19:10",
+  "datang": "20:55"},
+{
+  "lokomotif": "CC 20",
+  "nomorKa": "230",
+  "namaKa": "Pangrango",
+  "relasi": "BOO-SI",
+  "berangkat": "21:20",
+  "datang": "23:05"},
 {
   "lokomotif": "CC 20",
   "nomorKa": "231",
@@ -1920,7 +1972,7 @@
   "datang": "07:43"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 204 03 04",
   "nomorKa": "256",
   "namaKa": "Jaka Tingkir",
   "relasi": "PSE-SLO",
@@ -2032,7 +2084,7 @@
   "datang": "23:09"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 201 77 02",
   "nomorKa": "270",
   "namaKa": "Matarmarja",
   "relasi": "PSE-ML",
@@ -2048,7 +2100,7 @@
   "datang": "00:58"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 201 83 18",
   "nomorKa": "272",
   "namaKa": "Airlangga",
   "relasi": "PSE-SBI",
@@ -2128,7 +2180,7 @@
   "datang": "07:34"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 201 83 48",
   "nomorKa": "282",
   "namaKa": "Bengawan",
   "relasi": "PSE-PWS",
@@ -2152,7 +2204,7 @@
   "datang": "17:22"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 203 01 06",
   "nomorKa": "284",
   "namaKa": "Serayu",
   "relasi": "PSE-KYA",
@@ -2160,7 +2212,7 @@
   "datang": "19:34"
 },
 {
-  "lokomotif": "CC 20",
+  "lokomotif": "CC 203 01 06",
   "nomorKa": "285",
   "namaKa": "Serayu",
   "relasi": "KYA-PWT",
