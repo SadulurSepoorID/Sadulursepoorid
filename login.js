@@ -16,8 +16,20 @@ function showCustomAlert() {
 function sendToDiscord(username, kta) {
   const webhookURL = 'https://discord.com/api/webhooks/1364545932644974592/x_ofiG2KoFOr2aWwfQ_mVVtNxACdRevwqqdkD8vvTEth-HDSs91peN81lokHgWAq9m9p';
   
+  const now = new Date();
+  const waktuLogin = now.toLocaleString('id-ID', {
+    timeZone: 'Asia/Jakarta',
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+
   const payload = {
-    content: `User telah login: \nUsername: ${username}\nKTA: ${kta}`,
+    content: `**User Login Website**\nUsername: ${username}\nKTA: ${kta}\n${waktuLogin}`,
   };
 
   fetch(webhookURL, {
@@ -26,14 +38,8 @@ function sendToDiscord(username, kta) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
-  })
-  .then(response => {
-    if (!response.ok) {
-      console.error('Gagal mengirim data ke Discord');
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
+  }).catch(error => {
+    console.error('Gagal kirim ke Discord:', error);
   });
 }
 
@@ -49,7 +55,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
   if (account) {
     sessionStorage.setItem('username', account.username);
     sessionStorage.setItem('kta', account.kta);
-    sendToDiscord(account.username, account.kta);  // Mengirim data ke Discord
+    sendToDiscord(account.username, account.kta);
     window.location.href = 'weblogin333.html';
   } else {
     showCustomAlert();
