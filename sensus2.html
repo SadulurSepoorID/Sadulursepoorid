@@ -5,158 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Preview Data Kereta</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f7f9fc;
-      color: #333;
-    }
-
-    header {
-      background-color: #007bff;
-      color: white;
-      padding: 15px 20px;
-      text-align: space-between;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 {
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: capitalize;
-      font-family: 'Roboto', sans-serif;
-    }
-
-    header .back-button {
-      background-color: #0056b3;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      text-decoration: none;
-    }
-
-    header .back-button:hover {
-      background-color: #003f7f;
-    }
-
-    .container {
-      width: 90%;
-      max-width: 1200px;
-      margin: 30px auto;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-
-    .search-bar {
-      margin-bottom: 30px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .search-bar input {
-      width: 80%;
-      max-width: 450px;
-      padding: 12px 18px;
-      border-radius: 30px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .search-bar input:focus {
-      outline: none;
-      border-color: #007bff;
-    }
-
-    .data-card {
-      background-color: #fff;
-      padding: 20px;
-      margin: 15px 0;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s;
-    }
-
-    .data-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    }
-
-    .data-card h3 {
-      font-size: 20px;
-      font-weight: 500;
-      color: #007bff;
-    }
-
-    .data-card p {
-      font-size: 14px;
-      margin: 8px 0;
-      color: #555;
-    }
-
-    .card-footer {
-      font-size: 12px;
-      color: #777;
-      margin-top: 15px;
-    }
-
-    .card-footer span {
-      font-weight: 600;
-      color: #007bff;
-    }
-
-    /* Responsiveness */
+    * {margin: 0;padding: 0;box-sizing: border-box;}
+    body {font-family: 'Arial', sans-serif;background-color: #f7f9fc;color: #333;}
+    header {background-color: #007bff;color: white;padding: 15px 20px;display: flex;justify-content: space-between;align-items: center;}
+    header h1 {font-size: 20px;font-weight: 600;letter-spacing: 0.5px;font-family: 'Roboto', sans-serif;}
+    header .back-button {background-color: #0056b3;color: white;padding: 8px 16px;border-radius: 5px;border: none;cursor: pointer;font-size: 14px;text-decoration: none;}
+    header .back-button:hover {background-color: #003f7f;}
+    .container {width: 90%;max-width: 1200px;margin: 30px auto;background-color: #fff;padding: 20px;border-radius: 8px;box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);}
+    .search-bar {margin-bottom: 30px;display: flex;justify-content: center;}
+    .search-bar input {width: 80%;max-width: 450px;padding: 12px 18px;border-radius: 30px;border: 1px solid #ccc;font-size: 16px;box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);}
+    .search-bar input:focus {outline: none;border-color: #007bff;}
+    .data-card {background-color: #fff;padding: 20px;margin: 15px 0;border-radius: 12px;box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);}
+    .data-card h3 {font-size: 20px;font-weight: 500;color: #007bff;}
+    .data-card p {font-size: 14px;margin: 8px 0;color: #555;}
+    .status {display: inline-block;padding: 4px 10px;border-radius: 12px;font-size: 12px;font-weight: 600;color: white;}
+    .program {background-color: #ffa62e;}
+    .published {background-color: #2597ff;}
+    .running {background-color: #28a745;}
+    .finished {background-color: #dc3545;}
     @media (max-width: 768px) {
-      header h1 {
-        font-size: 18px;
-        text-align: center;
-        margin: 0;
-      }
-
-      .search-bar input {
-        width: 90%;
-      }
-
-      .container {
-        padding: 15px;
-      }
-
-      .back-button {
-        padding: 6px 12px;
-        font-size: 14px;
-        text-align: center;
-      }
+      header h1 {font-size: 18px;text-align: center;}
+      .search-bar input {width: 90%;}
     }
-
     @media (max-width: 480px) {
-      header h1 {
-        font-size: 16px;
-        margin: 0;
-      }
-
-      .back-button {
-        padding: 5px 10px;
-        font-size: 12px;
-        width: auto;
-      }
-
-      .search-bar input {
-        width: 90%;
-      }
+      header h1 {font-size: 16px;}
+      .back-button {padding: 5px 10px;font-size: 12px;}
     }
   </style>
 </head>
@@ -165,19 +38,33 @@
     <h1>Preview Data Kereta</h1>
     <a href="javascript:history.back()" class="back-button">Kembali</a>
   </header>
-
   <div class="container">
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Cari Nama Kereta" oninput="searchKereta()" />
     </div>
-
-    <div id="dataKereta">
-      Memuat data...
-    </div>
+    <div id="dataKereta">Memuat data...</div>
   </div>
-
   <script>
     const apiUrl = "https://sheetdb.io/api/v1/7lz7wp17epvwk";
+
+    function parseTimeWithTodayOrTomorrow(timeStr, now) {
+      const [hours, minutes, seconds] = timeStr.split(":").map(Number);
+      const date = new Date(now);
+      date.setHours(hours, minutes, seconds || 0, 0);
+      if (date.getTime() < now.getTime() && now.getTime() - date.getTime() > 43200000) {
+        date.setDate(date.getDate() + 1);
+      }
+      return date;
+    }
+
+    function getStatus(now, start, end) {
+      const selisih = (start - now) / 3600000;
+      if (selisih > 4) return "Program";
+      if (selisih < 2) return "Published";
+      if (now >= start && now <= end) return "Running";
+      if (now > end) return "Finished";
+      return "Program";
+    }
 
     function loadDataKereta() {
       fetch(apiUrl)
@@ -185,19 +72,19 @@
         .then(data => {
           const container = document.getElementById('dataKereta');
           container.innerHTML = "";
-
           if (data.length === 0) {
             container.innerHTML = "<i>Belum ada data kereta.</i>";
             return;
           }
 
-          // Sorting data by nomor_kereta (ascending)
-          data.sort((a, b) => {
-            return parseInt(a.nomor_kereta) - parseInt(b.nomor_kereta);
-          });
+          data.sort((a, b) => parseInt(a.nomor_kereta) - parseInt(b.nomor_kereta));
 
-          // Displaying sorted data
+          const now = new Date();
           data.forEach(item => {
+            const waktuBerangkat = parseTimeWithTodayOrTomorrow(item.jam_keberangkatan, now);
+            const waktuDatang = parseTimeWithTodayOrTomorrow(item.jam_kedatangan, now);
+            const status = getStatus(now, waktuBerangkat, waktuDatang);
+
             const card = document.createElement('div');
             card.classList.add('data-card');
             card.innerHTML = `
@@ -206,27 +93,22 @@
               <p><strong>Relasi:</strong> ${item.relasi}</p>
               <p><strong>Jam Keberangkatan:</strong> ${item.jam_keberangkatan}</p>
               <p><strong>Jam Kedatangan:</strong> ${item.jam_kedatangan}</p>
+              <p><strong>Status:</strong> <span class="status ${status.toLowerCase()}">${status}</span></p>
             `;
             container.appendChild(card);
           });
         })
-        .catch(error => {
-          const container = document.getElementById('dataKereta');
-          container.innerHTML = "<i>Gagal memuat data.</i>";
+        .catch(() => {
+          document.getElementById('dataKereta').innerHTML = "<i>Gagal memuat data.</i>";
         });
     }
 
     function searchKereta() {
       const searchTerm = document.getElementById('searchInput').value.toLowerCase();
       const cards = document.querySelectorAll('.data-card');
-      
       cards.forEach(card => {
         const namaKereta = card.querySelector('h3').innerText.toLowerCase();
-        if (namaKereta.includes(searchTerm)) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
-        }
+        card.style.display = namaKereta.includes(searchTerm) ? 'block' : 'none';
       });
     }
 
