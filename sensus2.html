@@ -58,13 +58,13 @@
     }
 
     function getStatus(now, start, end) {
-      const selisih = (start - now) / 3600000;
-      if (selisih > 4) return "Program";
-      if (selisih < 2) return "Published";
-      if (now >= start && now <= end) return "Running";
-      if (now > end) return "Finished";
-      return "Program";
-    }
+  if (now >= start && now <= end) return "Running";
+  const selisih = (start - now) / 3600000;
+  if (selisih > 4) return "Program";
+  if (selisih < 2) return "Published";
+  if (now > end) return "Finished";
+  return "Program";
+}
 
     function loadDataKereta() {
       fetch(apiUrl)
