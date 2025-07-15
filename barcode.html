@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Code Absensi</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #2b7de9;
+    }
+    
+    h3 {
+      margin-top: 0;
+      margin-bottom: 25px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .info-box {
+      background-color: #f5f9ff;
+      border: 1px solid #d1e3ff;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .info-item {
+      margin-bottom: 8px;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: #555;
+    }
+
+    .info-value {
+      color: #222;
+    }
+
+    .qr-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .qr-instructions {
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #666;
+      padding: 0 10px;
+    }
+
+    #qrcode {
+      margin: 15px auto;
+      max-width: 200px;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .primary-button {
+      background: #2b7de9;
+      color: white;
+      border: none;
+    }
+
+    .primary-button:hover {
+      background: #1865d8;
+    }
+
+    .secondary-button {
+      background: white;
+      color: #2b7de9;
+      border: 1.5px solid #2b7de9;
+    }
+
+    .secondary-button:hover {
+      background: #f0f7ff;
+    }
+
+    .save-hint {
+      font-size: 13px;
+      color: #777;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+        border-radius: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>QR Code Absensi</h2>
+    <h3>Berhasil terdaftar!</h3>
+
+    <div class="info-box">
+      <div class="info-item">
+        <span class="info-label">Nama:</span> 
+        <span class="info-value" id="infoNama">-</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">NIA:</span> 
+        <span class="info-value" id="infoNia">-</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Kegiatan:</span> 
+        <span class="info-value" id="infoKegiatan">-</span>
+      </div>
+    </div>
+
+    <div class="qr-container">
+      <p class="qr-instructions">Silakan simpan atau screenshot QR code ini. <strong>Tunjukkan QR code ini kepada pengurus</strong> saat kegiatan untuk verifikasi kehadiran dan pengambilan konsumsi.</p>
+      <div id="qrcode"></div>
+    </div>
+
+    <div class="button-group">
+      <button id="btnDownload" class="button primary-button">
+        Simpan QR Code
+      </button>
+      <a href="index.html" class="button secondary-button">
+        Kembali ke Halaman Utama
+      </a>
+    </div>
+    <p class="save-hint">*Screenshot halaman ini untuk menyimpannya</p>
+  </div>
+
+  <!-- QR Code library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Ambil data dari localStorage
+      const formData = JSON.parse(localStorage.getItem('formData'));
+      
+      if (!formData) {
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      // Tampilkan informasi
+      document.getElementById('infoNama').textContent = formData.nama;
+      document.getElementById('infoNia').textContent = formData.nia;
+      document.getElementById('infoKegiatan').textContent = formData.kegiatan;
+      
+      // Generate QR Code
+      generateQRCode(formData.nia);
+      
+      // Setup download button
+      document.getElementById('btnDownload').addEventListener('click', function() {
+        // Find the QR code image
+        const qrImg = document.querySelector('#qrcode img');
+        if (qrImg) {
+          // Create an anchor element for download
+          const downloadLink = document.createElement('a');
+          downloadLink.href = qrImg.src;
+          downloadLink.download = `QRCode-${formData.nia}.png`;
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+        }
+      });
+    });
+    
+    // Fungsi untuk generate QR Code
+    function generateQRCode(content) {
+      const qrcodeDiv = document.getElementById('qrcode');
+      qrcodeDiv.innerHTML = ''; // Bersihkan container
+
+      // Generate QR code
+      const typeNumber = 0; // Auto-detect size
+      const errorCorrectionLevel = 'H'; // Highest error correction
+      const qr = qrcode(typeNumber, errorCorrectionLevel);
+      qr.addData(content);
+      qr.make();
+
+      // Buat element img dari QR code dengan ukuran yang lebih besar
+      const qrImage = qr.createImgTag(8); // Cell size = 8
+      qrcodeDiv.innerHTML = qrImage;
+      
+      // Tambahkan alt text pada gambar QR code
+      const img = qrcodeDiv.querySelector('img');
+      if (img) {
+        img.alt = "QR Code Absensi";
+        img.style.display = "block";
+        img.style.margin = "0 auto";
+        img.style.maxWidth = "100%";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formulir Absensi</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 420px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2b7de9;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 15px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 25px;
+      background: #2b7de9;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #1865d8;
+    }
+
+    #pesan {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: 600;
+      color: green;
+    }
+
+    select option[disabled] {
+      color: #aaa;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+        border-radius: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" style="
+      display: inline-block;
+      background: white;
+      color: #2b7de9;
+      border: 1.5px solid #2b7de9;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: 10px;
+    " onmouseover="this.style.background='#2b7de9';this.style.color='white'" onmouseout="this.style.background='white';this.style.color='#2b7de9'">
+      ← Kembali
+    </a>
+
+    <h2>Formulir Absensi</h2>
+    <form id="absenForm">
+      <label>Nama</label>
+      <input type="text" name="nama" required>
+
+      <label>NIA</label>
+      <input type="text" name="nia" required>
+
+      <label>Nomor WhatsApp</label>
+      <input type="text" name="wa" required>
+
+      <label>Komunitas</label>
+      <select name="komunitas" required>
+        <option value="">-- Pilih Komunitas --</option>
+        <option value="Sadulur Sepoor">Sadulur Sepoor</option>
+        <option value="Edan Sepur">Edan Sepur</option>
+      </select>
+
+      <label>Kegiatan yang Anda hadiri</label>
+      <select name="kegiatan" required>
+        <option value="">-- Pilih Salah Satu --</option>
+        <option value="Depo LRT Jabodebek">Depo LRT Jabodebek</option>
+        <option value="Depo Lokomotif Cipinang">Depo Lokomotif Cipinang</option>
+      </select>
+
+      <button type="submit">Kirim</button>
+    </form>
+    <p id="pesan"></p>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbz7uyJigUts6WpsQa3Wxrzlizsx_gpgOSWXC3FigFU2zji9TvAeSQLl27UUN-x3ipPLSA/exec";
+
+    document.getElementById('absenForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const pesan = document.getElementById('pesan');
+      pesan.style.color = 'green';
+      pesan.textContent = "Mengirim...";
+
+      const form = new FormData(this);
+      const data = {
+        nama: form.get('nama'),
+        nia: form.get('nia'),
+        wa: form.get('wa'),
+        kegiatan: form.get('kegiatan'),
+        komunitas: form.get('komunitas')
+      };
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(data)
+      })
+      .then(response => response.text())
+      .then(result => {
+  if (result.toLowerCase().includes("kuota penuh")) {
+    pesan.style.color = 'red';
+    pesan.textContent = result;
+  } else {
+    pesan.style.color = 'green';
+    pesan.textContent = "Data berhasil dikirim!";
+    
+ // Redirect ke halaman tiket
+      const ticketId = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const ticketUrl = `tiket.html?nama=${encodeURIComponent(data.nama)}&nia=${encodeURIComponent(data.nia)}&wa=${encodeURIComponent(data.wa)}&komunitas=${encodeURIComponent(data.komunitas)}&kegiatan=${encodeURIComponent(data.kegiatan)}&ticketId=${ticketId}`;
+      window.location.href = ticketUrl;
+    }
+  })
+  
+      .catch(error => {
+        pesan.style.color = 'red';
+        pesan.textContent = "Gagal mengirim data.";
+        console.error('Error!', error.message);
+      });
+    });
+  </script>
+</body>
+</html>

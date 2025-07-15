@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tiket Event</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(145deg, #e6f2ff 0%, #ffffff 100%);
+    }
+    
+    /* Styling untuk PDF rendering */
+    .for-pdf {
+      width: 450px !important;
+      box-shadow: none !important;
+      transform: none !important;
+      page-break-inside: avoid !important;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .tiket {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 15px 40px rgba(29, 108, 255, 0.12), 
+                  0 10px 20px rgba(29, 108, 255, 0.05);
+      overflow: hidden;
+      position: relative;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                  box-shadow 0.4s ease;
+      max-width: 450px;
+      margin: 0 auto;
+    }
+
+    .tiket:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 20px 50px rgba(29, 108, 255, 0.18), 
+                  0 15px 25px rgba(29, 108, 255, 0.08);
+    }
+
+    .tiket-header {
+      background: linear-gradient(120deg, #1a73e8 0%, #0d47a1 100%);
+      color: white;
+      padding: 28px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tiket-header::before {
+      content: "";
+      position: absolute;
+      top: -50px;
+      left: -50px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+    }
+
+    .tiket-header::after {
+      content: "";
+      position: absolute;
+      bottom: -80px;
+      right: -80px;
+      width: 220px;
+      height: 220px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+    }
+
+    /* Futuristic elements */
+    .circuit-line {
+      position: absolute;
+      height: 2px;
+      width: 80px;
+      background: rgba(255, 255, 255, 0.2);
+      top: 20px;
+      z-index: 2;
+    }
+
+    .circuit-line-1 {
+      left: 20px;
+    }
+
+    .circuit-line-2 {
+      right: 20px;
+    }
+
+    .circuit-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      z-index: 2;
+    }
+
+    .circuit-dot-1 {
+      top: 18px;
+      left: 12px;
+    }
+
+    .circuit-dot-2 {
+      top: 18px;
+      left: 100px;
+    }
+
+    .circuit-dot-3 {
+      top: 18px;
+      right: 12px;
+    }
+
+    .circuit-dot-4 {
+      top: 18px;
+      right: 100px;
+    }
+
+    .tiket-header h1 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      position: relative;
+      z-index: 1;
+    }
+
+    .tiket-header p {
+      margin: 8px 0 0;
+      opacity: 0.95;
+      font-size: 15px;
+      font-weight: 400;
+      position: relative;
+      z-index: 1;
+      letter-spacing: 0.3px;
+    }
+
+    .tiket-body {
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.95);
+      position: relative;
+    }
+
+    /* Futuristic corner accents */
+    .corner-accent {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-style: solid;
+      border-color: rgba(29, 108, 255, 0.3);
+      border-width: 0;
+      z-index: 2;
+    }
+
+    .top-left {
+      top: 10px;
+      left: 10px;
+      border-left-width: 2px;
+      border-top-width: 2px;
+    }
+
+    .top-right {
+      top: 10px;
+      right: 10px;
+      border-right-width: 2px;
+      border-top-width: 2px;
+    }
+
+    .bottom-left {
+      bottom: 10px;
+      left: 10px;
+      border-left-width: 2px;
+      border-bottom-width: 2px;
+    }
+
+    .bottom-right {
+      bottom: 10px;
+      right: 10px;
+      border-right-width: 2px;
+      border-bottom-width: 2px;
+    }
+
+    .data-peserta {
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .data-item {
+      margin-bottom: 20px;
+      display: flex;
+      position: relative;
+      z-index: 2;
+    }
+
+    .data-label {
+      font-weight: 600;
+      width: 40%;
+      color: #0d47a1;
+      font-size: 15px;
+      letter-spacing: 0.3px;
+    }
+
+    .data-value {
+      width: 60%;
+      font-weight: 500;
+      color: #222;
+      position: relative;
+    }
+
+    .data-value::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(29, 108, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .qr-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 25px;
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 2;
+    }
+
+    #qrcode {
+      margin-bottom: 15px;
+      padding: 12px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(29, 108, 255, 0.1);
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #qrcode:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 20px rgba(29, 108, 255, 0.15);
+    }
+
+    #qrcode::before, #qrcode::after {
+      content: "";
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      opacity: 0.4;
+    }
+
+    #qrcode::before {
+      top: -8px;
+      left: -8px;
+      border-top: 2px solid #1a73e8;
+      border-left: 2px solid #1a73e8;
+      border-top-left-radius: 8px;
+    }
+
+    #qrcode::after {
+      bottom: -8px;
+      right: -8px;
+      border-bottom: 2px solid #1a73e8;
+      border-right: 2px solid #1a73e8;
+      border-bottom-right-radius: 8px;
+    }
+
+    .ticket-id {
+      font-size: 14px;
+      color: #0d47a1;
+      text-align: center;
+      margin-top: 8px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      position: relative;
+      padding: 6px 15px;
+      background: rgba(29, 108, 255, 0.08);
+      border-radius: 20px;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 25px;
+    }
+
+    .btn {
+      padding: 16px 22px;
+      border: none;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+      color: white;
+      box-shadow: 0 8px 15px rgba(29, 108, 255, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: rotate(30deg);
+      transition: transform 0.5s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0d47a1 0%, #0a3781 100%);
+      box-shadow: 0 10px 20px rgba(29, 108, 255, 0.35);
+      transform: translateY(-3px);
+    }
+
+    .btn-primary:hover::after {
+      transform: rotate(30deg) translate(90%, 0);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: 0 5px 10px rgba(29, 108, 255, 0.2);
+    }
+
+    .alert {
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 25px;
+      background: linear-gradient(145deg, rgba(232, 245, 255, 0.9), rgba(255, 255, 255, 0.9));
+      color: #0d47a1;
+      border-left: 4px solid #1a73e8;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 8px 15px rgba(29, 108, 255, 0.1);
+      backdrop-filter: blur(5px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .alert:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 20px rgba(29, 108, 255, 0.15);
+    }
+
+    .alert-icon {
+      font-size: 24px;
+      background: rgba(29, 108, 255, 0.15);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .watermark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://i.imgur.com/9rAb7r7.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 60% auto;
+      opacity: 0.07;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .tear-line {
+      position: relative;
+      height: 25px;
+      margin: 5px 20px 25px;
+      border-bottom: 2px dashed rgba(29, 108, 255, 0.3);
+    }
+
+    .tear-circle-left, .tear-circle-right {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: #f0f8ff;
+      border-radius: 50%;
+      top: 12px;
+      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .tear-circle-left {
+      left: -35px;
+    }
+
+    .tear-circle-right {
+      right: -35px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #1a73e8;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      padding-left: 20px;
+      font-size: 15px;
+    }
+
+    .back-link:before {
+      content: "←";
+      position: absolute;
+      left: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: #0d47a1;
+    }
+
+    .back-link:hover:before {
+      transform: translateX(-4px);
+    }
+
+    @media print {
+      .action-buttons, .back-link, .alert {
+        display: none;
+      }
+      body {
+        background: white;
+      }
+      .container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .tiket {
+        box-shadow: none;
+        border: 1px solid #eee;
+        page-break-inside: avoid;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        transform: none !important;
+      }
+      .tiket-header, .tiket-body {
+        page-break-inside: avoid;
+      }
+    }
+
+    /* Animation for elements */
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(29, 108, 255, 0.5); }
+      70% { box-shadow: 0 0 0 10px rgba(29, 108, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(29, 108, 255, 0); }
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">Kembali ke Beranda</a>
+    
+    <div class="alert">
+      <span class="alert-icon">✓</span>
+      <div>
+        <strong>Pendaftaran Berhasil!</strong> Silakan simpan tiket ini sebagai bukti kehadiran.
+      </div>
+    </div>
+    
+    <div class="tiket" id="tiket-container">
+      <div class="watermark"></div>
+      <div class="tiket-header">
+        <!-- Futuristic circuit elements -->
+        <div class="circuit-line circuit-line-1"></div>
+        <div class="circuit-line circuit-line-2"></div>
+        <div class="circuit-dot circuit-dot-1"></div>
+        <div class="circuit-dot circuit-dot-2"></div>
+        <div class="circuit-dot circuit-dot-3"></div>
+        <div class="circuit-dot circuit-dot-4"></div>
+        
+        <h1 id="event-title">Loading...</h1>
+        <p id="event-date">Loading...</p>
+      </div>
+      
+      <div class="tiket-body">
+        <!-- Corner accents for futuristic design -->
+        <div class="corner-accent top-left"></div>
+        <div class="corner-accent top-right"></div>
+        <div class="corner-accent bottom-left"></div>
+        <div class="corner-accent bottom-right"></div>
+        
+        <div class="data-peserta">
+          <div class="data-item">
+            <div class="data-label">Nama</div>
+            <div class="data-value" id="nama">Loading...</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">NIA</div>
+            <div class="data-value" id="nia">Loading...</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Komunitas</div>
+            <div class="data-value" id="komunitas">Loading...</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Kegiatan</div>
+            <div class="data-value" id="kegiatan">Loading...</div>
+          </div>
+        </div>
+        
+        <div class="tear-line">
+          <div class="tear-circle-left"></div>
+          <div class="tear-circle-right"></div>
+        </div>
+        
+        <div class="qr-section">
+          <div id="qrcode" class="pulse"></div>
+          <div class="ticket-id" id="ticket-id">Loading...</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="downloadBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download Tiket (PDF)
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Initialize jsPDF
+    const { jsPDF } = window.jspdf;
+    
+    // Generate random ticket ID
+    function generateTicketID() {
+      return Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+    
+    // Get URL parameters
+    function getURLParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        nama: params.get('nama') || 'Nama tidak ditemukan',
+        nia: params.get('nia') || 'NIA tidak ditemukan',
+        komunitas: params.get('komunitas') || 'Komunitas tidak ditemukan',
+        kegiatan: params.get('kegiatan') || 'Kegiatan tidak ditemukan',
+        wa: params.get('wa') || '',
+        ticketId: params.get('ticketId') || generateTicketID()
+      };
+    }
+    
+    // Load ticket data
+    function loadTicketData() {
+      const data = getURLParams();
+      
+      // Update ticket content
+      document.getElementById('nama').textContent = data.nama;
+      document.getElementById('nia').textContent = data.nia;
+      document.getElementById('komunitas').textContent = data.komunitas;
+      document.getElementById('kegiatan').textContent = data.kegiatan;
+      document.getElementById('ticket-id').textContent = `ID: ${data.ticketId}`;
+      
+      // Set event details based on kegiatan
+      if (data.kegiatan.includes('LRT')) {
+        document.getElementById('event-title').textContent = 'Kunjungan Depo LRT Jabodebek';
+        document.getElementById('event-date').textContent = 'Sabtu, 24 Mei 2025 • 09:00 WIB';
+      } else if (data.kegiatan.includes('Cipinang')) {
+        document.getElementById('event-title').textContent = 'Kunjungan Depo Lokomotif Cipinang';
+        document.getElementById('event-date').textContent = 'Minggu, 1 Juni 2025 • 13:00 WIB';
+      } else {
+        document.getElementById('event-title').textContent = 'Tiket Kegiatan';
+        document.getElementById('event-date').textContent = 'Mohon cek jadwal kegiatan';
+      }
+      
+      // Generate QR code with ticket data in formatted text
+      const qrData = `TIKET KUNJUNGAN
+Nama: ${data.nama}
+NIA: ${data.nia}
+Komunitas: ${data.komunitas}
+Kegiatan: ${data.kegiatan}
+ID Tiket: ${data.ticketId}
+------------------
+Dipindai pada: ${new Date().toLocaleString('id-ID')}`;
+      
+      new QRCode(document.getElementById("qrcode"), {
+        text: qrData,
+        width: 150,
+        height: 150,
+        colorDark: "#0d47a1",
+        colorLight: "#fff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      
+      // Remove pulse animation after 3 seconds
+      setTimeout(() => {
+        document.getElementById("qrcode").classList.remove("pulse");
+      }, 3000);
+      
+      return data;
+    }
+    
+    // Download ticket as PDF
+    async function downloadTicket() {
+      const data = getURLParams();
+      const ticketContainer = document.getElementById('tiket-container');
+      
+      try {
+        // Show loading state
+        document.getElementById('downloadBtn').textContent = 'Memproses...';
+        document.getElementById('downloadBtn').disabled = true;
+        
+        // Add special class for PDF generation
+        ticketContainer.classList.add('for-pdf');
+        
+        // Generate PDF with better settings
+        const canvas = await html2canvas(ticketContainer, { 
+          scale: 3, // Higher scale for better quality
+          logging: false, 
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          windowWidth: ticketContainer.scrollWidth,
+          windowHeight: ticketContainer.scrollHeight,
+          allowTaint: true,
+          imageTimeout: 0,
+          removeContainer: false
+        });
+        
+        // Remove the special class
+        ticketContainer.classList.remove('for-pdf');
+        
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Create PDF with portrait orientation and specific size
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4',
+          compress: true
+        });
+        
+        // Calculate dimensions to ensure ticket fits on page properly
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        
+        // Set image width to fit page with margins
+        const imgWidth = pageWidth - 40; // 20mm margins on each side
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // Center image and ensure it's not too tall for the page
+        const x = (pageWidth - imgWidth) / 2;
+        let y = (pageHeight - imgHeight) / 2;
+        
+        // Adjust if image is too tall
+        if (imgHeight > pageHeight - 40) {
+          const maxHeight = pageHeight - 40;
+          const adjustedWidth = (canvas.width * maxHeight) / canvas.height;
+          y = 20; // 20mm from top
+          pdf.addImage(imgData, 'PNG', (pageWidth - adjustedWidth) / 2, y, adjustedWidth, maxHeight);
+        } else {
+          pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+        }
+        
+        // Add metadata at bottom
+        pdf.setFontSize(8);
+        pdf.setTextColor(150, 150, 150);
+        const currentDate = new Date().toLocaleString('id-ID');
+        pdf.text(`Tiket dicetak pada: ${currentDate}`, 10, pageHeight - 10);
+        
+        // Save PDF with proper name
+        pdf.save(`Tiket_${data.kegiatan.replace(/\s+/g, '_')}_${data.nama.replace(/\s+/g, '_')}.pdf`);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert('Gagal membuat PDF. Silakan coba lagi.');
+      } finally {
+        // Reset button state
+        document.getElementById('downloadBtn').innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download Tiket (PDF)
+        `;
+        document.getElementById('downloadBtn').disabled = false;
+      }
+    }
+    
+    // Initialize ticket on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadTicketData();
+      
+      // Set up download button
+      document.getElementById('downloadBtn').addEventListener('click', downloadTicket);
+    });
+  </script>
+</body>
+</html>

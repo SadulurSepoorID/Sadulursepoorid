@@ -1,21 +1,192 @@
+<!-- Halaman AbsenNotFound -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Tidak Tersedia</title>
-    <link rel="stylesheet" href="absennotfound.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Absensi Belum Dibuka</title>
+  <style>
+    :root {
+      --primary: #007bff;
+      --secondary: #f8f9fa;
+      --text-color: #333;
+      --button-hover: #0056b3;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(120deg, #ffffff, #e3f2fd);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.1);
+      max-width: 600px;
+      width: 100%;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .top-bar {
+      text-align: right;
+      margin-bottom: 1rem;
+    }
+
+    .timer {
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    h1 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .message {
+      text-align: center;
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .days-left {
+      text-align: center;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .buttons a,
+    .buttons button {
+      background-color: var(--primary);
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+      cursor: pointer;
+      border: none;
+    }
+
+    .buttons a:hover,
+    .buttons button:hover {
+      background-color: var(--button-hover);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+    }
+
+    @media (min-width: 480px) {
+      .buttons {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .buttons a,
+      .buttons button {
+        width: 48%;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="message-box">
-            <h1 class="animate">Maaf</h1>
-            <p class="animate">Anda belum bisa absen hari ini. Absen hanya tersedia pada hari kegiatan.</p>
-            <div class="buttons">
-                <a href="https://forms.gle/41gcGbbab8Mq3mHp6" class="btn izin">Ajukan Izin</a>
-            </div>
-        </div>
+  <div class="card">
+    <div class="top-bar">
+      <div class="timer" id="timer">Memuat waktu...</div>
     </div>
-    <script src="absennotfound.js"></script>
+
+    <h1>Absensi Belum Dibuka</h1>
+    <div class="message">
+      Maaf, Anda belum bisa absen hari ini.
+    </div>
+    <div class="days-left" id="days-left">(Menghitung waktu buka absen...)</div>
+
+    <div class="buttons">
+      <a href="izin.html" target="_blank">Izin Tidak Hadir</a>
+      <button onclick="goBack()">Kembali</button>
+    </div>
+  </div>
+
+  <script>
+  // Tanggal buka absen (ubah sesuai kebutuhan)
+  const tanggalBukaAbsen = new Date("2025-06-25T09:00:00"); // contoh: jam 13:00
+
+  function hitungSelisih() {
+    const sekarang = new Date();
+    const selisihMs = tanggalBukaAbsen - sekarang;
+    const el = document.getElementById("days-left");
+
+    if (selisihMs > 0) {
+      const selisihHari = Math.floor(selisihMs / (1000 * 60 * 60 * 24));
+
+      if (selisihHari >= 1) {
+        el.innerText = `Absen akan dibuka dalam ${selisihHari} hari lagi.`;
+      } else {
+        const jam = Math.floor(selisihMs / (1000 * 60 * 60));
+        const menit = Math.floor((selisihMs % (1000 * 60 * 60)) / (1000 * 60));
+        el.innerText = `Absen akan dibuka dalam ${jam} jam ${menit} menit lagi.`;
+      }
+    } else {
+      el.innerText = `Absen sudah dibuka.`;
+    }
+  }
+
+  function updateTimer() {
+    const now = new Date();
+    const hari = now.toLocaleDateString('id-ID', { weekday: 'long' });
+    const tanggal = now.getDate().toString().padStart(2, '0');
+    const bulan = now.toLocaleDateString('id-ID', { month: 'long' });
+    const tahun = now.getFullYear();
+    const jam = now.getHours().toString().padStart(2, '0');
+    const menit = now.getMinutes().toString().padStart(2, '0');
+    const detik = now.getSeconds().toString().padStart(2, '0');
+
+    document.getElementById("timer").innerText =
+      `${hari}, ${tanggal} ${bulan} ${tahun} - ${jam}:${menit}:${detik}`;
+  }
+
+  function goBack() {
+    if (document.referrer) {
+      window.location.href = document.referrer;
+    } else {
+      window.history.back();
+    }
+  }
+
+  // Inisialisasi
+  hitungSelisih();
+  updateTimer();
+  setInterval(updateTimer, 1000);
+  setInterval(hitungSelisih, 1000); // real-time update
+</script>
 </body>
 </html>
