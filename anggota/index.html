@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Anggota - Sadulur Sepoor Indonesia</title>
+    <link rel="stylesheet" href="anggota2.css">
+    <script defer src="anggota2.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background animated particles -->
+    <div class="particles-background">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <header class="modern-header">
+        <div class="header-content">
+            <div class="header-main">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="header-text">
+                        <h1>Sadulur Sepoor Indonesia</h1>
+                        <p class="subtitle">Daftar Anggota Aktif</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="search-controls">
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Cari nama atau nomor KTA..." onkeyup="searchMembers()">
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <button class="filter-btn" onclick="toggleSortOptions()">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Filter</span>
+                    </button>
+                    
+                    <div id="sortOptions" class="filter-dropdown">
+                        <div class="filter-group">
+                            <h4>Urutkan</h4>
+                            <button class="filter-option" data-sort="name-asc">
+                                <i class="fas fa-sort-alpha-up"></i>
+                                Nama A-Z
+                            </button>
+                            <button class="filter-option" data-sort="name-desc">
+                                <i class="fas fa-sort-alpha-down"></i>
+                                Nama Z-A
+                            </button>
+                            <button class="filter-option" data-sort="id-asc">
+                                <i class="fas fa-hashtag"></i>
+                                Nomor Identitas
+                            </button>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h4>Sektor</h4>
+                            <button class="filter-option sector-filter" data-sector="1 Jakarta">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Sektor 1 Jakarta
+                            </button>
+                            <button class="filter-option sector-filter" data-sector="2 Bandung">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Sektor 2 Bandung
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Anggota - Sadulur Sepoor Indonesia</title>
+    <link rel="stylesheet" href="anggota2.css">
+    <script defer src="anggota2.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background animated particles -->
+    <div class="particles-background">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <header class="modern-header">
+        <div class="header-content">
+            <div class="header-main">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="header-text">
+                        <h1>Sadulur Sepoor Indonesia</h1>
+                        <p class="subtitle">Daftar Anggota Aktif</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="search-controls">
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Cari nama atau nomor KTA..." onkeyup="searchMembers()">
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <button class="filter-btn" onclick="toggleSortOptions()">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Filter</span>
+                    </button>
+                    
+                    <div id="sortOptions" class="filter-dropdown">
+                        <div class="filter-group">
+                            <h4>Urutkan</h4>
+                            <button class="filter-option" data-sort="name-asc">
+                                <i class="fas fa-sort-alpha-up"></i>
+                                Nama A-Z
+                            </button>
+                            <button class="filter-option" data-sort="name-desc">
+                                <i class="fas fa-sort-alpha-down"></i>
+                                Nama Z-A
+                            </button>
+                            <button class="filter-option" data-sort="id-asc">
+                                <i class="fas fa-hashtag"></i>
+                                Nomor Identitas
+                            </button>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h4>Sektor</h4>
+                            <button class="filter-option sector-filter" data-sector="1 Jakarta">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Sektor 1 Jakarta
+                            </button>
+                            <button class="filter-option sector-filter" data-sector="2 Bandung">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Sektor 2 Bandung
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="totalMembers">273</span>
+                    <span class="stat-label">Total Anggota</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="visibleMembers">98</span>
+                    <span class="stat-label">Ditampilkan Anggota Aktif</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="membersContainer" class="members-grid"></div>
+    </main>
+
+    <!-- Modern Code Verification Modal -->
+    <div id="codeVerificationPopup" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2>Verifikasi Akses</h2>
+            </div>
+            <div class="modal-body">
+                <p id="verificationInfo" class="verification-text"></p>
+                <div class="input-group">
+                    <input type="text" id="verificationCodeInput" placeholder="Masukkan kode verifikasi">
+                    <div class="input-highlight"></div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeCodePopup()">
+                    <i class="fas fa-times"></i>
+                    Batal
+                </button>
+                <button class="btn btn-primary" onclick="verifyCode()">
+                    <i class="fas fa-check"></i>
+                    Verifikasi
+                </button>
+            </div>
+            <button class="btn btn-request" onclick="requestVerificationCode()">
+                <i class="fas fa-comment-alt"></i>
+                Minta Kode Verifikasi
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div id="successNotification" class="notification success-notification">
+        <div class="notification-content">
+            <div class="notification-icon success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="notification-text">
+                <h3>Verifikasi Berhasil!</h3>
+                <p>Mengarahkan ke WhatsApp...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Notification -->
+    <div id="errorNotification" class="notification error-notification">
+        <div class="notification-content">
+            <div class="notification-icon error-icon">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="notification-text">
+                <h3>Kode Tidak Valid!</h3>
+                <p>Silakan periksa kembali kode verifikasi.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>￼Enter                <div class="stat-info">
+                    <span class="stat-number" id="totalMembers">273</span>
+                    <span class="stat-label">Total Anggota</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="visibleMembers">98</span>
+                    <span class="stat-label">Ditampilkan Anggota Aktif</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="membersContainer" class="members-grid"></div>
+    </main>
+
+    <!-- Modern Code Verification Modal -->
+    <div id="codeVerificationPopup" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+          <h2>Verifikasi Akses</h2>
+            </div>
+            <div class="modal-body">
+                <p id="verificationInfo" class="verification-text"></p>
+                <div class="input-group">
+                    <input type="text" id="verificationCodeInput" placeholder="Masukkan kode verifikasi">
+                    <div class="input-highlight"></div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeCodePopup()">
+                    <i class="fas fa-times"></i>
+                    Batal
+                </button>
+                <button class="btn btn-primary" onclick="verifyCode()">
+                    <i class="fas fa-check"></i>
+                    Verifikasi
+                </button>
+            </div>
+            <button class="btn btn-request" onclick="requestVerificationCode()">
+                <i class="fas fa-comment-alt"></i>
+                Minta Kode Verifikasi
+            </button>
+        </div>
+    </div>
+
