@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Wawancara - Sadulur Sepoor Indonesia</title>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #333; }
+        .container { max-width: 500px; width: 100%; margin: 20px; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .logo { width: 90px; height: 90px; margin: 0 auto 15px; }
+        .logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header h1 { color: #2563eb; font-size: 2rem; font-weight: 700; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .form-container { background: white; border-radius: 15px; padding: 30px 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; }
+        input, select, .ts-control { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; background: #fafafa; }
+        input:focus, select:focus, .ts-control.focus { outline: none; border-color: #2563eb; background: white; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .btn { width: 100%; padding: 14px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; background: #2563eb; color: white; margin-top: 10px; }
+        .btn:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .btn:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
+        .success-message { display: none; text-align: center; padding: 20px; color: #10b981; font-weight: 600; }
+        .success-message.show { display: block; }
+        .custom-dropdown { position: relative; }
+        .dropdown-selected { display: flex; align-items: center; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; background: #fafafa; cursor: pointer; transition: all 0.3s ease; }
+        .dropdown-selected:hover, .custom-dropdown.active .dropdown-selected { border-color: #2563eb; }
+        .dropdown-selected .placeholder { color: #9ca3af; }
+        
+        /* CSS Tambahan untuk memperbaiki tampilan pewawancara */
+        .selected-interviewer-img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin-right: 12px;
+            object-fit: cover;
+        }
+        
+        .dropdown-options { display: none; position: absolute; top: 105%; left: 0; right: 0; background: white; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.12); z-index: 10; max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; }
+        .custom-dropdown.active .dropdown-options { display: block; }
+        .dropdown-options ul { list-style: none; padding: 5px; }
+        .dropdown-options li { display: flex; align-items: center; padding: 10px 15px; cursor: pointer; border-radius: 6px; }
+        .dropdown-options li:hover { background: #f3f4f6; }
+        .dropdown-options li img { width: 28px; height: 28px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="https://sadulursepoor.web.id/IMG/Logo%20SS.png" alt="Logo Komunitas">
+            </div>
+            <h1>Jadwal Wawancara</h1>
+            <p>Silakan isi data di bawah untuk menjadwalkan sesi wawancara calon anggota.</p>
+        </div>
+
+        <div class="form-container">
+            <div class="success-message" id="successMessage">Jadwal berhasil dikirim!</div>
+            <form id="interviewForm">
+                <div class="form-group">
+                    <label for="userName">Nama Peserta</label>
+                    <select id="userName" name="userName" placeholder="Cari nama peserta..." required></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="interviewDate">Pilih Tanggal Wawancara</label>
+                    <select id="interviewDate" name="interviewDate" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="interviewer">Pewawancara</label>
+                    <div class="custom-dropdown" id="customDropdown">
+                        <input type="hidden" id="interviewer" name="interviewer" required>
+                        <div class="dropdown-selected" id="dropdownSelected">
+                            <img src="" class="selected-interviewer-img" style="display: none;">
+                            <span class="selected-interviewer-name placeholder">Pilih pewawancara...</span>
+                        </div>
+                        <div class="dropdown-options" id="dropdownOptions">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">Kirim Jadwal</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const GAS_URL = 'https://script.google.com/macros/s/AKfycbxWhmNea9VMYo8oCihDKPy9qVGgIYj15_neeHMuZXwWqbwVpuz5F_0yWAvPh1b7eo96/exec';
+
+            const availableDates = [
+                "Sabtu, 23 Agustus 2025",
+                "Minggu, 24 Agustus 2025",
+                "Sabtu, 30 Agustus 2025",
+                "Minggu, 31 Agustus 2025"
+            ];
+
+            const interviewers = [
+                { name: 'Andi Pratama', imageUrl: 'https://i.pravatar.cc/150?u=andi' },
+                { name: 'Budi Santoso', imageUrl: 'https://i.pravatar.cc/150?u=budi' },
+                { name: 'Citra Lestari', imageUrl: 'https://i.pravatar.cc/150?u=citra' },
+                { name: 'Dewi Anggraini', imageUrl: 'https://i.pravatar.cc/150?u=dewi' }
+            ];
+
+            const form = document.getElementById('interviewForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            
+            const dateSelect = document.getElementById('interviewDate');
+            dateSelect.innerHTML = '<option value="">Pilih tanggal...</option>';
+            availableDates.forEach(date => {
+                const option = document.createElement('option');
+                option.value = date;
+                option.textContent = date;
+                dateSelect.appendChild(option);
+            });
+
+            const userNameSelect = new TomSelect('#userName', {
+                valueField: 'name', labelField: 'name', searchField: 'name', create: false,
+                load: function(query, callback) {
+                    fetch(GAS_URL)
+                        .then(response => response.json())
+                        .then(json => {
+                            if(json.result === 'success') {
+                                const names = json.data.map(name => ({name: name}));
+                                callback(names);
+                            } else { throw new Error(json.message); }
+                        }).catch(error => {
+                            alert('Gagal memuat daftar nama dari spreadsheet.\nError: ' + error.message);
+                            callback();
+                        });
+                }
+            });
+
+            const dropdown = document.getElementById('customDropdown');
+            const selectedDisplay = document.getElementById('dropdownSelected');
+            const optionsContainer = document.getElementById('dropdownOptions').querySelector('ul');
+            const hiddenInput = document.getElementById('interviewer');
+            
+            interviewers.forEach(interviewer => {
+                const li = document.createElement('li');
+                li.dataset.value = interviewer.name;
+                const img = document.createElement('img');
+                img.src = interviewer.imageUrl;
+                const span = document.createElement('span');
+                span.textContent = interviewer.name;
+                li.appendChild(img); li.appendChild(span); optionsContainer.appendChild(li);
+
+                // JAVASCRIPT YANG DIPERBARUI untuk logika klik pewawancara
+                li.addEventListener('click', () => {
+                    const displayImg = selectedDisplay.querySelector('.selected-interviewer-img');
+                    const displayName = selectedDisplay.querySelector('.selected-interviewer-name');
+
+                    displayImg.src = interviewer.imageUrl;
+                    displayImg.style.display = 'block';
+                    displayName.textContent = interviewer.name;
+                    displayName.classList.remove('placeholder');
+
+                    hiddenInput.value = interviewer.name;
+                    dropdown.classList.remove('active');
+                });
+            });
+            selectedDisplay.addEventListener('click', () => { dropdown.classList.toggle('active'); });
+            window.addEventListener('click', (e) => { if (!dropdown.contains(e.target)) { dropdown.classList.remove('active'); } });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Mengirim...';
+                
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                data.sheetName = 'Sheet2';
+
+                fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.result === 'success') {
+                        successMessage.classList.add('show');
+                        form.style.display = 'none';
+                    } else { throw new Error(result.message || 'Terjadi kesalahan'); }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Gagal mengirim jadwal. Silakan coba lagi.\nDetail: ' + error.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Kirim Jadwal';
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

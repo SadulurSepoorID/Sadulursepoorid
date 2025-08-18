@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penilaian Wawancara - Sadulur Sepoor Indonesia</title>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #333; padding: 20px 0; }
+        .container { max-width: 800px; width: 100%; margin: 20px; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .logo { width: 90px; height: 90px; margin: 0 auto 15px; }
+        .logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header h1 { color: #2563eb; font-size: 2rem; font-weight: 700; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .form-container { background: white; border-radius: 15px; padding: 30px 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 1.1rem; }
+        input, select, textarea, .ts-control { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; background: #fafafa; }
+        input:focus, select:focus, textarea:focus, .ts-control.focus { outline: none; border-color: #2563eb; background: white; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        textarea { resize: vertical; min-height: 80px; }
+        .btn { width: 100%; padding: 14px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; background: #2563eb; color: white; margin-top: 10px; }
+        .btn:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .btn:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
+        .success-message { display: none; text-align: center; padding: 20px; }
+        .success-message h2 { color: #10b981; }
+        .success-message.show { display: block; }
+        .question-block { background-color: #f9fafb; padding: 20px; border-radius: 10px; border: 1px solid #e5e7eb; margin-bottom: 20px; }
+        .rating-group { display: flex; justify-content: space-around; align-items: center; margin: 15px 0; flex-wrap: wrap; }
+        .rating-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .rating-item input[type="radio"] { margin-bottom: 5px; cursor: pointer; }
+        .rating-item label { font-weight: normal; font-size: 0.9rem; margin-bottom: 0; color: #6b7280; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="https://sadulursepoor.web.id/IMG/Logo%20SS.png" alt="Logo Komunitas">
+            </div>
+            <h1>Penilaian Wawancara</h1>
+            <p>Formulir untuk penilaian sesi wawancara calon anggota baru.</p>
+        </div>
+
+        <div class="form-container">
+            <div class="success-message" id="successMessage">
+                <h2>✅ Penilaian Berhasil Disimpan!</h2>
+                <p>Terima kasih, data penilaian telah berhasil dikirim ke spreadsheet.</p>
+            </div>
+            <form id="scoringForm">
+                <div class="form-group">
+                    <label for="userName">Nama Peserta</label>
+                    <select id="userName" name="userName" placeholder="Cari nama peserta..." required></select>
+                </div>
+
+                <div id="questionsContainer">
+                    </div>
+
+                <button type="submit" class="btn" id="submitBtn">Kirim Penilaian</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const GAS_URL = 'https://script.google.com/macros/s/AKfycbxWhmNea9VMYo8oCihDKPy9qVGgIYj15_neeHMuZXwWqbwVpuz5F_0yWAvPh1b7eo96/exec';
+
+            const questions = [
+                "Perkenalkan nama dari mana asal?",
+                "Tau komunitas Sadulur Sepoor Indonesia dari mana?",
+                "Apasih komunitas Sadulur Sepoor itu?",
+                "Kenapa kamu mau daftar untuk menjadi bagian dari komunitas Sadulur Sepoor (alasannya apa)?",
+                "Yang kamu tau apa aja kegiatan kita?",
+                "Ada harapan kedepannya buat Sadulur Sepoor?",
+                "Apa keterampilan kamu (fotografi, Videografi, Desain Grafis)?",
+                "Jika ada konflik dgn teman 1 organisasi bagaimana cara kamu mengatasi tanpa melibatkan organisasi ini?",
+                "Bagaimana cara kamu menjaga nama baik komunitas Sadulur Sepoor?",
+                "Apakah kamu bersedia untuk mematuhinya peraturannya internal komunitas Sadulur Sepoor dan bisa menjaga nama baik komunitas Sadulur Sepoor dan hubungan baik dengan pihak PT KAI?",
+                "Sudah Izin Orang Tua Sebelumnya ?"
+            ];
+
+            const questionsContainer = document.getElementById('questionsContainer');
+
+            questions.forEach((q, index) => {
+                const i = index + 1;
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'question-block';
+
+                questionBlock.innerHTML = `
+                    <div class="form-group">
+                        <label for="q${i}_notes">${i}. ${q}</label>
+                        <div class="rating-group">
+                            ${[1,2,3,4,5].map(val => `
+                            <div class="rating-item">
+                                <input type="radio" id="q${i}_score_${val}" name="q${i}_score" value="${val}" required>
+                                <label for="q${i}_score_${val}">${val}</label>
+                            </div>
+                            `).join('')}
+                        </div>
+                        <textarea id="q${i}_notes" name="q${i}_notes" placeholder="Catatan untuk jawaban..." required></textarea>
+                    </div>
+                `;
+                questionsContainer.appendChild(questionBlock);
+            });
+
+            const userNameSelect = new TomSelect('#userName', {
+                valueField: 'name', labelField: 'name', searchField: 'name', create: false,
+                load: function(query, callback) {
+                    fetch(GAS_URL)
+                        .then(response => response.json())
+                        .then(json => {
+                            if(json.result === 'success') {
+                                const names = json.data.map(name => ({name: name}));
+                                callback(names);
+                            } else { throw new Error(json.message); }
+                        }).catch(error => {
+                            console.error('Gagal memuat daftar nama:', error);
+                            alert('Gagal memuat daftar nama dari spreadsheet.\nError: ' + error.message);
+                            callback();
+                        });
+                }
+            });
+
+            const form = document.getElementById('scoringForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Mengirim...';
+                
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                // Tambahkan properti 'sheetName' untuk diarahkan ke fungsi yang benar di GAS
+                data.sheetName = 'Sheet3'; 
+
+                fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.result === 'success') {
+                        successMessage.classList.add('show');
+                        form.style.display = 'none';
+                    } else { throw new Error(result.message || 'Terjadi kesalahan saat mengirim data'); }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Gagal mengirim penilaian. Silakan coba lagi.\nDetail: ' + error.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Kirim Penilaian';
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
