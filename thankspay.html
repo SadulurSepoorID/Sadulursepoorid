@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bukti Pembayaran</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: #e8f0fe;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .receipt {
+            background: #fff;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 20px 50px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            clip-path: polygon(
+                0 5%, 
+                5% 0, 10% 5%, 15% 0, 20% 5%, 25% 0, 30% 5%, 35% 0, 40% 5%, 45% 0,
+                50% 5%, 55% 0, 60% 5%, 65% 0, 70% 5%, 75% 0, 80% 5%, 85% 0, 90% 5%, 95% 0, 100% 5%,
+                100% 97%, 
+                95% 100%, 90% 97%, 85% 100%, 80% 97%, 75% 100%, 70% 97%, 65% 100%, 60% 97%, 55% 100%, 
+                50% 97%, 45% 100%, 40% 97%, 35% 100%, 30% 97%, 25% 100%, 20% 97%, 15% 100%, 10% 97%, 5% 100%, 0 97%
+            );
+            overflow: hidden;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            margin-top: 30px;
+            max-width: 120px;
+        }
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #0a74da;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            animation: pop 0.5s ease forwards;
+            box-shadow: 0 0 20px rgba(10, 116, 218, 0.5);
+        }
+        .checkmark svg {
+            width: 40px;
+            height: 40px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: draw 0.8s forwards 0.5s ease-out;
+        }
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes pop {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+        h1 {
+            font-size: 1.8em;
+            color: #0a3d62;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        p.subtitle {
+            font-size: 1em;
+            color: #4a4a4a;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.4;
+        }
+        .summary {
+            border-top: 1px dashed #ccc;
+            border-bottom: 1px dashed #ccc;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+        .summary-item.total {
+            font-size: 1.2em;
+            font-weight: bold;
+            justify-content: space-between;
+        }
+        .barcode-id {
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            color: #333;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        .qr-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .qr-container canvas {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+            width: 150px !important;
+            height: 150px !important;
+        }
+        .qr-fallback {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            background: #f9f9f9;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            flex-direction: column;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #0a74da;
+            color: #fff;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #084e8a;
+        }
+        .share-btn {
+            background: #fff;
+            color: #0a74da;
+            border: 2px solid #0a74da;
+        }
+        .share-btn:hover {
+            background: #f0f8ff;
+        }
+        @media (max-width: 480px) {
+            .receipt {
+                padding: 20px 15px;
+            }
+            .logo {
+                max-width: 100px;
+            }
+            .checkmark {
+                width: 60px;
+                height: 60px;
+            }
+            .checkmark svg {
+                width: 30px;
+                height: 30px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt" id="receipt">
+        <img src="https://i.imgur.com/9rAb7r7.png" alt="Logo Komunitas" class="logo" />
+        <div class="checkmark">
+            <svg viewBox="0 0 52 52">
+                <path d="M14 27 l10 10 l20 -20" />
+            </svg>
+        </div>
+        <h1>Terima Kasih!</h1>
+        <p class="subtitle">Pembayaran Anda telah kami terima dengan sukses. Kami akan segera memproses pembayaran Anda.</p>
+
+        <div class="summary">
+            <div class="summary-item"><strong>Nama:</strong> <span id="nama">-</span></div>
+            <div class="summary-item"><strong>NIA:</strong> <span id="nia">-</span></div>
+            <div class="summary-item"><strong>Produk:</strong> <span id="produk">-</span></div>
+            <div class="summary-item"><strong>Metode Pembayaran:</strong> <span id="metode">-</span></div>
+            <div class="summary-item"><strong>Tanggal:</strong> <span id="tanggal">-</span></div>
+            <div class="summary-item"><strong>Jam:</strong> <span id="jam">-</span></div>
+
+            <hr style="border: none; border-top: 2px dashed #ccc; margin: 20px 0;" />
+
+            <div class="summary-item total">
+                <strong>Total:</strong> <span id="total">Rp0</span>
+            </div>
+        </div>
+
+        <!-- QR Code Container -->
+        <div class="qr-container">
+            <div id="qrcode"></div>
+            <div class="barcode-id" id="barcodeId">-</div>
+        </div>
+
+        <button onclick="shareToWhatsApp()" class="share-btn">📱 Bagikan ke WhatsApp</button>
+        <button onclick="window.location.href='pembayaran.html'">Kembali ke Halaman Pembayaran</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <script>
+        // Global variables
+        let currentBarcodeId = null;
+        let orderData = null;
+
+        function toTitleCase(str) {
+            return str.toLowerCase().split(' ').map(function(word) {
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(' ');
+        }
+
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', { 
+                style: 'currency', 
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(angka);
+        }
+
+        function generateBarcodeId() {
+            const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+            return 'SS' + randomPart;
+        }
+
+        // Alternative QR Code generation using qrcode-generator library
+        function generateQRCodeAlternative(text, containerId) {
+            try {
+                console.log('Generating QR code for:', text);
+                
+                // Create QR code
+                const qr = qrcode(0, 'M');
+                qr.addData(text);
+                qr.make();
+                
+                // Create HTML element
+                const qrElement = document.createElement('div');
+                qrElement.innerHTML = qr.createImgTag(3, 4); // cellSize=3, margin=4
+                
+                // Style the image
+                const img = qrElement.querySelector('img');
+                if (img) {
+                    img.style.border = '1px solid #ddd';
+                    img.style.borderRadius = '8px';
+                    img.style.width = '150px';
+                    img.style.height = '150px';
+                }
+                
+                // Insert into container
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
+                container.appendChild(qrElement);
+                
+                console.log('QR code generated successfully');
+                return true;
+            } catch (error) {
+                console.error('QR code generation failed:', error);
+                return false;
+            }
+        }
+
+        // Fallback QR code display
+        function showQRCodeFallback(text, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="qr-fallback">
+                    <div style="font-size: 24px; margin-bottom: 10px;">📱</div>
+                    <div>QR Code ID:</div>
+                    <div style="font-weight: bold; font-family: monospace; margin-top: 5px;">${text}</div>
+                </div>
+            `;
+        }
+
+        // Main QR code generation function
+        function generateQRCode(text) {
+            if (!text) {
+                console.error('No text provided for QR code');
+                return;
+            }
+
+            console.log('Attempting to generate QR code...');
+            
+            // Try alternative QR code generation
+            const success = generateQRCodeAlternative(text, 'qrcode');
+            
+            if (!success) {
+                console.log('Using fallback QR display');
+                showQRCodeFallback(text, 'qrcode');
+            }
+        }
+
+        // Get order data from various sources
+        function getOrderData() {
+            let data = null;
+            
+            // Try multiple storage methods
+            const storageKeys = ['orderSummary', 'paymentData', 'currentOrder'];
+            const storageMethods = [
+                () => localStorage,
+                () => sessionStorage
+            ];
+
+            for (const getStorage of storageMethods) {
+                try {
+                    const storage = getStorage();
+                    for (const key of storageKeys) {
+                        const item = storage.getItem(key);
+                        if (item) {
+                            data = JSON.parse(item);
+                            console.log(`Data found in ${storage === localStorage ? 'localStorage' : 'sessionStorage'} with key: ${key}`);
+                            break;
+                        }
+                    }
+                    if (data) break;
+                } catch (error) {
+                    console.log('Storage access failed:', error);
+                }
+            }
+            
+            // Try URL parameters as fallback
+            if (!data) {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('nama') || urlParams.has('total')) {
+                    data = {
+                        nama: urlParams.get('nama') || '-',
+                        nia: urlParams.get('nia') || '-',
+                        produk: urlParams.get('produk') || '-',
+                        metodePembayaran: urlParams.get('metode') || '-',
+                        totalPrice: parseInt(urlParams.get('total')) || 0,
+                        timestamp: urlParams.get('timestamp') || new Date().toISOString()
+                    };
+                    console.log('Data from URL parameters:', data);
+                }
+            }
+            
+            return data;
+        }
+
+        // Get or generate barcode ID
+        function getBarcodeId() {
+            let barcodeId = null;
+            
+            // Try to get from order data first
+            if (orderData && orderData.barcodeId) {
+                barcodeId = orderData.barcodeId;
+                console.log('Barcode ID from orderData:', barcodeId);
+                return barcodeId;
+            }
+            
+            // Try storage
+            try {
+                barcodeId = localStorage.getItem('currentBarcodeId') || 
+                           sessionStorage.getItem('currentBarcodeId') ||
+                           localStorage.getItem('barcodeId') ||
+                           sessionStorage.getItem('barcodeId');
+            } catch (error) {
+                console.log('Error accessing storage for barcodeId');
+            }
+            
+            // Generate new if not found
+            if (!barcodeId) {
+                barcodeId = generateBarcodeId();
+                console.log('Generated new barcodeId:', barcodeId);
+                
+                // Try to save it
+                try {
+                    localStorage.setItem('currentBarcodeId', barcodeId);
+                } catch (error) {
+                    try {
+                        sessionStorage.setItem('currentBarcodeId', barcodeId);
+                    } catch (error2) {
+                        console.log('Could not save barcodeId to storage');
+                    }
+                }
+            }
+            
+            return barcodeId;
+        }
+
+        // Format date and time
+        function formatDateTime(timestamp) {
+            try {
+                let date;
+                
+                if (typeof timestamp === 'string') {
+                    // Handle DD/MM/YYYY HH:MM:SS format
+                    const match = timestamp.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})/);
+                    if (match) {
+                        const [, day, month, year, hour, minute, second] = match;
+                        date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), 
+                                      parseInt(hour), parseInt(minute), parseInt(second));
+                    } else {
+                        date = new Date(timestamp);
+                    }
+                } else {
+                    date = new Date(timestamp);
+                }
+                
+                if (isNaN(date.getTime())) {
+                    throw new Error('Invalid date');
+                }
+                
+                const tanggal = date.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    timeZone: 'Asia/Jakarta'
+                });
+                
+                const jam = date.toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                    timeZone: 'Asia/Jakarta'
+                });
+                
+                return { tanggal, jam };
+            } catch (error) {
+                console.error('Error parsing timestamp:', error);
+                // Return current time as fallback
+                const now = new Date();
+                return {
+                    tanggal: now.toLocaleDateString('id-ID', {
+                        day: 'numeric',
+                        month: 'short', 
+                        year: 'numeric',
+                        timeZone: 'Asia/Jakarta'
+                    }),
+                    jam: now.toLocaleTimeString('id-ID', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                        timeZone: 'Asia/Jakarta'
+                    })
+                };
+            }
+        }
+
+        // Main initialization function
+        function initializePage() {
+            console.log('Initializing thanks page...');
+
+            // Get order data
+            orderData = getOrderData();
+            console.log('Order data:', orderData);
+
+            // Get barcode ID
+            currentBarcodeId = getBarcodeId();
+            console.log('Using barcode ID:', currentBarcodeId);
+
+            // Display barcode ID
+            document.getElementById('barcodeId').textContent = currentBarcodeId;
+
+            // Generate QR code
+            if (currentBarcodeId) {
+                setTimeout(() => {
+                    generateQRCode(currentBarcodeId);
+                }, 500); // Give time for DOM to be ready
+            }
+
+            // Fill in order data
+            if (orderData) {
+                document.getElementById('nama').textContent = orderData.nama || '-';
+                document.getElementById('nia').textContent = orderData.nia || '-';
+                document.getElementById('produk').textContent = 
+                    orderData.produk ? toTitleCase(orderData.produk) : '-';
+                document.getElementById('metode').textContent = orderData.metodePembayaran || '-';
+                
+                // Format price
+                if (orderData.totalPrice && orderData.totalPrice > 0) {
+                    document.getElementById('total').textContent = formatRupiah(orderData.totalPrice);
+                } else {
+                    document.getElementById('total').textContent = 'Rp 0';
+                }
+
+                // Format date and time
+                const dateTime = formatDateTime(orderData.timestamp || new Date());
+                document.getElementById('tanggal').textContent = dateTime.tanggal;
+                document.getElementById('jam').textContent = dateTime.jam;
+            } else {
+                console.warn('No order data found, using current time');
+                const dateTime = formatDateTime(new Date());
+                document.getElementById('tanggal').textContent = dateTime.tanggal;
+                document.getElementById('jam').textContent = dateTime.jam;
+            }
+
+            console.log('Page initialization complete');
+        }
+
+        // Share to WhatsApp function
+        function shareToWhatsApp() {
+            const nama = document.getElementById('nama').textContent;
+            const produk = document.getElementById('produk').textContent;
+            const total = document.getElementById('total').textContent;
+            const metode = document.getElementById('metode').textContent;
+            const tanggal = document.getElementById('tanggal').textContent;
+            const jam = document.getElementById('jam').textContent;
+            const barcodeId = document.getElementById('barcodeId').textContent;
+            
+            const message = `🧾 *BUKTI PEMBAYARAN*\n\n` +
+                          `👤 Nama: ${nama}\n` +
+                          `📦 Produk: ${produk}\n` +
+                          `💰 Total: ${total}\n` +
+                          `💳 Metode: ${metode}\n` +
+                          `📅 Tanggal: ${tanggal}\n` +
+                          `🕐 Jam: ${jam}\n` +
+                          `🔖 Barcode ID: ${barcodeId}\n\n` +
+                          `✅ Pembayaran telah berhasil diproses.\n` +
+                          `Terima kasih atas kepercayaan Anda!`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/6285212582758?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initializePage);
+        
+        // Fallback initialization
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializePage);
+        } else {
+            initializePage();
+        }
+
+        // Debug logging
+        console.log('Script loaded, checking QR code library...');
+        if (typeof qrcode === 'function') {
+            console.log('QR code library loaded successfully');
+        } else {
+            console.error('QR code library not loaded!');
+        }
+    </script>
+</body>
+</html>

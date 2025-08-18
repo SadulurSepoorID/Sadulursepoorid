@@ -15,7 +15,7 @@ const userCodes = [
 let currentWhatsAppUrl = "";
 
 // Muat Data Anggota dari JSON
-fetch('anggota.json')
+fetch('anggota2.json')
     .then(response => response.json())
     .then(data => {
         originalMembers = data;

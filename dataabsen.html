@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Absensi Anggota 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="dataabsen.css">
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-content">
+      <div class="logo-section">
+        <i class="fas fa-users-gear"></i>
+        <h1>Absensi Anggota 2025</h1>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <button class="nav-btn" onclick="showSearch()">
+        <i class="fas fa-search"></i>
+        <span>Cari Data</span>
+      </button>
+      <button class="nav-btn" onclick="showChart()">
+        <i class="fas fa-chart-bar"></i>
+        <span>Statistik</span>
+      </button>
+      <button class="nav-btn" onclick="showTop3()">
+        <i class="fas fa-trophy"></i>
+        <span>Nominasi Terbaik</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="content" class="container">
+  <div class="welcome-screen">
+    <div class="welcome-card">
+      <div class="welcome-icon">
+        <i class="fas fa-clipboard-check"></i>
+      </div>
+      <h2>Selamat Datang</h2>
+      <p>Pilih menu di atas untuk mulai mengakses data absensi anggota Sadulur Sepoor Indonesia 2025</p>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <i class="fas fa-search"></i>
+          <span>Pencarian Data</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-chart-line"></i>
+          <span>Analisis Statistik</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-medal"></i>
+          <span>Ranking Anggota</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Sadulur Sepoor Indonesia. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="app.js"></script>
+<script src="chart.js"></script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pemesanan Kemeja</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .hidden { display: none; }
+    img { max-width: 200px; }
+    label { display: block; margin-top: 10px; }
+    select, input[type="file"] { width: 100%; padding: 5px; }
+  </style>
+</head>
+<body>
+
+  <h2>Pesan Kemeja</h2>
+  <img src="https://link-gambar-kemeja.com/kemeja.jpg" alt="Kemeja">
+
+  <p><strong>Kemeja Komunitas</strong></p>
+
+  <label>Jumlah:
+    <button onclick="ubahJumlah(-1)">-</button>
+    <span id="jumlah">1</span>
+    <button onclick="ubahJumlah(1)">+</button>
+  </label>
+
+  <label>Pilih Jenis Lengan:
+    <select id="lengan" onchange="updateUkuran()">
+      <option value="">-- Pilih --</option>
+      <option value="pendek">Pendek</option>
+      <option value="panjang">Panjang</option>
+    </select>
+  </label>
+
+  <div id="ukuranWrapper" class="hidden">
+    <label>Pilih Ukuran:
+      <select id="ukuran" onchange="hitungHarga()">
+        <option value="">-- Pilih Ukuran --</option>
+        <option value="M">M</option>
+        <option value="L">L</option>
+        <option value="XL">XL</option>
+        <option value="XXL">XXL</option>
+        <option value="XXXL">XXXL</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="hargaWrapper" class="hidden">
+    <p>Total Harga: <strong id="totalHarga">Rp 0</strong></p>
+    <p>Scan QRIS untuk pembayaran:</p>
+    <img src="https://link-gambar-qris.com/qris.jpg" alt="QRIS">
+  </div>
+
+  <div id="uploadWrapper" class="hidden">
+    <label>Upload Bukti Pembayaran:
+      <input type="file" id="buktiBayar" accept="image/*">
+    </label>
+  </div>
+
+  <button id="submitBtn" class="hidden" onclick="kirimPesanan()">Kirim Pesanan</button>
+
+  <script>
+    let jumlah = 1;
+    let hargaPerItem = 0;
+
+    function ubahJumlah(n) {
+      jumlah = Math.max(1, jumlah + n);
+      document.getElementById("jumlah").textContent = jumlah;
+      hitungHarga();
+    }
+
+    function updateUkuran() {
+      const val = document.getElementById("lengan").value;
+      document.getElementById("ukuranWrapper").classList.toggle("hidden", val === "");
+    }
+
+    function hitungHarga() {
+      const lengan = document.getElementById("lengan").value;
+      const ukuran = document.getElementById("ukuran").value;
+      const hargaEl = document.getElementById("hargaWrapper");
+      const uploadEl = document.getElementById("uploadWrapper");
+      const submitEl = document.getElementById("submitBtn");
+
+      if (lengan && ukuran) {
+        // Tentukan harga dasar
+        if (lengan === "pendek") {
+          hargaPerItem = ["XXL", "XXXL"].includes(ukuran) ? 190000 : 180000;
+        } else if (lengan === "panjang") {
+          hargaPerItem = ["XXL", "XXXL"].includes(ukuran) ? 230000 : 220000;
+        }
+
+        const total = hargaPerItem * jumlah;
+        document.getElementById("totalHarga").textContent = `Rp ${total.toLocaleString("id-ID")}`;
+
+        hargaEl.classList.remove("hidden");
+        uploadEl.classList.remove("hidden");
+        submitEl.classList.remove("hidden");
+      }
+    }
+
+    function kirimPesanan() {
+      const lengan = document.getElementById("lengan").value;
+      const ukuran = document.getElementById("ukuran").value;
+      const file = document.getElementById("buktiBayar").files[0];
+
+      if (!file) return alert("Silakan upload bukti pembayaran!");
+
+      // Buat FormData dan kirim ke Web App (nanti kita sambung ke Apps Script)
+      const formData = new FormData();
+      formData.append("action", "order");
+      formData.append("jumlah", jumlah);
+      formData.append("lengan", lengan);
+      formData.append("ukuran", ukuran);
+      formData.append("harga", hargaPerItem * jumlah);
+      formData.append("bukti", file);
+
+      fetch("URL_WEB_APP", {
+        method: "POST",
+        body: formData,
+      }).then(res => res.text())
+        .then(res => alert("Pesanan berhasil dikirim!"))
+        .catch(err => alert("Gagal mengirim pesanan"));
+    }
+  </script>
+</body>
+</html>

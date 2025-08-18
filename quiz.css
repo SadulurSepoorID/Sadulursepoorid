@@ -30,7 +30,8 @@ label {
   font-size: 16px;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="email"] {
   width: 100%;
   padding: 12px 1px;
   margin-bottom: 20px;
@@ -40,7 +41,8 @@ input[type="text"] {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="email"]:focus {
   outline: none;
   border-color: #0077cc;
   box-shadow: 0 0 5px rgba(0, 119, 204, 0.5);
@@ -139,7 +141,8 @@ button[type="submit"]:hover {
     font-size: 14px;
   }
 
-  input[type="text"] {
+  input[type="text"],
+  input[type="email"] {
     padding: 10px 1px;
   }
 }
