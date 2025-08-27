@@ -7,18 +7,9 @@
     <link rel="stylesheet" href="anggota2.css">
     <script defer src="anggota2.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Background animated particles -->
-    <div class="particles-background">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-    </div>
-
     <header class="modern-header">
         <div class="header-content">
             <div class="header-main">
@@ -42,7 +33,7 @@
                 </div>
                 
                 <div class="filter-section">
-                    <button class="filter-btn" onclick="toggleSortOptions()">
+                    <button class="filter-btn">
                         <i class="fas fa-sliders-h"></i>
                         <span>Filter</span>
                     </button>
@@ -105,64 +96,69 @@
         
         <div id="membersContainer" class="members-grid"></div>
     </main>
-
-    <!-- Modern Code Verification Modal -->
+    
     <div id="codeVerificationPopup" class="modal-overlay">
         <div class="modal-container">
+            <button class="modal-close-btn" onclick="closeCodePopup()">&times;</button>
             <div class="modal-header">
-                <div class="modal-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h2>Verifikasi Akses</h2>
+                <i class="fab fa-whatsapp-square modal-icon"></i>
+                <h3>Verifikasi Aksi</h3>
             </div>
             <div class="modal-body">
-                <p id="verificationInfo" class="verification-text"></p>
-                <div class="input-group">
-                    <input type="text" id="verificationCodeInput" placeholder="Masukkan kode verifikasi">
-                    <div class="input-highlight"></div>
-                </div>
+                <p id="verificationInfo">Anda akan menghubungi anggota ini. Lanjutkan?</p>
+                <input type="text" id="verificationCodeInput" placeholder="Masukkan Kode Verifikasi...">
             </div>
             <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeCodePopup()">
-                    <i class="fas fa-times"></i>
-                    Batal
-                </button>
-                <button class="btn btn-primary" onclick="verifyCode()">
-                    <i class="fas fa-check"></i>
-                    Verifikasi
-                </button>
+                <button class="btn btn-secondary" onclick="closeCodePopup()">Batal</button>
+                <button class="btn btn-primary" onclick="verifyCode()">Verifikasi & Lanjutkan</button>
             </div>
-            <button class="btn btn-request" onclick="requestVerificationCode()">
-                <i class="fas fa-comment-alt"></i>
-                Minta Kode Verifikasi
-            </button>
         </div>
     </div>
+    
+    <div class="filter-overlay"></div>
 
-    <!-- Success Notification -->
-    <div id="successNotification" class="notification success-notification">
-        <div class="notification-content">
-            <div class="notification-icon success-icon">
-                <i class="fas fa-check"></i>
+    <footer>
+        <div class="footer-container">
+                <div class="social-media">
+                    <a href="https://www.facebook.com/share/1G32mgyres/?mibextid=qi2Omg" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.tiktok.com/@sadulur.sepoor_official?_t=8puqjiITt58&_r=1" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/sadulursepoor_id?igsh=bHNvcTI4ZmNiejBv" class="social-icon"><i class="fab fa-instagram"></i></a>
+                </div>
             </div>
-            <div class="notification-text">
-                <h3>Verifikasi Berhasil!</h3>
-                <p>Mengarahkan ke WhatsApp...</p>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Link Cepat</h3>
+                <ul class="footer-links">
+                    <li><a href="https://sadulursepoor.web.id/index.html">Beranda</a></li>
+                    <li><a href="https://sadulursepoor.web.id/index.html#about">Tentang Kami</a></li>
+                    <li><a href="https://sadulursepoor.web.id/profile2.html">Profil</a></li>
+                    <li><a href="https://wa.me/6285171058989">Kontak</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Layanan Kami</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html#footer-section">Edukasi Keselamatan di Perlintasan</a></li>
+                    <li><a href="index.html#footer-section">Kolaborasi dengan Instansi Terkait</a></li>
+                    <li><a href="index.html#footer-section">Kegitan Komunitas & Kampanye Sosial</a></li>
+                    <li><a href="index.html#footer-section">Dokumentasi & Pelaporan</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Hubungi Kami</h3>
+                <div class="contact-info">
+                    <p><i class="fas fa-map-marker-alt"></i> Jl. Kemiri Jaya, RT.05 RW.01 Kota Depok, Jawa Barat</p>
+                    <p><i class="fas fa-phone"></i> +62 852 1115 0310</p>
+                    <p><i class="fas fa-envelope"></i> sadulursepoor@gmail.com</p>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Error Notification -->
-    <div id="errorNotification" class="notification error-notification">
-        <div class="notification-content">
-            <div class="notification-icon error-icon">
-                <i class="fas fa-times"></i>
-            </div>
-            <div class="notification-text">
-                <h3>Kode Tidak Valid!</h3>
-                <p>Silakan periksa kembali kode verifikasi.</p>
-            </div>
+        
+        <div class="footer-bottom">
+            <p>© 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
         </div>
-    </div>
+      </footer>
 </body>
 </html>
