@@ -157,7 +157,7 @@ function requestPhoto(name, kta) {
     const isConfirmed = confirm(`Anda akan diarahkan ke WhatsApp untuk mengirim foto bagi anggota:\n\nNama: ${name}\nKTA: ${kta}\n\nLanjutkan?`);
     
     if (isConfirmed) {
-        const nomorAdmin = "6285211150310"; // Nomor admin dari footer
+        const nomorAdmin = "6282112964343"; // Nomor admin dari footer
         const pesan = `Halo Admin, saya ingin mengajukan penambahan foto untuk anggota atas nama *${name}* dengan nomor KTA *${kta}*. Berikut saya lampirkan fotonya.`;
         
         // Membuat URL WhatsApp yang aman
