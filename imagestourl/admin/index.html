@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to URL Converter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Ubah Gambar ke URL</h1>
+        <h2>Halaman Admin</h2>
+        <p class="subtitle">Unggah gambar Anda dan dapatkan URL yang siap pakai.</p>
+
+        <label for="file-input" class="custom-file-upload">
+            <span class="upload-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </span>
+            <span id="upload-text">Klik atau seret gambar ke sini</span>
+            <input id="file-input" type="file" accept="image/*">
+        </label>
+        
+        <div id="action-container" style="display: none; margin-top: 1.5rem;">
+            <select id="action-dropdown" class="select-dropdown">
+                <option value="">Pilih Aksi...</option>
+                <option value="continue">Lanjutkan</option>
+                <option value="custom">Atur Nama File</option>
+            </select>
+            <div id="rename-container" style="display: none; margin-top: 1rem;">
+                <input type="text" id="new-file-name" placeholder="Tulis nama file baru di sini (tanpa ekstensi)...">
+                <button id="start-upload-button" class="copy-button" style="margin-top: 1rem; display: none;">Lanjutkan</button>
+            </div>
+        </div>
+
+        <div id="loading-indicator">
+            <div class="spinner"></div>
+            Mengunggah...
+        </div>
+
+        <div id="result-container">
+            <p>URL gambar berhasil dibuat:</p>
+            <div id="result-url"></div>
+            <button class="copy-button" onclick="copyUrl()">Salin URL</button>
+            <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 1rem;">
+                <strong>Catatan:</strong> Mungkin perlu waktu 5-10 menit hingga gambar muncul. Silakan segarkan kembali URL tersebut jika belum terlihat.
+            </p>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
