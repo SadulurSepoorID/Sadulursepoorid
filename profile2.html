@@ -309,8 +309,8 @@
         <div id="berita-slider" class="slider flex overflow-x-auto snap-x transition-all duration-500 w-full">
         </div>
         <div class="flex justify-center mt-4 space-x-4">
-          <button onclick="prevSlide()" class="px-4 py-2 bg-blue-800 text-white rounded">Prev</button>
-          <button onclick="nextSlide()" class="px-4 py-2 bg-blue-800 text-white rounded">Next</button>
+          <button id="prev-slide-btn" class="px-4 py-2 bg-blue-800 text-white rounded">Prev</button>
+          <button id="next-slide-btn" class="px-4 py-2 bg-blue-800 text-white rounded">Next</button>
         </div>
       </div>
     </section>
@@ -373,238 +373,11 @@
   </footer>
 
   <script>
-
-    // Scripts from profile2.html
-    const kegiatan = [
-      { no: 1, nama: "Disiplin Perlintasan di JPL 14 Bukit Duri", tanggal: "2023-02-04" },
-      { no: 2, nama: "Disiplin Perlintasan di JPL 11 Rajawali", tanggal: "2023-02-19" },
-      { no: 3, nama: "Kampanye Antisipasi Pelecehan Seksual di Stasiun Pasar Senen", tanggal: "2023-03-04" },
-      { no: 4, nama: "Kampanye Antisipasi Pelecehan Seksual di Stasiun Jakarta Kota", tanggal: "2023-03-19" },
-      { no: 5, nama: "Disiplin Perlintasan + Berbagi Takjil di JPL 17 Duren Kalibata", tanggal: "2023-04-01" },
-      { no: 6, nama: "Posko Angkutan Lebaran 2023 di Stasiun Gambir, Pasar Senen, Bekasi, Cikarang", tanggal: "2023-04-14" },
-      { no: 7, nama: "Disiplin Perlintasan di JPL 1 Cikampek bersama Komunitas KBRC", tanggal: "2023-04-16" },
-      { no: 8, nama: "Disiplin Perlintasan di JPL 5 Angke", tanggal: "2023-06-03" },
-      { no: 9, nama: "Disiplin Perlintasan di JPL 78 Bekasi", tanggal: "2023-06-18" },
-      { no: 10, nama: "Disiplin Perlintasan di JPL 46 Pondok Jati", tanggal: "2023-08-05" },
-      { no: 11, nama: "Disiplin Perlintasan di JPL 23 Pasar Senen", tanggal: "2023-08-20" },
-      { no: 12, nama: "Posko Angkutan Nataru 2023 di Stasiun Gambir, Pasar Senen, Bekasi, Cikarang", tanggal: "2023-12-22" },
-      { no: 13, nama: "Disiplin Perlintasan di JPL 52 Kebayoran", tanggal: "2024-02-17" },
-      { no: 14, nama: "Disiplin Perlintasan di JPL 14 Bukit Duri", tanggal: "2024-02-25" },
-      { no: 15, nama: "Disiplin Perlintasan di JPL 78 Bekasi", tanggal: "2024-03-09" },
-      { no: 16, nama: "Disiplin Perlintasan + Berbagi Takjil di JPL 11 Rajawali", tanggal: "2024-03-19" },
-      { no: 17, nama: "Disiplin Perlintasan di JPL 29A Duri", tanggal: "2024-03-30" },
-      { no: 18, nama: "Posko Angkutan Lebaran 2024 di Stasiun Gambir, Pasar Senen, Bekasi, Cikarang", tanggal: "2024-04-04" },
-      { no: 19, nama: "Disiplin Perlintasan di JPL 26N Cilebut", tanggal: "2024-05-11" },
-      { no: 20, nama: "Disiplin Perlintasan di JPL 2A Kampung Bandan", tanggal: "2024-06-22" },
-      { no: 21, nama: "Disiplin Perlintasan di JPL 78 Bekasi", tanggal: "2024-06-29" },
-      { no: 22, nama: "Disiplin Perlintasan di JPL 1 Karet", tanggal: "2024-07-21" },
-      { no: 23, nama: "Disiplin Perlintasan di JPL 111 Cikarang", tanggal: "2024-08-31" },
-      { no: 24, nama: "Disiplin Perlintasan di JPL 23 Universitas Pancasila", tanggal: "2024-09-07" },
-      { no: 25, nama: "Disiplin Perlintasan di JPL 17 Kalibata", tanggal: "2024-10-06" },
-      { no: 26, nama: "Hias Lokomotif di Depo Lokomotif Cipinang", tanggal: "2024-10-18" },
-      { no: 27, nama: "Disiplin Perlintasan di JPL 19 Pasar Minggu", tanggal: "2024-11-02" },
-      { no: 28, nama: "Disiplin Perlintasan di JPL 1 Cikampek", tanggal: "2024-11-16" },
-      { no: 29, nama: "Disiplin Perlintasan di JPL 23 Pasar Senen", tanggal: "2024-11-30" },
-      { no: 30, nama: "Disiplin Perlintasan di JPL 17 Kemayoran", tanggal: "2024-12-14" },
-      { no: 31, nama: "Posko Angkutan Nataru 2024 di Stasiun Gambir, Pasar Senen, Bekasi, Cikarang", tanggal: "2024-12-23" },
-      { no: 32, nama: "Kampanye Antisipasi Pelecehan Seksual di Stasiun Pasar Senen", tanggal: "2025-03-23" },
-      { no: 32, nama: "Posko Angkutan Lebaran 2025 ", tanggal: "2025-03-24" },
-      { no: 33, nama: "Kampanye Antisipasi Pelecehan Seksual di Manggarai", tanggal: "2025-04-27" },
-      { no: 34, nama: "Disiplin Perlintasan di JPL 18 Pasar Minggu", tanggal: "2025-05-10" },
-    { no: 35, nama: "Kunjungan ke Depo LRT Jabodebek", tanggal: "2025-05-24" },
-    { no: 36, nama: "Disiplin Perlintasan di JPL 251 Citayam", tanggal: "2025-05-31" },
-    { no: 37, nama: "Hias Lokomotif di Depo Lokomotif Cipinang", tanggal: "2025-06-01" },
-    { no: 38, nama: "Disiplin Perlintasan di JPL 81 Bekasi", tanggal: "2025-06-14" },
-    { no: 39, nama: "Bersih-bersih di Musholla Al-Ikhlas Pademangan", tanggal: "2025-08-09" },
-    { no: 40, nama: "Disiplin Perlintasan di JPL 30 Pasar Senen", tanggal: "2025-06-29" },
-    { no: 41, nama: "Disiplin Perlintasan di JPL 17 Kemayoran", tanggal: "2025-07-13" },
-    { no: 42, nama: "Bersih-Bersih di Masjid Kampung Bandan", tanggal: "2025-09-13" },
-    { no: 43, nama: "Disiplin Perlintasan di JPL 111 Cikarang", tanggal: "2025-07-26" },
-    { no: 44, nama: "Disiplin Perlintasan di JPL 14 Manggarai", tanggal: "2025-08-31" },
-    { no: 45, nama: "Disiplin Perlintasan di JPL 29A Duri", tanggal: "2025-08-24" },
-    { no: 46, nama: "Bersih-Bersih di Masjid Al-Huda", tanggal: "2025-10-04" },
-    { no: 47, nama: "Disiplin Perlintasan di JPL 1 Karet", tanggal: "2025-09-20" },
-    { no: 49, nama: "Disiplin Perlintasan di JPL 17 Kemayoran", tanggal: "2025-09-27" },
-    { no: 50, nama: "Disiplin Perlintasan di JPL 17 Duren Kalibata", tanggal: "2025-10-11" },
-    { no: 51, nama: "Disiplin Perlintasan di JPL 154 Karawang", tanggal: "2025-10-25" },
-    { no: 52, nama: "Community Gathering di Kebun Raya Cibodas", tanggal: "2025-11-08" },
-    { no: 53, nama: "Disiplin Perlintasan di JPL 78 Bekasi", tanggal: "2025-11-15" },
-    { no: 54, nama: "Disiplin Perlintasan di JPL 14 Manggarai", tanggal: "2025-11-29" },
-    { no: 55, nama: "Disiplin Perlintasan di JPL 251 Citayam", tanggal: "2025-12-13" },
-    { no: 56, nama: "Posko Angkutan Nataru 2025/2026", tanggal: "2025-12-XX" }
-    ];
-    const berita = [
-      {
-        judul: "Gandeng Komunitas RailFans KAI Daop 1 Jakarta Peringati 10 Tahun Operasional KA Jayabaya",
-        sumber: "Wartakotalive.com",
-        url: "https://www.google.com/amp/s/wartakota.tribunnews.com/amp/2024/10/18/gandeng-komunitas-rail-fans-kai-daop-1-jakarta-peringati-10-tahun-operasional-ka-jayabaya",
-        deskripsi: "KA Jayabaya, layanan kereta eksekutif dan ekonomi milik PT KAI, resmi genap 10 tahun pada Jumat, 18 Oktober 2024. Melayani rute Pasar Senen–Malang via lintas utara Jawa, kereta ini dikenal cepat dan andal. Sebagai bagian dari perayaan, KAI Daop 1 Jakarta bersama Sadulur Spoor menghias lokomotif KA Jayabaya. Pada hari yang sama, rangkaian terbaru berbahan baja nirkarat buatan PT INKA resmi mulai digunakan menggantikan rangkaian sebelumnya."
-      },
-      {
-        judul: "Tingkatkan Keselamatan yang Berkelanjutan, KAI Daop 1 Jakarta Kembali Gelar Sosialisasi",
-        sumber: "radaronline.com",
-        url: "https://www.radaronline.id/2024/10/07/tingkatkan-keselamatan-yang-berkelanjutan-kai-daop-1-jakarta-kembali-gelar-sosialisasi-di-perlintasan-sebidang/",
-        deskripsi: "PT KAI Daop 1 Jakarta kembali menggelar sosialisasi keselamatan di perlintasan sebidang untuk meningkatkan kesadaran masyarakat akan pentingnya disiplin berlalu lintas. Bersama komunitas Sadulur Spoor, kegiatan digelar di JPL 17 Duren Kalibata pada Minggu, 6 Oktober 2024. PLH Manager Humas Daop 1, Tohari, menyebut sejak Januari 2024, sosialisasi telah dilakukan 35 kali di berbagai perlintasan, baik yang terjaga maupun tidak."
-      },
-      {
-        judul: "KAI Daop 1 Jakarta Galakkan Sosialisasi BERTEMAN untuk Keselamatan di Perlintasan Sebidang",
-        sumber: "pertamanews.id",
-        url: "https://pertamanews.id/2024/09/09/kai-daop-1-jakarta-galakkan-sosialisasi-berteman-untuk-keselamatan-di-perlintasan-sebidang/",
-        deskripsi: "“BERTEMAN” (BERhenti, TEngok kiri-kanan, aMAN) merupakan slogan keselamatan yang digaungkan mantan Direktur Keselamatan DJKA, Edi Nursalam, dan kini akrab di dunia perkeretaapian. KAI Daop 1 Jakarta rutin mengusung tema ini dalam sosialisasi keselamatan di perlintasan sebidang, stasiun, sekolah, dan lokasi lainnya. Manager Humas Daop 1, Ixfan Hendriwintoko, menjelaskan bahwa kampanye ini melibatkan KAI dan para pemangku kepentingan."
-      },
-      {
-        judul: "KAI Daop 1 Jakarta Gelar Kampanye Cegah Tindak Kekerasan Seksual Di Stasiun Jakarta Kota",
-        sumber: "radaronline.id",
-        url: "https://www.radaronline.id/2025/04/27/tingkatkan-kenyamanan-pelanggan-kai-daop-1-jakarta-gelar-kampanye-cegah-tindak-kekerasan-seksual-di-stasiun-jakarta-kota/",
-        deskripsi: "PT KAI Daop 1 Jakarta bersama komunitas Sadulur Sepur Indonesia menggelar kampanye pencegahan kekerasan dan/atau pelecehan seksual di Stasiun Jakarta Kota pada Minggu (27/4). Manager Humas KAI Daop 1, Ixfan Hendri Wintoko, menyebut kegiatan ini sebagai langkah preventif untuk meningkatkan kesadaran masyarakat. Ia mengimbau pelanggan segera mencegah dan melaporkan jika mengalami atau menyaksikan tindakan tersebut."
-      },
-      {
-        judul: "Marak Pelecehan Seks di Kereta dan Stasiun, Ini Imbauan PT KAI",
-        sumber: "wartakota.tribunnews.com",
-        url: "https://wartakota.tribunnews.com/2025/04/27/marak-pelecehan-seks-di-kereta-dan-stasiun-ini-imbauan-pt-kai",
-        deskripsi: "KAI Daop 1 Jakarta bersama komunitas Sadulur Sepur Indonesia menggelar kampanye pencegahan pelecehan seksual di Stasiun Jakarta Kota pada Minggu (27/4/2025). Manager Humas Daop 1, Ixfan Hendri Wintoko, menyebut kegiatan ini sebagai langkah preventif untuk meningkatkan kesadaran masyarakat, khususnya di transportasi umum seperti kereta api. Ia juga mengajak pengguna jasa untuk peduli dan berani melapor jika melihat atau mengalami kejadian serupa."
-      },
-      {
-        judul: "KAI Daop 1 Jakarta Gelar Sosialisasi Keselamatan di Perlintasan Bersama Railfans dan FKDM",
-        sumber: "radaronline.id",
-        url: "https://www.radaronline.id/2025/05/10/kai-daop-1-jakarta-gelar-sosialisasi-keselamatan-di-perlintasan-sebidang-bersama-railfans-dan-fkdm/",
-        deskripsi: "KAI Daop 1 Jakarta terus menggalakkan upaya keselamatan di perlintasan sebidang. Pada Sabtu (10/5), sosialisasi digelar di JPL 18, Jalan Kemuning Raya, Pejaten Timur. Manager Humas Daop 1, Ixfan Hendriwintoko, menyampaikan kegiatan ini merupakan kolaborasi dengan komunitas Sadulur Sepoor, FKDM, serta RW dan RT setempat. Sebanyak 44 peserta ikut serta, menunjukkan kepedulian tinggi masyarakat terhadap keselamatan perjalanan KA dan pengguna jalan."
-      },
-      {
-        judul: "Lokomotif KA Bima Dihias, Momen Spesial 58 Tahun Melayani Penumpang antara Jakarta - Surabaya",
-        sumber: "adatah.com",
-        url: "https://www.adatah.com/peristiwa/24415267728/lokomotif-ka-bima-dihias-momen-spesial-58-tahun-melayani-penumpang-antara-jakarta-surabaya",
-        deskripsi: "KA Bima, salah satu kereta legendaris milik PT KAI, resmi berusia 58 tahun pada Minggu, 1 Juni 2025. Kereta ini pertama kali beroperasi pada 1 Juni 1967 dan terus melayani rute Jakarta–Surabaya via Yogyakarta.Sebagai bentuk apresiasi atas perjalanan panjangnya, KAI Daop 1 Jakarta bersama komunitas Sadulur Sepoor dan Edan Sepoor menggelar kegiatan menghias lokomotif KA Bima di Depo Lokomotif Cipinang pada hari yang sama."
-      },
-      {
-        judul: "KAI Daop 1 Jakarta dan Komunitas Sadulur Spoor Ajak Masyarakat Tertib di Perlintasan Sebidang",
-        sumber: "fokusindonesia.com",
-        url: "https://fokusindonesia.com/kai-daop-1-jakarta-dan-komunitas-sadulur-spoor-ajak-masyarakat-tertib-di-perlintasan-sebidang-jpl-46-stasiun-pondok-jati/",
-        deskripsi: "KAI Daop 1 Jakarta bersama komunitas Sadulur Spoor menggelar sosialisasi keselamatan di perlintasan sebidang pada Minggu (13/7) di JPL 46 Stasiun Pondok Jati, Jakarta Timur. Kegiatan ini bertujuan meningkatkan keselamatan perjalanan KA dan pengguna jalan. Perlintasan JPL 46 dikenal padat kendaraan, dengan jalan sempit, jarak antar palang hanya tiga meter, dan langsung terhubung ke perempatan, sehingga pengendara harus ekstra waspada."
-      },
-    ];
-    const gallery = [
-      {
-        src: "https://i.imgur.com/AyU0H7H.jpeg",
-        deskripsi: "Komunitas Railfans Sadulur Sepor ikut berpartisipasi dalam acara RAILFANS GATHERING oleh KAI di Semarang, 9-10 Juni 2022."
-      },
-      {
-        src: "https://i.imgur.com/NDEAe8Q.jpeg",
-        deskripsi: "Penghargaan atas dukungan Komunitas dalam pengembangan perkeretaapian Indonesia – Terbaik 2022."
-      },
-      {
-        src: "https://i.imgur.com/ysOE0NJ.jpeg",
-        deskripsi: "Uji coba LRT JABODEBEK ke-2 bersama komunitas railfans lain – pengalaman terbatas yang berkesan."
-      },
-      {
-        src: "https://i.imgur.com/68NpOiv.jpeg",
-        deskripsi: "Sadulur Sepoor hadir di COMMUNITY DAY EMPIRE CIKARANG (19/11/23) di Kafe Empire Cikarang."
-      },
-      {
-        src: "https://i.imgur.com/8qHVVRF.jpeg",
-        deskripsi: "Posko Angkutan Kereta Api Lebaran 2024 di Stasiun Gambir, Pasar Senen, Bekasi, dan Cikarang – kolaborasi dengan KAI."
-      },
-      {
-        src: "https://i.imgur.com/90xHtf6.jpeg",
-        deskripsi: "Kunjungan proyek MRT JAKARTA Fase 2 oleh Komunitas Sadulur Sepoor (13/6/24) – disambut hangat oleh tim MRT."
-      },
-      {
-        src: "https://Sadulursepoor.web.id/IMG/Kunjungan Depo Cipinang 2024.jpg",
-        deskripsi: "Hias Lokomotif di Depo Lokomotif Cipinang untuk memeriahkan HUT KA Jayabaya ke-10 dan menyambut pergantian rangkaian menjadi Stainless Steel New Generation (18/10/2024)"
-      },
-      {
-        src: "https://Sadulursepoor.web.id/IMG/Posko Nataru 2024.jpg",
-        deskripsi: "Posko Angkutan Kereta Api Nataru 2024/2025 di Stasiun Gambir – kolaborasi dengan KAI."
-      },
-      {
-        src: "https://Sadulursepoor.web.id/IMG/Posko Lebaran 2025.jpg",
-        deskripsi: "Posko Angkutan Kereta Api Lebaran 2025 di Stasiun Gambir dan Stasiun Cikarang – kolaborasi dengan KAI."
-      },
-      {
-        src: "https://Sadulursepoor.web.id/IMG/Peluncuran Buku Kompas TV.jpg",
-        deskripsi: "Menghadiri undangan peluncuran buku terbaru — Didiek Hartantyo: Masinis Yang Melintasi Badai di Studio 2 Kompas TV (16/05/2025)"
-      },
-      {
-        src: "https://Sadulursepoor.web.id/IMG/Kunjungan Depo LRT Jabodebek.jpg",
-        deskripsi: "Kolaborasi dengan komunitas Edan Sepur Indonesia berkunjung ke Depo LRT Jabodebek di Jatimulya, Bekasi (24/05/2025)"
-      },
-      {
-        src: "https://Sadulursepoor.web.id/IMG/Kunjungan Depo Cipinang.jpg",
-        deskripsi: "Hias Lokomotif di Depo Lokomotif Cipinang untuk memeriahkan HUT KA Bima Ke-58 bekerjasama dengan komunitas Edan Sepur Indonesia"
-      }
-    ];
-
-    function groupKegiatanByYear() {
-      const grouped = {};
-      kegiatan.forEach(item => {
-        const year = dayjs(item.tanggal).year();
-        if (!grouped[year]) {
-          grouped[year] = [];
-        }
-        grouped[year].push(item);
-      });
-      
-      Object.keys(grouped).forEach(year => {
-        grouped[year].sort((a, b) => dayjs(a.tanggal).diff(dayjs(b.tanggal)));
-        grouped[year].forEach((item, index) => {
-          item.yearNumber = index + 1;
-        });
-      });
-      
-      return grouped;
-    }
-
+    // Define variables in a broader scope to be accessed by functions
     let currentYear = 2025;
+    let currentSlide = 0;
 
-    function renderKegiatanTables() {
-      const container = document.getElementById("kegiatan-container");
-      const groupedKegiatan = groupKegiatanByYear();
-      
-      container.innerHTML = '';
-      
-      Object.keys(groupedKegiatan).sort((a, b) => b - a).forEach(year => { // Sort years descending
-        const yearTable = document.createElement("div");
-        yearTable.className = `year-table ${year == currentYear ? 'active' : ''}`;
-        yearTable.id = `table-${year}`;
-        
-        const tableContainer = document.createElement("div");
-        tableContainer.className = "table-container";
-        
-        const table = document.createElement("table");
-        table.className = "w-full table-auto border-collapse";
-        
-        const thead = document.createElement("thead");
-        thead.className = "bg-blue-100 sticky top-0";
-        thead.innerHTML = `
-          <tr>
-            <th class="p-3 border border-blue-300 text-left">No</th>
-            <th class="p-3 border border-blue-300 text-left">Kegiatan dan Tempat</th>
-            <th class="p-3 border border-blue-300 text-left">Tanggal Pelaksanaan</th>
-          </tr>
-        `;
-        
-        const tbody = document.createElement("tbody");
-        tbody.className = "text-sm";
-        
-        groupedKegiatan[year].forEach((item, index) => {
-          const row = document.createElement("tr");
-          row.className = index % 2 === 0 ? "bg-white" : "bg-blue-50";
-          row.innerHTML = `
-            <td class="p-3 border border-blue-200">${item.yearNumber}</td>
-            <td class="p-3 border border-blue-200">${item.nama}</td>
-            <td class="p-3 border border-blue-200">${dayjs(item.tanggal).format("D MMMM YYYY")}</td>
-          `;
-          tbody.appendChild(row);
-        });
-        
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        tableContainer.appendChild(table);
-        yearTable.appendChild(tableContainer);
-        container.appendChild(yearTable);
-      });
-    }
-
+    // Functions that can be called from HTML (onclick) need to be global
     function showYear(year) {
       document.querySelectorAll('.year-table').forEach(table => {
         table.classList.remove('active');
@@ -617,65 +390,6 @@
       currentYear = year;
     }
 
-    renderKegiatanTables();
-    document.getElementById(`tab-${currentYear}`).classList.add('active');
-
-    const now = dayjs();
-    const nextKegiatanList = kegiatan
-        .map(k => ({...k, dateObj: dayjs(k.tanggal, 'YYYY-MM-DD')}))
-        .filter(k => k.dateObj.isAfter(now) || k.dateObj.isSame(now, 'day'))
-        .sort((a,b) => a.dateObj - b.dateObj);
-    
-    const next = nextKegiatanList[0];
-
-    if (next) {
-        const selisih = next.dateObj.diff(now, 'day');
-        let teksSelisih = "";
-
-        if (selisih === 0) {
-            teksSelisih = "(hari ini)";
-        } else {
-            teksSelisih = `(${selisih + 1} hari lagi)`;
-        }
-        document.getElementById("next-kegiatan").innerText = `${next.nama} - ${next.dateObj.format("D MMMM YYYY")} ${teksSelisih}`;
-    } else {
-        document.getElementById("next-kegiatan").innerText = "Tidak ada kegiatan berikutnya.";
-    }
-
-
-    const beritaSlider = document.getElementById("berita-slider");
-    berita.forEach((b, i) => {
-      const slide = document.createElement("div");
-      slide.className = "slide-item bg-white border p-6 shadow-md rounded mx-auto w-full max-w-screen-md";
-      slide.innerHTML = `<h3 class='text-xl font-bold mb-2'>${b.judul}</h3><p class='text-sm text-blue-500 mb-1'>Sumber: <a href='${b.url}' class='underline' target='_blank'>${b.sumber}</a></p><p>${b.deskripsi}</p>`;
-      beritaSlider.appendChild(slide);
-    });
-
-    let currentSlide = 0;
-    function showSlide(index) {
-      beritaSlider.scrollTo({ left: index * beritaSlider.offsetWidth, behavior: 'smooth' });
-      currentSlide = index;
-    }
-    function nextSlide() {
-      currentSlide = (currentSlide + 1) % berita.length;
-      showSlide(currentSlide);
-    }
-    function prevSlide() {
-      currentSlide = (currentSlide - 1 + berita.length) % berita.length;
-      showSlide(currentSlide);
-    }
-    setInterval(nextSlide, 5000);
-
-    const galeriContainer = document.getElementById("gallery");
-    gallery.forEach(g => {
-      const item = document.createElement("div");
-      item.innerHTML = `
-        <div class="cursor-pointer group">
-          <img src="${g.src}" class="rounded shadow-md transition duration-300 hover:opacity-80" onclick="showModal('${g.deskripsi.replace(/'/g, "\\'")}')">
-        </div>`;
-      galeriContainer.appendChild(item);
-    });
-
     function showModal(text) {
       document.getElementById('modal-text').innerText = text;
       document.getElementById('modal').classList.remove('hidden');
@@ -686,6 +400,139 @@
       document.getElementById('modal').classList.add('hidden');
       document.getElementById('modal').classList.remove('flex');
     }
+
+    // Main logic to fetch data and render the page
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('profile2.json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const { kegiatan, berita, gallery } = data;
+          
+          // --- RENDER KEGIATAN TABLE ---
+          function renderKegiatanTables() {
+            const groupKegiatanByYear = () => {
+              const grouped = {};
+              kegiatan.forEach(item => {
+                const year = dayjs(item.tanggal).year();
+                if (!grouped[year]) {
+                  grouped[year] = [];
+                }
+                grouped[year].push(item);
+              });
+              Object.keys(grouped).forEach(year => {
+                grouped[year].sort((a, b) => dayjs(a.tanggal).diff(dayjs(b.tanggal)));
+                grouped[year].forEach((item, index) => {
+                  item.yearNumber = index + 1;
+                });
+              });
+              return grouped;
+            };
+
+            const container = document.getElementById("kegiatan-container");
+            const groupedKegiatan = groupKegiatanByYear();
+            container.innerHTML = ''; // Clear previous content
+            Object.keys(groupedKegiatan).sort((a, b) => b - a).forEach(year => {
+              const yearTable = document.createElement("div");
+              yearTable.className = `year-table ${year == currentYear ? 'active' : ''}`;
+              yearTable.id = `table-${year}`;
+              const tableContainer = document.createElement("div");
+              tableContainer.className = "table-container";
+              const table = document.createElement("table");
+              table.className = "w-full table-auto border-collapse";
+              const thead = document.createElement("thead");
+              thead.className = "bg-blue-100 sticky top-0";
+              thead.innerHTML = `
+                <tr>
+                  <th class="p-3 border border-blue-300 text-left">No</th>
+                  <th class="p-3 border border-blue-300 text-left">Kegiatan dan Tempat</th>
+                  <th class="p-3 border border-blue-300 text-left">Tanggal Pelaksanaan</th>
+                </tr>`;
+              const tbody = document.createElement("tbody");
+              tbody.className = "text-sm";
+              groupedKegiatan[year].forEach((item, index) => {
+                const row = document.createElement("tr");
+                row.className = index % 2 === 0 ? "bg-white" : "bg-blue-50";
+                row.innerHTML = `
+                  <td class="p-3 border border-blue-200">${item.yearNumber}</td>
+                  <td class="p-3 border border-blue-200">${item.nama}</td>
+                  <td class="p-3 border border-blue-200">${dayjs(item.tanggal).format("D MMMM YYYY")}</td>`;
+                tbody.appendChild(row);
+              });
+              table.appendChild(thead);
+              table.appendChild(tbody);
+              tableContainer.appendChild(table);
+              yearTable.appendChild(tableContainer);
+              container.appendChild(yearTable);
+            });
+          }
+          renderKegiatanTables();
+          document.getElementById(`tab-${currentYear}`).classList.add('active');
+
+
+          // --- RENDER NEXT KEGIATAN ---
+          const now = dayjs();
+          const nextKegiatanList = kegiatan
+              .map(k => ({...k, dateObj: dayjs(k.tanggal, 'YYYY-MM-DD')}))
+              .filter(k => k.dateObj.isAfter(now) || k.dateObj.isSame(now, 'day'))
+              .sort((a,b) => a.dateObj - b.dateObj);
+          const next = nextKegiatanList[0];
+          if (next) {
+              const selisih = next.dateObj.diff(now, 'day');
+              let teksSelisih = (selisih === 0) ? "(hari ini)" : `(${selisih + 1} hari lagi)`;
+              document.getElementById("next-kegiatan").innerText = `${next.nama} - ${next.dateObj.format("D MMMM YYYY")} ${teksSelisih}`;
+          } else {
+              document.getElementById("next-kegiatan").innerText = "Tidak ada kegiatan berikutnya.";
+          }
+
+
+          // --- RENDER BERITA SLIDER ---
+          const beritaSlider = document.getElementById("berita-slider");
+          berita.forEach(b => {
+            const slide = document.createElement("div");
+            slide.className = "slide-item bg-white border p-6 shadow-md rounded mx-auto w-full max-w-screen-md";
+            slide.innerHTML = `<h3 class='text-xl font-bold mb-2'>${b.judul}</h3><p class='text-sm text-blue-500 mb-1'>Sumber: <a href='${b.url}' class='underline' target='_blank'>${b.sumber}</a></p><p>${b.deskripsi}</p>`;
+            beritaSlider.appendChild(slide);
+          });
+          
+          const showSlide = (index) => {
+            beritaSlider.scrollTo({ left: index * beritaSlider.offsetWidth, behavior: 'smooth' });
+            currentSlide = index;
+          };
+          const nextSlide = () => {
+            currentSlide = (currentSlide + 1) % berita.length;
+            showSlide(currentSlide);
+          };
+          const prevSlide = () => {
+            currentSlide = (currentSlide - 1 + berita.length) % berita.length;
+            showSlide(currentSlide);
+          };
+
+          document.getElementById('prev-slide-btn').onclick = prevSlide;
+          document.getElementById('next-slide-btn').onclick = nextSlide;
+          setInterval(nextSlide, 5000);
+
+
+          // --- RENDER GALLERY ---
+          const galeriContainer = document.getElementById("gallery");
+          gallery.forEach(g => {
+            const item = document.createElement("div");
+            item.innerHTML = `
+              <div class="cursor-pointer group">
+                <img src="${g.src}" class="rounded shadow-md transition duration-300 hover:opacity-80" onclick="showModal('${g.deskripsi.replace(/'/g, "\\'")}')">
+              </div>`;
+            galeriContainer.appendChild(item);
+          });
+        })
+        .catch(error => {
+          console.error('Gagal memuat data:', error);
+          document.querySelector('main').innerHTML = '<p class="text-center text-red-500 font-semibold p-10">Gagal memuat konten. Silakan periksa koneksi Anda atau coba lagi nanti.</p>';
+        });
+    });
   </script>
 </body>
 </html>

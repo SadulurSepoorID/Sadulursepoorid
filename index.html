@@ -75,31 +75,31 @@
         }
 
         .menu {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    position: fixed;
-    top: 74px;
-    right: 0; /* Langsung 0 agar sejajar dengan tepi kanan */
-    width: 300px;
-    height: calc(100vh - 74px); /* Sesuaikan tinggi dengan posisi top */
-    background-color: var(--white);
-    transition: var(--transition);
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-    padding: 20px 0;
-    z-index: 999;
-    transform: translateX(100%); /* Sembunyikan ke kanan */
-}
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: fixed;
+            top: 74px;
+            right: 0;
+            width: 300px;
+            height: calc(100vh - 74px);
+            background-color: var(--white);
+            transition: var(--transition);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            z-index: 999;
+            transform: translateX(100%);
+        }
 
-.menu.active {
-    transform: translateX(0); /* Geser masuk */
-}
+        .menu.active {
+            transform: translateX(0);
+        }
 
-.menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+        .menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
         .menu ul li {
             padding: 12px 25px;
@@ -288,23 +288,23 @@
         }
         
         .image-wrapper {
-    position: relative;
-    width: 100%;
-    padding-top: 75%; /* 4:3 aspect ratio (3/4 = 0.75) */
-    overflow: hidden;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
+            position: relative;
+            width: 100%;
+            padding-top: 75%;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
 
-.image-wrapper img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+        .image-wrapper img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .pengurus-container {
             display: flex;
@@ -466,177 +466,269 @@
         }
 
         footer {
-        background-color: #333;
-        color: #fff;
-        padding: 60px 0 20px;
-        font-family: 'Arial', sans-serif;
-    }
+            background-color: #333;
+            color: #fff;
+            padding: 60px 0 20px;
+            font-family: 'Arial', sans-serif;
+        }
 
-    .footer-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: 0 20px;
-    }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
 
-    .footer-section {
-        flex: 1;
-        min-width: 250px;
-        margin-bottom: 30px;
-        padding-right: 20px;
-    }
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 30px;
+            padding-right: 20px;
+        }
 
-    .footer-logo img {
-        height: 50px;
-        margin-bottom: 15px;
-    }
+        .footer-logo img {
+            height: 50px;
+            margin-bottom: 15px;
+        }
 
-    .footer-description {
-        color: #ccc;
-        margin-bottom: 20px;
-        line-height: 1.6;
-    }
+        .footer-description {
+            color: #ccc;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
 
-    .social-media {
-        display: flex;
-        margin-top: 20px;
-    }
+        .social-media {
+            display: flex;
+            margin-top: 20px;
+        }
 
-    .social-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        background-color: #444;
-        border-radius: 50%;
-        margin-right: 10px;
-        color: #fff;
-        transition: all 0.3s ease;
-    }
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #444;
+            border-radius: 50%;
+            margin-right: 10px;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
 
-    .social-icon:hover {
-        background-color: #0078ff;
-        transform: translateY(-3px);
-    }
+        .social-icon:hover {
+            background-color: #0078ff;
+            transform: translateY(-3px);
+        }
 
-    .footer-title {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 20px;
-        position: relative;
-        padding-bottom: 10px;
-    }
+        .footer-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
 
-    .footer-title:after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 50px;
-        height: 2px;
-        background-color: #0078ff;
-    }
+        .footer-title:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background-color: #0078ff;
+        }
 
-    .footer-links {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-    .footer-links li {
-        margin-bottom: 12px;
-    }
+        .footer-links li {
+            margin-bottom: 12px;
+        }
 
-    .footer-links a {
-        color: #ccc;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        display: block;
-    }
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: block;
+        }
 
-    .footer-links a:hover {
-        color: #0078ff;
-        padding-left: 5px;
-    }
+        .footer-links a:hover {
+            color: #0078ff;
+            padding-left: 5px;
+        }
 
-    .contact-info p {
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        color: #ccc;
-    }
+        .contact-info p {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            color: #ccc;
+        }
 
-    .contact-info i {
-        margin-right: 10px;
-        color: #0078ff;
-    }
+        .contact-info i {
+            margin-right: 10px;
+            color: #0078ff;
+        }
 
-    .newsletter {
-        margin-top: 25px;
-    }
+        .newsletter {
+            margin-top: 25px;
+        }
 
-    .newsletter h4 {
-        font-size: 16px;
-        margin-bottom: 15px;
-    }
+        .newsletter h4 {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
 
-    .newsletter form {
-        display: flex;
-    }
+        .newsletter form {
+            display: flex;
+        }
 
-    .newsletter input {
-        flex: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 4px 0 0 4px;
-        outline: none;
-    }
+        .newsletter input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
 
-    .newsletter button {
-        padding: 10px 15px;
-        background-color: #0078ff;
-        color: #fff;
-        border: none;
-        border-radius: 0 4px 4px 0;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
+        .newsletter button {
+            padding: 10px 15px;
+            background-color: #0078ff;
+            color: #fff;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-    .newsletter button:hover {
-        background-color: #0056b3;
-    }
+        .newsletter button:hover {
+            background-color: #0056b3;
+        }
 
-    .footer-bottom {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        border-top: 1px solid #444;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 30px;
-    }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            border-top: 1px solid #444;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
 
-    .footer-bottom p {
-        color: #aaa;
-        font-size: 14px;
-    }
+        .footer-bottom p {
+            color: #aaa;
+            font-size: 14px;
+        }
 
-    .footer-bottom-links a {
-        color: #aaa;
-        margin-left: 20px;
-        text-decoration: none;
-        font-size: 14px;
-        transition: all 0.3s ease;
-    }
+        .footer-bottom-links a {
+            color: #aaa;
+            margin-left: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
 
-    .footer-bottom-links a:hover {
-        color: #0078ff;
-    }
+        .footer-bottom-links a:hover {
+            color: #0078ff;
+        }
+        
+        /* --- FAQ WIDGET STYLES START --- */
+        #faq-toggle-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 998;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #faq-toggle-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--primary-dark);
+        }
+        
+        #faq-chatbot-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 370px;
+            height: 550px;
+            background-color: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.5) translateY(100px);
+            opacity: 0;
+            visibility: hidden;
+            transform-origin: bottom right;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, visibility 0.3s;
+        }
+
+        #faq-chatbot-container.open {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .faq-header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .faq-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .faq-header a,
+        .faq-header button {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 5px;
+            transition: opacity 0.2s;
+        }
+        
+        .faq-header a:hover,
+        .faq-header button:hover {
+            opacity: 0.8;
+        }
+
+        #faq-chatbot-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        /* --- FAQ WIDGET STYLES END --- */
 
 
         /* Responsive Styles */
@@ -645,17 +737,9 @@
                 padding: 80px 4% 30px;
             }
 
-            h1 {
-                font-size: 2rem;
-            }
-
-            h2 {
-                font-size: 1.6rem;
-            }
-
-            .feature {
-                padding: 20px;
-            }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.6rem; }
+            .feature { padding: 20px; }
 
             .pengurus-container {
                 flex-direction: column-reverse;
@@ -666,61 +750,50 @@
                 margin: 0 0 20px 0;
             }
 
-            .pengurus-details {
-                text-align: center;
-            }
-
-            #features {
-                grid-template-columns: 1fr;
-            }
+            .pengurus-details { text-align: center; }
+            #features { grid-template-columns: 1fr; }
 
             #services ul {
                 flex-direction: column;
                 align-items: center;
             }
 
-            #services a {
-                width: 80%;
-            }
+            #services a { width: 80%; }
+            .form-container { padding: 30px 20px; }
 
-            .form-container {
-                padding: 30px 20px;
+            .footer-section { flex-basis: 100%; }
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
             }
-
-.footer-section {
-            flex-basis: 100%;
+            .footer-bottom-links { margin-top: 15px; }
+            .footer-bottom-links a { margin: 0 10px; }
         }
-        
-        .footer-bottom {
-            flex-direction: column;
-            text-align: center;
-        }
-        
-        .footer-bottom-links {
-            margin-top: 15px;
-        }
-        
-        .footer-bottom-links a {
-            margin: 0 10px;
-        }
-    }
 
         @media (max-width: 480px) {
-            header {
-                padding: 10px 4%;
-            }
-
-            .logo {
-                height: 40px;
-            }
-
-            #home, #about, #services, .form-container {
-                padding: 25px 15px;
-            }
+            header { padding: 10px 4%; }
+            .logo { height: 40px; }
+            #home, #about, #services, .form-container { padding: 25px 15px; }
 
             .pengurus-photo img {
                 width: 100px;
                 height: 100px;
+            }
+            
+            /* FAQ Widget Responsive */
+            #faq-chatbot-container {
+                width: calc(100vw - 20px);
+                height: 75vh;
+                bottom: 80px;
+                right: 10px;
+                left: 10px;
+            }
+            #faq-toggle-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+                bottom: 20px;
+                right: 20px;
             }
         }
     </style>
@@ -737,7 +810,6 @@
 </head>
 <body>
 
-    <!-- Header section -->
     <header>
         <nav>
             <img src="https://i.imgur.com/9rAb7r7.png" alt="Logo" class="logo">
@@ -751,34 +823,12 @@
     <nav id="menu" class="menu">
         <ul>
             <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-            <li><a href="http://www.google.com/url?q=http%3A%2F%2Fbit.ly%2FPendaftaranSadulurSepoor&sa=D&sntz=1&usg=AOvVaw2Y76CFGcM5kRmJ5jgzA-53"><i class="fas fa-user-plus"></i> Register</a></li>
+            <li><a href="rekrutmen/"><i class="fas fa-clipboard-list"></i> Rekrutmen</a></li>
+            <li><a href="chatbot/"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            <li><a href="#contact"><i class="fas fa-envelope"></i> Contact Us</a></li>
         </ul>
     </nav>
     
-    <script>
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('active');
-        }
-
-        // Animation for sections
-        document.addEventListener('DOMContentLoaded', function() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('section').forEach(section => {
-                observer.observe(section);
-            });
-        });
-    </script>
-    
-    <!-- Main section -->
     <main>
         <section id="features">
             <div class="feature">
@@ -798,31 +848,31 @@
         </section>
 
         <section id="home">
-    <div class="image-wrapper">
-        <img src="https://sadulursepoor.web.id/IMG/kegiatan komunitas.jpg" alt="Kegiatan.jpg">
-    </div>
-    <h1>Profile Selengkapnya</h1>
-    <p>Yuk kita intip apa saja kegiatan yang sudah dilakukan Sadulur Sepoor terutama untuk masyarakat sekitar. Penasaran ya? di pencet tombol yang di bawah yaa</p>
-    <a href="profile2.html" class="button"><i class="fas fa-user-friends"></i> Lihat Profil</a>
-</section>
+            <div class="image-wrapper">
+                <img src="https://sadulursepoor.web.id/IMG/kegiatan komunitas.jpg" alt="Kegiatan.jpg">
+            </div>
+            <h1>Profile Selengkapnya</h1>
+            <p>Yuk kita intip apa saja kegiatan yang sudah dilakukan Sadulur Sepoor terutama untuk masyarakat sekitar. Penasaran ya? di pencet tombol yang di bawah yaa</p>
+            <a href="profile2.html" class="button"><i class="fas fa-user-friends"></i> Lihat Profil</a>
+        </section>
 
         <section id="home">
-    <div class="image-wrapper">
-        <img src="https://sadulursepoor.web.id/IMG/Foto Anggota.jpg" alt="Kegiatan.jpg">
-    </div>
-    <h1>Daftar Anggota</h1>
-    <p>Penasaran siapa aja sih yang jadi bagian dari anggota Sadulur Sepoor Indonesia? Di halaman ini kamu bisa lihat daftar anggota komunitas. Yuk kenalan lebih dekat sama teman-teman sesama pecinta perkeretaapian. Langsung aja klik tombol di bawah ini yaa</p>
-    <a href="anggota/index.html" class="button"><i class="fas fa-user-friends"></i> Lihat Anggota</a>
-</section>
+            <div class="image-wrapper">
+                <img src="https://sadulursepoor.web.id/IMG/Foto Anggota.jpg" alt="Kegiatan.jpg">
+            </div>
+            <h1>Daftar Anggota</h1>
+            <p>Penasaran siapa aja sih yang jadi bagian dari anggota Sadulur Sepoor Indonesia? Di halaman ini kamu bisa lihat daftar anggota komunitas. Yuk kenalan lebih dekat sama teman-teman sesama pecinta perkeretaapian. Langsung aja klik tombol di bawah ini yaa</p>
+            <a href="anggota/" class="button"><i class="fas fa-user-friends"></i> Lihat Anggota</a>
+        </section>
 
-<section id="home">
-    <div class="image-wrapper">
-        <img src="https://sadulursepoor.web.id/IMG/ssmail.jpg" alt="SSMAIL.jpg">
-    </div>
-    <h1>SSMAIL</h1>
-    <p>SSMAIL menyimpan berbagai file arsip resmi yang dapat diakses oleh anggota. Setiap dokumen disusun berdasarkan kategori dan dilengkapi dengan deskripsi singkat.</p>
-    <a href="loginmail.html" class="button"><i class="fas fa-envelope"></i> Akses SSMAIL</a>
-</section>
+        <section id="home">
+            <div class="image-wrapper">
+                <img src="https://sadulursepoor.web.id/IMG/ssmail.jpg" alt="SSMAIL.jpg">
+            </div>
+            <h1>SSMAIL</h1>
+            <p>SSMAIL menyimpan berbagai file arsip resmi yang dapat diakses oleh anggota. Setiap dokumen disusun berdasarkan kategori dan dilengkapi dengan deskripsi singkat.</p>
+            <a href="loginmail.html" class="button"><i class="fas fa-envelope"></i> Akses SSMAIL</a>
+        </section>
 
         <section id="about">
             <h2>Susunan Kepengurusan</h2>
@@ -889,92 +939,17 @@
             <h2>Contact Us</h2>
             <form id="contact-form" action="https://api.web3forms.com/submit" method="POST">
                 <input type="hidden" name="access_key" value="480fcbcf-de9e-4081-b5a6-3099c8b2de28">
-
                 <input type="text" id="name" name="name" placeholder="Your Name" required>
                 <input type="email" id="email" name="email" placeholder="Your Email" required>
                 <textarea id="message" name="message" rows="4" placeholder="Your Message" required></textarea>
-
                 <button type="submit" class="submit-btn">Send Message</button>
             </form>
             <div id="toast" class="toast"></div>
-
-            <script>
-                function showToast(message, color = "#222") {
-                    const toast = document.getElementById("toast");
-                    toast.textContent = message;
-                    toast.style.backgroundColor = color;
-                    toast.classList.add("show");
-
-                    setTimeout(() => {
-                        toast.classList.remove("show");
-                    }, 4000);
-                }
-
-                document.getElementById("contact-form").addEventListener("submit", function (e) {
-                    e.preventDefault(); // tahan pengiriman form
-
-                    const email = document.getElementById("email").value.trim().toLowerCase();
-                    const message = document.getElementById("message").value.toLowerCase();
-                    const button = document.querySelector(".submit-btn");
-
-                    const blockedEmails = [
-                        "kepo321@gmail.com",
-                        "isengbanget@yahoo.com",
-                        "spamtester@mail.com"
-                    ];
-
-                    if (blockedEmails.includes(email)) {
-                        showToast("Email ini telah diblokir. Gunakan email lain.", "#e74c3c");
-                        button.disabled = false;
-                        button.textContent = "Send Message";
-                        return;
-                    }
-
-                    const blockedWords = ["anjing", "ajg", "anjg", "bego", "bodoh", "bdh", "bloon", "oon", "pea", "bangsat", "tolol", "tai", "kontol", "kntl", "kntol", "kontl", "memek", "mmk", "memk", "mmek", "idiot", "anjir", "anjay", "goblok", "bajingan", "gblk"];
-                    const containsBlockedWord = blockedWords.some(word => message.includes(word));
-                    if (containsBlockedWord) {
-                        showToast("Pesan mengandung kata tidak sopan. Harap gunakan bahasa yang baik.", "#e74c3c");
-                        
-                        button.disabled = false;
-                        button.textContent = "Send Message";
-                        return;
-                    }
-
-                    button.disabled = true;
-                    button.textContent = "Checking email...";
-
-                    // Panggil Abstract API
-                    fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=91420962874f4900b45fd85b6ae29d5a&email=${email}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            const status = data.deliverability;
-                            const isDisposable = data.is_disposable_email.value;
-                            const isValidFormat = data.is_valid_format.value;
-
-                            if (status !== "DELIVERABLE" || isDisposable || !isValidFormat) {
-                                showToast("Email ini tidak valid atau tidak aktif. Silakan gunakan email asli.", "#e74c3c");
-                                button.disabled = false;
-                                button.textContent = "Send Message";
-                                return;
-                            }
-
-                            // Jika lolos semua, submit form ke Web3Forms
-                            document.getElementById("contact-form").submit();
-                        })
-                        .catch(error => {
-                            showToast("Gagal mengecek email. Coba lagi nanti.", "#c0392b");
-                            button.disabled = false;
-                            button.textContent = "Send Message";
-                            console.error(error);
-                        });
-                });
-            </script>
         </section>
     </main>
 
- <!-- Footer section -->
-<footer>
-    <div class="footer-container">
+    <footer>
+        <div class="footer-container">
             <div class="social-media">
                 <a href="https://www.facebook.com/share/1G32mgyres/?mibextid=qi2Omg" class="social-icon"><i class="fab fa-facebook-f"></i></a>
                 <a href="https://www.tiktok.com/@sadulur.sepoor_official?_t=8puqjiITt58&_r=1" class="social-icon"><i class="fab fa-tiktok"></i></a>
@@ -1015,4 +990,113 @@
     <div class="footer-bottom">
         <p>&copy; 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
     </div>
-</footer>
+    </footer>
+
+    <div id="faq-widget">
+        <div id="faq-chatbot-container">
+            <div class="faq-header">
+                <span>Butuh Bantuan? (FAQ)</span>
+                <div class="faq-actions">
+                    <a href="chatbot/" target="_blank" id="faq-expand-btn" title="Buka di tab baru">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <button id="faq-close-btn" title="Tutup">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <iframe src="chatbot/minimalis.html" frameborder="0"></iframe>
+        </div>
+        <button id="faq-toggle-btn">
+            <i class="fas fa-question-circle"></i>
+        </button>
+    </div>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('active');
+        }
+
+        // Animation for sections
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+
+        // Contact Form Script
+        function showToast(message, color = "#222") {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.style.backgroundColor = color;
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 4000);
+        }
+
+        document.getElementById("contact-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const email = document.getElementById("email").value.trim().toLowerCase();
+            const message = document.getElementById("message").value.toLowerCase();
+            const button = document.querySelector(".submit-btn");
+            const blockedEmails = ["kepo321@gmail.com", "isengbanget@yahoo.com", "spamtester@mail.com"];
+            if (blockedEmails.includes(email)) {
+                showToast("Email ini telah diblokir. Gunakan email lain.", "#e74c3c");
+                return;
+            }
+            const blockedWords = ["anjing", "ajg", "anjg", "bego", "bodoh", "bdh", "bloon", "oon", "pea", "bangsat", "tolol", "tai", "kontol", "kntl", "kntol", "kontl", "memek", "mmk", "memk", "mmek", "idiot", "anjir", "anjay", "goblok", "bajingan", "gblk"];
+            if (blockedWords.some(word => message.includes(word))) {
+                showToast("Pesan mengandung kata tidak sopan. Harap gunakan bahasa yang baik.", "#e74c3c");
+                return;
+            }
+            button.disabled = true;
+            button.textContent = "Checking email...";
+            fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=91420962874f4900b45fd85b6ae29d5a&email=${email}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.deliverability !== "DELIVERABLE" || data.is_disposable_email.value || !data.is_valid_format.value) {
+                        showToast("Email ini tidak valid atau tidak aktif. Silakan gunakan email asli.", "#e74c3c");
+                        button.disabled = false;
+                        button.textContent = "Send Message";
+                    } else {
+                        document.getElementById("contact-form").submit();
+                    }
+                })
+                .catch(error => {
+                    showToast("Gagal mengecek email. Coba lagi nanti.", "#c0392b");
+                    button.disabled = false;
+                    button.textContent = "Send Message";
+                    console.error(error);
+                });
+        });
+
+        // --- FAQ WIDGET SCRIPT START ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('faq-toggle-btn');
+            const closeBtn = document.getElementById('faq-close-btn');
+            const chatbotContainer = document.getElementById('faq-chatbot-container');
+
+            if(toggleBtn && closeBtn && chatbotContainer) {
+                toggleBtn.addEventListener('click', () => {
+                    chatbotContainer.classList.toggle('open');
+                });
+
+                closeBtn.addEventListener('click', () => {
+                    chatbotContainer.classList.remove('open');
+                });
+            }
+        });
+        // --- FAQ WIDGET SCRIPT END ---
+    </script>
+</body>
+</html>
