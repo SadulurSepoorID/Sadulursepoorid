@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cari Tau Kami - Komunitas Sadulur Sepoor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            position: relative; /* Ditambahkan untuk positioning tombol kembali */
+            text-align: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Tombol Kembali di Header */
+        .header-back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .header-back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #2d3ec6 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Pastikan gambar tidak keluar dari lingkaran */
+        }
+        
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #2d3ec6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .breadcrumb {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .question-list {
+            list-style: none;
+        }
+
+        .question-item {
+            margin-bottom: 15px;
+        }
+
+        .question-btn {
+            width: 100%;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #708ffb 0%, #2d3ec6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+        }
+
+        .question-btn::after {
+            content: '→';
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .question-btn:hover::after {
+            transform: translateX(5px);
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
+        }
+
+        .answer-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            margin-top: 15px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .member-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 10px 0;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .member-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #667eea;
+        }
+
+        .member-info h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .member-info p {
+            color: #7f8c8d;
+            margin: 4px 0;
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            margin-top: 10px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 5px 10px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #313cc4;
+            transform: translateY(-1px);
+        }
+
+        .kegiatan-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .kegiatan-date {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .content-card {
+                padding: 20px;
+            }
+            
+            .member-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .question-btn {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+
+            .header-back-btn {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+                top: 10px;
+                left: 10px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header fade-in">
+            <a href="../index.html" class="header-back-btn">← Kembali</a>
+            <div class="logo">
+                <img src="https://sadulursepoor.web.id/IMG/Logo%20SS.png" alt="Logo Sadulur Sepoor">
+            </div>
+            
+            <h1 class="title">F A Q</h1>
+            <p class="subtitle">Komunitas Sadulur Sepoor</p>
+        </div>
+
+        <div class="content-card fade-in">
+            <div class="breadcrumb" id="breadcrumb">
+                Beranda
+            </div>
+            <div id="content">
+                <p class="loading">Memuat konten...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA & STATE MANAGEMENT ---
+        let currentPath = [];
+        let allMembers = [];
+        let allKegiatan = [];
+        let allPengurus = [];
+        const questionTextMap = {};
+
+        // --- CONTENT DEFINITIONS ---
+        const content = {
+            main: `
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="showSection('general')">Pertanyaan Umum</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('social')">Media Sosial</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('registration')">Pendaftaran Calon Anggota Baru</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://sadulursepoor.web.id/saran.html')">Saran & Kritik</button></li>
+                </ul>
+            `,
+            general: `
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="showSection('community-info')">Informasi Komunitas</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('membership-info')">Informasi Keanggotaan</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('activity-info')">Informasi Kegiatan</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('registration')">Pendaftaran</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('website-info')">Informasi Website</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                </ul>
+            `,
+            'community-info': `
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-apa-itu', 'Apa itu Komunitas Sadulur Sepoor?', 'Komunitas Sadulur Sepoor adalah komunitas pecinta kereta api (railfans) di Indonesia. Nama “Sadulur Sepoor” berasal dari bahasa Jawa, “sadulur” artinya saudara, dan “sepoor” artinya kereta api. Jadi maknanya kurang lebih saudara sesama pecinta kereta api.')">Apa itu Komunitas Sadulur Sepoor?</button></li>
+                    <li class="question-item">
+                    <button class="question-btn" onclick="showAnswer('q-pendiri', 'Siapakah Pendiri dari Komunitas Sadulur Sepoor?', 'Herie Heryadi<br>Arjuna Pamungkas<br>Aldino Arya Saputra<br>Habibi Muhammad Arkam<br>Ahmad Suseno')">Siapakah Pendiri dari Komunitas Sadulur Sepoor?</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-visi-misi', 'Apa Visi dan Misi Komunitas tersebut?', ' <b>Visi</b><br>Menjadi komunitas perkeretaapian terdepan yang bersatu, peduli, dan aktif berkontribusi dalam menciptakan keselamatan, edukasi, serta budaya positif di lingkungan transportasi kereta api.<br>(sadulursepoor.web.id)<br><br> <b>Misi</b><br>1. Menumbuhkan rasa cinta dan kepedulian terhadap perkeretaapian Indonesia.<br>2. Mengedukasi masyarakat tentang pentingnya keselamatan di perlintasan sebidang.<br>3. Menjalin kemitraan dan komunikasi aktif dengan instansi terkait seperti PT KAI dan LRT.<br>4. Mengembangkan komunitas railfans yang beretika, berwawasan, dan bertanggung jawab.<br>5. Membentuk budaya positif di kalangan pecinta kereta api.')">Apa Visi dan Misi Komunitas tersebut?</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-berdiri', 'Tahun berdiri Komunitas Sadulur Sepoor?', '<strong>19 Maret 2019</strong> di Cikini, Jakarta Pusat')">Tahun berdiri Komunitas Sadulur Sepoor?</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                </ul>
+            `,
+            'membership-info': `
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('/anggota/')">Mencari Nama Anggota</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('pengurus-info')">Mencari Nama Pengurus</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                </ul>
+            `,
+            'pengurus-info': `
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="showPengurusData('penasehat-pembina')">Penasehat & Pembina</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showPengurusData('ketua')">Ketua Umum</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showPengurusData('wakil-ketua')">Wakil Ketua Umum</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('../pengurus2.html')">Lainnya</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                </ul>
+            `,
+            'pengurus-lainnya': `<div class="answer-content">Informasi untuk pengurus lainnya belum tersedia.</div><button class="question-btn back-btn" onclick="goBack()">Kembali</button>`,
+            'activity-info': `
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="showKegiatanSelanjutnya()">Kegiatan Selanjutnya</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showKegiatanSebelumnya()">Kegiatan Sebelumnya</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('activity-types-answered')">Kegiatan apa saja yang dilakukan</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                </ul>
+            `,
+            'activity-types-answered': `
+                <div class="answer-content">
+                    <b>Kegiatan Utama Sadulur Sepoor</b><br><br>
+                    <b>1. Kampanye keselamatan di perlintasan sebidang</b><br>
+                    Bekerja sama dengan PT KAI Daop 1 Jakarta. Membagikan stiker, brosur, dan gantungan kunci berisi pesan edukasi, serta mengingatkan pengendara agar berhati-hati saat melintas rel.<br>
+                    ➝ <i>Contoh: Edukasi di JPL 18 Kemuning (Mei 2025) dan JPL 46 Pondok Jati (Juli 2025).</i><br><br>
+                    <b>2. Edukasi masyarakat</b><br>
+                    Sosialisasi tentang aturan dan budaya keselamatan naik kereta. Membantu penumpang saat arus mudik & balik Lebaran.<br><br>
+                    <b>3. Kolaborasi dengan instansi transportasi</b><br>
+                    PT KAI (Kereta Api Indonesia) dan LRT Jabodebek (kunjungan dan edukasi bersama).<br><br>
+                    <b>4. Dokumentasi & publikasi perkeretaapian</b><br>
+                    Membuat konten informatif berupa foto dan video di Instagram, Facebook, dan YouTube.<br><br>
+                    <b>5. Partisipasi acara perkeretaapian</b><br>
+                    Ikut serta dalam perayaan ulang tahun KA (contoh: 1 Dekade KA Jayabaya tahun 2024), gathering railfans, dan kegiatan komunitas.<br><br>
+                    <b>6. Program “Ngobrol Bareng”</b><br>
+                    Diskusi santai di media sosial & YouTube seputar dunia kereta api dan peran railfans.
+                </div>
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="showSection('public-participation-info')">Apakah orang umum boleh mengikuti kegiatan tersebut?</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
+                </ul>
+            `,
+             'public-participation-info': `
+                <div class="answer-content">
+                   Tentu, beberapa kegiatan kami terbuka untuk umum, terutama yang bersifat edukasi dan kampanye keselamatan. Informasi lebih lanjut mengenai kegiatan mana yang terbuka untuk umum dan bagaimana cara berpartisipasi biasanya kami umumkan melalui media sosial resmi Komunitas Sadulur Sepoor.
+                </div>
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://sadulursepoor.web.id/daftarumum.html')">Bagaimana cara mendaftar untuk mengikuti kegiatan tersebut?</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
+                </ul>
+            `,
+            'registration': `
+    <ul class="question-list">
+        <li class="question-item"><button class="question-btn" onclick="showAnswer('q-syarat', 'Syarat & Ketentuan', '<li>Berusia minimal 15 tahun pada saat mendaftar.</li><br><li>Memiliki antusiasme dan minat yang tinggi terhadap dunia perkeretaapian Indonesia.</li><br><li>Pria atau Wanita</li><br><li>Berkomitmen untuk menjaga nama baik komunitas di manapun berada.</li><br><li>Aktif dalam kegiatan, baik acara internal ataupun eksternal.</li><br><li>Menjadi nilai+ untuk yang menguasai desain grafis</li>')">Syarat & Ketentuan</button></li>
+        <li class="question-item"><button class="question-btn" onclick="redirectTo('/rekrutmen/')">Halaman Pendaftaran Calon Anggota Baru</button></li>
+        <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+    </ul>
+`,
+            'website-info': `
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="showWebsiteMaker()">Siapa pembuat website ini?</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('website-features')">Ada apa saja di website ini?</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                </ul>
+            `,
+            'website-features': `
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('index.html')">Halaman Utama (FAQ)</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('/anggota/')">Halaman Anggota</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://sadulursepoor.web.id/saran.html')">Halaman Saran & Kritik</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('/rekrutmen/')">Halaman Pendaftaran Anggota</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                </ul>
+            `,
+            social: `
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('mailto:info@sadulursepoor.com')">Email</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://wa.me/628123456789')">WhatsApp</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://instagram.com/sadulursepoor')">Instagram</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://facebook.com/sadulursepoor')">Facebook</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://youtube.com/sadulursepoor')">YouTube</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://tiktok.com/@sadulursepoor')">TikTok</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                </ul>
+            `
+        };
+        
+        // --- DYNAMIC CONTENT FUNCTIONS ---
+
+        function renderContent(html) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = html;
+            contentDiv.classList.remove('fade-in');
+            void contentDiv.offsetWidth;
+            contentDiv.classList.add('fade-in');
+        }
+        
+        function showSection(section) {
+            currentPath.push(section);
+            updateBreadcrumb();
+            renderContent(content[section] || '<p class="loading">Konten tidak ditemukan.</p>');
+        }
+
+        function showAnswer(id, question, answer) {
+            questionTextMap[id] = question;
+            currentPath.push(id);
+            updateBreadcrumb();
+            
+            const answerHtml = answer ? `<div class="answer-content">${answer}</div>` : `<div class="answer-content">Jawaban untuk pertanyaan ini belum tersedia.</div>`;
+            const finalHtml = `<h3 style="color: #2c3e50; margin-bottom: 15px;">${question}</h3>${answerHtml}<button class="question-btn back-btn" onclick="goBack()">Kembali</button>`;
+            renderContent(finalHtml);
+        }
+
+        function showPengurusData(type) {
+            currentPath.push('pengurus-' + type);
+            updateBreadcrumb();
+
+            const jabatanMap = {
+                'penasehat-pembina': 'Pembina & Penasehat',
+                'ketua': 'Ketua Umum',
+                'wakil-ketua': 'Wakil Ketua Umum'
+            };
+            const targetJabatan = jabatanMap[type];
+            const foundPengurus = allPengurus.filter(p => p.jabatan === targetJabatan);
+
+            let html = `<h3 style="color: #2c3e50; margin-bottom: 15px;">${targetJabatan}</h3>`;
+
+            if (foundPengurus.length > 0) {
+                foundPengurus.forEach(p => {
+                    let socialLinksHtml = '<div class="social-links">';
+                    if (p.socials.whatsapp) {
+                        socialLinksHtml += `<a href="${p.socials.whatsapp}" target="_blank">WhatsApp</a>`;
+                    }
+                    if (p.socials.instagram) {
+                        socialLinksHtml += `<a href="${p.socials.instagram}" target="_blank">Instagram</a>`;
+                    }
+                    socialLinksHtml += '</div>';
+
+                    html += `
+                        <div class="member-card">
+                            <img src="${p.foto}" alt="${p.nama}" class="member-photo">
+                            <div class="member-info">
+                                <h3>${p.nama}</h3>
+                                <p><strong>NIA:</strong> ${p.nia}</p>
+                                <p><strong>Lahir:</strong> ${p.tanggal_lahir}</p>
+                                <p>${p.deskripsi || ''}</p>
+                                ${socialLinksHtml}
+                            </div>
+                        </div>`;
+                });
+            } else {
+                html += `<div class="answer-content">Data untuk posisi ${targetJabatan} tidak ditemukan.</div>`;
+            }
+
+            html += `<button class="question-btn back-btn" onclick="goBack()">Kembali</button>`;
+            renderContent(html);
+        }
+
+        function showWebsiteMaker() {
+            const webMaker = {
+                name: "Fathir Ahmad Maulana",
+                tanggalLahir: "14 April 2007",
+                jabatan: "Keanggotaan/SDM",
+                photoUrl: "https://i.ibb.co.com/Vgrtv9c/IMG-20240923-183645.png",
+                whatsapp: "https://wa.me/6282112964343",
+                instagram: "https://instagram.com/eskopss"
+            };
+            const html = `
+                <div class="member-card">
+                    <img src="${webMaker.photoUrl}" alt="${webMaker.name}" class="member-photo">
+                    <div class="member-info">
+                        <h3>${webMaker.name}</h3>
+                        <p><strong>Jabatan:</strong> ${webMaker.jabatan}</p>
+                        <p><strong>Tanggal Lahir:</strong> ${webMaker.tanggalLahir}</p>
+                        <div class="social-links">
+                            <a href="${webMaker.whatsapp}" target="_blank">WhatsApp</a>
+                            <a href="${webMaker.instagram}" target="_blank">Instagram</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="question-btn back-btn" onclick="goBack()">Kembali</button>`;
+            renderContent(html);
+        }
+
+        function showKegiatanSelanjutnya() {
+            currentPath.push('kegiatan-selanjutnya');
+            updateBreadcrumb();
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const upcomingKegiatan = allKegiatan
+                .filter(k => new Date(k.tanggal) >= today)
+                .sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+
+            let html = '<h3 style="color: #2c3e50; margin-bottom: 15px;">Kegiatan Selanjutnya</h3>';
+            
+            if (upcomingKegiatan.length > 0) {
+                const kegiatanTerdekat = upcomingKegiatan[0];
+                html += `<div class="kegiatan-item">
+                            <div class="kegiatan-date">${new Date(kegiatanTerdekat.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                            <div>${kegiatanTerdekat.nama}</div>
+                         </div>`;
+            } else {
+                html += '<div class="answer-content">Belum ada kegiatan yang dijadwalkan.</div>';
+            }
+            html += '<button class="question-btn back-btn" onclick="goBack()">Kembali</button>';
+            renderContent(html);
+        }
+
+        function showKegiatanSebelumnya() {
+            currentPath.push('kegiatan-sebelumnya');
+            updateBreadcrumb();
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const pastKegiatan = allKegiatan
+                .filter(k => new Date(k.tanggal) < today)
+                .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+            let html = '<h3 style="color: #2c3e50; margin-bottom: 15px;">Kegiatan Sebelumnya</h3>';
+            
+            if (pastKegiatan.length > 0) {
+                const kegiatanTerakhir = pastKegiatan[0];
+                html += `<div class="kegiatan-item">
+                            <div class="kegiatan-date">${new Date(kegiatanTerakhir.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                            <div>${kegiatanTerakhir.nama}</div>
+                         </div>`;
+            } else {
+                 html += '<div class="answer-content">Tidak ada data kegiatan sebelumnya.</div>';
+            }
+            html += '<button class="question-btn back-btn" onclick="goBack()">Kembali</button>';
+            renderContent(html);
+        }
+
+        function redirectTo(url) {
+            window.open(url, '_blank');
+        }
+
+        // --- NAVIGATION ---
+        function goBack() {
+            if (currentPath.length > 1) {
+                currentPath.pop();
+                const lastSection = currentPath[currentPath.length - 1];
+                renderContent(content[lastSection]);
+                updateBreadcrumb();
+            } else {
+                currentPath = [];
+                renderContent(content.main);
+                updateBreadcrumb();
+            }
+        }
+        
+        function updateBreadcrumb() {
+            const sectionNames = {
+                'general': 'Pertanyaan Umum', 'social': 'Media Sosial', 'registration': 'Pendaftaran',
+                'community-info': 'Informasi Komunitas', 'membership-info': 'Informasi Keanggotaan',
+                'activity-info': 'Informasi Kegiatan', 'website-info': 'Informasi Website',
+                'pengurus-info': 'Nama Pengurus', 'pengurus-lainnya': 'Lainnya',
+                'website-features': 'Fitur Website',
+                'kegiatan-selanjutnya': 'Kegiatan Selanjutnya',
+                'kegiatan-sebelumnya': 'Kegiatan Sebelumnya',
+                'pengurus-penasehat-pembina': 'Penasehat & Pembina',
+                'pengurus-ketua': 'Ketua Umum',
+                'pengurus-wakil-ketua': 'Wakil Ketua Umum',
+                'activity-types-answered': 'Jenis Kegiatan',
+                'public-participation-info': 'Partisipasi Umum'
+            };
+
+            let breadcrumbPath = ['Beranda'];
+            currentPath.forEach(path => {
+                const name = sectionNames[path] || questionTextMap[path] || 'Detail';
+                if (breadcrumbPath[breadcrumbPath.length - 1] !== name) {
+                    breadcrumbPath.push(name);
+                }
+            });
+
+            document.getElementById('breadcrumb').textContent = breadcrumbPath.join(' > ');
+        }
+        
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', function() {
+            renderContent(content.main);
+
+            Promise.all([
+                fetch('anggota2.json').then(res => res.ok ? res.json() : Promise.reject('anggota2.json')),
+                fetch('profile2.json').then(res => res.ok ? res.json() : Promise.reject('profile2.json')),
+                fetch('pengurus2.json').then(res => res.ok ? res.json() : Promise.reject('pengurus2.json'))
+            ])
+            .then(([membersData, profileData, pengurusData]) => {
+                allMembers = membersData;
+                allKegiatan = profileData.kegiatan || [];
+                allPengurus = pengurusData;
+                console.log("Semua data JSON berhasil dimuat.");
+            })
+            .catch(error => {
+                console.error("Gagal memuat data JSON:", error);
+                const contentDiv = document.getElementById('content');
+                if(contentDiv.querySelector('.loading')) {
+                    contentDiv.innerHTML = `<div class="answer-content">Gagal memuat data dari file: ${error}. Mohon pastikan file tersebut ada dan dapat diakses.</div>`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
