@@ -10,7 +10,7 @@ let lastScrollTop = 0; // Untuk fungsionalitas header
 // Kode verifikasi untuk akses WhatsApp
 const adminCode = "Sadulursepoor12";
 const userCodes = [
-    "A1B2C", "SSJKT", "X9Y8Z", "K3L4M", "G7H8I", "P5Q6R",
+    "A1B2C", "SSJKT1", "X9Y8Z", "K3L4M", "G7H8I", "P5Q6R",
     "U1V2W", "N3O4P", "Z5Y6X", "D7E8F", "M9N0O",
     "J1K2L", "T3U4V", "W5X6Y", "B7C8D", "H9I0J"
 ];
