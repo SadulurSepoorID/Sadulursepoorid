@@ -218,23 +218,26 @@
             color: var(--white);
         }
 
-        #features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
+#features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+    align-items: stretch;
+}
 
-        .feature {
-            background-color: var(--white);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
+.feature {
+    background-color: var(--white);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+}
 
         .feature::before {
             content: '';
@@ -729,7 +732,298 @@
             border: none;
         }
         /* --- FAQ WIDGET STYLES END --- */
+        
+        /* --- BIRTHDAY POPUP STYLES START --- */
+        #birthday-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s ease;
+        }
 
+        #birthday-popup-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #birthday-popup {
+            background-color: var(--white);
+            padding: 40px 30px 30px;
+            border-radius: 15px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            transform: scale(0.85) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid var(--primary-light);
+        }
+        
+        #birthday-popup-overlay.visible #birthday-popup {
+            transform: scale(1) translateY(0);
+        }
+
+        #birthday-popup::before {
+            content: '\f1fd';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 38px;
+            color: var(--primary-color);
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--white);
+            padding: 2px 12px;
+            border-radius: 50%;
+            border: 4px solid var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        #birthday-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: #999;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        #birthday-close-btn:hover {
+            color: var(--primary-dark);
+            transform: rotate(90deg);
+        }
+
+        .birthday-content h2 {
+            font-size: 1.35rem;
+            margin: 15px 0 10px 0;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        #birthday-carousel-container {
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #birthday-slider {
+            display: flex;
+            transition: transform 0.4s ease-in-out;
+        }
+
+        .birthday-slide {
+            flex: 0 0 100%;
+            box-sizing: border-box;
+            padding: 0 10px;
+            min-height: 220px; /* Jaga tinggi konsisten */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .birthday-photo-container {
+            margin-bottom: 20px;
+        }
+
+        .birthday-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-light);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+            display: inline-block;
+        }
+        
+        .birthday-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .birthday-name {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .birthday-kta, .birthday-date {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 3px;
+        }
+        
+        .birthday-kta {
+            font-weight: 500;
+        }
+
+        .slide-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+            color: var(--primary-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10;
+            display: none; /* Sembunyikan by default */
+        }
+        .slide-nav-btn:hover {
+            background-color: var(--white);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .slide-nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        #prev-slide-btn { left: -15px; }
+        #next-slide-btn { right: -15px; }
+
+        #slide-counter {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 15px;
+            display: none; /* Sembunyikan by default */
+        }
+
+        .whatsapp-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+        
+        .whatsapp-section p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        #whatsapp-btn-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(30, 136, 229, 0.2);
+        }
+
+        #whatsapp-btn-trigger:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(30, 136, 229, 0.3);
+        }
+        
+        #whatsapp-btn-trigger i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        #pin-input-container {
+            display: none;
+            margin-top: 20px;
+            animation: fadeInDown 0.3s ease-out forwards;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        #whatsapp-pin {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--primary-light);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 1rem;
+            color: var(--text-color);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+        
+        #whatsapp-pin:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+        }
+
+        #whatsapp-send-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            background-color: #25D366;
+            color: var(--white);
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+        }
+
+        #whatsapp-send-btn:hover {
+            background-color: #128C7E;
+            transform: translateY(-2px);
+        }
+        
+        #whatsapp-send-btn i {
+            margin-right: 10px;
+        }
+
+        #pin-error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            height: 1em;
+            visibility: hidden;
+        }
+        
+        #pin-error.visible {
+            visibility: visible;
+        }
+        /* --- BIRTHDAY POPUP STYLES END --- */
 
         /* Responsive Styles */
         @media (max-width: 768px) {
@@ -780,7 +1074,6 @@
                 height: 100px;
             }
             
-            /* FAQ Widget Responsive */
             #faq-chatbot-container {
                 width: calc(100vw - 20px);
                 height: 75vh;
@@ -795,6 +1088,28 @@
                 bottom: 20px;
                 right: 20px;
             }
+            
+            #birthday-popup {
+                padding: 30px 20px;
+                max-width: 340px;
+            }
+             .birthday-name {
+                font-size: 1.6rem;
+            }
+            #birthday-popup::before {
+                font-size: 32px;
+                top: -24px;
+            }
+            #birthday-close-btn {
+                font-size: 28px;
+            }
+            .slide-nav-btn {
+                 width: 35px;
+                 height: 35px;
+                 font-size: 14px;
+            }
+            #prev-slide-btn { left: -5px; }
+            #next-slide-btn { right: -5px; }
         }
     </style>
     
@@ -1011,13 +1326,40 @@
             <i class="fas fa-question-circle"></i>
         </button>
     </div>
+
+    <div id="birthday-popup-overlay">
+        <div id="birthday-popup">
+            <button id="birthday-close-btn" title="Tutup">&times;</button>
+            <div class="birthday-content">
+                <h2>SELAMAT ULANG TAHUN!</h2>
+                
+                <div id="birthday-carousel-container">
+                    <button id="prev-slide-btn" class="slide-nav-btn"><i class="fas fa-chevron-left"></i></button>
+                    <div id="birthday-slider">
+                        </div>
+                    <button id="next-slide-btn" class="slide-nav-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div id="slide-counter"></div>
+            </div>
+
+            <div class="whatsapp-section">
+                <button id="whatsapp-btn-trigger"><i class="fab fa-whatsapp"></i> Kirim Ucapan via WhatsApp</button>
+                <div id="pin-input-container">
+                    <p>Masukkan PIN untuk melanjutkan</p>
+                    <input type="password" id="whatsapp-pin" placeholder="Masukkan PIN Anda">
+                    <p id="pin-error">PIN yang Anda masukkan salah!</p>
+                    <button id="whatsapp-send-btn"><i class="fab fa-whatsapp"></i> Lanjutkan ke WhatsApp</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function toggleMenu() {
             const menu = document.getElementById('menu');
             menu.classList.toggle('active');
         }
 
-        // Animation for sections
         document.addEventListener('DOMContentLoaded', function() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -1033,7 +1375,6 @@
             });
         });
 
-        // Contact Form Script
         function showToast(message, color = "#222") {
             const toast = document.getElementById("toast");
             toast.textContent = message;
@@ -1080,7 +1421,6 @@
                 });
         });
 
-        // --- FAQ WIDGET SCRIPT START ---
         document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('faq-toggle-btn');
             const closeBtn = document.getElementById('faq-close-btn');
@@ -1096,7 +1436,183 @@
                 });
             }
         });
-        // --- FAQ WIDGET SCRIPT END ---
+
+        // --- BIRTHDAY POPUP SCRIPT START ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // ** AWAL PERUBAHAN LOGIKA PEMICU **
+            // Dapatkan tipe navigasi (reload, navigate, dll.)
+            const navigationEntries = performance.getEntriesByType("navigation");
+            const navType = navigationEntries.length > 0 ? navigationEntries[0].type : 'navigate';
+            
+            // Cek apakah halaman ini pernah dikunjungi dalam sesi ini
+            const hasVisited = sessionStorage.getItem('hasVisitedIndex');
+
+            // Tampilkan pop-up HANYA jika:
+            // 1. Pengguna me-refresh halaman (navType === 'reload')
+            // 2. ATAU Pengguna belum pernah mengunjungi halaman ini di sesi browser (kunjungan pertama)
+            if (navType === 'reload' || !hasVisited) {
+                // Tandai bahwa halaman ini sudah dikunjungi
+                sessionStorage.setItem('hasVisitedIndex', 'true');
+                
+                // Jalankan fungsi untuk memeriksa ulang tahun
+                checkBirthday();
+            }
+            // ** AKHIR PERUBAHAN LOGIKA PEMICU **
+
+
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+            function parseDate(dateString) {
+                if (!dateString || typeof dateString !== 'string') return null;
+                const parts = dateString.trim().split(' ');
+                if (parts.length < 2) return null;
+                const day = parseInt(parts[0], 10);
+                const monthIndex = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase());
+                if (isNaN(day) || monthIndex === -1) return null;
+                return { day, month: monthIndex };
+            }
+            
+            async function checkBirthday() {
+                try {
+                    const response = await fetch('anggota2.json');
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const members = await response.json();
+                    
+                    const today = new Date();
+                    const currentDay = today.getDate();
+                    const currentMonth = today.getMonth();
+
+                    const birthdayMembers = members.filter(member => {
+                        const birthDate = parseDate(member.tanggalLahir);
+                        return birthDate && birthDate.day === currentDay && birthDate.month === currentMonth;
+                    });
+                    
+                    if (birthdayMembers.length > 0) {
+                        showBirthdayPopup(birthdayMembers);
+                    }
+                } catch (error) {
+                    console.error("Gagal memuat atau memproses data anggota:", error);
+                }
+            }
+
+            let currentBirthdayMember = null;
+            let currentSlideIndex = 0;
+            let totalSlides = 0;
+
+            function showBirthdayPopup(members) {
+                currentBirthdayMember = members[0];
+                totalSlides = members.length;
+                currentSlideIndex = 0;
+
+                const overlay = document.getElementById('birthday-popup-overlay');
+                const slider = document.getElementById('birthday-slider');
+                const prevBtn = document.getElementById('prev-slide-btn');
+                const nextBtn = document.getElementById('next-slide-btn');
+                const counter = document.getElementById('slide-counter');
+
+                let slidesHTML = '';
+                members.forEach(member => {
+                    const photoHTML = (member.photoUrl && member.photoUrl.trim() !== '') 
+                        ? `<div class="birthday-photo-container"><img src="${member.photoUrl}" class="birthday-photo" alt="Foto ${member.name}" onerror="this.parentElement.style.display='none'"></div>` 
+                        : '';
+
+                    slidesHTML += `
+                        <div class="birthday-slide">
+                            ${photoHTML}
+                            <h3 class="birthday-name">${member.name}</h3>
+                            <p class="birthday-kta">KTA: ${member.kta}</p>
+                            <p class="birthday-date">${member.tanggalLahir}</p>
+                        </div>`;
+                });
+                slider.innerHTML = slidesHTML;
+
+                function goToSlide(index) {
+                    slider.style.transform = `translateX(-${index * 100}%)`;
+                    currentSlideIndex = index;
+                    currentBirthdayMember = members[index];
+
+                    // Update counter and nav buttons
+                    counter.textContent = `${index + 1} / ${totalSlides}`;
+                    prevBtn.disabled = index === 0;
+                    nextBtn.disabled = index === totalSlides - 1;
+                }
+
+                if (totalSlides > 1) {
+                    prevBtn.style.display = 'block';
+                    nextBtn.style.display = 'block';
+                    counter.style.display = 'block';
+                } else {
+                    prevBtn.style.display = 'none';
+                    nextBtn.style.display = 'none';
+                    counter.style.display = 'none';
+                }
+                
+                prevBtn.addEventListener('click', () => goToSlide(currentSlideIndex - 1));
+                nextBtn.addEventListener('click', () => goToSlide(currentSlideIndex + 1));
+                
+                setupPopupInteraction(members);
+                goToSlide(0);
+
+                overlay.classList.add('visible');
+                // sessionStorage.setItem('birthdayPopupShown', 'true'); <-- BARIS INI DIHAPUS
+            }
+            
+            function setupPopupInteraction() {
+                const overlay = document.getElementById('birthday-popup-overlay');
+                const closeBtn = document.getElementById('birthday-close-btn');
+                const whatsappTriggerBtn = document.getElementById('whatsapp-btn-trigger');
+                const pinInputContainer = document.getElementById('pin-input-container');
+                const whatsappPinInput = document.getElementById('whatsapp-pin');
+                const whatsappSendBtn = document.getElementById('whatsapp-send-btn');
+                const pinError = document.getElementById('pin-error');
+                
+                pinInputContainer.style.display = 'none';
+                whatsappPinInput.value = '';
+
+                const closePopup = () => overlay.classList.remove('visible');
+                
+                const clickOutsideHandler = (e) => {
+                    if (e.target === overlay) closePopup();
+                };
+
+                const togglePinInput = () => {
+                    if (pinInputContainer.style.display === 'none') {
+                        pinInputContainer.style.display = 'block';
+                        whatsappPinInput.focus();
+                        pinError.classList.remove('visible');
+                    } else {
+                        pinInputContainer.style.display = 'none';
+                        whatsappPinInput.value = '';
+                        pinError.classList.remove('visible');
+                    }
+                };
+                
+                const sendWhatsappMessage = () => {
+                    if (whatsappPinInput.value === 'SSJKT1') {
+                        pinError.classList.remove('visible');
+                        
+                        if (currentBirthdayMember && currentBirthdayMember.whatsapp) {
+                            const phoneNumber = currentBirthdayMember.whatsapp.replace(/[^0-9]/g, '');
+                            const message = encodeURIComponent(`Selamat Ulang Tahun untuk ${currentBirthdayMember.name}! Semoga panjang umur, sehat selalu, dan semua cita-citanya tercapai. Aamiin.`);
+                            window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+                            closePopup();
+                        } else {
+                            alert('Nomor WhatsApp anggota ini tidak tersedia.');
+                        }
+                    } else {
+                        pinError.classList.add('visible');
+                    }
+                };
+
+                // Clear previous listeners to avoid duplicates
+                closeBtn.onclick = closePopup;
+                overlay.onclick = clickOutsideHandler;
+                whatsappTriggerBtn.onclick = togglePinInput;
+                whatsappSendBtn.onclick = sendWhatsappMessage;
+            }
+
+        });
+        // --- BIRTHDAY POPUP SCRIPT END ---
     </script>
 </body>
 </html>
