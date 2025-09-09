@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Laporan dan Keluhan Anggota</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === CSS UTAMA UNTUK FORMULIR === */
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #007bff;
+            --background-color: #f8f9fa;
+            --form-background: #ffffff;
+            --text-color: #333;
+            --border-color: #dee2e6;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--form-background);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+        
+        /* CSS untuk deskripsi kerahasiaan */
+        .privacy-notice {
+            font-size: 0.85rem;
+            color: #5a6773;
+            margin-top: 15px;
+            background-color: #eef5fc;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            font-family: var(--font-family);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        select[disabled] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-image: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 86, 179, 0.3);
+        }
+
+        button[type="submit"]:disabled {
+            background: #aab8c2;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        #status-message.error {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .custom-select-container {
+            position: relative;
+        }
+
+        .custom-select-options {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--form-background);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: 4px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .custom-select-options.show {
+            display: block;
+        }
+
+        .custom-option {
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .custom-option:hover {
+            background-color: #e9ecef;
+        }
+
+        .close-dropdown-btn {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            border: none;
+            background: none;
+            font-size: 1.8rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 0 5px;
+        }
+
+        .close-dropdown-btn:hover {
+            color: var(--text-color);
+        }
+
+        input:required:invalid {
+            box-shadow: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* === CSS UNTUK MODAL SUKSES === */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h2 {
+            color: #333;
+            font-weight: 600;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .modal-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .modal-button:hover {
+            background-color: #004a99;
+        }
+
+        .animated-checkmark {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 3;
+            stroke: #fff;
+            stroke-miterlimit: 10;
+            margin: 0 auto;
+            box-shadow: inset 0px 0px 0px #4bb71b;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+
+        .checkmark-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 3;
+            stroke-miterlimit: 10;
+            stroke: #4bb71b;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .checkmark-check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+
+        @keyframes stroke {
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes scale {
+            0%, 100% { transform: none; }
+            50% { transform: scale3d(1.1, 1.1, 1); }
+        }
+        @keyframes fill {
+            100% { box-shadow: inset 0px 0px 0px 50px #4bb71b; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Formulir Laporan & Keluhan</h1>
+            <p>Silakan isi formulir di bawah ini untuk melaporkan keluhan terhadap anggota lain.</p>
+            
+            <p class="privacy-notice">
+                🔒 <strong>Privasi Anda Terjamin.</strong> Identitas Anda sebagai pelapor akan kami rahasiakan sepenuhnya dari pihak terlapor selama proses verifikasi awal. Jika laporan terbukti valid, kami akan menghubungi Anda terlebih dahulu sebelum mengambil tindakan lebih lanjut.
+            </p>
+        </header>
+
+        <form id="report-form">
+            <div class="form-group">
+                <label for="reporter-search-input">Nama Anda (Pelapor)</label>
+                <div class="custom-select-container" id="reporter-select-container">
+                    <input type="text" id="reporter-search-input" class="search-input" placeholder="Ketik untuk mencari nama Anda..." autocomplete="off" required>
+                    <input type="hidden" id="reporter-name" name="Nama">
+                    <div class="custom-select-options" id="reporter-options">
+                        <button type="button" class="close-dropdown-btn">&times;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="reported-status">Status Pihak yang Dituju</label>
+                <select id="reported-status" name="Status" required>
+                    <option value="" disabled selected>Pilih status...</option>
+                    <option value="Pengurus">Pengurus</option>
+                    <option value="Anggota">Anggota</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="reported-search-input">Nama yang Dituju (Terlapor)</label>
+                 <div class="custom-select-container" id="reported-select-container">
+                    <input type="text" id="reported-search-input" class="search-input" placeholder="Pilih status terlebih dahulu..." autocomplete="off" required disabled>
+                    <input type="hidden" id="reported-name" name="Namadituju">
+                    <div class="custom-select-options" id="reported-options">
+                        <button type="button" class="close-dropdown-btn">&times;</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="complaint">Detail Keluhan</label>
+                <textarea id="complaint" name="Keluhan" rows="6" placeholder="Jelaskan keluhan Anda secara rinci..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="sanction">Saran Sanksi</label>
+                <select id="sanction" name="SaranSanksi" required>
+                    <option value="" disabled selected>Pilih saran sanksi...</option>
+                    <option value="Abaikan">Abaikan</option>
+                    <option value="Teguran">Teguran</option>
+                    <option value="SP1">SP1</option>
+                    <option value="SP2">SP2</option>
+                    <option value="SP3">SP3</option>
+                    <option value="Blacklist">Blacklist</option>
+                </select>
+            </div>
+            
+            <button type="submit" id="submit-button">Kirim Laporan</button>
+            <div id="status-message"></div>
+        </form>
+    </div>
+
+    <div id="success-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <svg class="animated-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+            </div>
+            <h2>Laporan Berhasil Terkirim</h2>
+            <p id="modal-success-message"></p>
+            <button id="close-modal-btn" class="modal-button">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- KONFIGURASI ---
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX5Y3YgnN2hINdxhoW7iVJFUaYXtLklcZVqmVnRLeL4gdEQQuoC6KWf6GY_siJnos/exec";
+            const JSON_FILE_PATH = "anggota2.json";
+            
+            const PENGURUS_LIST = [
+                "Heri Haryadi", "Arjuna Pamungkas", "Mohammad Walid Ridho", "Ridho Ariotama Adi Danuarta",
+                "Rasyiqha Syafa Rabbanny", "Ananda Febriyanti", "Rizky Hidayat", "Salman Alparisi",
+                "Fathir Ahmad Maulana", "Eki Apriandi", "Aldi Hadiansyah", "Hasan Al Ahwari",
+                "Agil Pramono", "Moch. Fikri", "M. Alfazely Wibisono"
+            ];
+
+            // --- ELEMEN DOM ---
+            const form = document.getElementById('report-form');
+            const reporterSelectContainer = document.getElementById('reporter-select-container');
+            const reporterSearchInput = document.getElementById('reporter-search-input');
+            const reporterNameHiddenInput = document.getElementById('reporter-name');
+            const reporterOptionsContainer = document.getElementById('reporter-options');
+            const reportedSelectContainer = document.getElementById('reported-select-container');
+            const reportedSearchInput = document.getElementById('reported-search-input');
+            const reportedNameHiddenInput = document.getElementById('reported-name');
+            const reportedOptionsContainer = document.getElementById('reported-options');
+            const reportedStatusSelect = document.getElementById('reported-status');
+            const submitButton = document.getElementById('submit-button');
+            const statusMessage = document.getElementById('status-message');
+            const successModalOverlay = document.getElementById('success-modal-overlay');
+            const modalSuccessMessage = document.getElementById('modal-success-message');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+
+            let allMembers = [];
+
+            // --- FUNGSI ---
+            async function loadMembers() {
+                try {
+                    const response = await fetch(JSON_FILE_PATH);
+                    if (!response.ok) throw new Error(`Gagal memuat file JSON: ${response.statusText}`);
+                    allMembers = await response.json();
+                    populateCustomDropdown(reporterOptionsContainer, allMembers, (member) => {
+                        reporterSearchInput.value = `${member.name} (${member.kta})`;
+                        reporterNameHiddenInput.value = member.name;
+                        reporterOptionsContainer.classList.remove('show');
+                    });
+                } catch (error) {
+                    console.error(error);
+                    showStatusMessage('Gagal memuat data anggota. Coba muat ulang halaman.', 'error');
+                }
+            }
+
+            function populateCustomDropdown(container, members, onSelectCallback) {
+                container.innerHTML = '<button type="button" class="close-dropdown-btn">&times;</button>';
+                members.forEach(member => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'custom-option';
+                    optionDiv.textContent = `${member.name} (${member.kta})`;
+                    optionDiv.addEventListener('click', () => {
+                        onSelectCallback(member);
+                    });
+                    container.appendChild(optionDiv);
+                });
+            }
+            
+            function updateTargetDropdown() {
+                const selectedStatus = reportedStatusSelect.value;
+                reportedSearchInput.value = '';
+                reportedNameHiddenInput.value = '';
+
+                if (!selectedStatus) {
+                    reportedSearchInput.disabled = true;
+                    reportedSearchInput.placeholder = 'Pilih status terlebih dahulu...';
+                    return;
+                }
+
+                const filteredMembers = allMembers.filter(member => {
+                    const isPengurus = PENGURUS_LIST.includes(member.name);
+                    return (selectedStatus === 'Pengurus') ? isPengurus : !isPengurus;
+                });
+
+                populateCustomDropdown(reportedOptionsContainer, filteredMembers, (member) => {
+                    reportedSearchInput.value = `${member.name} (${member.kta})`;
+                    reportedNameHiddenInput.value = member.name;
+                    reportedOptionsContainer.classList.remove('show');
+                });
+
+                reportedSearchInput.disabled = false;
+                reportedSearchInput.placeholder = 'Ketik untuk mencari nama...';
+            }
+
+            function showStatusMessage(message, type) {
+                if (type === 'success') {
+                    modalSuccessMessage.textContent = message;
+                    successModalOverlay.classList.add('show');
+                } else {
+                    statusMessage.textContent = message;
+                    statusMessage.className = 'error';
+                    statusMessage.style.display = 'block';
+                    const oldSuccessMessage = document.querySelector('#status-message.success');
+                    if(oldSuccessMessage) oldSuccessMessage.style.display = 'none';
+                }
+            }
+
+            async function handleFormSubmit(event) {
+                event.preventDefault();
+                
+                if (!reporterNameHiddenInput.value) {
+                    showStatusMessage('Silakan pilih nama Anda (pelapor) dari daftar.', 'error');
+                    return;
+                }
+                if (!reportedNameHiddenInput.value) {
+                    showStatusMessage('Silakan pilih nama yang dituju (terlapor) dari daftar.', 'error');
+                    return;
+                }
+                
+                submitButton.disabled = true;
+                submitButton.textContent = 'Mengirim...';
+                statusMessage.style.display = 'none';
+
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                const pelapor = allMembers.find(m => m.name === data.Nama);
+                const terduga = allMembers.find(m => m.name === data.Namadituju);
+
+                const payload = {
+                    ...data,
+                    WhatsAppPelapor: pelapor ? pelapor.whatsapp : 'Tidak Ditemukan',
+                    WhatsAppTerduga: terduga ? terduga.whatsapp : 'Tidak Ditemukan'
+                };
+
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload),
+                        headers: {'Content-Type': 'text/plain'}
+                    });
+                    const result = await response.json();
+                    
+                    if (result.result === 'success') {
+                        const successMessage = "Terima Kasih. Laporan Anda berhasil dikirim. Pengurus divisi Keanggotaan akan segera melakukan pemeriksaan laporan Anda untuk memvalidasi dan memberikan sanksi jika terbukti bersalah. Setiap laporan dijaga kerahasiaannya untuk melindungi semua pihak yang terlibat.";
+                        showStatusMessage(successMessage, 'success');
+                        form.reset();
+                        reporterSearchInput.value = '';
+                        reporterNameHiddenInput.value = '';
+                        reportedSearchInput.value = '';
+                        reportedNameHiddenInput.value = '';
+                        reportedSearchInput.disabled = true;
+                        reportedSearchInput.placeholder = 'Pilih status terlebih dahulu...';
+                    } else {
+                        throw new Error(result.message || 'Terjadi kesalahan saat mengirim data.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showStatusMessage('Gagal mengirim laporan. Coba periksa koneksi internet Anda.', 'error');
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Kirim Laporan';
+                }
+            }
+            
+            function setupCustomSelect(container) {
+                const searchInput = container.querySelector('.search-input');
+                const optionsContainer = container.querySelector('.custom-select-options');
+                
+                searchInput.addEventListener('focus', () => optionsContainer.classList.add('show'));
+                
+                searchInput.addEventListener('input', () => {
+                    const filterText = searchInput.value.toLowerCase();
+                    optionsContainer.querySelectorAll('.custom-option').forEach(option => {
+                        const text = option.textContent.toLowerCase();
+                        option.style.display = text.includes(filterText) ? '' : 'none';
+                    });
+                });
+
+                optionsContainer.querySelector('.close-dropdown-btn').addEventListener('click', () => {
+                    optionsContainer.classList.remove('show');
+                });
+            }
+
+            // --- EVENT LISTENERS ---
+            setupCustomSelect(reporterSelectContainer);
+            setupCustomSelect(reportedSelectContainer);
+
+            document.addEventListener('click', (event) => {
+                if (!reporterSelectContainer.contains(event.target)) {
+                    reporterOptionsContainer.classList.remove('show');
+                }
+                if (!reportedSelectContainer.contains(event.target)) {
+                    reportedOptionsContainer.classList.remove('show');
+                }
+            });
+
+            function hideSuccessModal() {
+                successModalOverlay.classList.remove('show');
+            }
+
+            closeModalBtn.addEventListener('click', hideSuccessModal);
+            successModalOverlay.addEventListener('click', function(event) {
+                if (event.target === successModalOverlay) {
+                    hideSuccessModal();
+                }
+            });
+            
+            reportedStatusSelect.addEventListener('change', updateTargetDropdown);
+            form.addEventListener('submit', handleFormSubmit);
+
+            // --- INISIALISASI ---
+            loadMembers();
+        });
+    </script>
+</body>
+</html>
