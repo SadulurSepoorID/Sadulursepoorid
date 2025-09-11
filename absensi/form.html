@@ -4,19 +4,182 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Formulir Absensi</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
   <style>
+    /* Header and Footer Styles from profile2.html */
+    :root {
+        --primary-color: #1e88e5;
+        --primary-dark: #1565c0;
+        --text-color: #333;
+        --white: #ffffff;
+        --transition: all 0.3s ease;
+    }
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    a {
+        text-decoration: none;
+        color: var(--primary-color);
+        transition: var(--transition);
+    }
+    a:hover {
+        color: var(--primary-dark);
+    }
+    header {
+        background-color: var(--white);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 12px 5%;
+    }
+    header nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .logo {
+        height: 50px;
+        transition: var(--transition);
+    }
+    .logo:hover {
+        transform: scale(1.05);
+    }
+    footer {
+        background-color: #333;
+        color: #fff;
+        padding: 60px 0 20px;
+        font-family: 'Arial', sans-serif;
+    }
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+    .footer-section {
+        flex: 1;
+        min-width: 250px;
+        margin-bottom: 30px;
+        padding-right: 20px;
+    }
+    .social-media {
+        display: flex;
+        margin-top: 20px;
+    }
+    .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background-color: #444;
+        border-radius: 50%;
+        margin-right: 10px;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+    .social-icon:hover {
+        background-color: #0078ff;
+        transform: translateY(-3px);
+    }
+    .footer-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    .footer-title:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 2px;
+        background-color: #0078ff;
+    }
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .footer-links li {
+        margin-bottom: 12px;
+    }
+    .footer-links a {
+        color: #ccc;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: block;
+    }
+    .footer-links a:hover {
+        color: #0078ff;
+        padding-left: 5px;
+    }
+    .contact-info p {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        color: #ccc;
+    }
+    .contact-info i {
+        margin-right: 10px;
+        color: #0078ff;
+    }
+    .footer-bottom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        border-top: 1px solid #444;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+    }
+    .footer-bottom p {
+        color: #aaa;
+        font-size: 14px;
+        margin: 0;
+    }
+    main {
+        padding-top: 100px; /* To prevent content from hiding behind fixed header */
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 20px;
+    }
+    @media (max-width: 768px) {
+       .footer-section {
+            flex-basis: 100%;
+        }
+        .footer-bottom {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    /* Original Styles from form.html */
     * {
       box-sizing: border-box;
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
       background: #f0f4f8;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      flex-direction: column;
+      justify-content: space-between;
       min-height: 100vh;
     }
 
@@ -73,7 +236,6 @@
       font-size: 15px;
     }
 
-    /* Style untuk search input */
     .search-container {
       position: relative;
       width: 100%;
@@ -122,7 +284,6 @@
       background-color: #e3f2fd;
     }
 
-    /* Style untuk input NIA yang readonly */
     #nia[readonly] {
       background-color: #f8f9fa;
       color: #666;
@@ -182,6 +343,7 @@
       font-weight: 600;
       text-decoration: none;
       margin-bottom: 10px;
+      transition: 0.3s;
     }
 
     .back-button:hover {
@@ -195,7 +357,6 @@
       font-style: italic;
     }
 
-    /* Style untuk success message dan email verification */
     .success-container {
       display: none;
       text-align: center;
@@ -270,77 +431,127 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <a href="absensi.html" class="back-button" onmouseover="this.style.background='#2b7de9';this.style.color='white'" onmouseout="this.style.background='white';this.style.color='#2b7de9'">
-      ← Kembali
-    </a>
 
-    <h2>Formulir Absensi</h2>
-    
-    <!-- Form Container -->
-    <div id="formContainer">
-      <div id="limitInfo" class="limit-info loading">
-        Mengecek kuota peserta...
+  <header>
+    <nav>
+        <img src="https://i.imgur.com/9rAb7r7.png" alt="Logo" class="logo" onclick="window.location.href='index.html';">
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <a href="index.html" class="back-button">
+        ← Kembali
+      </a>
+
+      <h2>Formulir Absensi</h2>
+      
+      <div id="formContainer">
+        <div id="limitInfo" class="limit-info loading">
+          Mengecek kuota peserta...
+        </div>
+
+        <form id="absenForm">
+          <label>Nama</label>
+          <div class="search-container">
+            <input type="text" id="namaSearch" placeholder="Ketik untuk mencari nama..." autocomplete="off" required>
+            <div id="dropdownList" class="dropdown-list"></div>
+            <input type="hidden" name="nama" id="selectedNama">
+          </div>
+          <div class="format-info"></div>
+
+          <label>NIA</label>
+          <input type="text" name="nia" id="nia" readonly required>
+          <div class="format-info">Akan terisi otomatis berdasarkan nama yang dipilih</div>
+
+          <label>Email</label>
+          <input type="email" name="email" id="email" required>
+          <div class="format-info">Contoh: nama@email.com</div>
+
+          <label>Kegiatan yang Anda hadiri</label>
+          <select name="kegiatan" required>
+            <option value="">-- Pilih Salah Satu --</option>
+            <option value="JPL 1 Karet">JPL 1 Karet</option>
+          </select>
+
+          <button type="submit" id="submitBtn">Kirim</button>
+        </form>
+        <p id="pesan"></p>
       </div>
 
-      <form id="absenForm">
-        <label>Nama</label>
-        <div class="search-container">
-          <input type="text" id="namaSearch" placeholder="Ketik untuk mencari nama..." autocomplete="off" required>
-          <div id="dropdownList" class="dropdown-list"></div>
-          <input type="hidden" name="nama" id="selectedNama">
+      <div id="successContainer" class="success-container">
+        <div class="success-message">
+          <h3>✅ Data Berhasil Disimpan!</h3>
+          <p>Silakan cek email Anda untuk konfirmasi pendaftaran.</p>
+          <div class="email-check-link" onclick="showEmailVerification()">
+            Belum menerima email? Cek di bawah ini
+          </div>
         </div>
-        <div class="format-info"></div>
 
-        <label>NIA</label>
-        <input type="text" name="nia" id="nia" readonly required>
-        <div class="format-info">Akan terisi otomatis berdasarkan nama yang dipilih</div>
+        <div id="emailVerification" class="email-verification">
+          <h4>Verifikasi Email</h4>
+          <p><strong>Email yang terdaftar:</strong></p>
+          <div id="currentEmail" class="current-email"></div>
+          
+          <label>Email baru (jika ingin mengganti):</label>
+          <input type="email" id="newEmail" placeholder="Masukkan email yang benar">
+          
+          <div class="button-group">
+            <button type="button" class="btn-secondary" onclick="hideEmailVerification()">Batal</button>
+            <button type="button" onclick="updateEmail()">Perbarui Email</button>
+          </div>
+        </div>
 
-        <label>Email</label>
-        <input type="email" name="email" id="email" required>
-        <div class="format-info">Contoh: nama@email.com</div>
-
-        <label>Kegiatan yang Anda hadiri</label>
-        <select name="kegiatan" required>
-          <option value="">-- Pilih Salah Satu --</option>
-          <option value="JPL 29A Duri">JPL 29A Duri</option>
-        </select>
-
-        <button type="submit" id="submitBtn">Kirim</button>
-      </form>
-      <p id="pesan"></p>
+        <button type="button" class="continue-button" onclick="goToIndex()">
+          Lanjut ke Halaman Utama
+        </button>
+      </div>
     </div>
-
-    <!-- Success Container -->
-    <div id="successContainer" class="success-container">
-      <div class="success-message">
-        <h3>✅ Data Berhasil Disimpan!</h3>
-        <p>Silakan cek email Anda untuk konfirmasi pendaftaran.</p>
-        <div class="email-check-link" onclick="showEmailVerification()">
-          Belum menerima email? Cek di bawah ini
-        </div>
+  </main>
+  
+  <footer>
+      <div class="footer-container">
+              <div class="social-media">
+                  <a href="https://www.facebook.com/share/1G32mgyres/?mibextid=qi2Omg" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                  <a href="https://www.tiktok.com/@sadulur.sepoor_official?_t=8puqjiITt58&_r=1" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                  <a href="https://www.instagram.com/sadulursepoor_id?igsh=bHNvcTI4ZmNiejBv" class="social-icon"><i class="fab fa-instagram"></i></a>
+              </div>
+          </div>
+          
+          <div class="footer-section">
+              <h3 class="footer-title">Link Cepat</h3>
+              <ul class="footer-links">
+                  <li><a href="../index.html">Beranda</a></li>
+                  <li><a href="./index.html">Tentang Kami</a></li>
+                  <li><a href="../profile2.html">Profil</a></li>
+                  <li><a href="https://wa.me/6285171058989">Kontak</a></li>
+              </ul>
+          </div>
+          
+          <div class="footer-section">
+              <h3 class="footer-title">Layanan Kami</h3>
+              <ul class="footer-links">
+                  <li><a href="../index.html#contact">Edukasi Keselamatan di Perlintasan</a></li>
+                  <li><a href="../index.html#contact">Kolaborasi dengan Instansi Terkait</a></li>
+                  <li><a href="../index.html#contact">Kegitan Komunitas & Kampanye Sosial</a></li>
+                  <li><a href="../index.html#contact">Dokumentasi & Pelaporan</a></li>
+              </ul>
+          </div>
+          
+          <div class="footer-section">
+              <h3 class="footer-title">Hubungi Kami</h3>
+              <div class="contact-info">
+                  <p><i class="fas fa-map-marker-alt"></i> Jl. Kemiri Jaya, RT.05 RW.01 Kota Depok, Jawa Barat</p>
+                  <p><i class="fas fa-phone"></i> +62 852 1115 0310</p>
+                  <p><i class="fas fa-envelope"></i> sadulursepoor@gmail.com</p>
+              </div>
+          </div>
       </div>
-
-      <!-- Email Verification Section -->
-      <div id="emailVerification" class="email-verification">
-        <h4>Verifikasi Email</h4>
-        <p><strong>Email yang terdaftar:</strong></p>
-        <div id="currentEmail" class="current-email"></div>
-        
-        <label>Email baru (jika ingin mengganti):</label>
-        <input type="email" id="newEmail" placeholder="Masukkan email yang benar">
-        
-        <div class="button-group">
-          <button type="button" class="btn-secondary" onclick="hideEmailVerification()">Batal</button>
-          <button type="button" onclick="updateEmail()">Perbarui Email</button>
-        </div>
+      
+      <div class="footer-bottom">
+          <p>© 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
       </div>
-
-      <button type="button" class="continue-button" onclick="goToIndex()">
-        Lanjut ke Halaman Utama
-      </button>
-    </div>
-  </div>
+  </footer>
 
   <script src="account.js"></script>
   <script>
