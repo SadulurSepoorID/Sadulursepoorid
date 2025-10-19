@@ -431,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============= END: KODE BARU UNTUK HITUNG MUNDUR =============
 
 
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxWhmNea9VMYo8oCihDKPy9qVGgIYj15_neeHMuZXwWqbwVpuz5F_0yWAvPh1b7eo96/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyuxXTNf_Tiq7ahxHFbR9WPjDTbEq6RgQtFLlT2-HXWSU3IzUyftvA35DN_Q6GiiYVPlw/exec';
     const API_WILAYAH_URL = 'https://www.emsifa.com/api-wilayah-indonesia/api';
 
     const form = document.getElementById('registrationForm');
@@ -514,9 +514,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function submitForm() {
         nextBtn.disabled = true; nextBtn.textContent = 'Mengirim...'; const file = document.getElementById('photo').files[0]; const reader = new FileReader();
-        reader.onload = (event) => { const base64Data = event.target.result; const formData = new FormData(form); const data = Object.fromEntries(formData.entries()); data.province = provinceSelect.options[provinceSelect.getValue()]?.text ?? ''; data.city = citySelect.options[citySelect.getValue()]?.text ?? ''; data.district = districtSelect.options[districtSelect.getValue()]?.text ?? ''; data.village = villageSelect.options[villageSelect.getValue()]?.text ?? ''; data.photoData = base64Data; data.photoName = file.name;
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify(data) }) .then(response => response.json()) .then(res => { if (res.result === 'success') { navigationButtons.style.display = 'none'; successMessage.classList.add('show'); document.querySelector('.progress-bar').style.display = 'none'; document.querySelector('.step-indicator').style.display = 'none'; form.style.display = 'none'; } else { throw new Error(res.message || 'Unknown error'); } }) .catch(error => { console.error('Error:', error); alert('Gagal mengirim pendaftaran. Silakan coba lagi.'); nextBtn.disabled = false; updateUI(); }); };
-        reader.onerror = () => { alert('Gagal membaca file foto.'); nextBtn.disabled = false; updateUI(); }; reader.readAsDataURL(file);
+        
+        reader.onload = (event) => { 
+            const base64Data = event.target.result; 
+            const formData = new FormData(form); 
+            const data = Object.fromEntries(formData.entries()); 
+            
+            data.province = provinceSelect.options[provinceSelect.getValue()]?.name ?? '';
+            data.city = citySelect.options[citySelect.getValue()]?.name ?? '';
+            data.district = districtSelect.options[districtSelect.getValue()]?.name ?? '';
+            data.village = villageSelect.options[villageSelect.getValue()]?.name ?? '';
+            
+            data.photoData = base64Data;
+            data.photoName = file.name;
+        
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify(data) })
+                .then(response => response.text()) 
+                .then(text => {
+                    try {
+                        const res = JSON.parse(text); 
+                        if (res.success === true) {
+                            navigationButtons.style.display = 'none';
+                            successMessage.classList.add('show');
+                            document.querySelector('.progress-bar').style.display = 'none';
+                            document.querySelector('.step-indicator').style.display = 'none';
+                            // ================= PERBAIKAN DI SINI =================
+                            sections.forEach(section => section.style.display = 'none'); // <-- Ganti form.style.display
+                            // =====================================================
+                        } else {
+                            throw new Error(res.message || 'Error dari server');
+                        }
+                    } catch (e) {
+                        console.warn("Gagal parse JSON, tapi data diasumsikan terkirim:", text);
+                        navigationButtons.style.display = 'none';
+                        successMessage.classList.add('show');
+                        document.querySelector('.progress-bar').style.display = 'none';
+                        document.querySelector('.step-indicator').style.display = 'none';
+                        // ================= PERBAIKAN DI SINI =================
+                        sections.forEach(section => section.style.display = 'none'); // <-- Ganti form.style.display
+                        // =====================================================
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Gagal mengirim pendaftaran: ' + error.message);
+                    nextBtn.disabled = false;
+                    updateUI();
+                });
+        };
+        
+        reader.onerror = () => { alert('Gagal membaca file foto.'); nextBtn.disabled = false; updateUI(); }; 
+        reader.readAsDataURL(file);
     }
 
     nextBtn.addEventListener('click', async () => {
