@@ -10,15 +10,33 @@
 
   <style>
     /* ------------------- */
-    /* Header & Footer Styles */
+    /* Variabel & Gaya Dasar */
     /* ------------------- */
     :root {
-        --primary-color: #1e88e5;
-        --primary-dark: #1565c0;
-        --text-color: #333;
+        --primary-color: #0056b3; 
+        --primary-dark: #004085;
+        --text-color: #212529; 
+        --text-secondary: #5a6268;
         --white: #ffffff;
+        --light-bg: #f8faff; 
+        --light-blue-bg: #e6f0ff;
         --transition: all 0.3s ease;
     }
+    
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light-bg); 
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
     a {
         text-decoration: none;
         color: var(--primary-color);
@@ -27,6 +45,23 @@
     a:hover {
         color: var(--primary-dark);
     }
+
+    main {
+        flex-grow: 1; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 120px 20px 40px 20px; 
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ------------------- */
+    /* Header & Footer Styles */
+    /* ------------------- */
     header {
         background-color: var(--white);
         position: fixed;
@@ -34,7 +69,7 @@
         top: 0;
         left: 0;
         z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
         padding: 12px 5%;
     }
     header nav {
@@ -50,193 +85,61 @@
     .logo:hover {
         transform: scale(1.05);
     }
-    .header-button {
-        background-color: var(--primary-color);
-        color: var(--white);
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 14px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    .header-button:hover {
-        background-color: var(--primary-dark);
-        color: var(--white);
-        transform: translateY(-2px);
-    }
+    
     footer {
         background-color: #333;
         color: #fff;
         padding: 60px 0 20px;
-        font-family: 'Arial', sans-serif;
+        font-family: 'Arial', sans-serif; 
     }
-    .footer-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: 0 20px;
-    }
-    .footer-section {
-        flex: 1;
-        min-width: 250px;
-        margin-bottom: 30px;
-        padding-right: 20px;
-    }
-    .social-media {
-        display: flex;
-        margin-top: 20px;
-    }
-    .social-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        background-color: #444;
-        border-radius: 50%;
-        margin-right: 10px;
-        color: #fff;
-        transition: all 0.3s ease;
-    }
-    .social-icon:hover {
-        background-color: #0078ff;
-        transform: translateY(-3px);
-    }
-    .footer-title {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 20px;
-        position: relative;
-        padding-bottom: 10px;
-    }
-    .footer-title:after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 50px;
-        height: 2px;
-        background-color: #0078ff;
-    }
-    .footer-links {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    .footer-links li {
-        margin-bottom: 12px;
-    }
-    .footer-links a {
-        color: #ccc;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        display: block;
-    }
-    .footer-links a:hover {
-        color: #0078ff;
-        padding-left: 5px;
-    }
-    .contact-info p {
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        color: #ccc;
-    }
-    .contact-info i {
-        margin-right: 10px;
-        color: #0078ff;
-    }
-    .footer-bottom {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        border-top: 1px solid #444;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 30px;
-    }
-    .footer-bottom p {
-        color: #aaa;
-        font-size: 14px;
-        margin: 0;
-    }
-    @media (max-width: 768px) {
-       .footer-section {
-            flex-basis: 100%;
-        }
-        .footer-bottom {
-            flex-direction: column;
-            text-align: center;
-        }
-    }
+    .footer-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; padding: 0 20px; }
+    .footer-section { flex: 1; min-width: 250px; margin-bottom: 30px; padding-right: 20px; }
+    .social-media { display: flex; margin-top: 20px; }
+    .social-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background-color: #444; border-radius: 50%; margin-right: 10px; color: #fff; transition: all 0.3s ease; }
+    .social-icon:hover { background-color: #0078ff; transform: translateY(-3px); }
+    .footer-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; position: relative; padding-bottom: 10px; }
+    .footer-title:after { content: ''; position: absolute; left: 0; bottom: 0; width: 50px; height: 2px; background-color: #0078ff; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: #ccc; text-decoration: none; transition: all 0.3s ease; display: block; }
+    .footer-links a:hover { color: #0078ff; padding-left: 5px; }
+    .contact-info p { margin-bottom: 15px; display: flex; align-items: center; color: #ccc; }
+    .contact-info i { margin-right: 10px; color: #0078ff; }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding: 20px; border-top: 1px solid #444; display: flex; justify-content: space-between; align-items: center; margin-top: 30px; }
+    .footer-bottom p { color: #aaa; font-size: 14px; margin: 0; }
+    @media (max-width: 768px) { .footer-section { flex-basis: 100%; } .footer-bottom { flex-direction: column; text-align: center; } }
+
 
     /* ------------------- */
     /* Absensi Card Styles */
     /* ------------------- */
-    :root {
-      --primary-card: #007bff;
-      --button-hover: #0056b3;
-    }
-
-    * {
-        box-sizing: border-box;
-    }
-    
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(120deg, #ffffff, #e3f2fd);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
-      color: var(--text-color);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    main {
-        flex-grow: 1; /* Allows main to take up available space */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 100px 20px 20px 20px; /* Top padding to avoid header */
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     .absensi-card {
-      background: white;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.1);
+      background: var(--white);
+      padding: 2.5rem; 
+      border-radius: 20px; 
+      box-shadow: 0 10px 30px rgba(0, 70, 130, 0.1); 
       max-width: 600px;
       width: 100%;
       animation: fadeIn 0.8s ease-in-out;
     }
     
-    .timer {
-      font-size: 0.95rem;
-      color: #555;
+    .timer-container {
       text-align: center;
       margin-bottom: 1.5rem;
     }
+    .timer {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      background-color: #e9ecef;
+      padding: 5px 5px;
+      border-radius: 8px;
+      display: inline-block; 
+    }
 
     .absensi-card h1 {
-      color: var(--primary-card);
+      color: var(--primary-dark);
       margin-bottom: 0.5rem;
-      font-size: 1.8rem;
+      font-size: 2rem; 
       text-align: center;
     }
 
@@ -250,13 +153,15 @@
     .absensi-info strong {
       display: block;
       margin-bottom: 5px;
-      color: #0056b3;
+      color: var(--primary-dark);
+      font-size: 1.1rem;
     }
 
-    .absensi-card p {
+    .absensi-card p.instructions { 
       margin-top: 1rem;
       font-weight: 500;
       text-align: center;
+      color: var(--text-secondary);
     }
     
     .info-waktu {
@@ -267,65 +172,121 @@
     }
 
     .info-box {
-      padding: 1rem 1.25rem;
-      border-radius: 10px;
+      padding: 1.25rem;
+      border-radius: 12px; 
       font-size: 1rem;
       font-weight: 500;
       line-height: 1.5;
-      box-shadow: 0 4px 8px rgba(0, 89, 153, 0.1);
+      box-shadow: 0 4px 8px rgba(0, 89, 153, 0.05);
       animation: fadeIn 0.4s ease-in-out;
+      display: flex; 
+      align-items: center;
+      gap: 1rem;
+      border-left-width: 6px; 
+      border-left-style: solid;
     }
-
-    .kegiatan-box {
-      background-color: #e3f2fd;
-      border-left: 5px solid #1976d2;
-      color: #0d47a1;
+    .info-box i {
+      font-size: 1.5rem;
+      flex-shrink: 0;
     }
-
-    .absen-box {
-      background-color: #e8f3f5;
-      border-left: 5px solid #24a6c8;
-      color: #348d93;
+    .info-box span {
+      flex-grow: 1;
     }
+    .kegiatan-box { background-color: var(--light-blue-bg); border-color: var(--primary-color); color: var(--primary-dark); }
+    .kegiatan-box i { color: var(--primary-color); }
+    .absen-box { background-color: #e8f3f5; border-color: #24a6c8; color: #348d93; }
+    .absen-box i { color: #24a6c8; }
+    .absen-box.full { background-color: #ffebee; border-color: #f44336; color: #c62828; }
+    .absen-box.full i { color: #f44336; }
+    .absen-box.waiting { background-color: #fff3e0; border-color: #ff9800; color: #e65100; }
+    .absen-box.waiting i { color: #ff9800; }
 
-    .absen-box.full {
-      background-color: #ffebee;
-      border-left: 5px solid #f44336;
-      color: #c62828;
+
+    /* --------------------------------- */
+    /* Bagian Peta BARU (dengan Embed) */
+    /* --------------------------------- */
+    .map-container {
+        margin-top: 1.5rem;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        overflow: hidden; /* Penting agar border-radius iframe terlihat */
+        background-color: #fdfdfd;
+        box-shadow: 0 4px 8px rgba(0, 89, 153, 0.05);
     }
-
-    .absen-box.waiting {
-      background-color: #fff3e0;
-      border-left: 5px solid #ff9800;
-      color: #e65100;
+    .map-embed {
+        width: 100%;
+        height: 250px; /* Atur tinggi peta di sini */
     }
-
+    .map-embed iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+    .map-details {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    .map-info {
+        flex-grow: 1;
+    }
+    .map-info strong {
+        display: block;
+        font-size: 1rem;
+        color: var(--primary-dark);
+    }
+    .map-info p {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin: 0.25rem 0 0 0;
+    }
+    .route-button {
+        background-color: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: var(--transition);
+        white-space: nowrap;
+        box-shadow: 0 2px 5px rgba(0, 86, 179, 0.3);
+    }
+    .route-button:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        color: white; 
+    }
+    /* ------------------- */
+    /* Buttons */
+    /* ------------------- */
     .buttons {
       display: flex;
       flex-direction: column;
       gap: 1rem;
       margin-top: 1.5rem;
     }
-
     .buttons a {
-      background-color: var(--primary-card);
+      background-color: var(--primary-color);
       color: white;
       text-decoration: none;
-      padding: 0.75rem 1rem;
+      padding: 0.85rem 1rem; 
       border-radius: 8px;
       font-weight: bold;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+      transition: var(--transition);
+      box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3);
       text-align: center;
       display: block;
+      font-size: 1rem;
     }
-
     .buttons a:hover {
-      background-color: var(--button-hover);
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+      background-color: var(--primary-dark);
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 15px rgba(0, 86, 179, 0.4);
     }
-
     .buttons a.disabled {
       background-color: #6c757d;
       cursor: not-allowed;
@@ -333,7 +294,21 @@
       opacity: 0.6;
       pointer-events: none;
     }
+    .buttons a:nth-child(2) { 
+        background-color: #f8f9fa;
+        color: var(--primary-dark);
+        border: 1px solid #dee2e6;
+        box-shadow: none;
+    }
+    .buttons a:nth-child(2):hover {
+        background-color: #e9ecef;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+    }
 
+    /* ------------------- */
+    /* Responsive Media Queries */
+    /* ------------------- */
     @media (min-width: 480px) {
       .buttons {
         flex-direction: row;
@@ -342,6 +317,26 @@
       .buttons a {
         width: 48%;
       }
+    }
+    
+    @media (max-width: 500px) {
+        .absensi-card {
+            padding: 1.5rem;
+        }
+        .absensi-card h1 {
+            font-size: 1.8rem;
+        }
+        /* Perbarui style responsive untuk .map-details */
+        .map-details {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .route-button {
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
     }
   </style>
 </head>
@@ -355,21 +350,44 @@
 
   <main>
     <div class="absensi-card">
-      <div class="timer" id="timer">Memuat waktu...</div>
+      <div class="timer-container">
+        <div class="timer" id="timer">Memuat waktu...</div>
+      </div>
 
       <h1>Absensi Kehadiran</h1>
       <div class="absensi-info">
         <strong>Kegiatan:</strong>Sosialisasi Disiplin Perlintasan<br>
         <br>
-        <strong>Lokasi:</strong>JPL 17 Kemayoran<br>
+        <strong>Lokasi:</strong>JPL 17 Duren Kalibata<br>
         <p><strong>Tanggal:</strong> <span id="tanggal-kegiatan"></span></p>
       </div>
+
+     <div class="map-container">
+        <div class="map-embed">
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d247.87861503999082!2d106.85471058610037!3d-6.2561108721939735!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3ad3f15e2b1%3A0x9586222937816098!2sPVV3%2BHW5%2C%20RT.9%2FRW.4%2C%20Rawajati%2C%20Kec.%20Pancoran%2C%20Kota%20Jakarta%20Selatan%2C%20Daerah%20Khusus%20Ibukota%20Jakarta%2012750!5e0!3m2!1sid!2sid!4v1763009466219!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <div class="map-details">
+            <div class="map-info">
+                <strong>Titik Kumpul: JPL 17 Duren Kalibata</strong>
+                <p>PVV3+HW5, RT.9/RW.4, Rawajati, Pancoran, Jakarta Selatan 12750</p>
+            </div>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=PVV3%2BHW5" target="_blank" class="route-button">
+                Lihat Rute
+            </a>
+        </div>
+     </div>
      <div class="info-waktu">
-     <div id="selisih-kegiatan" class="info-box kegiatan-box"></div>
-     <div id="selisih-absen" class="info-box absen-box"></div>
+        <div id="selisih-kegiatan" class="info-box kegiatan-box">
+            <i class="fas fa-calendar-alt"></i>
+            <span id="kegiatan-text">Memuat status kegiatan...</span>
+        </div>
+        <div id="selisih-absen" class="info-box absen-box">
+            <i class="fas fa-clock"></i>
+            <span id="absen-text">Memuat status absen...</span>
+        </div>
      </div>
 
-      <p>Silakan pilih status kehadiran Anda untuk kegiatan ini.</p>
+      <p class="instructions">Silakan pilih status kehadiran Anda untuk kegiatan ini.</p>
       <div class="buttons">
         <a href="#" id="hadir-btn">Hadir</a>
         <a href="izin.html" target="_blank">Izin Tidak Hadir</a>
@@ -385,7 +403,6 @@
                   <a href="https://www.instagram.com/sadulursepoor_id?igsh=bHNvcTI4ZmNiejBv" class="social-icon"><i class="fab fa-instagram"></i></a>
               </div>
           </div>
-          
           <div class="footer-section">
               <h3 class="footer-title">Link Cepat</h3>
               <ul class="footer-links">
@@ -395,7 +412,6 @@
                   <li><a href="https://wa.me/6285171058989">Kontak</a></li>
               </ul>
           </div>
-          
           <div class="footer-section">
               <h3 class="footer-title">Layanan Kami</h3>
               <ul class="footer-links">
@@ -405,7 +421,6 @@
                   <li><a href="../index.html#contact">Dokumentasi & Pelaporan</a></li>
               </ul>
           </div>
-          
           <div class="footer-section">
               <h3 class="footer-title">Hubungi Kami</h3>
               <div class="contact-info">
@@ -415,7 +430,6 @@
               </div>
           </div>
       </div>
-      
       <div class="footer-bottom">
           <p>© 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
       </div>
@@ -423,16 +437,16 @@
 
   <script>
     // GANTI URL INI DENGAN URL WEB APP GOOGLE SCRIPT ANDA
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyNuI7RKu3amjytcE8gW9ptUknOJCYXHX6pxpf7b_yD2JfLWlobeFBSX2sIXt5BaC6S/exec"; // Replace with your actual GAS Web App URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyNuI7RKu3amjytcE8gW9ptUknOJCYXHX6pxpf7b_yD2JfLWlobeFBSX2sIXt5BaC6S/exec"; 
     
-    const tanggalKegiatan = new Date("2025-10-05T14:00:00");
-    const tanggalAbsenDibuka = new Date("2025-09-25T06:00:00");
+    const tanggalKegiatan = new Date("2025-11-15T14:00:00");
+    const tanggalAbsenDibuka = new Date("2025-11-14T06:00:00");
 
-    // Format tanggal kegiatan ke bahasa Indonesia
     document.getElementById("tanggal-kegiatan").innerText = tanggalKegiatan.toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
     const hadirBtn = document.getElementById("hadir-btn");
-    const teksAbsen = document.getElementById("selisih-absen");
+    const teksAbsen = document.getElementById("absen-text");
+    const boxAbsen = document.getElementById("selisih-absen");
     let isAttendanceFull = false;
     
     async function checkAttendanceStatus() {
@@ -442,7 +456,7 @@
             isAttendanceFull = data.isFull;
         } catch (error) {
             console.error('Error fetching attendance status:', error);
-            isAttendanceFull = false; // Fallback
+            isAttendanceFull = false; 
         }
         updateAbsenStatus();
     }
@@ -454,25 +468,25 @@
         if (now < tanggalAbsenDibuka) {
             hadirBtn.href = "#";
             hadirBtn.classList.add('disabled');
-            teksAbsen.classList.add('waiting');
-            teksAbsen.classList.remove('full');
+            boxAbsen.classList.add('waiting'); 
+            boxAbsen.classList.remove('full');
             
             const d = Math.floor(selisihMs / (1000 * 60 * 60 * 24));
             const h = Math.floor((selisihMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const m = Math.floor((selisihMs % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((selisihMs % (1000 * 60)) / 1000);
             
-            teksAbsen.innerText = `Absen dibuka dalam ${d > 0 ? `${d} hari ` : ''}${h} jam ${m} menit ${s} detik.`;
+            teksAbsen.innerText = `Absen dibuka dalam ${d > 0 ? `${d} hari ` : ''}${h} jam ${m} menit ${s} detik.`; 
         } else {
-            teksAbsen.classList.remove('waiting');
+            boxAbsen.classList.remove('waiting');
             if (isAttendanceFull) {
-                teksAbsen.innerText = `Absen PENUH!`;
-                teksAbsen.classList.add('full');
+                teksAbsen.innerText = `Absen PENUH!`; 
+                boxAbsen.classList.add('full'); 
                 hadirBtn.href = "#";
                 hadirBtn.classList.add('disabled');
             } else {
-                teksAbsen.innerText = `Absen sudah dibuka. Silakan isi form.`;
-                teksAbsen.classList.remove('full');
+                teksAbsen.innerText = `Absen sudah dibuka. Silakan isi form.`; 
+                boxAbsen.classList.remove('full'); 
                 hadirBtn.href = "form.html";
                 hadirBtn.classList.remove('disabled');
             }
@@ -482,7 +496,7 @@
     function updateKegiatanStatus() {
         const sekarang = new Date();
         const selisihHari = Math.ceil((tanggalKegiatan - sekarang) / (1000 * 60 * 60 * 24));
-        const teksKegiatan = document.getElementById("selisih-kegiatan");
+        const teksKegiatan = document.getElementById("kegiatan-text"); 
 
         if (selisihHari > 0) {
             teksKegiatan.innerText = `Kegiatan dimulai dalam ${selisihHari} hari.`;
@@ -505,9 +519,9 @@
     updateTimer();
 
     // Set intervals for updates
-    setInterval(updateAbsenStatus, 1000); // Update countdown every second
-    setInterval(checkAttendanceStatus, 30000); // Check server status every 30 seconds
-    setInterval(updateTimer, 1000); // Update clock every second
+    setInterval(updateAbsenStatus, 1000); 
+    setInterval(checkAttendanceStatus, 30000); 
+    setInterval(updateTimer, 1000); 
   </script>
 </body>
 </html>
