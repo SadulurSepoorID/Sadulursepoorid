@@ -9,12 +9,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
   <style>
-    /* Header and Footer Styles from profile2.html */
+    /* --- PEMBARUAN STYLE DIMULAI DI SINI --- */
+
+    /* Header and Footer Styles (Updated Variables) */
     :root {
-        --primary-color: #1e88e5;
-        --primary-dark: #1565c0;
-        --text-color: #333;
+        /* Variabel diselaraskan dengan index.html */
+        --primary-color: #0056b3; 
+        --primary-dark: #004085;
+        --text-color: #212529; 
+        --text-secondary: #5a6268;
         --white: #ffffff;
+        --light-bg: #f8faff; 
+        --light-blue-bg: #e6f0ff;
         --transition: all 0.3s ease;
     }
     body {
@@ -35,7 +41,7 @@
         top: 0;
         left: 0;
         z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Shadow lebih halus */
         padding: 12px 5%;
     }
     header nav {
@@ -46,6 +52,7 @@
     .logo {
         height: 50px;
         transition: var(--transition);
+        cursor: pointer; /* Tambahkan cursor pointer */
     }
     .logo:hover {
         transform: scale(1.05);
@@ -56,157 +63,91 @@
         padding: 60px 0 20px;
         font-family: 'Arial', sans-serif;
     }
-    .footer-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: 0 20px;
-    }
-    .footer-section {
-        flex: 1;
-        min-width: 250px;
-        margin-bottom: 30px;
-        padding-right: 20px;
-    }
-    .social-media {
-        display: flex;
-        margin-top: 20px;
-    }
-    .social-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        background-color: #444;
-        border-radius: 50%;
-        margin-right: 10px;
-        color: #fff;
-        transition: all 0.3s ease;
-    }
-    .social-icon:hover {
-        background-color: #0078ff;
-        transform: translateY(-3px);
-    }
-    .footer-title {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 20px;
-        position: relative;
-        padding-bottom: 10px;
-    }
-    .footer-title:after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 50px;
-        height: 2px;
-        background-color: #0078ff;
-    }
-    .footer-links {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    .footer-links li {
-        margin-bottom: 12px;
-    }
-    .footer-links a {
-        color: #ccc;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        display: block;
-    }
-    .footer-links a:hover {
-        color: #0078ff;
-        padding-left: 5px;
-    }
-    .contact-info p {
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        color: #ccc;
-    }
-    .contact-info i {
-        margin-right: 10px;
-        color: #0078ff;
-    }
-    .footer-bottom {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        border-top: 1px solid #444;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 30px;
-    }
-    .footer-bottom p {
-        color: #aaa;
-        font-size: 14px;
-        margin: 0;
-    }
+    /* ... (CSS Footer lainnya tetap sama) ... */
+    .footer-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; padding: 0 20px; }
+    .footer-section { flex: 1; min-width: 250px; margin-bottom: 30px; padding-right: 20px; }
+    .social-media { display: flex; margin-top: 20px; }
+    .social-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background-color: #444; border-radius: 50%; margin-right: 10px; color: #fff; transition: all 0.3s ease; }
+    .social-icon:hover { background-color: #0078ff; transform: translateY(-3px); }
+    .footer-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; position: relative; padding-bottom: 10px; }
+    .footer-title:after { content: ''; position: absolute; left: 0; bottom: 0; width: 50px; height: 2px; background-color: #0078ff; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: #ccc; text-decoration: none; transition: all 0.3s ease; display: block; }
+    .footer-links a:hover { color: #0078ff; padding-left: 5px; }
+    .contact-info p { margin-bottom: 15px; display: flex; align-items: center; color: #ccc; }
+    .contact-info i { margin-right: 10px; color: #0078ff; }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding: 20px; border-top: 1px solid #444; display: flex; justify-content: space-between; align-items: center; margin-top: 30px; }
+    .footer-bottom p { color: #aaa; font-size: 14px; margin: 0; }
     main {
-        padding-top: 100px; /* To prevent content from hiding behind fixed header */
+        padding-top: 120px; /* Padding atas disamakan */
         flex-grow: 1;
         display: flex;
         justify-content: center;
         align-items: center;
         width: 100%;
-        padding-bottom: 20px;
+        padding-bottom: 40px; /* Padding bawah disamakan */
     }
     @media (max-width: 768px) {
-       .footer-section {
-            flex-basis: 100%;
-        }
-        .footer-bottom {
-            flex-direction: column;
-            text-align: center;
-        }
+       .footer-section { flex-basis: 100%; }
+       .footer-bottom { flex-direction: column; text-align: center; }
     }
 
-    /* Original Styles from izin.html */
+    /* Original Styles from izin.html (Updated) */
     * { box-sizing: border-box; }
     body {
-      background: linear-gradient(to bottom, #ffffff, #e6f0ff);
-      margin: 0; padding: 0; color: #333;
+      background: var(--light-bg); /* Latar belakang baru */
+      margin: 0; padding: 0; color: var(--text-color);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       min-height: 100vh;
     }
     .container {
-      background: #fff; padding: 30px; border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      width: 100%; max-width: 550px;
+      background: var(--white); 
+      padding: 40px; /* Padding baru */
+      border-radius: 20px; /* Radius baru */
+      box-shadow: 0 10px 30px rgba(0, 70, 130, 0.1); /* Shadow baru */
+      width: 100%; 
+      max-width: 550px;
     }
     .form-header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 25px; /* Margin baru */
     }
     .form-header h2 {
-      color: #1a73e8;
+      color: var(--primary-dark); /* Warna baru */
       margin: 0;
+      font-size: 2rem; /* Ukuran font baru */
     }
     .back-button-form {
-      text-decoration: none; color: #1a73e8; font-weight: bold;
-      background: #fff; border: 2px solid #1a73e8;
-      padding: 6px 12px; border-radius: 8px; transition: 0.3s;
+      text-decoration: none; 
+      color: var(--primary-color); /* Warna baru */
+      font-weight: 600;
+      background: #fff; 
+      border: 1.5px solid var(--primary-color); /* Border baru */
+      padding: 6px 12px; 
+      border-radius: 8px; 
+      transition: 0.3s;
       display: inline-block;
       margin-bottom: 20px;
     }
-    .back-button-form:hover { background: #1a73e8; color: white; }
+    .back-button-form:hover { 
+      background: var(--primary-color); /* Warna baru */
+      color: white; 
+    }
 
     label { font-weight: 600; margin-bottom: 6px; display: block; }
     input, textarea, select {
       width: 100%; padding: 10px 14px; margin-bottom: 18px;
-      border: 1px solid #ccc; border-radius: 10px; font-size: 16px;
+      border: 1px solid #ccc; border-radius: 8px; /* Radius baru */
+      font-size: 16px;
+      transition: var(--transition);
     }
     input:focus, textarea:focus, select:focus {
-      border-color: #1a73e8; outline: none;
+      border-color: var(--primary-color); 
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1); /* Focus state baru */
     }
 
     .search-container {
@@ -219,7 +160,7 @@
       padding: 10px 14px;
       margin-bottom: 18px;
       border: 1px solid #ccc;
-      border-radius: 10px;
+      border-radius: 8px;
       font-size: 16px;
     }
 
@@ -231,32 +172,19 @@
       background: white;
       border: 1px solid #ccc;
       border-top: none;
-      border-radius: 0 0 10px 10px;
+      border-radius: 0 0 8px 8px; /* Radius baru */
       max-height: 200px;
       overflow-y: auto;
       z-index: 1000;
       display: none;
       margin-bottom: 18px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1); /* Shadow dropdown */
     }
-
-    .dropdown-item {
-      padding: 12px 14px;
-      cursor: pointer;
-      border-bottom: 1px solid #f0f0f0;
-      transition: background-color 0.2s;
-    }
-
-    .dropdown-item:hover {
-      background-color: #f8f9fa;
-    }
-
-    .dropdown-item:last-child {
-      border-bottom: none;
-    }
-
-    .dropdown-item.selected {
-      background-color: #e3f2fd;
-    }
+    /* ... (CSS Dropdown lainnya tetap sama) ... */
+    .dropdown-item { padding: 12px 14px; cursor: pointer; border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s; }
+    .dropdown-item:hover { background-color: #f8f9fa; }
+    .dropdown-item:last-child { border-bottom: none; }
+    .dropdown-item.selected { background-color: var(--light-blue-bg); }
 
     #nia[readonly] {
       background-color: #f8f9fa;
@@ -265,22 +193,35 @@
 
     .format-info {
       font-size: 12px;
-      color: #666;
+      color: var(--text-secondary); /* Warna baru */
       margin-top: -12px;
       margin-bottom: 18px;
     }
 
     button {
-      width: 100%; background: #1a73e8; color: white; padding: 12px;
-      border: none; border-radius: 12px; font-size: 16px; font-weight: bold;
-      cursor: pointer; transition: background 0.3s;
+      width: 100%; 
+      background: var(--primary-color); /* Warna tombol baru */
+      color: white; 
+      padding: 12px;
+      border: none; 
+      border-radius: 8px; /* Radius tombol baru */
+      font-size: 16px; 
+      font-weight: bold;
+      cursor: pointer; 
+      transition: var(--transition);
+      box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3); /* Shadow tombol baru */
     }
-    button:hover { background: #155ab6; }
+    button:hover { 
+      background: var(--primary-dark); /* Hover baru */
+      transform: translateY(-2px); /* Efek hover baru */
+      box-shadow: 0 6px 15px rgba(0, 86, 179, 0.4);
+    }
     .success {
       text-align: center; color: green; font-weight: bold; margin-top: 16px;
     }
     @media (max-width: 600px) {
       .container { padding: 20px; }
+      .form-header h2 { font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -341,7 +282,6 @@
                   <a href="https://www.instagram.com/sadulursepoor_id?igsh=bHNvcTI4ZmNiejBv" class="social-icon"><i class="fab fa-instagram"></i></a>
               </div>
           </div>
-          
           <div class="footer-section">
               <h3 class="footer-title">Link Cepat</h3>
               <ul class="footer-links">
@@ -351,7 +291,6 @@
                   <li><a href="https://wa.me/6285171058989">Kontak</a></li>
               </ul>
           </div>
-          
           <div class="footer-section">
               <h3 class="footer-title">Layanan Kami</h3>
               <ul class="footer-links">
@@ -361,7 +300,6 @@
                   <li><a href="../index.html#contact">Dokumentasi & Pelaporan</a></li>
               </ul>
           </div>
-          
           <div class="footer-section">
               <h3 class="footer-title">Hubungi Kami</h3>
               <div class="contact-info">
@@ -371,7 +309,6 @@
               </div>
           </div>
       </div>
-      
       <div class="footer-bottom">
           <p>© 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
       </div>
