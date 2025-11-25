@@ -56,7 +56,8 @@
                 </div>
 
                 <div id="questionsContainer">
-                    </div>
+                    <!-- Pertanyaan akan di-generate oleh JS -->
+                </div>
 
                 <button type="submit" class="btn" id="submitBtn">Kirim Penilaian</button>
             </form>
@@ -67,7 +68,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const GAS_URL = 'https://script.google.com/macros/s/AKfycbxWhmNea9VMYo8oCihDKPy9qVGgIYj15_neeHMuZXwWqbwVpuz5F_0yWAvPh1b7eo96/exec';
+            // ================== PENGATURAN ==================
+            // PASTIKAN URL INI BENAR
+            const GAS_URL = 'https://script.google.com/macros/s/AKfycbz0NhLnkQELfBL29ZdRECNF18Rfax6dEslEfkMV_4DWSXD-EqzrNaXXep7Z1zmpe6pi5g/exec';
+            // ==============================================
 
             const questions = [
                 "Perkenalkan nama dari mana asal?",
@@ -110,13 +114,14 @@
             const userNameSelect = new TomSelect('#userName', {
                 valueField: 'name', labelField: 'name', searchField: 'name', create: false,
                 load: function(query, callback) {
-                    fetch(GAS_URL)
+                    // Menggunakan action=getApplicantNames untuk mengambil nama
+                    fetch(GAS_URL + '?action=getApplicantNames')
                         .then(response => response.json())
                         .then(json => {
-                            if(json.result === 'success') {
+                            if(json.result === 'success') { 
                                 const names = json.data.map(name => ({name: name}));
                                 callback(names);
-                            } else { throw new Error(json.message); }
+                            } else { throw new Error(json.message || "Struktur data tidak dikenal"); }
                         }).catch(error => {
                             console.error('Gagal memuat daftar nama:', error);
                             alert('Gagal memuat daftar nama dari spreadsheet.\nError: ' + error.message);
@@ -136,7 +141,6 @@
                 
                 const formData = new FormData(form);
                 const data = Object.fromEntries(formData.entries());
-                // Tambahkan properti 'sheetName' untuk diarahkan ke fungsi yang benar di GAS
                 data.sheetName = 'Sheet3'; 
 
                 fetch(GAS_URL, {
@@ -145,7 +149,7 @@
                 })
                 .then(response => response.json())
                 .then(result => {
-                    if (result.result === 'success') {
+                    if (result.success) { 
                         successMessage.classList.add('show');
                         form.style.display = 'none';
                     } else { throw new Error(result.message || 'Terjadi kesalahan saat mengirim data'); }
