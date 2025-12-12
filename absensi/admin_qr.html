@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Generate QR Absensi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: #e6f0ff; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .admin-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; }
+    h1 { color: #0056b3; font-size: 24px; margin-bottom: 20px; }
+    
+    .qr-box { 
+        background: #fff; border: 2px dashed #0056b3; padding: 20px; margin: 20px 0; 
+        display: flex; justify-content: center; align-items: center; min-height: 200px;
+    }
+    
+    .stats-box { background: #f8f9fa; border-radius: 8px; padding: 15px; margin-top: 20px; text-align: left; }
+    .stat-item { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    .stat-val { font-weight: bold; color: #0056b3; }
+    
+    button { background: #0056b3; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; margin-top: 10px; }
+    button:hover { background: #004085; }
+    
+    select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <h1>Admin Sadulur Sepoor</h1>
+    <p>Pilih kegiatan untuk membuat QR Code Absensi</p>
+    
+    <select id="eventSelect">
+        <option value="RPTRA Kebon Sirih (Kopdar)">RPTRA Kebon Sirih (Kopdar)</option>
+        </select>
+    
+    <div id="qrcode" class="qr-box"></div>
+    <p style="font-size:12px; color:#666;">Arahkan anggota untuk scan QR ini menggunakan form absensi.</p>
+
+    <button onclick="generateQR()">Update QR Code</button>
+
+    <div class="stats-box">
+        <h3>Data Real-time</h3>
+        <div class="stat-item">
+            <span>Terdaftar:</span>
+            <span id="count" class="stat-val">Loading...</span>
+        </div>
+        <div class="stat-item">
+            <span>Sisa Kuota:</span>
+            <span id="remaining" class="stat-val">...</span>
+        </div>
+        <div class="stat-item">
+            <span>Status:</span>
+            <span id="status" class="stat-val">...</span>
+        </div>
+        <button onclick="fetchData()" style="background:#28a745; font-size:14px; margin-top:10px;">Refresh Data</button>
+    </div>
+</div>
+
+<script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbx8fz7s4xquBSp6vsr56svAirFCKXG9veEx8R7qsRlzlI5z9JCq3QbEYve8f7YL42x82w/exec";
+    
+    // Inisialisasi QR Code
+    const qrcode = new QRCode(document.getElementById("qrcode"), {
+        width: 180,
+        height: 180
+    });
+
+    function generateQR() {
+        const eventName = document.getElementById('eventSelect').value;
+        // Token unik. Di form2.html kita mengecek apakah text mengandung "SS-ABSEN"
+        // Kita gabungkan dengan nama event agar lebih spesifik (opsional)
+        const qrContent = "SS-ABSEN|" + eventName + "|" + new Date().toISOString().split('T')[0];
+        
+        qrcode.makeCode(qrContent);
+    }
+
+    // Fungsi mengambil data statistik dari Google Script
+    async function fetchData() {
+        document.getElementById('count').textContent = "Mengambil data...";
+        
+        try {
+            const response = await fetch(`${scriptURL}?action=checkLimit`);
+            const data = await response.json();
+            
+            document.getElementById('count').textContent = data.currentCount + " Peserta";
+            document.getElementById('remaining').textContent = data.remaining;
+            document.getElementById('status').textContent = data.isFull ? "PENUH" : "DIBUKA";
+            document.getElementById('status').style.color = data.isFull ? "red" : "green";
+            
+        } catch (error) {
+            console.error(error);
+            document.getElementById('count').textContent = "Error";
+        }
+    }
+
+    // Jalankan saat halaman dibuka
+    window.onload = function() {
+        generateQR(); // Buat QR default
+        fetchData();  // Ambil data statistik
+        
+        // Auto refresh data setiap 30 detik
+        setInterval(fetchData, 30000);
+    };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Absensi Scan QR - Sadulur Sepoor</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  
+  <style>
+    /* Menggunakan Style yang sama persis dengan form.html Anda */
+    :root {
+        --primary-color: #0056b3; 
+        --primary-dark: #004085;
+        --text-color: #212529; 
+        --white: #ffffff;
+        --light-bg: #f8faff; 
+        --light-blue-bg: #e6f0ff;
+        --transition: all 0.3s ease;
+    }
+    body { font-family: 'Poppins', sans-serif; background: var(--light-bg); margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    /* Header & Footer Styles (Singkat agar tidak terlalu panjang, sama dengan form.html) */
+    header { background: var(--white); position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 12px 5%; }
+    .logo { height: 50px; cursor: pointer; }
+    main { padding-top: 100px; flex-grow: 1; display: flex; justify-content: center; width: 100%; padding-bottom: 40px; }
+    
+    .container {
+      background: var(--white); padding: 40px; border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 70, 130, 0.1); width: 100%; max-width: 500px; margin: 20px;
+    }
+    
+    h2 { text-align: center; color: var(--primary-dark); margin-bottom: 20px; }
+    label { font-weight: 600; margin-top: 15px; display: block; color: var(--text-color); }
+    input, select { width: 100%; padding: 10px; margin-top: 6px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; }
+    input:focus, select:focus { border-color: var(--primary-color); outline: none; }
+    
+    /* Tombol Utama */
+    .btn-scan {
+      width: 100%; padding: 12px; margin-top: 25px;
+      background: var(--primary-color); color: white;
+      border: none; border-radius: 8px; font-size: 16px; font-weight: bold;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: var(--transition);
+    }
+    .btn-scan:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-scan:disabled { background: #ccc; cursor: not-allowed; }
+
+    /* Area Kamera */
+    #reader { width: 100%; margin-top: 20px; border-radius: 10px; overflow: hidden; display: none; }
+    
+    /* Notifikasi & Helper */
+    .dropdown-list { position: absolute; background: white; border: 1px solid #ddd; max-height: 200px; overflow-y: auto; width: 100%; z-index: 100; display: none; }
+    .dropdown-item { padding: 10px; cursor: pointer; }
+    .dropdown-item:hover { background: #f0f0f0; }
+    .search-container { position: relative; }
+    
+    /* Status Styles */
+    .status-msg { text-align: center; margin-top: 15px; font-weight: 600; }
+    .success-container { display: none; text-align: center; padding: 20px; }
+    .success-icon { font-size: 50px; color: green; margin-bottom: 15px; }
+    
+    /* Back Button */
+    .back-btn { display: inline-block; padding: 5px 15px; border: 1px solid var(--primary-color); color: var(--primary-color); border-radius: 5px; margin-bottom: 15px; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+    <nav style="display:flex; justify-content:space-between;">
+        <img src="https://i.imgur.com/9rAb7r7.png" alt="Logo" class="logo" onclick="window.location.href='index.html';">
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Kembali</a>
+        <h2>Scan Absensi</h2>
+
+        <div id="inputSection">
+            <form id="qrForm">
+                <label>Nama Anggota</label>
+                <div class="search-container">
+                    <input type="text" id="namaSearch" placeholder="Ketik nama Anda..." autocomplete="off">
+                    <div id="dropdownList" class="dropdown-list"></div>
+                </div>
+
+                <label>NIA</label>
+                <input type="text" name="nia" id="nia" readonly>
+
+                <label>Email</label>
+                <input type="email" name="email" id="email" required>
+
+                <label>Kegiatan</label>
+                <select name="kegiatan" id="kegiatan" required>
+                    <option value="">-- Pilih Kegiatan --</option>
+                    <option value="RPTRA Kebon Sirih (Kopdar)">RPTRA Kebon Sirih(Kopdar)</option>
+                </select>
+
+                <div id="reader"></div>
+                <div id="scanStatus" class="status-msg"></div>
+
+                <button type="button" id="scanBtn" class="btn-scan">
+                    <i class="fas fa-qrcode"></i> Buka Kamera & Scan
+                </button>
+            </form>
+        </div>
+
+        <div id="successSection" class="success-container">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h3>Absensi Berhasil!</h3>
+            <p>Data Anda telah tercatat.</p>
+            <p id="recordedName" style="font-weight:bold;"></p>
+            <button onclick="location.reload()" class="btn-scan" style="margin-top:20px;">Absen Lagi</button>
+        </div>
+    </div>
+</main>
+
+<script src="account.js"></script>
+<script>
+    // URL Google Script Anda
+    const scriptURL = "https://script.google.com/macros/s/AKfycbx8fz7s4xquBSp6vsr56svAirFCKXG9veEx8R7qsRlzlI5z9JCq3QbEYve8f7YL42x82w/exec";
+    
+    // --- Logic Pencarian Nama (Sama seperti form.html) ---
+    const namaSearch = document.getElementById('namaSearch');
+    const dropdownList = document.getElementById('dropdownList');
+    const niaInput = document.getElementById('nia');
+    let selectedAccount = null;
+
+    namaSearch.addEventListener('input', function() {
+        const val = this.value.toLowerCase();
+        dropdownList.innerHTML = '';
+        if(!val) { dropdownList.style.display = 'none'; return; }
+        
+        const filtered = validAccounts.filter(acc => acc.username.toLowerCase().includes(val));
+        
+        if(filtered.length > 0){
+            dropdownList.style.display = 'block';
+            filtered.forEach(acc => {
+                const div = document.createElement('div');
+                div.className = 'dropdown-item';
+                div.textContent = acc.username;
+                div.onclick = () => {
+                    namaSearch.value = acc.username;
+                    niaInput.value = `SS-${acc.kta.padStart(4, '0')}`;
+                    selectedAccount = acc;
+                    dropdownList.style.display = 'none';
+                };
+                dropdownList.appendChild(div);
+            });
+        }
+    });
+
+    // --- Logic QR Scanner ---
+    const scanBtn = document.getElementById('scanBtn');
+    const html5QrCode = new Html5Qrcode("reader");
+    let isScanning = false;
+
+    scanBtn.addEventListener('click', () => {
+        // Validasi Form Dulu
+        if(!selectedAccount || !document.getElementById('email').value || !document.getElementById('kegiatan').value) {
+            alert("Harap lengkapi Nama, Email, dan Kegiatan sebelum scan!");
+            return;
+        }
+
+        if(!isScanning) {
+            startCamera();
+        } else {
+            stopCamera();
+        }
+    });
+
+    function startCamera() {
+        document.getElementById('reader').style.display = 'block';
+        scanBtn.innerHTML = '<i class="fas fa-stop"></i> Batalkan Scan';
+        isScanning = true;
+
+        html5QrCode.start(
+            { facingMode: "environment" }, // Pakai kamera belakang
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            onScanSuccess,
+            onScanFailure
+        ).catch(err => {
+            console.error(err);
+            alert("Gagal membuka kamera. Pastikan izin kamera diberikan.");
+            stopCamera();
+        });
+    }
+
+    function stopCamera() {
+        html5QrCode.stop().then(() => {
+            document.getElementById('reader').style.display = 'none';
+            scanBtn.innerHTML = '<i class="fas fa-qrcode"></i> Buka Kamera & Scan';
+            isScanning = false;
+        }).catch(err => console.error(err));
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+        // Hentikan kamera setelah scan berhasil
+        stopCamera();
+        
+        // Cek validitas QR Code (Harus match dengan yang dibuat Admin)
+        // Kita set token validnya adalah "SS-HADIR-2025" atau sesuaikan dengan admin
+        if(decodedText.includes("SS-ABSEN")) {
+            submitData();
+        } else {
+            alert("QR Code tidak valid! Pastikan Anda scan QR dari Admin Sadulur Sepoor.");
+        }
+    }
+
+    function onScanFailure(error) {
+        // console.warn(`Code scan error = ${error}`);
+    }
+
+    // --- Logic Kirim Data ke Google Sheet ---
+    async function submitData() {
+        const loadingMsg = document.getElementById('scanStatus');
+        loadingMsg.textContent = "Mengirim data kehadiran...";
+        loadingMsg.style.color = "blue";
+        scanBtn.style.display = 'none';
+
+        const formData = new FormData();
+        formData.append('nama', namaSearch.value);
+        formData.append('nia', niaInput.value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('kegiatan', document.getElementById('kegiatan').value);
+
+        try {
+            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
+            
+            // Tampilkan Sukses
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('successSection').style.display = 'block';
+            document.getElementById('recordedName').textContent = namaSearch.value;
+            
+        } catch (error) {
+            console.error('Error!', error.message);
+            loadingMsg.textContent = "Gagal mengirim data. Coba lagi.";
+            loadingMsg.style.color = "red";
+            scanBtn.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>
