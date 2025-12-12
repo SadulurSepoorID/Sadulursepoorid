@@ -10,60 +10,31 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   
   <style>
-    /* Menggunakan Style yang sama persis dengan form.html Anda */
-    :root {
-        --primary-color: #0056b3; 
-        --primary-dark: #004085;
-        --text-color: #212529; 
-        --white: #ffffff;
-        --light-bg: #f8faff; 
-        --light-blue-bg: #e6f0ff;
-        --transition: all 0.3s ease;
-    }
+    /* ... (CSS SAMA SEPERTI SEBELUMNYA, TIDAK BERUBAH) ... */
+    :root { --primary-color: #0056b3; --primary-dark: #004085; --text-color: #212529; --white: #ffffff; --light-bg: #f8faff; --transition: all 0.3s ease; }
     body { font-family: 'Poppins', sans-serif; background: var(--light-bg); margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
-    
-    /* Header & Footer Styles (Singkat agar tidak terlalu panjang, sama dengan form.html) */
     header { background: var(--white); position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 12px 5%; }
     .logo { height: 50px; cursor: pointer; }
     main { padding-top: 100px; flex-grow: 1; display: flex; justify-content: center; width: 100%; padding-bottom: 40px; }
-    
-    .container {
-      background: var(--white); padding: 40px; border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 70, 130, 0.1); width: 100%; max-width: 500px; margin: 20px;
-    }
-    
+    .container { background: var(--white); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 70, 130, 0.1); width: 100%; max-width: 500px; margin: 20px; }
     h2 { text-align: center; color: var(--primary-dark); margin-bottom: 20px; }
     label { font-weight: 600; margin-top: 15px; display: block; color: var(--text-color); }
     input, select { width: 100%; padding: 10px; margin-top: 6px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; }
     input:focus, select:focus { border-color: var(--primary-color); outline: none; }
-    
-    /* Tombol Utama */
-    .btn-scan {
-      width: 100%; padding: 12px; margin-top: 25px;
-      background: var(--primary-color); color: white;
-      border: none; border-radius: 8px; font-size: 16px; font-weight: bold;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-      transition: var(--transition);
-    }
+    .btn-scan { width: 100%; padding: 12px; margin-top: 25px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: var(--transition); }
     .btn-scan:hover { background: var(--primary-dark); transform: translateY(-2px); }
-    .btn-scan:disabled { background: #ccc; cursor: not-allowed; }
-
-    /* Area Kamera */
     #reader { width: 100%; margin-top: 20px; border-radius: 10px; overflow: hidden; display: none; }
-    
-    /* Notifikasi & Helper */
     .dropdown-list { position: absolute; background: white; border: 1px solid #ddd; max-height: 200px; overflow-y: auto; width: 100%; z-index: 100; display: none; }
     .dropdown-item { padding: 10px; cursor: pointer; }
     .dropdown-item:hover { background: #f0f0f0; }
     .search-container { position: relative; }
-    
-    /* Status Styles */
     .status-msg { text-align: center; margin-top: 15px; font-weight: 600; }
     .success-container { display: none; text-align: center; padding: 20px; }
     .success-icon { font-size: 50px; color: green; margin-bottom: 15px; }
-    
-    /* Back Button */
     .back-btn { display: inline-block; padding: 5px 15px; border: 1px solid var(--primary-color); color: var(--primary-color); border-radius: 5px; margin-bottom: 15px; text-decoration: none; }
+    
+    /* Style Tambahan untuk Alert Error */
+    .error-msg { color: #dc3545; font-weight: bold; margin-top: 10px; display:none; }
   </style>
 </head>
 <body>
@@ -101,6 +72,7 @@
 
                 <div id="reader"></div>
                 <div id="scanStatus" class="status-msg"></div>
+                <div id="errorMessage" class="error-msg"></div>
 
                 <button type="button" id="scanBtn" class="btn-scan">
                     <i class="fas fa-qrcode"></i> Buka Kamera & Scan
@@ -120,10 +92,9 @@
 
 <script src="account.js"></script>
 <script>
-    // URL Google Script Anda
-    const scriptURL = "https://script.google.com/macros/s/AKfycbx8fz7s4xquBSp6vsr56svAirFCKXG9veEx8R7qsRlzlI5z9JCq3QbEYve8f7YL42x82w/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwYC8UAIhW9cWgg0tfTkXMaBDtoR8MCneT-VG2AhQS9u3MettrQD3BE-QxAcr9o5EJY8w/exec";
     
-    // --- Logic Pencarian Nama (Sama seperti form.html) ---
+    // --- Logic Pencarian Nama ---
     const namaSearch = document.getElementById('namaSearch');
     const dropdownList = document.getElementById('dropdownList');
     const niaInput = document.getElementById('nia');
@@ -134,7 +105,8 @@
         dropdownList.innerHTML = '';
         if(!val) { dropdownList.style.display = 'none'; return; }
         
-        const filtered = validAccounts.filter(acc => acc.username.toLowerCase().includes(val));
+        // Ambil data dari account.js
+        const filtered = typeof validAccounts !== 'undefined' ? validAccounts.filter(acc => acc.username.toLowerCase().includes(val)) : [];
         
         if(filtered.length > 0){
             dropdownList.style.display = 'block';
@@ -147,6 +119,7 @@
                     niaInput.value = `SS-${acc.kta.padStart(4, '0')}`;
                     selectedAccount = acc;
                     dropdownList.style.display = 'none';
+                    document.getElementById('errorMessage').style.display = 'none';
                 };
                 dropdownList.appendChild(div);
             });
@@ -159,12 +132,10 @@
     let isScanning = false;
 
     scanBtn.addEventListener('click', () => {
-        // Validasi Form Dulu
         if(!selectedAccount || !document.getElementById('email').value || !document.getElementById('kegiatan').value) {
             alert("Harap lengkapi Nama, Email, dan Kegiatan sebelum scan!");
             return;
         }
-
         if(!isScanning) {
             startCamera();
         } else {
@@ -174,17 +145,18 @@
 
     function startCamera() {
         document.getElementById('reader').style.display = 'block';
+        document.getElementById('errorMessage').style.display = 'none';
         scanBtn.innerHTML = '<i class="fas fa-stop"></i> Batalkan Scan';
         isScanning = true;
 
         html5QrCode.start(
-            { facingMode: "environment" }, // Pakai kamera belakang
+            { facingMode: "environment" },
             { fps: 10, qrbox: { width: 250, height: 250 } },
             onScanSuccess,
             onScanFailure
         ).catch(err => {
             console.error(err);
-            alert("Gagal membuka kamera. Pastikan izin kamera diberikan.");
+            alert("Gagal membuka kamera.");
             stopCamera();
         });
     }
@@ -198,27 +170,24 @@
     }
 
     function onScanSuccess(decodedText, decodedResult) {
-        // Hentikan kamera setelah scan berhasil
         stopCamera();
-        
-        // Cek validitas QR Code (Harus match dengan yang dibuat Admin)
-        // Kita set token validnya adalah "SS-HADIR-2025" atau sesuaikan dengan admin
         if(decodedText.includes("SS-ABSEN")) {
             submitData();
         } else {
-            alert("QR Code tidak valid! Pastikan Anda scan QR dari Admin Sadulur Sepoor.");
+            alert("QR Code tidak valid!");
         }
     }
 
-    function onScanFailure(error) {
-        // console.warn(`Code scan error = ${error}`);
-    }
+    function onScanFailure(error) { }
 
-    // --- Logic Kirim Data ke Google Sheet ---
+    // --- Logic Kirim Data (UPDATED) ---
     async function submitData() {
         const loadingMsg = document.getElementById('scanStatus');
+        const errorMsgDiv = document.getElementById('errorMessage');
+        
         loadingMsg.textContent = "Mengirim data kehadiran...";
         loadingMsg.style.color = "blue";
+        errorMsgDiv.style.display = 'none';
         scanBtn.style.display = 'none';
 
         const formData = new FormData();
@@ -228,15 +197,29 @@
         formData.append('kegiatan', document.getElementById('kegiatan').value);
 
         try {
-            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
-            
-            // Tampilkan Sukses
-            document.getElementById('inputSection').style.display = 'none';
-            document.getElementById('successSection').style.display = 'block';
-            document.getElementById('recordedName').textContent = namaSearch.value;
+            // HAPUS 'no-cors' agar kita bisa baca respon JSON dari server
+            const response = await fetch(scriptURL, { method: 'POST', body: formData });
+            const result = await response.json();
+
+            if (result.result === 'success') {
+                // Sukses
+                document.getElementById('inputSection').style.display = 'none';
+                document.getElementById('successSection').style.display = 'block';
+                document.getElementById('recordedName').textContent = namaSearch.value;
+            } else if (result.result === 'duplicate') {
+                // DUPLIKAT TERDETEKSI
+                loadingMsg.textContent = "";
+                scanBtn.style.display = 'block';
+                errorMsgDiv.textContent = "GAGAL: " + result.message; // "NIA ... sudah melakukan absensi"
+                errorMsgDiv.style.display = 'block';
+                // Opsional: alert juga
+                alert("Maaf, Anggota dengan NIA ini sudah tercatat hadir sebelumnya.");
+            } else {
+                throw new Error(result.message);
+            }
             
         } catch (error) {
-            console.error('Error!', error.message);
+            console.error('Error!', error);
             loadingMsg.textContent = "Gagal mengirim data. Coba lagi.";
             loadingMsg.style.color = "red";
             scanBtn.style.display = 'block';
