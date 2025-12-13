@@ -1,67 +1,43 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Absensi Kehadiran</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Admin Dashboard - Sadulur Sepoor</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  
   <style>
-    /* ------------------- */
-    /* Variabel & Gaya Dasar */
-    /* ------------------- */
+    /* --- 1. GLOBAL VARIABLES & RESET --- */
     :root {
-        --primary-color: #0056b3; 
+        --primary: #0056b3;
         --primary-dark: #004085;
-        --text-color: #212529; 
-        --text-secondary: #5a6268;
+        --bg-color: #f4f7f6;
+        --card-bg: #ffffff;
+        --text-main: #2c3e50;
+        --text-muted: #6c757d;
+        --radius: 12px;
+        --shadow: 0 4px 12px rgba(0,0,0,0.05);
         --white: #ffffff;
-        --light-bg: #f8faff; 
-        --light-blue-bg: #e6f0ff;
         --transition: all 0.3s ease;
     }
-    
-    * {
-        box-sizing: border-box;
-    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--light-bg); 
-      color: var(--text-color);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    
-    a {
-        text-decoration: none;
-        color: var(--primary-color);
-        transition: var(--transition);
-    }
-    a:hover {
-        color: var(--primary-dark);
-    }
-
-    main {
-        flex-grow: 1; 
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 120px 20px 40px 20px; 
+        flex-direction: column;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ------------------- */
-    /* Header & Footer Styles */
-    /* ------------------- */
+    /* --- HEADER STYLE --- */
     header {
         background-color: var(--white);
         position: fixed;
@@ -69,28 +45,25 @@
         top: 0;
         left: 0;
         z-index: 1000;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         padding: 12px 5%;
+        box-sizing: border-box;
     }
     header nav {
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
-    .logo {
-        height: 50px;
-        transition: var(--transition);
-        cursor: pointer;
-    }
-    .logo:hover {
-        transform: scale(1.05);
-    }
-    
+    .logo { height: 50px; transition: var(--transition); cursor: pointer; }
+    .logo:hover { transform: scale(1.05); }
+
+    /* --- FOOTER STYLE --- */
     footer {
         background-color: #333;
         color: #fff;
         padding: 60px 0 20px;
-        font-family: 'Arial', sans-serif; 
+        font-family: 'Arial', sans-serif;
+        margin-top: auto;
     }
     .footer-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; padding: 0 20px; }
     .footer-section { flex: 1; min-width: 250px; margin-bottom: 30px; padding-right: 20px; }
@@ -107,421 +80,404 @@
     .contact-info i { margin-right: 10px; color: #0078ff; }
     .footer-bottom { max-width: 1200px; margin: 0 auto; padding: 20px; border-top: 1px solid #444; display: flex; justify-content: space-between; align-items: center; margin-top: 30px; }
     .footer-bottom p { color: #aaa; font-size: 14px; margin: 0; }
-    @media (max-width: 768px) { .footer-section { flex-basis: 100%; } .footer-bottom { flex-direction: column; text-align: center; } }
-
-
-    /* ------------------- */
-    /* Absensi Card Styles */
-    /* ------------------- */
-    .absensi-card {
-      background: var(--white);
-      padding: 2.5rem; 
-      border-radius: 20px; 
-      box-shadow: 0 10px 30px rgba(0, 70, 130, 0.1); 
-      max-width: 600px;
-      width: 100%;
-      animation: fadeIn 0.8s ease-in-out;
-    }
     
-    .timer-container {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .timer {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      background-color: #e9ecef;
-      padding: 5px 5px;
-      border-radius: 8px;
-      display: inline-block; 
+    @media (max-width: 768px) {
+       .footer-section { flex-basis: 100%; }
+       .footer-bottom { flex-direction: column; text-align: center; }
     }
 
-    .absensi-card h1 {
-      color: var(--primary-dark);
-      margin-bottom: 0.5rem;
-      font-size: 2rem; 
-      text-align: center;
-    }
-
-    .absensi-info {
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    .absensi-info strong {
-      display: block;
-      margin-bottom: 5px;
-      color: var(--primary-dark);
-      font-size: 1.1rem;
-    }
-
-    .absensi-card p.instructions { 
-      margin-top: 1rem;
-      font-weight: 500;
-      text-align: center;
-      color: var(--text-secondary);
-    }
-    
-    .info-waktu {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .info-box {
-      padding: 1.25rem;
-      border-radius: 12px; 
-      font-size: 1rem;
-      font-weight: 500;
-      line-height: 1.5;
-      box-shadow: 0 4px 8px rgba(0, 89, 153, 0.05);
-      animation: fadeIn 0.4s ease-in-out;
-      display: flex; 
-      align-items: center;
-      gap: 1rem;
-      border-left-width: 6px; 
-      border-left-style: solid;
-    }
-    .info-box i {
-      font-size: 1.5rem;
-      flex-shrink: 0;
-    }
-    .info-box span {
-      flex-grow: 1;
-    }
-    .kegiatan-box { background-color: var(--light-blue-bg); border-color: var(--primary-color); color: var(--primary-dark); }
-    .kegiatan-box i { color: var(--primary-color); }
-    .absen-box { background-color: #e8f3f5; border-color: #24a6c8; color: #348d93; }
-    .absen-box i { color: #24a6c8; }
-    .absen-box.full { background-color: #ffebee; border-color: #f44336; color: #c62828; }
-    .absen-box.full i { color: #f44336; }
-    .absen-box.waiting { background-color: #fff3e0; border-color: #ff9800; color: #e65100; }
-    .absen-box.waiting i { color: #ff9800; }
-
-
-    /* --------------------------------- */
-    /* Bagian Peta BARU (dengan Embed) */
-    /* --------------------------------- */
-    .map-container {
-        margin-top: 1.5rem;
-        border: 1px solid #dee2e6;
-        border-radius: 12px;
-        overflow: hidden; /* Penting agar border-radius iframe terlihat */
-        background-color: #fdfdfd;
-        box-shadow: 0 4px 8px rgba(0, 89, 153, 0.05);
-    }
-    .map-embed {
+    /* --- LAYOUT GRID SYSTEM --- */
+    .dashboard-wrapper {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 100px 20px 40px 20px;
         width: 100%;
-        height: 250px; /* Atur tinggi peta di sini */
-    }
-    .map-embed iframe {
-        width: 100%;
-        height: 100%;
-        border: 0;
-    }
-    .map-details {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        padding: 1rem;
-    }
-    .map-info {
         flex-grow: 1;
     }
-    .map-info strong {
-        display: block;
-        font-size: 1rem;
-        color: var(--primary-dark);
-    }
-    .map-info p {
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-        margin: 0.25rem 0 0 0;
-    }
-    .route-button {
-        background-color: var(--primary-color);
-        color: white;
-        text-decoration: none;
-        padding: 0.6rem 1rem;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: var(--transition);
-        white-space: nowrap;
-        box-shadow: 0 2px 5px rgba(0, 86, 179, 0.3);
-    }
-    .route-button:hover {
-        background-color: var(--primary-dark);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
-        color: white; 
-    }
-    /* ------------------- */
-    /* Buttons */
-    /* ------------------- */
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-    .buttons a {
-      background-color: var(--primary-color);
-      color: white;
-      text-decoration: none;
-      padding: 0.85rem 1rem; 
-      border-radius: 8px;
-      font-weight: bold;
-      transition: var(--transition);
-      box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3);
-      text-align: center;
-      display: block;
-      font-size: 1rem;
-    }
-    .buttons a:hover {
-      background-color: var(--primary-dark);
-      transform: translateY(-2px); 
-      box-shadow: 0 6px 15px rgba(0, 86, 179, 0.4);
-    }
-    .buttons a.disabled {
-      background-color: #6c757d;
-      cursor: not-allowed;
-      box-shadow: none;
-      opacity: 0.6;
-      pointer-events: none;
-    }
-    .buttons a:nth-child(2) { 
-        background-color: #f8f9fa;
-        color: var(--primary-dark);
-        border: 1px solid #dee2e6;
-        box-shadow: none;
-    }
-    .buttons a:nth-child(2):hover {
-        background-color: #e9ecef;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+
+    @media (min-width: 900px) {
+        .dashboard-wrapper {
+            grid-template-columns: 320px 1fr;
+            align-items: start;
+        }
+        .admin-sidebar { position: sticky; top: 100px; }
     }
 
-    /* ------------------- */
-    /* Responsive Media Queries */
-    /* ------------------- */
-    @media (min-width: 480px) {
-      .buttons {
-        flex-direction: row;
-        justify-content: space-between;
-      }
-      .buttons a {
-        width: 48%;
-      }
+    /* --- COMPONENTS --- */
+    .card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 24px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    h1, h2, h3 { margin: 0; color: var(--primary); }
+    
+    .app-title {
+        font-size: 18px; font-weight: 700; 
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        margin-bottom: 20px; color: var(--text-main);
     }
     
-    @media (max-width: 500px) {
-        .absensi-card {
-            padding: 1.5rem;
-        }
-        .absensi-card h1 {
-            font-size: 1.8rem;
-        }
-        /* Perbarui style responsive untuk .map-details */
-        .map-details {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-        .route-button {
-            margin-top: 10px;
-            width: 100%;
-            text-align: center;
-        }
+    .event-select-wrapper label { font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 5px; text-align: left; }
+    select {
+        width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;
+        background: #f9f9f9; font-family: inherit; font-size: 14px; outline: none;
     }
+
+    .qr-container {
+        background: #fff;
+        border: 2px dashed #e0e0e0;
+        border-radius: var(--radius);
+        padding: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px auto;
+        width: 100%;
+        max-width: 220px;
+        min-height: 200px;
+    }
+
+    .btn-update {
+        background: var(--primary); color: white; border: none;
+        padding: 12px; width: 100%; border-radius: 8px;
+        font-weight: 600; cursor: pointer; transition: 0.2s;
+        font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;
+        margin-bottom: 10px;
+    }
+    .btn-update:active { transform: scale(0.98); }
+
+    /* TOMBOL AUDIO (BARU) */
+    .btn-audio {
+        background: #f8f9fa; border: 1px solid #ddd; color: #666;
+        padding: 10px; width: 100%; border-radius: 8px;
+        font-weight: 600; cursor: pointer; font-size: 13px;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        transition: all 0.3s;
+    }
+    .btn-audio.active {
+        background: #d4edda; color: #155724; border-color: #c3e6cb;
+    }
+    .btn-audio:hover { background: #e2e6ea; }
+
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+    .stat-card { background: #f8faff; border: 1px solid #eef2f7; padding: 12px 5px; border-radius: 8px; text-align: center; }
+    .stat-val { font-size: 20px; font-weight: 700; color: var(--primary); display: block; line-height: 1.2; }
+    .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+    .table-header h3 { font-size: 16px; font-weight: 600; color: var(--text-main); }
+    .live-badge { font-size: 11px; color: #28a745; background: rgba(40, 167, 69, 0.1); padding: 4px 10px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+
+    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+    th { text-align: left; padding: 12px 15px; background: #f8f9fa; color: var(--text-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid #e9ecef; }
+    td { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 13px; color: #333; }
+    tr:last-child td { border-bottom: none; }
+    
+    .col-no { width: 50px; text-align: center; color: #999; }
+    .col-nama { font-weight: 600; color: var(--primary-dark); }
+    .col-nia { font-family: 'Courier New', monospace; letter-spacing: -0.5px; color: #555; }
+    .col-waktu { color: #888; font-size: 12px; }
+
+    @media (max-width: 600px) {
+        body { background: #ebedf0; }
+        .dashboard-wrapper { gap: 15px; padding-top: 90px; padding-left: 10px; padding-right: 10px; }
+        .card { padding: 15px; border-radius: 10px; }
+        .app-title { font-size: 16px; margin-bottom: 15px; }
+        .qr-container { margin: 15px auto; padding: 10px; min-height: 180px; }
+        th, td { padding: 10px 10px; font-size: 12px; }
+        .table-responsive::-webkit-scrollbar { height: 4px; }
+        .table-responsive::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+    }
+
+    #toast-container { position: fixed; top: 100px; right: 20px; left: 20px; z-index: 9999; pointer-events: none; }
+    @media (min-width: 600px) { #toast-container { left: auto; width: 320px; } }
+    .toast { background: #fff; border-left: 5px solid #28a745; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: auto; }
+    @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-10px); } }
   </style>
 </head>
 <body>
-  
-  <header>
+
+<header>
     <nav>
-        <img src="https://i.imgur.com/9rAb7r7.png" alt="Logo" class="logo" onclick="window.location.href='../index.html';">
+        <img src="https://i.imgur.com/9rAb7r7.png" alt="Logo" class="logo" onclick="window.location.href='index.html';">
     </nav>
-  </header>
+</header>
 
-  <main>
-    <div class="absensi-card">
-      <div class="timer-container">
-        <div class="timer" id="timer">Memuat waktu...</div>
-      </div>
+<div id="toast-container"></div>
 
-      <h1>Absensi Kehadiran</h1>
-      <div class="absensi-info">
-        <strong>Kegiatan:</strong>Sosialisasi Disiplin Perlintasan<br>
-        <br>
-        <strong>Lokasi:</strong>JPL 17 Duren Kalibata<br>
-        <p><strong>Tanggal:</strong> <span id="tanggal-kegiatan"></span></p>
-      </div>
+<audio id="notifSound" crossorigin="anonymous" src="https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3" preload="auto" playsinline></audio>
 
-     <div class="map-container">
-        <div class="map-embed">
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d247.88748478563124!2d107.0002353!3d-6.2373812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698d00769dd23b%3A0xb04333d04bad941d!2sJPL%2078%20Bekasi!5e0!3m2!1sid!2sid!4v1763616426339!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+<div class="dashboard-wrapper">
+    
+    <aside class="admin-sidebar card">
+        <div class="app-title"><i class="fas fa-train" style="color:var(--primary)"></i> Sadulur Sepoor</div>
+        
+        <div class="event-select-wrapper">
+            <label>Kegiatan Aktif</label>
+            <select id="eventSelect" onchange="generateQR()">
+                <option value="RPTRA Kebon Sirih (Kopdar)">RPTRA Kebon Sirih (Kopdar)</option>
+            </select>
         </div>
-        <div class="map-details">
-            <div class="map-info">
-                <strong>Titik Kumpul: JPL 78 Bekasi</strong>
-                <p>Q272+25J JPL 78 Bekasi, Marga Mulya, Kec. Bekasi Utara, Kota Bekasi</p>
+
+        <div id="qrcode" class="qr-container"></div>
+        
+        <button onclick="generateQR()" class="btn-update">
+            <i class="fas fa-sync-alt"></i> Update QR
+        </button>
+
+        <button id="audioToggleBtn" onclick="toggleAudio()" class="btn-audio">
+            <i class="fas fa-volume-mute"></i> Aktifkan Suara Notifikasi
+        </button>
+        <div style="font-size:10px; color:#888; margin-top:5px; margin-bottom:15px;">
+            *Wajib klik untuk mengizinkan suara di HP
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span id="count" class="stat-val">0</span>
+                <span class="stat-label">Hadir</span>
             </div>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=Q272%2B25J" target="_blank" class="route-button">
-                Lihat Rute
-            </a>
+            <div class="stat-card">
+                <span id="remaining" class="stat-val">0</span>
+                <span class="stat-label">Sisa Kuota</span>
+            </div>
         </div>
-     </div>
-     <div class="info-waktu">
-        <div id="selisih-kegiatan" class="info-box kegiatan-box">
-            <i class="fas fa-calendar-alt"></i>
-            <span id="kegiatan-text">Memuat status kegiatan...</span>
+        <div style="margin-top:15px; font-size:12px; text-align:center; color:#777;">
+            Status: <span id="status" style="font-weight:700;">...</span>
         </div>
-        <div id="selisih-absen" class="info-box absen-box">
-            <i class="fas fa-clock"></i>
-            <span id="absen-text">Memuat status absen...</span>
-        </div>
-     </div>
+    </aside>
 
-      <p class="instructions">Silakan pilih status kehadiran Anda untuk kegiatan ini.</p>
-      <div class="buttons">
-        <a href="#" id="hadir-btn">Hadir</a>
-        <a href="izin.html" target="_blank">Izin Tidak Hadir</a>
-      </div>
+    <main class="table-container card">
+        <div class="table-header">
+            <h3>Daftar Hadir</h3>
+            <span class="live-badge"><i class="fas fa-circle" style="font-size:6px;"></i> LIVE</span>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-no">No</th>
+                        <th>Nama Anggota</th>
+                        <th>NIA</th>
+                        <th>Waktu</th>
+                    </tr>
+                </thead>
+                <tbody id="attendeeTableBody">
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding:30px; color:#999; font-size:13px;">
+                            <i class="fas fa-circle-notch fa-spin"></i> Memuat data...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</div>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <div class="social-media">
+                <a href="https://www.facebook.com/share/1G32mgyres/?mibextid=qi2Omg" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.tiktok.com/@sadulur.sepoor_official?_t=8puqjiITt58&_r=1" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/sadulursepoor_id?igsh=bHNvcTI4ZmNiejBv" class="social-icon"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Link Cepat</h3>
+            <ul class="footer-links">
+                <li><a href="../index.html">Beranda</a></li>
+                <li><a href="./index.html">Tentang Kami</a></li>
+                <li><a href="../profile2.html">Profil</a></li>
+                <li><a href="https://wa.me/6285171058989">Kontak</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Layanan Kami</h3>
+            <ul class="footer-links">
+                <li><a href="../index.html#contact">Edukasi Keselamatan di Perlintasan</a></li>
+                <li><a href="../index.html#contact">Kolaborasi dengan Instansi Terkait</a></li>
+                <li><a href="../index.html#contact">Kegitan Komunitas & Kampanye Sosial</a></li>
+                <li><a href="../index.html#contact">Dokumentasi & Pelaporan</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Hubungi Kami</h3>
+            <div class="contact-info">
+                <p><i class="fas fa-map-marker-alt"></i> Jl. Kemiri Jaya, RT.05 RW.01 Kota Depok, Jawa Barat</p>
+                <p><i class="fas fa-phone"></i> +62 852 1115 0310</p>
+                <p><i class="fas fa-envelope"></i> sadulursepoor@gmail.com</p>
+            </div>
+        </div>
     </div>
-  </main>
+    <div class="footer-bottom">
+        <p>© 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
+    </div>
+</footer>
 
-  <footer>
-      <div class="footer-container">
-              <div class="social-media">
-                  <a href="https://www.facebook.com/share/1G32mgyres/?mibextid=qi2Omg" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                  <a href="https://www.tiktok.com/@sadulur.sepoor_official?_t=8puqjiITt58&_r=1" class="social-icon"><i class="fab fa-tiktok"></i></a>
-                  <a href="https://www.instagram.com/sadulursepoor_id?igsh=bHNvcTI4ZmNiejBv" class="social-icon"><i class="fab fa-instagram"></i></a>
-              </div>
-          </div>
-          <div class="footer-section">
-              <h3 class="footer-title">Link Cepat</h3>
-              <ul class="footer-links">
-                  <li><a href="../index.html">Beranda</a></li>
-                  <li><a href="./index.html">Tentang Kami</a></li>
-                  <li><a href="../profile2.html">Profil</a></li>
-                  <li><a href="https://wa.me/6285171058989">Kontak</a></li>
-              </ul>
-          </div>
-          <div class="footer-section">
-              <h3 class="footer-title">Layanan Kami</h3>
-              <ul class="footer-links">
-                  <li><a href="../index.html#contact">Edukasi Keselamatan di Perlintasan</a></li>
-                  <li><a href="../index.html#contact">Kolaborasi dengan Instansi Terkait</a></li>
-                  <li><a href="../index.html#contact">Kegitan Komunitas & Kampanye Sosial</a></li>
-                  <li><a href="../index.html#contact">Dokumentasi & Pelaporan</a></li>
-              </ul>
-          </div>
-          <div class="footer-section">
-              <h3 class="footer-title">Hubungi Kami</h3>
-              <div class="contact-info">
-                  <p><i class="fas fa-map-marker-alt"></i> Jl. Kemiri Jaya, RT.05 RW.01 Kota Depok, Jawa Barat</p>
-                  <p><i class="fas fa-phone"></i> +62 852 1115 0310</p>
-                  <p><i class="fas fa-envelope"></i> sadulursepoor@gmail.com</p>
-              </div>
-          </div>
-      </div>
-      <div class="footer-bottom">
-          <p>© 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
-      </div>
-  </footer>
-
-  <script>
-    // GANTI URL INI DENGAN URL WEB APP GOOGLE SCRIPT ANDA
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyNuI7RKu3amjytcE8gW9ptUknOJCYXHX6pxpf7b_yD2JfLWlobeFBSX2sIXt5BaC6S/exec"; 
+<script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwYC8UAIhW9cWgg0tfTkXMaBDtoR8MCneT-VG2AhQS9u3MettrQD3BE-QxAcr9o5EJY8w/exec";
     
-    const tanggalKegiatan = new Date("2025-11-22T14:00:00");
-    const tanggalAbsenDibuka = new Date("2025-11-20T10:00:00");
+    // --- SETUP AUDIO (TEKNIK LEBIH STABIL) ---
+    const audioElement = document.getElementById('notifSound');
+    let isAudioEnabled = false;
 
-    document.getElementById("tanggal-kegiatan").innerText = tanggalKegiatan.toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
-
-    const hadirBtn = document.getElementById("hadir-btn");
-    const teksAbsen = document.getElementById("absen-text");
-    const boxAbsen = document.getElementById("selisih-absen");
-    let isAttendanceFull = false;
-    
-    async function checkAttendanceStatus() {
-        try {
-            const response = await fetch(`${scriptURL}?action=getAttendanceStatus`);
-            const data = await response.json();
-            isAttendanceFull = data.isFull;
-        } catch (error) {
-            console.error('Error fetching attendance status:', error);
-            isAttendanceFull = false; 
-        }
-        updateAbsenStatus();
-    }
-
-    function updateAbsenStatus() {
-        const now = new Date();
-        const selisihMs = tanggalAbsenDibuka - now;
-
-        if (now < tanggalAbsenDibuka) {
-            hadirBtn.href = "#";
-            hadirBtn.classList.add('disabled');
-            boxAbsen.classList.add('waiting'); 
-            boxAbsen.classList.remove('full');
-            
-            const d = Math.floor(selisihMs / (1000 * 60 * 60 * 24));
-            const h = Math.floor((selisihMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((selisihMs % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((selisihMs % (1000 * 60)) / 1000);
-            
-            teksAbsen.innerText = `Absen dibuka dalam ${d > 0 ? `${d} hari ` : ''}${h} jam ${m} menit ${s} detik.`; 
-        } else {
-            boxAbsen.classList.remove('waiting');
-            if (isAttendanceFull) {
-                teksAbsen.innerText = `Absen PENUH!`; 
-                boxAbsen.classList.add('full'); 
-                hadirBtn.href = "#";
-                hadirBtn.classList.add('disabled');
-            } else {
-                teksAbsen.innerText = `Absen sudah dibuka. Silakan isi form.`; 
-                boxAbsen.classList.remove('full'); 
-                hadirBtn.href = "form.html";
-                hadirBtn.classList.remove('disabled');
+        function toggleAudio() {
+        const btn = document.getElementById('audioToggleBtn');
+        
+        if (!isAudioEnabled) {
+            // Cek apakah audio sudah siap atau error
+            if (audioElement.readyState === 0 && audioElement.networkState === 3) {
+                alert("File audio gagal dimuat. Coba refresh halaman atau cek koneksi internet.");
+                return;
             }
-        }
-    }
 
-    function updateKegiatanStatus() {
-        const sekarang = new Date();
-        const selisihHari = Math.ceil((tanggalKegiatan - sekarang) / (1000 * 60 * 60 * 24));
-        const teksKegiatan = document.getElementById("kegiatan-text"); 
+            const playPromise = audioElement.play();
 
-        if (selisihHari > 0) {
-            teksKegiatan.innerText = `Kegiatan dimulai dalam ${selisihHari} hari.`;
-        } else if (selisihHari === 0) {
-            teksKegiatan.innerText = `Kegiatan berlangsung hari ini.`;
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Berhasil di-play (browser mengizinkan)
+                    audioElement.pause();
+                    audioElement.currentTime = 0;
+                    
+                    isAudioEnabled = true;
+                    btn.innerHTML = '<i class="fas fa-volume-up"></i> Suara Aktif';
+                    btn.classList.add('active');
+                    
+                    // Bunyikan sekali sebagai tanda sukses
+                    audioElement.play();
+
+                }).catch(error => {
+                    console.error("Autoplay prevented:", error);
+                    // Error ini biasanya karena interaksi user belum dianggap valid oleh browser
+                    // atau link audio masih loading.
+                    alert("Gagal mengaktifkan suara. Pastikan volume HP tidak di-mute, lalu klik tombol ini sekali lagi.");
+                });
+            }
         } else {
-            teksKegiatan.innerText = `Kegiatan sudah lewat ${Math.abs(selisihHari)} hari yang lalu.`;
+            // Matikan suara
+            isAudioEnabled = false;
+            btn.innerHTML = '<i class="fas fa-volume-mute"></i> Aktifkan Suara Notifikasi';
+            btn.classList.remove('active');
         }
     }
 
-    function updateTimer() {
-        const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-        document.getElementById("timer").innerText = now.toLocaleDateString('id-ID', options).replace('pukul', '-');
+
+    function playNotificationSound() {
+        if (isAudioEnabled && audioElement) {
+            audioElement.currentTime = 0;
+            // Kita tidak perlu .then() di sini karena jika error (misal user switch tab), biarkan saja silent
+            audioElement.play().catch(e => console.log("Silent error:", e));
+        }
     }
 
-    // Initial calls
-    updateKegiatanStatus();
-    checkAttendanceStatus();
-    updateTimer();
+    // --- SETUP QR & DATA ---
+    const qrcode = new QRCode(document.getElementById("qrcode"), { width: 150, height: 150 });
+    let previousCount = -1; 
 
-    // Set intervals for updates
-    setInterval(updateAbsenStatus, 1000); 
-    setInterval(checkAttendanceStatus, 30000); 
-    setInterval(updateTimer, 1000); 
-  </script>
+    function generateQR() {
+        const eventName = document.getElementById('eventSelect').value;
+        const qrContent = "SS-ABSEN|" + eventName + "|" + new Date().toISOString().split('T')[0];
+        qrcode.makeCode(qrContent);
+    }
+
+    async function fetchAttendees() {
+        try {
+            const response = await fetch(`${scriptURL}?action=getAttendees`);
+            const data = await response.json();
+            updateTable(data);
+            updateStats(data.length);
+        } catch (error) {
+            console.error("Gagal mengambil data:", error);
+        }
+    }
+
+    function updateTable(attendees) {
+        const tbody = document.getElementById('attendeeTableBody');
+        tbody.innerHTML = ''; 
+
+        if (attendees.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#aaa;">Belum ada peserta</td></tr>';
+            return;
+        }
+
+        // Logic Notifikasi
+        if (previousCount !== -1 && attendees.length > previousCount) {
+            const newPerson = attendees[0]; 
+            showToast(newPerson.nama, newPerson.nia);
+        }
+        previousCount = attendees.length;
+
+        attendees.forEach((person, index) => {
+            let timeStr = "-";
+            try {
+                let d = new Date(person.waktu);
+                timeStr = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            } catch(e) {}
+
+            const row = `
+            <tr>
+                <td class="col-no">${attendees.length - index}</td>
+                <td class="col-nama">${person.nama}</td>
+                <td class="col-nia">${person.nia}</td>
+                <td class="col-waktu">${timeStr}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function updateStats(count) {
+        const maxLimit = 100;
+        document.getElementById('count').textContent = count;
+        document.getElementById('remaining').textContent = (maxLimit - count);
+        
+        const statusEl = document.getElementById('status');
+        const isFull = (maxLimit - count) <= 0;
+        statusEl.textContent = isFull ? "PENUH" : "DIBUKA";
+        statusEl.style.color = isFull ? "#dc3545" : "#28a745";
+    }
+
+    // Toast Notification
+    function showToast(nama, nia) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `
+            <i class="fas fa-check-circle" style="color:#28a745; font-size:24px;"></i>
+            <div style="text-align:left;">
+                <div style="font-weight:bold; font-size:14px; color:#333;">${nama}</div>
+                <div style="font-size:11px; color:#666;">NIA: ${nia} • Berhasil Absen</div>
+            </div>
+        `;
+        container.appendChild(toast);
+        
+        // Panggil suara
+        playNotificationSound();
+
+        setTimeout(() => {
+            toast.style.animation = "fadeOut 0.5s ease-out forwards";
+            setTimeout(() => { toast.remove(); }, 500);
+        }, 4000);
+    }
+
+    window.onload = function() {
+        generateQR();
+        fetchAttendees();
+        setInterval(fetchAttendees, 5000); 
+    };
+</script>
+
 </body>
 </html>
