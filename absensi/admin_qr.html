@@ -13,7 +13,7 @@
     /* --- 1. GLOBAL VARIABLES & RESET --- */
     :root {
         --primary: #0056b3;
-        --primary-dark: #004494;
+        --primary-dark: #004085;
         --bg-color: #f4f7f6;
         --card-bg: #ffffff;
         --text-main: #2c3e50;
@@ -37,7 +37,7 @@
         flex-direction: column;
     }
 
-    /* --- HEADER STYLE (Sama dengan form.html) --- */
+    /* --- HEADER STYLE --- */
     header {
         background-color: var(--white);
         position: fixed;
@@ -54,14 +54,10 @@
         justify-content: space-between;
         align-items: center;
     }
-    .logo {
-        height: 50px;
-        transition: var(--transition);
-        cursor: pointer;
-    }
+    .logo { height: 50px; transition: var(--transition); cursor: pointer; }
     .logo:hover { transform: scale(1.05); }
 
-    /* --- FOOTER STYLE (Sama dengan form.html) --- */
+    /* --- FOOTER STYLE --- */
     footer {
         background-color: #333;
         color: #fff;
@@ -90,32 +86,27 @@
        .footer-bottom { flex-direction: column; text-align: center; }
     }
 
-    /* --- 2. LAYOUT GRID SYSTEM --- */
+    /* --- LAYOUT GRID SYSTEM --- */
     .dashboard-wrapper {
         display: grid;
-        grid-template-columns: 1fr; /* Default Mobile: Stack ke bawah */
+        grid-template-columns: 1fr;
         gap: 20px;
         max-width: 1200px;
         margin: 0 auto;
-        padding: 100px 20px 40px 20px; /* Padding Top 100px agar tidak ketutup header */
+        padding: 100px 20px 40px 20px;
         width: 100%;
         flex-grow: 1;
     }
 
-    /* Desktop View (Sidebar Kiri, Tabel Kanan) */
     @media (min-width: 900px) {
         .dashboard-wrapper {
-            grid-template-columns: 320px 1fr; /* Kiri 320px, Kanan sisa layar */
+            grid-template-columns: 320px 1fr;
             align-items: start;
         }
-        
-        .admin-sidebar {
-            position: sticky; 
-            top: 100px; /* Jarak dari atas (80px header + 20px gap) */
-        }
+        .admin-sidebar { position: sticky; top: 100px; }
     }
 
-    /* --- 3. COMPONENTS --- */
+    /* --- COMPONENTS --- */
     .card {
         background: var(--card-bg);
         border-radius: var(--radius);
@@ -127,7 +118,6 @@
 
     h1, h2, h3 { margin: 0; color: var(--primary); }
     
-    /* Sidebar Items */
     .app-title {
         font-size: 18px; font-weight: 700; 
         display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -140,7 +130,6 @@
         background: #f9f9f9; font-family: inherit; font-size: 14px; outline: none;
     }
 
-    /* QR Code Area */
     .qr-container {
         background: #fff;
         border: 2px dashed #e0e0e0;
@@ -151,107 +140,68 @@
         align-items: center;
         margin: 20px auto;
         width: 100%;
-        max-width: 220px; /* Batas lebar QR agar rapi */
+        max-width: 220px;
         min-height: 200px;
     }
 
-    /* Tombol */
     .btn-update {
         background: var(--primary); color: white; border: none;
         padding: 12px; width: 100%; border-radius: 8px;
         font-weight: 600; cursor: pointer; transition: 0.2s;
         font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;
+        margin-bottom: 10px;
     }
     .btn-update:active { transform: scale(0.98); }
 
-    /* Statistik */
-    .stats-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;
+    /* TOMBOL AUDIO (BARU) */
+    .btn-audio {
+        background: #f8f9fa; border: 1px solid #ddd; color: #666;
+        padding: 10px; width: 100%; border-radius: 8px;
+        font-weight: 600; cursor: pointer; font-size: 13px;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        transition: all 0.3s;
     }
-    .stat-card {
-        background: #f8faff; border: 1px solid #eef2f7; padding: 12px 5px;
-        border-radius: 8px; text-align: center;
+    .btn-audio.active {
+        background: #d4edda; color: #155724; border-color: #c3e6cb;
     }
+    .btn-audio:hover { background: #e2e6ea; }
+
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+    .stat-card { background: #f8faff; border: 1px solid #eef2f7; padding: 12px 5px; border-radius: 8px; text-align: center; }
     .stat-val { font-size: 20px; font-weight: 700; color: var(--primary); display: block; line-height: 1.2; }
     .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* --- 4. TABLE STYLES (RAPID & CLEAN) --- */
-    .table-header {
-        display: flex; justify-content: space-between; align-items: center;
-        margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;
-    }
+    .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
     .table-header h3 { font-size: 16px; font-weight: 600; color: var(--text-main); }
-    .live-badge {
-        font-size: 11px; color: #28a745; background: rgba(40, 167, 69, 0.1);
-        padding: 4px 10px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 5px;
-    }
+    .live-badge { font-size: 11px; color: #28a745; background: rgba(40, 167, 69, 0.1); padding: 4px 10px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
 
-    /* Wrapper Tabel agar bisa scroll horizontal di HP */
-    .table-responsive {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch; /* Smooth scroll di iOS */
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        white-space: nowrap; /* Mencegah teks turun baris */
-    }
-
-    th {
-        text-align: left; padding: 12px 15px;
-        background: #f8f9fa; color: var(--text-muted);
-        font-size: 12px; font-weight: 600; text-transform: uppercase;
-        position: sticky; top: 0; z-index: 10; /* Header tabel menempel */
-        border-bottom: 2px solid #e9ecef;
-    }
-    
-    td {
-        padding: 12px 15px; border-bottom: 1px solid #f0f0f0;
-        font-size: 13px; color: #333;
-    }
-    
+    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+    th { text-align: left; padding: 12px 15px; background: #f8f9fa; color: var(--text-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid #e9ecef; }
+    td { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 13px; color: #333; }
     tr:last-child td { border-bottom: none; }
     
-    /* Styling Kolom Khusus */
     .col-no { width: 50px; text-align: center; color: #999; }
     .col-nama { font-weight: 600; color: var(--primary-dark); }
     .col-nia { font-family: 'Courier New', monospace; letter-spacing: -0.5px; color: #555; }
     .col-waktu { color: #888; font-size: 12px; }
 
-    /* --- 5. MOBILE OPTIMIZATION --- */
     @media (max-width: 600px) {
-        /* Padding body dikurangi karena wrapper sudah punya padding */
         body { background: #ebedf0; }
         .dashboard-wrapper { gap: 15px; padding-top: 90px; padding-left: 10px; padding-right: 10px; }
         .card { padding: 15px; border-radius: 10px; }
-        
         .app-title { font-size: 16px; margin-bottom: 15px; }
         .qr-container { margin: 15px auto; padding: 10px; min-height: 180px; }
-        
-        /* Font size tabel dikecilkan sedikit di HP */
         th, td { padding: 10px 10px; font-size: 12px; }
-        
-        /* Sembunyikan scrollbar tapi tetap bisa scroll */
         .table-responsive::-webkit-scrollbar { height: 4px; }
         .table-responsive::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
     }
 
-    /* --- 6. TOAST NOTIFICATION --- */
     #toast-container { position: fixed; top: 100px; right: 20px; left: 20px; z-index: 9999; pointer-events: none; }
     @media (min-width: 600px) { #toast-container { left: auto; width: 320px; } }
-    
-    .toast {
-        background: #fff; border-left: 5px solid #28a745;
-        padding: 15px; margin-bottom: 10px; border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        display: flex; align-items: center; gap: 12px;
-        animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        pointer-events: auto;
-    }
-    
+    .toast { background: #fff; border-left: 5px solid #28a745; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: auto; }
     @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-10px); } }
   </style>
 </head>
 <body>
@@ -263,6 +213,8 @@
 </header>
 
 <div id="toast-container"></div>
+
+<audio id="notifSound" src="https://actions.google.com/sounds/v1/science_fiction/coin_drop.ogg" preload="auto" playsinline></audio>
 
 <div class="dashboard-wrapper">
     
@@ -281,6 +233,13 @@
         <button onclick="generateQR()" class="btn-update">
             <i class="fas fa-sync-alt"></i> Update QR
         </button>
+
+        <button id="audioToggleBtn" onclick="toggleAudio()" class="btn-audio">
+            <i class="fas fa-volume-mute"></i> Aktifkan Suara Notifikasi
+        </button>
+        <div style="font-size:10px; color:#888; margin-top:5px; margin-bottom:15px;">
+            *Wajib klik untuk mengizinkan suara di HP
+        </div>
 
         <div class="stats-grid">
             <div class="stat-card">
@@ -340,37 +299,73 @@
             <ul class="footer-links">
                 <li><a href="../index.html">Beranda</a></li>
                 <li><a href="./index.html">Tentang Kami</a></li>
-                <li><a href="../profile2.html">Profil</a></li>
-                <li><a href="https://wa.me/6285171058989">Kontak</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h3 class="footer-title">Layanan Kami</h3>
-            <ul class="footer-links">
-                <li><a href="../index.html#contact">Edukasi Keselamatan di Perlintasan</a></li>
-                <li><a href="../index.html#contact">Kolaborasi dengan Instansi Terkait</a></li>
-                <li><a href="../index.html#contact">Kegitan Komunitas & Kampanye Sosial</a></li>
-                <li><a href="../index.html#contact">Dokumentasi & Pelaporan</a></li>
             </ul>
         </div>
         <div class="footer-section">
             <h3 class="footer-title">Hubungi Kami</h3>
             <div class="contact-info">
-                <p><i class="fas fa-map-marker-alt"></i> Jl. Kemiri Jaya, RT.05 RW.01 Kota Depok, Jawa Barat</p>
-                <p><i class="fas fa-phone"></i> +62 852 1115 0310</p>
                 <p><i class="fas fa-envelope"></i> sadulursepoor@gmail.com</p>
             </div>
         </div>
     </div>
     <div class="footer-bottom">
-        <p>© 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
+        <p>© 2025 Sadulur Sepoor Indonesia.</p>
     </div>
 </footer>
 
 <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbwYC8UAIhW9cWgg0tfTkXMaBDtoR8MCneT-VG2AhQS9u3MettrQD3BE-QxAcr9o5EJY8w/exec";
     
-    // Konfigurasi QR
+    // --- SETUP AUDIO (TEKNIK LEBIH STABIL) ---
+    const audioElement = document.getElementById('notifSound');
+    let isAudioEnabled = false;
+
+    function toggleAudio() {
+        const btn = document.getElementById('audioToggleBtn');
+        
+        if (!isAudioEnabled) {
+            // Kita coba "Play" audio element HTML langsung
+            // Ini biasanya lebih dipercaya browser daripada 'new Audio()' JS
+            const playPromise = audioElement.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Audio berhasil start, langsung pause (biar tidak berisik, cuma buat 'unlock')
+                    audioElement.pause();
+                    audioElement.currentTime = 0;
+                    
+                    // Update Status
+                    isAudioEnabled = true;
+                    btn.innerHTML = '<i class="fas fa-volume-up"></i> Suara Aktif';
+                    btn.classList.add('active');
+                    
+                    // Mainkan suara pendek sebagai konfirmasi
+                    setTimeout(() => {
+                        audioElement.play().catch(e => console.log("Gagal test sound:", e));
+                    }, 100);
+
+                }).catch(error => {
+                    console.error("Autoplay prevented:", error);
+                    // Jika masih gagal, biasanya karena file belum load atau interaksi kurang
+                    alert("Gagal mengaktifkan. Pastikan koneksi internet lancar untuk memuat file audio, lalu klik lagi.");
+                });
+            }
+        } else {
+            isAudioEnabled = false;
+            btn.innerHTML = '<i class="fas fa-volume-mute"></i> Aktifkan Suara Notifikasi';
+            btn.classList.remove('active');
+        }
+    }
+
+    function playNotificationSound() {
+        if (isAudioEnabled && audioElement) {
+            audioElement.currentTime = 0;
+            // Kita tidak perlu .then() di sini karena jika error (misal user switch tab), biarkan saja silent
+            audioElement.play().catch(e => console.log("Silent error:", e));
+        }
+    }
+
+    // --- SETUP QR & DATA ---
     const qrcode = new QRCode(document.getElementById("qrcode"), { width: 150, height: 150 });
     let previousCount = -1; 
 
@@ -436,7 +431,7 @@
         statusEl.style.color = isFull ? "#dc3545" : "#28a745";
     }
 
-    // Toast Notification dengan Suara "CRINGGG"
+    // Toast Notification
     function showToast(nama, nia) {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
@@ -450,19 +445,13 @@
         `;
         container.appendChild(toast);
         
+        // Panggil suara
         playNotificationSound();
 
         setTimeout(() => {
             toast.style.animation = "fadeOut 0.5s ease-out forwards";
             setTimeout(() => { toast.remove(); }, 500);
         }, 4000);
-    }
-
-    function playNotificationSound() {
-        // Suara Coin Drop (Efek Cringgg)
-        const audio = new Audio('https://actions.google.com/sounds/v1/science_fiction/coin_drop.ogg'); 
-        audio.volume = 1.0;
-        audio.play().catch(e => console.log("Audio autoplay diblokir browser"));
     }
 
     window.onload = function() {
