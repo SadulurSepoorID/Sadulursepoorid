@@ -10,37 +10,130 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   
   <style>
-    /* ... (CSS SAMA SEPERTI SEBELUMNYA, TIDAK BERUBAH) ... */
-    :root { --primary-color: #0056b3; --primary-dark: #004085; --text-color: #212529; --white: #ffffff; --light-bg: #f8faff; --transition: all 0.3s ease; }
-    body { font-family: 'Poppins', sans-serif; background: var(--light-bg); margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
-    header { background: var(--white); position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 12px 5%; }
-    .logo { height: 50px; cursor: pointer; }
-    main { padding-top: 100px; flex-grow: 1; display: flex; justify-content: center; width: 100%; padding-bottom: 40px; }
-    .container { background: var(--white); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 70, 130, 0.1); width: 100%; max-width: 500px; margin: 20px; }
+    /* --- INTEGRASI STYLE DARI FORM.HTML --- */
+    :root {
+        --primary-color: #0056b3; 
+        --primary-dark: #004085;
+        --text-color: #212529; 
+        --white: #ffffff;
+        --light-bg: #f8faff; 
+        --transition: all 0.3s ease;
+    }
+    
+    body { 
+        font-family: 'Poppins', sans-serif; 
+        background: var(--light-bg); 
+        margin: 0; 
+        padding: 0; 
+        min-height: 100vh; 
+        display: flex; 
+        flex-direction: column; 
+    }
+
+    /* --- HEADER STYLE --- */
+    header {
+        background-color: var(--white);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 12px 5%;
+        box-sizing: border-box; /* Penting agar padding tidak melebarkan width */
+    }
+    header nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .logo {
+        height: 50px;
+        transition: var(--transition);
+        cursor: pointer;
+    }
+    .logo:hover {
+        transform: scale(1.05);
+    }
+
+    /* --- FOOTER STYLE --- */
+    footer {
+        background-color: #333;
+        color: #fff;
+        padding: 60px 0 20px;
+        font-family: 'Arial', sans-serif;
+        margin-top: auto; /* Mendorong footer ke bawah */
+    }
+    .footer-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; padding: 0 20px; }
+    .footer-section { flex: 1; min-width: 250px; margin-bottom: 30px; padding-right: 20px; }
+    .social-media { display: flex; margin-top: 20px; }
+    .social-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background-color: #444; border-radius: 50%; margin-right: 10px; color: #fff; transition: all 0.3s ease; }
+    .social-icon:hover { background-color: #0078ff; transform: translateY(-3px); }
+    .footer-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; position: relative; padding-bottom: 10px; }
+    .footer-title:after { content: ''; position: absolute; left: 0; bottom: 0; width: 50px; height: 2px; background-color: #0078ff; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: #ccc; text-decoration: none; transition: all 0.3s ease; display: block; }
+    .footer-links a:hover { color: #0078ff; padding-left: 5px; }
+    .contact-info p { margin-bottom: 15px; display: flex; align-items: center; color: #ccc; }
+    .contact-info i { margin-right: 10px; color: #0078ff; }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding: 20px; border-top: 1px solid #444; display: flex; justify-content: space-between; align-items: center; margin-top: 30px; }
+    .footer-bottom p { color: #aaa; font-size: 14px; margin: 0; }
+    
+    @media (max-width: 768px) {
+       .footer-section { flex-basis: 100%; }
+       .footer-bottom { flex-direction: column; text-align: center; }
+    }
+
+    /* --- MAIN CONTENT STYLE --- */
+    main { 
+        padding-top: 120px; /* Padding untuk kompensasi Header Fixed */
+        flex-grow: 1; 
+        display: flex; 
+        justify-content: center; 
+        width: 100%; 
+        padding-bottom: 40px; 
+    }
+    
+    .container { 
+        background: var(--white); 
+        padding: 40px; 
+        border-radius: 20px; 
+        box-shadow: 0 10px 30px rgba(0, 70, 130, 0.1); 
+        width: 100%; 
+        max-width: 500px; 
+        margin: 20px; 
+    }
+    
     h2 { text-align: center; color: var(--primary-dark); margin-bottom: 20px; }
     label { font-weight: 600; margin-top: 15px; display: block; color: var(--text-color); }
-    input, select { width: 100%; padding: 10px; margin-top: 6px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; }
+    input, select { width: 100%; padding: 10px; margin-top: 6px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; box-sizing: border-box;}
     input:focus, select:focus { border-color: var(--primary-color); outline: none; }
+    
     .btn-scan { width: 100%; padding: 12px; margin-top: 25px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: var(--transition); }
     .btn-scan:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    
     #reader { width: 100%; margin-top: 20px; border-radius: 10px; overflow: hidden; display: none; }
+    
     .dropdown-list { position: absolute; background: white; border: 1px solid #ddd; max-height: 200px; overflow-y: auto; width: 100%; z-index: 100; display: none; }
     .dropdown-item { padding: 10px; cursor: pointer; }
     .dropdown-item:hover { background: #f0f0f0; }
     .search-container { position: relative; }
+    
     .status-msg { text-align: center; margin-top: 15px; font-weight: 600; }
+    .error-msg { color: #dc3545; font-weight: bold; margin-top: 10px; display:none; text-align: center;}
+    
     .success-container { display: none; text-align: center; padding: 20px; }
     .success-icon { font-size: 50px; color: green; margin-bottom: 15px; }
-    .back-btn { display: inline-block; padding: 5px 15px; border: 1px solid var(--primary-color); color: var(--primary-color); border-radius: 5px; margin-bottom: 15px; text-decoration: none; }
     
-    /* Style Tambahan untuk Alert Error */
-    .error-msg { color: #dc3545; font-weight: bold; margin-top: 10px; display:none; }
+    .back-btn { display: inline-block; padding: 5px 15px; border: 1px solid var(--primary-color); color: var(--primary-color); border-radius: 5px; margin-bottom: 15px; text-decoration: none; }
+    .back-btn:hover { background: var(--primary-color); color: white; }
   </style>
 </head>
 <body>
 
 <header>
-    <nav style="display:flex; justify-content:space-between;">
+    <nav>
         <img src="https://i.imgur.com/9rAb7r7.png" alt="Logo" class="logo" onclick="window.location.href='index.html';">
     </nav>
 </header>
@@ -90,8 +183,50 @@
     </div>
 </main>
 
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <div class="social-media">
+                <a href="https://www.facebook.com/share/1G32mgyres/?mibextid=qi2Omg" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.tiktok.com/@sadulur.sepoor_official?_t=8puqjiITt58&_r=1" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/sadulursepoor_id?igsh=bHNvcTI4ZmNiejBv" class="social-icon"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Link Cepat</h3>
+            <ul class="footer-links">
+                <li><a href="../index.html">Beranda</a></li>
+                <li><a href="./index.html">Tentang Kami</a></li>
+                <li><a href="../profile2.html">Profil</a></li>
+                <li><a href="https://wa.me/6285171058989">Kontak</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Layanan Kami</h3>
+            <ul class="footer-links">
+                <li><a href="../index.html#contact">Edukasi Keselamatan di Perlintasan</a></li>
+                <li><a href="../index.html#contact">Kolaborasi dengan Instansi Terkait</a></li>
+                <li><a href="../index.html#contact">Kegitan Komunitas & Kampanye Sosial</a></li>
+                <li><a href="../index.html#contact">Dokumentasi & Pelaporan</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Hubungi Kami</h3>
+            <div class="contact-info">
+                <p><i class="fas fa-map-marker-alt"></i> Jl. Kemiri Jaya, RT.05 RW.01 Kota Depok, Jawa Barat</p>
+                <p><i class="fas fa-phone"></i> +62 852 1115 0310</p>
+                <p><i class="fas fa-envelope"></i> sadulursepoor@gmail.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
+    </div>
+</footer>
+
 <script src="account.js"></script>
 <script>
+    // URL SCRIPT SAMA SEPERTI FILE FORM2.HTML SEBELUMNYA
     const scriptURL = "https://script.google.com/macros/s/AKfycbwYC8UAIhW9cWgg0tfTkXMaBDtoR8MCneT-VG2AhQS9u3MettrQD3BE-QxAcr9o5EJY8w/exec";
     
     // --- Logic Pencarian Nama ---
@@ -105,7 +240,6 @@
         dropdownList.innerHTML = '';
         if(!val) { dropdownList.style.display = 'none'; return; }
         
-        // Ambil data dari account.js
         const filtered = typeof validAccounts !== 'undefined' ? validAccounts.filter(acc => acc.username.toLowerCase().includes(val)) : [];
         
         if(filtered.length > 0){
@@ -180,7 +314,7 @@
 
     function onScanFailure(error) { }
 
-    // --- Logic Kirim Data (UPDATED) ---
+    // --- Logic Kirim Data ---
     async function submitData() {
         const loadingMsg = document.getElementById('scanStatus');
         const errorMsgDiv = document.getElementById('errorMessage');
@@ -197,22 +331,18 @@
         formData.append('kegiatan', document.getElementById('kegiatan').value);
 
         try {
-            // HAPUS 'no-cors' agar kita bisa baca respon JSON dari server
             const response = await fetch(scriptURL, { method: 'POST', body: formData });
             const result = await response.json();
 
             if (result.result === 'success') {
-                // Sukses
                 document.getElementById('inputSection').style.display = 'none';
                 document.getElementById('successSection').style.display = 'block';
                 document.getElementById('recordedName').textContent = namaSearch.value;
             } else if (result.result === 'duplicate') {
-                // DUPLIKAT TERDETEKSI
                 loadingMsg.textContent = "";
                 scanBtn.style.display = 'block';
-                errorMsgDiv.textContent = "GAGAL: " + result.message; // "NIA ... sudah melakukan absensi"
+                errorMsgDiv.textContent = "GAGAL: " + result.message; 
                 errorMsgDiv.style.display = 'block';
-                // Opsional: alert juga
                 alert("Maaf, Anggota dengan NIA ini sudah tercatat hadir sebelumnya.");
             } else {
                 throw new Error(result.message);
