@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Admin Dashboard - Sadulur Sepoor</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -10,21 +10,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   
   <style>
-    /* --- RESET & GLOBAL VARIABLES --- */
+    /* --- 1. GLOBAL VARIABLES & RESET --- */
     :root {
         --primary: #0056b3;
         --primary-dark: #004494;
-        --secondary: #6c757d;
-        --bg-color: #f0f4f8;
+        --bg-color: #f4f7f6;
         --card-bg: #ffffff;
-        --text-main: #333;
-        --text-light: #666;
-        --shadow-sm: 0 4px 6px rgba(0,0,0,0.05);
-        --shadow-md: 0 10px 15px rgba(0,0,0,0.1);
+        --text-main: #2c3e50;
+        --text-muted: #6c757d;
         --radius: 12px;
+        --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        --white: #ffffff;
+        --transition: all 0.3s ease;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
         font-family: 'Poppins', sans-serif;
@@ -33,165 +33,253 @@
         margin: 0;
         padding: 0;
         min-height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
 
-    /* --- LAYOUT GRID SYSTEM --- */
+    /* --- HEADER STYLE (Sama dengan form.html) --- */
+    header {
+        background-color: var(--white);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 12px 5%;
+        box-sizing: border-box;
+    }
+    header nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .logo {
+        height: 50px;
+        transition: var(--transition);
+        cursor: pointer;
+    }
+    .logo:hover { transform: scale(1.05); }
+
+    /* --- FOOTER STYLE (Sama dengan form.html) --- */
+    footer {
+        background-color: #333;
+        color: #fff;
+        padding: 60px 0 20px;
+        font-family: 'Arial', sans-serif;
+        margin-top: auto;
+    }
+    .footer-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; padding: 0 20px; }
+    .footer-section { flex: 1; min-width: 250px; margin-bottom: 30px; padding-right: 20px; }
+    .social-media { display: flex; margin-top: 20px; }
+    .social-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background-color: #444; border-radius: 50%; margin-right: 10px; color: #fff; transition: all 0.3s ease; }
+    .social-icon:hover { background-color: #0078ff; transform: translateY(-3px); }
+    .footer-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; position: relative; padding-bottom: 10px; }
+    .footer-title:after { content: ''; position: absolute; left: 0; bottom: 0; width: 50px; height: 2px; background-color: #0078ff; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: #ccc; text-decoration: none; transition: all 0.3s ease; display: block; }
+    .footer-links a:hover { color: #0078ff; padding-left: 5px; }
+    .contact-info p { margin-bottom: 15px; display: flex; align-items: center; color: #ccc; }
+    .contact-info i { margin-right: 10px; color: #0078ff; }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding: 20px; border-top: 1px solid #444; display: flex; justify-content: space-between; align-items: center; margin-top: 30px; }
+    .footer-bottom p { color: #aaa; font-size: 14px; margin: 0; }
+    
+    @media (max-width: 768px) {
+       .footer-section { flex-basis: 100%; }
+       .footer-bottom { flex-direction: column; text-align: center; }
+    }
+
+    /* --- 2. LAYOUT GRID SYSTEM --- */
     .dashboard-wrapper {
         display: grid;
-        grid-template-columns: 1fr; /* Mobile default: 1 kolom */
+        grid-template-columns: 1fr; /* Default Mobile: Stack ke bawah */
         gap: 20px;
         max-width: 1200px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 100px 20px 40px 20px; /* Padding Top 100px agar tidak ketutup header */
+        width: 100%;
+        flex-grow: 1;
     }
 
-    /* DESKTOP LAYOUT (Min-width 768px) */
+    /* Desktop View (Sidebar Kiri, Tabel Kanan) */
     @media (min-width: 900px) {
         .dashboard-wrapper {
-            grid-template-columns: 350px 1fr; /* Kiri 350px, Kanan sisa layar */
+            grid-template-columns: 320px 1fr; /* Kiri 320px, Kanan sisa layar */
             align-items: start;
         }
         
-        /* Agar panel kiri tetap diam saat scroll tabel */
         .admin-sidebar {
-            position: sticky;
-            top: 20px;
+            position: sticky; 
+            top: 100px; /* Jarak dari atas (80px header + 20px gap) */
         }
     }
 
-    /* --- COMPONENTS --- */
-    
-    /* CARD STYLE */
+    /* --- 3. COMPONENTS --- */
     .card {
         background: var(--card-bg);
         border-radius: var(--radius);
-        box-shadow: var(--shadow-sm);
-        padding: 25px;
-        transition: transform 0.2s ease;
+        box-shadow: var(--shadow);
+        padding: 24px;
+        width: 100%;
+        overflow: hidden;
     }
 
-    h1, h2, h3 { margin-top: 0; color: var(--primary); }
-    h1 { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    h1, h2, h3 { margin: 0; color: var(--primary); }
     
-    /* SIDEBAR (QR AREA) */
-    .admin-sidebar { text-align: center; }
+    /* Sidebar Items */
+    .app-title {
+        font-size: 18px; font-weight: 700; 
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        margin-bottom: 20px; color: var(--text-main);
+    }
     
-    .event-select-wrapper { margin-bottom: 20px; text-align: left; }
-    .event-select-wrapper label { font-size: 12px; color: var(--text-light); font-weight: 600; }
+    .event-select-wrapper label { font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 5px; text-align: left; }
     select {
-        width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;
-        font-family: inherit; margin-top: 5px; cursor: pointer;
+        width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;
+        background: #f9f9f9; font-family: inherit; font-size: 14px; outline: none;
     }
 
+    /* QR Code Area */
     .qr-container {
-        background: #f8f9fa;
+        background: #fff;
+        border: 2px dashed #e0e0e0;
         border-radius: var(--radius);
-        padding: 20px;
+        padding: 15px;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 20px 0;
-        border: 1px solid #eee;
+        margin: 20px auto;
+        width: 100%;
+        max-width: 220px; /* Batas lebar QR agar rapi */
         min-height: 200px;
     }
-    
+
+    /* Tombol */
     .btn-update {
         background: var(--primary); color: white; border: none;
         padding: 12px; width: 100%; border-radius: 8px;
-        font-weight: 600; cursor: pointer; transition: 0.3s;
-        display: flex; align-items: center; justify-content: center; gap: 8px;
+        font-weight: 600; cursor: pointer; transition: 0.2s;
+        font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .btn-update:hover { background: var(--primary-dark); box-shadow: 0 5px 10px rgba(0,86,179,0.2); }
+    .btn-update:active { transform: scale(0.98); }
 
-    /* STATS BOXES */
+    /* Statistik */
     .stats-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 20px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;
     }
     .stat-card {
-        background: #f8faff; border: 1px solid #e1e8ed;
-        padding: 10px; border-radius: 8px; text-align: center;
+        background: #f8faff; border: 1px solid #eef2f7; padding: 12px 5px;
+        border-radius: 8px; text-align: center;
     }
-    .stat-val { font-size: 18px; font-weight: 700; color: var(--primary); display: block; }
-    .stat-label { font-size: 11px; color: var(--text-light); }
+    .stat-val { font-size: 20px; font-weight: 700; color: var(--primary); display: block; line-height: 1.2; }
+    .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* TABLE AREA */
+    /* --- 4. TABLE STYLES (RAPID & CLEAN) --- */
     .table-header {
         display: flex; justify-content: space-between; align-items: center;
-        margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px;
+        margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;
     }
-    .refresh-badge {
-        font-size: 12px; color: #888; background: #eee; padding: 5px 10px; border-radius: 20px;
+    .table-header h3 { font-size: 16px; font-weight: 600; color: var(--text-main); }
+    .live-badge {
+        font-size: 11px; color: #28a745; background: rgba(40, 167, 69, 0.1);
+        padding: 4px 10px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 5px;
     }
 
-    .table-responsive { overflow-x: auto; }
-    table { width: 100%; border-collapse: separate; border-spacing: 0; }
-    
+    /* Wrapper Tabel agar bisa scroll horizontal di HP */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Smooth scroll di iOS */
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        white-space: nowrap; /* Mencegah teks turun baris */
+    }
+
     th {
-        text-align: left; padding: 15px; color: #555; font-weight: 600;
-        border-bottom: 2px solid #eee; font-size: 14px;
-        background: white; /* Sticky header needs bg */
+        text-align: left; padding: 12px 15px;
+        background: #f8f9fa; color: var(--text-muted);
+        font-size: 12px; font-weight: 600; text-transform: uppercase;
+        position: sticky; top: 0; z-index: 10; /* Header tabel menempel */
+        border-bottom: 2px solid #e9ecef;
     }
-    td {
-        padding: 15px; border-bottom: 1px solid #f5f5f5; font-size: 14px;
-        vertical-align: middle;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background-color: #fcfcfc; }
-
-    /* Avatar Initials */
-    .avatar {
-        width: 35px; height: 35px; background: var(--primary); color: white;
-        border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
-        font-size: 14px; font-weight: bold; margin-right: 10px;
-    }
-    .name-col { display: flex; align-items: center; }
     
-    .status-badge {
-        background: #d4edda; color: #155724;
-        padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: 600;
+    td {
+        padding: 12px 15px; border-bottom: 1px solid #f0f0f0;
+        font-size: 13px; color: #333;
+    }
+    
+    tr:last-child td { border-bottom: none; }
+    
+    /* Styling Kolom Khusus */
+    .col-no { width: 50px; text-align: center; color: #999; }
+    .col-nama { font-weight: 600; color: var(--primary-dark); }
+    .col-nia { font-family: 'Courier New', monospace; letter-spacing: -0.5px; color: #555; }
+    .col-waktu { color: #888; font-size: 12px; }
+
+    /* --- 5. MOBILE OPTIMIZATION --- */
+    @media (max-width: 600px) {
+        /* Padding body dikurangi karena wrapper sudah punya padding */
+        body { background: #ebedf0; }
+        .dashboard-wrapper { gap: 15px; padding-top: 90px; padding-left: 10px; padding-right: 10px; }
+        .card { padding: 15px; border-radius: 10px; }
+        
+        .app-title { font-size: 16px; margin-bottom: 15px; }
+        .qr-container { margin: 15px auto; padding: 10px; min-height: 180px; }
+        
+        /* Font size tabel dikecilkan sedikit di HP */
+        th, td { padding: 10px 10px; font-size: 12px; }
+        
+        /* Sembunyikan scrollbar tapi tetap bisa scroll */
+        .table-responsive::-webkit-scrollbar { height: 4px; }
+        .table-responsive::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
     }
 
-    /* --- TOAST NOTIFICATION --- */
-    #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+    /* --- 6. TOAST NOTIFICATION --- */
+    #toast-container { position: fixed; top: 100px; right: 20px; left: 20px; z-index: 9999; pointer-events: none; }
+    @media (min-width: 600px) { #toast-container { left: auto; width: 320px; } }
+    
     .toast {
-        background: white; border-left: 5px solid #28a745;
-        padding: 15px 20px; margin-bottom: 10px; border-radius: 8px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        display: flex; align-items: center; gap: 15px;
-        animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 300px;
+        background: #fff; border-left: 5px solid #28a745;
+        padding: 15px; margin-bottom: 10px; border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        display: flex; align-items: center; gap: 12px;
+        animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        pointer-events: auto;
     }
-    .toast-content h4 { margin: 0; font-size: 14px; color: #333; }
-    .toast-content p { margin: 2px 0 0; font-size: 12px; color: #666; }
-
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-20px); } }
-
+    
+    @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   </style>
 </head>
 <body>
+
+<header>
+    <nav>
+        <img src="https://i.imgur.com/9rAb7r7.png" alt="Logo" class="logo" onclick="window.location.href='index.html';">
+    </nav>
+</header>
 
 <div id="toast-container"></div>
 
 <div class="dashboard-wrapper">
     
     <aside class="admin-sidebar card">
-        <h1><i class="fas fa-train"></i> Admin Panel</h1>
+        <div class="app-title"><i class="fas fa-train" style="color:var(--primary)"></i> Sadulur Sepoor</div>
         
         <div class="event-select-wrapper">
-            <label>Pilih Kegiatan</label>
+            <label>Kegiatan Aktif</label>
             <select id="eventSelect" onchange="generateQR()">
                 <option value="RPTRA Kebon Sirih (Kopdar)">RPTRA Kebon Sirih (Kopdar)</option>
             </select>
         </div>
 
         <div id="qrcode" class="qr-container"></div>
-        <p style="font-size:12px; color:#888; margin-bottom:15px;">Scan untuk Absen Masuk</p>
-
+        
         <button onclick="generateQR()" class="btn-update">
-            <i class="fas fa-sync-alt"></i> Update QR Code
+            <i class="fas fa-sync-alt"></i> Update QR
         </button>
 
         <div class="stats-grid">
@@ -204,31 +292,31 @@
                 <span class="stat-label">Sisa Kuota</span>
             </div>
         </div>
-        <div style="margin-top:15px; font-size:13px;">
-            Status: <span id="status" style="font-weight:bold;">...</span>
+        <div style="margin-top:15px; font-size:12px; text-align:center; color:#777;">
+            Status: <span id="status" style="font-weight:700;">...</span>
         </div>
     </aside>
 
     <main class="table-container card">
         <div class="table-header">
             <h3>Daftar Hadir</h3>
-            <span class="refresh-badge"><i class="fas fa-circle" style="color:#28a745; font-size:8px; margin-right:5px;"></i> Live Data</span>
+            <span class="live-badge"><i class="fas fa-circle" style="font-size:6px;"></i> LIVE</span>
         </div>
 
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th width="50">No</th>
+                        <th class="col-no">No</th>
                         <th>Nama Anggota</th>
-                        <th>Nomor Induk (NIA)</th>
-                        <th>Waktu Absen</th>
+                        <th>NIA</th>
+                        <th>Waktu</th>
                     </tr>
                 </thead>
                 <tbody id="attendeeTableBody">
                     <tr>
-                        <td colspan="4" style="text-align:center; padding:30px; color:#999;">
-                            <i class="fas fa-spinner fa-spin"></i> Menunggu data kehadiran...
+                        <td colspan="4" style="text-align:center; padding:30px; color:#999; font-size:13px;">
+                            <i class="fas fa-circle-notch fa-spin"></i> Memuat data...
                         </td>
                     </tr>
                 </tbody>
@@ -238,11 +326,52 @@
 
 </div>
 
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <div class="social-media">
+                <a href="https://www.facebook.com/share/1G32mgyres/?mibextid=qi2Omg" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.tiktok.com/@sadulur.sepoor_official?_t=8puqjiITt58&_r=1" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/sadulursepoor_id?igsh=bHNvcTI4ZmNiejBv" class="social-icon"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Link Cepat</h3>
+            <ul class="footer-links">
+                <li><a href="../index.html">Beranda</a></li>
+                <li><a href="./index.html">Tentang Kami</a></li>
+                <li><a href="../profile2.html">Profil</a></li>
+                <li><a href="https://wa.me/6285171058989">Kontak</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Layanan Kami</h3>
+            <ul class="footer-links">
+                <li><a href="../index.html#contact">Edukasi Keselamatan di Perlintasan</a></li>
+                <li><a href="../index.html#contact">Kolaborasi dengan Instansi Terkait</a></li>
+                <li><a href="../index.html#contact">Kegitan Komunitas & Kampanye Sosial</a></li>
+                <li><a href="../index.html#contact">Dokumentasi & Pelaporan</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Hubungi Kami</h3>
+            <div class="contact-info">
+                <p><i class="fas fa-map-marker-alt"></i> Jl. Kemiri Jaya, RT.05 RW.01 Kota Depok, Jawa Barat</p>
+                <p><i class="fas fa-phone"></i> +62 852 1115 0310</p>
+                <p><i class="fas fa-envelope"></i> sadulursepoor@gmail.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
+    </div>
+</footer>
+
 <script>
-    // --- JAVASCRIPT LOGIC (SAMA SEPERTI SEBELUMNYA) ---
     const scriptURL = "https://script.google.com/macros/s/AKfycbwYC8UAIhW9cWgg0tfTkXMaBDtoR8MCneT-VG2AhQS9u3MettrQD3BE-QxAcr9o5EJY8w/exec";
     
-    const qrcode = new QRCode(document.getElementById("qrcode"), { width: 160, height: 160 });
+    // Konfigurasi QR
+    const qrcode = new QRCode(document.getElementById("qrcode"), { width: 150, height: 150 });
     let previousCount = -1; 
 
     function generateQR() {
@@ -267,10 +396,11 @@
         tbody.innerHTML = ''; 
 
         if (attendees.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:30px;">Belum ada peserta hadir</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#aaa;">Belum ada peserta</td></tr>';
             return;
         }
 
+        // Logic Notifikasi
         if (previousCount !== -1 && attendees.length > previousCount) {
             const newPerson = attendees[0]; 
             showToast(newPerson.nama, newPerson.nia);
@@ -284,24 +414,12 @@
                 timeStr = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             } catch(e) {}
 
-            // Buat inisial nama untuk avatar
-            let initials = person.nama.match(/\b\w/g) || [];
-            initials = ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
-
             const row = `
             <tr>
-                <td style="color:#888;">${attendees.length - index}</td>
-                <td>
-                    <div class="name-col">
-                        <div class="avatar">${initials}</div>
-                        <div>
-                            <div style="font-weight:600; color:#333;">${person.nama}</div>
-                            <div class="status-badge">Hadir</div>
-                        </div>
-                    </div>
-                </td>
-                <td style="color:#555; font-family:monospace;">${person.nia}</td>
-                <td style="color:#666;">${timeStr}</td>
+                <td class="col-no">${attendees.length - index}</td>
+                <td class="col-nama">${person.nama}</td>
+                <td class="col-nia">${person.nia}</td>
+                <td class="col-waktu">${timeStr}</td>
             </tr>`;
             tbody.innerHTML += row;
         });
@@ -314,19 +432,20 @@
         
         const statusEl = document.getElementById('status');
         const isFull = (maxLimit - count) <= 0;
-        statusEl.textContent = isFull ? "Kuota Penuh" : "Pendaftaran Dibuka";
+        statusEl.textContent = isFull ? "PENUH" : "DIBUKA";
         statusEl.style.color = isFull ? "#dc3545" : "#28a745";
     }
 
+    // Toast Notification dengan Suara "CRINGGG"
     function showToast(nama, nia) {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.innerHTML = `
-            <i class="fas fa-check-circle" style="color:#28a745; font-size:28px;"></i>
-            <div class="toast-content">
-                <h4>${nama}</h4>
-                <p>NIA: ${nia} | Berhasil Absen</p>
+            <i class="fas fa-check-circle" style="color:#28a745; font-size:24px;"></i>
+            <div style="text-align:left;">
+                <div style="font-weight:bold; font-size:14px; color:#333;">${nama}</div>
+                <div style="font-size:11px; color:#666;">NIA: ${nia} • Berhasil Absen</div>
             </div>
         `;
         container.appendChild(toast);
@@ -340,8 +459,10 @@
     }
 
     function playNotificationSound() {
-        const audio = new Audio('https://actions.google.com/sounds/v1/cartoon/pop.ogg'); 
-        audio.play().catch(e => {});
+        // Suara Coin Drop (Efek Cringgg)
+        const audio = new Audio('https://actions.google.com/sounds/v1/science_fiction/coin_drop.ogg'); 
+        audio.volume = 1.0;
+        audio.play().catch(e => console.log("Audio autoplay diblokir browser"));
     }
 
     window.onload = function() {
