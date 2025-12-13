@@ -131,7 +131,7 @@
       font-size: 0.9rem;
       color: var(--text-secondary);
       background-color: #e9ecef;
-      padding: 5px 5px;
+      padding: 1px 1px;
       border-radius: 8px;
       display: inline-block; 
     }
@@ -356,22 +356,22 @@
 
       <h1>Absensi Kehadiran</h1>
       <div class="absensi-info">
-        <strong>Kegiatan:</strong>Sosialisasi Disiplin Perlintasan<br>
+        <strong>Kegiatan:</strong>Kopdar Sadulur Sepoor Indonesia<br>
         <br>
-        <strong>Lokasi:</strong>JPL 78 Bekasi<br>
+        <strong>Lokasi:</strong>RPTRA Kebon Sirih<br>
         <p><strong>Tanggal:</strong> <span id="tanggal-kegiatan"></span></p>
       </div>
 
      <div class="map-container">
         <div class="map-embed">
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d247.88748478563124!2d107.0002353!3d-6.2373812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698d00769dd23b%3A0xb04333d04bad941d!2sJPL%2078%20Bekasi!5e0!3m2!1sid!2sid!4v1763616426339!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.607020276214!2d106.83215609999999!3d-6.1833179!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f431aec4eb73%3A0x8ee1f01bca5baa49!2sRPTRA%20Kebon%20Sirih!5e0!3m2!1sid!2sid!4v1765653757670!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
         <div class="map-details">
             <div class="map-info">
-                <strong>Titik Kumpul: JPL 78 Bekasi</strong>
-                <p>Q272+25J JPL 78 Bekasi, Marga Mulya, Kec. Bekasi Utara, Kota Bekasi</p>
+                <strong>Titik Kumpul: RPTRA Kebon Sirih</strong>
+                <p>RPTRA Kebon Sirih, Jl. Srikaya II No.14 1, RT.15/RW.7, Kb. Sirih, Kec. Menteng, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10340</p>
             </div>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=Q272%2B25J" target="_blank" class="route-button">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=2sRPTRA%20Kebon%20Sirih" target="_blank" class="route-button">
                 Lihat Rute
             </a>
         </div>
@@ -439,8 +439,8 @@
     // GANTI URL INI DENGAN URL WEB APP GOOGLE SCRIPT ANDA
     const scriptURL = "https://script.google.com/macros/s/AKfycbyNuI7RKu3amjytcE8gW9ptUknOJCYXHX6pxpf7b_yD2JfLWlobeFBSX2sIXt5BaC6S/exec"; 
     
-    const tanggalKegiatan = new Date("2025-11-22T14:00:00");
-    const tanggalAbsenDibuka = new Date("2025-11-20T10:00:00");
+    const tanggalKegiatan = new Date("2025-12-14T10:30:00");
+    const tanggalAbsenDibuka = new Date("2025-12-14T10:00:00");
 
     document.getElementById("tanggal-kegiatan").innerText = tanggalKegiatan.toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
@@ -487,7 +487,7 @@
             } else {
                 teksAbsen.innerText = `Absen sudah dibuka. Silakan isi form.`; 
                 boxAbsen.classList.remove('full'); 
-                hadirBtn.href = "form.html";
+                hadirBtn.href = "form2.html";
                 hadirBtn.classList.remove('disabled');
             }
         }
