@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Anggota</title> 
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+        
+        :root {
+            --primary-dark: #0f172a;
+            --primary-main: #334155;
+            --primary-light: #64748b;
+            --accent: #2563eb;
+            --accent-soft: #eff6ff;
+            --bg-body: #f1f5f9;
+            --surface: #ffffff;
+            --sidebar-gradient: linear-gradient(160deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            background-image: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.05) 0px, transparent 50%),
+                              radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.05) 0px, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--primary-dark);
+        }
+
+        /* --- Main Card Container --- */
+        .profile-card {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            background: var(--surface);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255,255,255,0.5);
+            flex-wrap: nowrap; 
+        }
+
+        /* --- Sidebar (Kiri) --- */
+        .card-sidebar {
+            flex: 0 0 320px;
+            background: var(--sidebar-gradient);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-sidebar::after, .card-sidebar::before {
+            content: ''; position: absolute; border-radius: 50%; z-index: -1;
+        }
+        .card-sidebar::after {
+            top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.05);
+        }
+        .card-sidebar::before {
+            bottom: -30px; right: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.08);
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin-bottom: 20px;
+        }
+
+        .img-wrapper::before {
+            content: ''; position: absolute; inset: -4px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.15); opacity: 0; }
+        }
+
+        .profile-image {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+            border: 4px solid rgba(255,255,255,0.9);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .identity-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            line-height: 1.2;
+            margin-bottom: 5px;
+            font-weight: 700;
+            min-height: 1.8rem; /* Mencegah layout shift saat nama dimuat */
+        }
+
+        .nickname { font-size: 0.9rem; opacity: 0.9; margin-bottom: 15px; font-style: italic; }
+
+        .role-badge {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px;
+            background: rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 50px;
+            font-weight: 600; border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* --- Content (Kanan) --- */
+        .card-content {
+            flex: 1;
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-logo { display: flex; align-items: center; gap: 12px; }
+        .header-logo img { height: 42px; width: auto; }
+        .header-logo div { display: flex; flex-direction: column; }
+        .org-name { font-weight: 700; color: var(--primary-dark); font-size: 1.1rem; }
+        .org-desc { font-size: 0.75rem; color: var(--primary-light); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .nia-tag {
+            background: var(--accent-soft); color: var(--accent); padding: 8px 14px;
+            border-radius: 8px; font-weight: 700; font-size: 0.85rem;
+            border: 1px solid rgba(37, 99, 235, 0.1); display: flex; align-items: center; gap: 6px;
+            white-space: nowrap;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .info-label {
+            font-size: 0.7rem; text-transform: uppercase; color: var(--primary-light);
+            letter-spacing: 0.8px; margin-bottom: 6px; font-weight: 600;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .info-label i { color: var(--accent); font-size: 1rem; }
+        .info-value { font-size: 1rem; color: var(--primary-dark); font-weight: 500; line-height: 1.4; }
+        .full-span { grid-column: span 2; }
+
+        /* Social Media */
+        .social-area { margin-top: auto; }
+        .social-label { font-size: 0.8rem; font-weight: 600; margin-bottom: 12px; color: var(--primary-light); }
+        
+        .social-buttons { display: flex; gap: 10px; }
+        
+        .btn-social {
+            flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px; border-radius: 10px; text-decoration: none;
+            font-size: 0.9rem; font-weight: 500; transition: all 0.2s;
+            border: 1px solid #e2e8f0; background: white; color: var(--primary-main);
+            cursor: pointer;
+        }
+        
+        .btn-social.ig:hover { color: #E1306C; border-color: #E1306C; background: #fff5f8; }
+        .btn-social.wa:hover { color: #25D366; border-color: #25D366; background: #f0fdf4; }
+        .btn-social.email:hover { color: #EA4335; border-color: #EA4335; background: #fef2f2; }
+
+        /* --- RESPONSIVE --- */
+        @media screen and (max-width: 850px) {
+            body { padding: 15px; align-items: flex-start; }
+            .profile-card { flex-direction: column; max-width: 500px; margin-top: 20px; }
+            .card-sidebar { flex: none; width: 100%; padding: 30px 20px 40px 20px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
+            .img-wrapper { width: 120px; height: 120px; }
+            .identity-name { font-size: 1.4rem; }
+            .card-content { padding: 25px 20px; margin-top: 0; }
+            .content-header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
+            .header-logo, .nia-tag { width: 100%; }
+            .nia-tag { justify-content: center; background: #f1f5f9; }
+            .info-grid { grid-template-columns: 1fr; gap: 20px; }
+            .full-span { grid-column: auto; }
+            .social-buttons { flex-direction: column; gap: 10px; }
+            .btn-social { width: 100%; padding: 12px; justify-content: center; }
+        }
+        @media screen and (max-width: 380px) {
+            .identity-name { font-size: 1.2rem; }
+            .card-content { padding: 20px 15px; }
+            .header-logo img { height: 35px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-card">
+        <div class="card-sidebar">
+            <div class="img-wrapper">
+                <img src="https://Sadulursepoor.web.id/img/Alvito Bima Nurfaqih.jpg" alt="" class="profile-image">
+            </div>
+            <h1 class="identity-name"></h1> 
+            <div class="nickname">"Alvito"</div>
+            <div class="role-badge">Anggota</div>
+        </div>
+
+        <div class="card-content">
+            <div class="content-header">
+                <div class="header-logo">
+                    <img src="https://sadulursepoor.web.id/img/Logo SS.png" alt="Logo SS">
+                    <div>
+                        <span class="org-name">Sadulur Sepoor</span>
+                        <span class="org-desc">Profil Anggota</span>
+                    </div>
+                </div>
+                <div class="nia-tag">
+                    <i class="ri-id-card-line"></i> NIA: SS-0254
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label"><i class="ri-calendar-event-line"></i> Tanggal Lahir</div>
+                    <div class="info-value">13 November 2009</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label"><i class="ri-flag-line"></i> Bergabung Sejak</div>
+                    <div class="info-value">13 April 2025</div>
+                </div>
+
+                <div class="info-item full-span">
+                    <div class="info-label"><i class="ri-map-pin-line"></i> Alamat Domisili</div>
+                    <div class="info-value">"kp.rawa badung, Rt.09/013, Cakung, Jakarta Timur, Dki Jakarta</div>
+                </div>
+                
+                <div class="info-item">
+                     <div class="info-label"><i class="ri-heart-line"></i> Minat</div>
+                     <div class="info-value">-</div>
+                </div>
+            </div>
+
+            <div class="social-area">
+                <div class="social-label">Hubungi Saya</div>
+                <div class="social-buttons">
+                    <a href="https://www.instagram.com/lion.7055481" class="btn-social ig" target="_blank">
+                        <i class="ri-instagram-line"></i> Instagram
+                    </a>
+                    
+                    <a href="#" onclick="checkWhatsapp(event)" class="btn-social wa">
+                        <i class="ri-whatsapp-line"></i> WhatsApp
+                    </a>
+
+                    <a href="mailto:biyantoyanto609@gmail.com" class="btn-social email">
+                        <i class="ri-mail-send-line"></i> Email
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <script>
+        const configAnggota = {
+            namaLengkap: "Alvito Bima Nurfaqih",   
+            _secKode: "U1MxSktU",                                  
+            _secLink: "aHR0cHM6Ly93YS5tZS82MjgzMTk5MTQyNDQ3"     
+        };
+
+        const bukaSandi = (str) => atob(str);
+
+        // A. Set Nama di Judul Tab Browser
+        document.title = "Profile Anggota - " + configAnggota.namaLengkap;
+
+        // B. Set Nama di Kartu Profil (H1)
+        const nameElement = document.querySelector('.identity-name');
+        if (nameElement) {
+            nameElement.textContent = configAnggota.namaLengkap;
+        }
+
+        // C. Set Nama di Alt Text Foto Profil
+        const imgElement = document.querySelector('.profile-image');
+        if (imgElement) {
+            imgElement.alt = configAnggota.namaLengkap;
+        }
+
+        // D. Fungsi Tombol WhatsApp dengan Keamanan
+        function checkWhatsapp(e) {
+            e.preventDefault(); 
+            
+            const userCode = prompt("Masukkan Kode Keamanan untuk menghubungi via WhatsApp:");
+            
+            // Decode kode dan link hanya saat tombol ditekan
+            const kodeAsli = bukaSandi(configAnggota._secKode);
+            const linkAsli = bukaSandi(configAnggota._secLink);
+
+            if (userCode === kodeAsli) {
+                window.open(linkAsli, '_blank');
+            } else if (userCode !== null) {
+                alert("Kode salah! Akses ditolak.");
+            }
+        }
+    </script>
+</body>
+</html>
