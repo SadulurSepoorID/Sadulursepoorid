@@ -25,21 +25,21 @@ document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
     setupAutoLogout();
     
-    // PENTING UNTUK MOBILE: Jalankan blocker sedikit delay agar browser selesai loading
-    setTimeout(setupBackButtonBlocker, 300);
+    // Setup Back Button Blocker dengan delay agar stabil di mobile
+    setTimeout(setupBackButtonBlocker, 500);
 });
 
-// --- FITUR: ANTI BACK BUTTON (MOBILE OPTIMIZED) ---
+// --- FITUR: ANTI BACK BUTTON (MOBILE FRIENDLY) ---
 function setupBackButtonBlocker() {
-    // Trik: Push state 2 kali agar tombol back harus ditekan 2x (memperbesar peluang tertangkap script)
+    // Push state berulang untuk menjebak history
     history.pushState(null, document.title, location.href);
     history.pushState(null, document.title, location.href);
 
     window.addEventListener('popstate', function (event) {
-        // Paksa push lagi supaya user 'terjebak' di halaman ini
+        // Paksa push lagi
         history.pushState(null, document.title, location.href);
         
-        // Gunakan confirm standar (blocking)
+        // Alert konfirmasi
         if (confirm("Anda menekan tombol kembali.\nSistem mengharuskan Logout untuk keamanan.\n\nIngin Logout sekarang?")) {
             logout();
         }
@@ -70,63 +70,72 @@ function setupAutoLogout() {
     function resetTimer() {
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => {
-            // Matikan listener agar tidak memicu reset lagi saat alert muncul
-            removeActivityListeners(); 
+            // Hapus listener agar tidak bentrok
+            document.onmousemove = null;
+            document.onclick = null;
+            document.ontouchstart = null;
+            document.onscroll = null;
+            
             alert("Sesi habis (2 Menit Tidak Aktif). Logout otomatis.");
             logout();
         }, IDLE_LIMIT); 
     }
 
-    function addActivityListeners() {
-        window.onload = resetTimer;
-        document.onmousemove = resetTimer;
-        document.onclick = resetTimer;
-        document.onkeypress = resetTimer;
-        document.ontouchstart = resetTimer; // Mobile touch
-        document.onscroll = resetTimer;     // Mobile scroll
-    }
-
-    function removeActivityListeners() {
-        document.onmousemove = null;
-        document.onclick = null;
-        document.onkeypress = null;
-        document.ontouchstart = null;
-        document.onscroll = null;
-    }
-
-    addActivityListeners();
+    // Listener aktivitas user
+    window.onload = resetTimer;
+    document.onmousemove = resetTimer;
+    document.onclick = resetTimer;
+    document.ontouchstart = resetTimer; // Wajib untuk Mobile
+    document.onscroll = resetTimer;     // Wajib untuk Mobile
 }
 
-// --- LOGOUT (FIX MOBILE DATA LOSS) ---
+// --- LOGOUT (REVISI TOTAL: FORCE WAIT) ---
 async function logout() { 
-    // UI Feedback agar user tahu sedang memproses
+    // 1. UI Feedback: Matikan interaksi agar user menunggu
     const btnLogout = document.querySelector('.btn-logout');
     if(btnLogout) {
         btnLogout.disabled = true;
-        btnLogout.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+        btnLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Menyimpan Data...';
     }
+    
+    // Ubah kursor jadi loading
+    document.body.style.cursor = 'wait';
 
+    // 2. Persiapkan Data
+    const payload = JSON.stringify({ action: 'logout', nia: window.currentUser.nia });
+    
+    // 3. Mekanisme Pengiriman Ganda (Fetch + Beacon)
     try {
-        // PENTING: keepalive: true agar request tidak mati saat halaman ditutup di mobile
-        await fetch(API_URL, {
+        // Kita buat Promise Race: 
+        // Tunggu Fetch selesai ATAU Waktu habis (3 detik).
+        // Ini mencegah HP 'hang' jika sinyal jelek, tapi memaksa HP menunggu jika sinyal ada.
+        
+        const fetchRequest = fetch(API_URL, {
             method: 'POST', 
-            // mode: 'no-cors', // OPSI: Jika masih gagal, uncomment baris ini (tapi response tidak bisa dibaca)
             redirect: 'follow', 
-            keepalive: true, // INI KUNCI PERBAIKAN MOBILE
             headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: 'logout', nia: window.currentUser.nia })
+            body: payload
         });
-    } catch(e) {
-        console.warn("Logout server error (koneksi buruk), tetap logout lokal.");
+
+        const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000));
+
+        await Promise.race([fetchRequest, timeoutPromise]);
+
+    } catch (e) {
+        console.error("Fetch gagal/timeout, mencoba Beacon...");
+        // Fallback: Jika fetch gagal, gunakan Beacon (API khusus browser untuk data saat closing)
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon(API_URL, payload);
+        }
     }
 
-    // Eksekusi Logout Lokal
+    // 4. Finalisasi: Hapus Sesi & Pindah Halaman
     finalizeLogout();
 }
 
 function finalizeLogout() {
     localStorage.removeItem('user_session'); 
-    // Gunakan replace agar history bersih
+    document.body.style.cursor = 'default';
     window.location.replace("../login/index.html"); 
 }
 
