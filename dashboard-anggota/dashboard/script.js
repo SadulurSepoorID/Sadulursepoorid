@@ -4,12 +4,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzaLFLCiTPEnVNIcwnuUi-d
 let cropper; 
 let newFotoUrl = ""; 
 let idleTimer; 
-const IDLE_LIMIT = 2 * 60 * 1000; // 2 Menit dalam milidetik
+const IDLE_LIMIT = 2 * 60 * 1000; // 2 Menit
 
 // --- INISIALISASI ---
 document.addEventListener('DOMContentLoaded', () => {
     const session = localStorage.getItem('user_session');
-    // Cek sesi, jika tidak ada lempar ke login
     if (!session) { 
         window.location.replace("../login/index.html"); 
         return; 
@@ -25,31 +24,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initDashboard();
     setupAutoLogout();
-
-    // SETUP BACK BUTTON BLOCKER
-    // Kita panggil langsung agar history state segera tercatat
-    setupBackButtonBlocker();
+    
+    // PENTING UNTUK MOBILE: Jalankan blocker sedikit delay agar browser selesai loading
+    setTimeout(setupBackButtonBlocker, 300);
 });
 
-// --- FITUR: ANTI BACK BUTTON (MODIFIKASI) ---
+// --- FITUR: ANTI BACK BUTTON (MOBILE OPTIMIZED) ---
 function setupBackButtonBlocker() {
-    // Push state saat ini ke history agar ada 'tumpukan'
-    history.pushState(null, null, location.href);
-    
-    window.onpopstate = function () {
-        // Saat tombol back ditekan, history berkurang 1.
-        // KITA PAKSA PUSH LAGI agar user tetap di halaman ini secara teknis.
-        history.pushState(null, null, location.href);
+    // Trik: Push state 2 kali agar tombol back harus ditekan 2x (memperbesar peluang tertangkap script)
+    history.pushState(null, document.title, location.href);
+    history.pushState(null, document.title, location.href);
+
+    window.addEventListener('popstate', function (event) {
+        // Paksa push lagi supaya user 'terjebak' di halaman ini
+        history.pushState(null, document.title, location.href);
         
-        // Tampilkan konfirmasi Logout
-        // Menggunakan setTimeout kecil agar UI tidak konflik dengan event browser
-        setTimeout(() => {
-            if (confirm("Anda menekan tombol kembali. Apakah Anda ingin Keluar (Logout) dari akun?")) {
-                logout(); // Panggil fungsi logout
-            }
-            // Jika user pilih Cancel, mereka tetap di halaman ini karena kita sudah pushState di atas.
-        }, 100);
-    };
+        // Gunakan confirm standar (blocking)
+        if (confirm("Anda menekan tombol kembali.\nSistem mengharuskan Logout untuk keamanan.\n\nIngin Logout sekarang?")) {
+            logout();
+        }
+    });
 }
 
 function initDashboard() {
@@ -59,7 +53,7 @@ function initDashboard() {
     if (greetEl) { const h = new Date().getHours(); greetEl.innerText = (h<12?"Selamat Pagi":h<15?"Selamat Siang":h<18?"Selamat Sore":"Selamat Malam") + ","; }
     
     updateUI(window.currentUser);
-    fetchUserData(); // Ambil data terbaru dari spreadsheet agar sinkron
+    fetchUserData(); 
 
     // Close Dropdown on outside click
     document.addEventListener('click', function(event) {
@@ -71,64 +65,79 @@ function initDashboard() {
     });
 }
 
-// --- FITUR: AUTO LOGOUT (IDLE 2 MENIT) ---
+// --- FITUR: AUTO LOGOUT ---
 function setupAutoLogout() {
     function resetTimer() {
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => {
-            // Hentikan event listener agar alert tidak muncul berulang
-            document.onmousemove = null;
-            document.onclick = null;
-            document.onkeypress = null;
-            document.ontouchstart = null;
-            document.onscroll = null;
-
-            alert("Sesi habis (2 Menit Tidak Aktif). Anda akan dilogout otomatis.");
-            logout(); // Eksekusi logout ke server
+            // Matikan listener agar tidak memicu reset lagi saat alert muncul
+            removeActivityListeners(); 
+            alert("Sesi habis (2 Menit Tidak Aktif). Logout otomatis.");
+            logout();
         }, IDLE_LIMIT); 
     }
 
-    // Reset timer setiap ada aktivitas
-    window.onload = resetTimer;
-    document.onmousemove = resetTimer;
-    document.onclick = resetTimer;
-    document.onkeypress = resetTimer;
-    document.ontouchstart = resetTimer; // Penting untuk Mobile
-    document.onscroll = resetTimer;     // Penting untuk Mobile
+    function addActivityListeners() {
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onclick = resetTimer;
+        document.onkeypress = resetTimer;
+        document.ontouchstart = resetTimer; // Mobile touch
+        document.onscroll = resetTimer;     // Mobile scroll
+    }
+
+    function removeActivityListeners() {
+        document.onmousemove = null;
+        document.onclick = null;
+        document.onkeypress = null;
+        document.ontouchstart = null;
+        document.onscroll = null;
+    }
+
+    addActivityListeners();
 }
 
-// --- LOGOUT ---
+// --- LOGOUT (FIX MOBILE DATA LOSS) ---
 async function logout() { 
-    // Tampilkan loading visual (opsional, agar user tahu proses berjalan)
+    // UI Feedback agar user tahu sedang memproses
     const btnLogout = document.querySelector('.btn-logout');
-    if(btnLogout) btnLogout.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Keluar...';
+    if(btnLogout) {
+        btnLogout.disabled = true;
+        btnLogout.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+    }
 
     try {
-        // Kirim request ke GAS untuk update status jadi "Offline" & catat Log
-        // Kita gunakan 'await' tapi dibungkus try/catch agar kalau internet putus, lokal tetap logout
+        // PENTING: keepalive: true agar request tidak mati saat halaman ditutup di mobile
         await fetch(API_URL, {
             method: 'POST', 
+            // mode: 'no-cors', // OPSI: Jika masih gagal, uncomment baris ini (tapi response tidak bisa dibaca)
             redirect: 'follow', 
+            keepalive: true, // INI KUNCI PERBAIKAN MOBILE
             headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({ action: 'logout', nia: window.currentUser.nia })
         });
     } catch(e) {
-        console.log("Gagal kontak server, tetap logout lokal.");
+        console.warn("Logout server error (koneksi buruk), tetap logout lokal.");
     }
 
-    // Hapus sesi lokal & Redirect
-    localStorage.removeItem('user_session'); 
-    window.location.replace("../login/index.html"); // Menggunakan replace agar tidak bisa di-back
+    // Eksekusi Logout Lokal
+    finalizeLogout();
 }
 
-// Fungsi Logout Manual (dipanggil dari tombol)
+function finalizeLogout() {
+    localStorage.removeItem('user_session'); 
+    // Gunakan replace agar history bersih
+    window.location.replace("../login/index.html"); 
+}
+
+// Fungsi Logout Manual
 function logoutManual() {
-    if(confirm("Yakin ingin keluar dari aplikasi?")) {
+    if(confirm("Yakin ingin keluar?")) {
         logout();
     }
 }
 
-// --- FETCH & UI (SAMA SEPERTI SEBELUMNYA) ---
+// --- FETCH & UI ---
 async function fetchUserData() {
     try {
         const response = await fetch(API_URL, {
@@ -138,7 +147,6 @@ async function fetchUserData() {
         const data = await response.json();
         if (data.status) {
             updateUI(data);
-            // Gabungkan data baru dengan sesi yang ada
             window.currentUser = { ...window.currentUser, ...data };
             localStorage.setItem('user_session', JSON.stringify(window.currentUser));
         }
