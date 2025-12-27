@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Anggota - Sadulur Sepoor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar" id="mySidebar">
+            <div class="sidebar-header">
+                <div class="mobile-close-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></div>
+                <i class="fa-solid fa-train-subway logo-icon"></i>
+                <div><h2>Sadulur Sepoor</h2><span class="badge">INDONESIA</span></div>
+            </div>
+            <nav class="nav-menu">
+                <a href="../dashboard/index.html" class="nav-link"><i class="fa-solid fa-house"></i> <span>Beranda</span></a>
+                <a href="../presensi/index.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> <span>Presensi</span></a>
+                <a href="../jadwal/index.html" class="nav-link"><i class="fa-solid fa-calendar-days"></i> <span>Jadwal Kegiatan</span></a>
+                <a href="#" class="nav-link active"><i class="fa-solid fa-users"></i> <span>Data Anggota</span></a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-newspaper"></i> <span>Berita & Artikel</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span></button>
+            </div>
+        </aside>
+
+        <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <button id="hamburger-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                <h2>Direktori Anggota</h2>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Cari Nama atau NIA..." onkeyup="filterMembers()">
+                </div>
+            </header>
+
+            <div class="status-summary">
+                <span class="online-tag"><i class="fa-solid fa-circle"></i> <b id="count-online">0</b> Online</span>
+                <span class="total-tag">Total: <b id="count-total">0</b> Anggota</span>
+            </div>
+
+            <div id="member-grid" class="member-grid">
+                <div class="loading-state">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Memuat data anggota...
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
