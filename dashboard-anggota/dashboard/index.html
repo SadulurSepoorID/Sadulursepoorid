@@ -21,7 +21,6 @@
                 <div class="mobile-close-btn" onclick="toggleSidebar()">
                     <i class="fa-solid fa-xmark"></i>
                 </div>
-                
                 <i class="fa-solid fa-train-subway logo-icon"></i>
                 <div>
                     <h2>Sadulur Sepoor</h2>
@@ -48,7 +47,6 @@
                     <button id="hamburger-btn" onclick="toggleSidebar()">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    
                     <div class="greeting">
                         <h3 id="greet-msg">Selamat Pagi,</h3>
                         <p class="date-now" id="date-display">Memuat tanggal...</p>
@@ -67,7 +65,7 @@
                         <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; color: #666; margin-left: 5px;"></i>
                     </div>
 
-                    <div id="profile-dropdown" class="profile-dropdown hidden">
+                    <div id="profile-dropdown" class="profile-dropdown">
                         <a href="#" onclick="openEditModal()">
                             <i class="fa-solid fa-user-pen"></i> Edit Profil
                         </a>
@@ -90,24 +88,15 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="icon-box blue"><i class="fa-solid fa-clipboard-check"></i></div>
-                    <div>
-                        <h4>Kehadiran</h4>
-                        <p>12 Kegiatan</p>
-                    </div>
+                    <div><h4>Kehadiran</h4><p>12 Kegiatan</p></div>
                 </div>
                 <div class="stat-card">
                     <div class="icon-box green"><i class="fa-solid fa-star"></i></div>
-                    <div>
-                        <h4>Poin Keaktifan</h4>
-                        <p>150 Poin</p>
-                    </div>
+                    <div><h4>Poin Keaktifan</h4><p>150 Poin</p></div>
                 </div>
                 <div class="stat-card">
                     <div class="icon-box orange"><i class="fa-solid fa-id-card"></i></div>
-                    <div>
-                        <h4>Status NIA</h4>
-                        <p id="stat-nia">SS-XXXX</p>
-                    </div>
+                    <div><h4>Status NIA</h4><p id="stat-nia">SS-XXXX</p></div>
                 </div>
             </div>
 
@@ -132,7 +121,6 @@
                     <label>Nama Lengkap</label>
                     <input type="text" id="edit-nama">
                 </div>
-                
                 <div class="form-group">
                     <label>Foto Profil</label>
                     <div style="display: flex; gap: 15px; align-items: center; margin-top: 5px;">
@@ -145,7 +133,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div style="margin-top: 20px;">
                     <button class="btn-save" id="btn-save-main" onclick="saveProfile()">Simpan Perubahan</button>
                 </div>
@@ -155,13 +142,9 @@
 
     <div id="crop-modal" class="modal hidden" style="z-index: 9999;">
         <div class="modal-content crop-content">
-            <div class="modal-header">
-                <h3>Potong Foto (1:1)</h3>
-            </div>
+            <div class="modal-header"><h3>Potong Foto (1:1)</h3></div>
             <div class="modal-body">
-                <div class="img-container">
-                    <img id="image-to-crop" src="">
-                </div>
+                <div class="img-container"><img id="image-to-crop" src=""></div>
                 <div class="crop-actions">
                     <button onclick="closeCropModal()" class="btn-cancel">Batal</button>
                     <button onclick="cropAndUpload()" class="btn-save" id="btn-crop-save">Potong & Upload</button>
@@ -169,7 +152,6 @@
             </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
