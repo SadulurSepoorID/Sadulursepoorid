@@ -38,7 +38,9 @@
             </nav>
 
             <div class="sidebar-footer">
-                <p style="font-size: 0.7rem; color: #aaa; text-align: center;">&copy; 2025 Sadulur Sepoor</p>
+                <button onclick="logout()" class="btn-logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+                </button>
             </div>
         </aside>
 
@@ -55,26 +57,13 @@
                     </div>
                 </div>
                 
-                <div class="profile-wrapper">
-                    <div class="user-profile" onclick="toggleProfileMenu()">
-                        <div class="text-info">
-                            <span id="top-nama" class="name">Memuat...</span>
-                            <span id="top-jabatan" class="role">Anggota</span>
-                        </div>
-                        <div class="avatar-circle">
-                            <img id="top-avatar" src="https://ui-avatars.com/api/?name=User&background=0056b3&color=fff" alt="Profile">
-                        </div>
-                        <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; color: #666; margin-left: 5px;"></i>
+                <div class="user-profile" onclick="openEditModal()">
+                    <div class="text-info">
+                        <span id="top-nama" class="name">Memuat...</span>
+                        <span id="top-jabatan" class="role">Anggota</span>
                     </div>
-
-                    <div id="profile-dropdown" class="profile-dropdown hidden">
-                        <a href="#" onclick="openEditModal()">
-                            <i class="fa-solid fa-user-pen"></i> Edit Profil
-                        </a>
-                        <div class="divider"></div>
-                        <a href="#" onclick="logout()" class="text-danger">
-                            <i class="fa-solid fa-right-from-bracket"></i> Keluar
-                        </a>
+                    <div class="avatar-circle">
+                        <img id="top-avatar" src="https://ui-avatars.com/api/?name=User&background=0056b3&color=fff" alt="Profile">
                     </div>
                 </div>
             </header>
@@ -99,7 +88,7 @@
                     <div class="icon-box green"><i class="fa-solid fa-star"></i></div>
                     <div>
                         <h4>Poin Keaktifan</h4>
-                        <p>100 Poin</p>
+                        <p>150 Poin</p>
                     </div>
                 </div>
                 <div class="stat-card">

@@ -34,25 +34,9 @@ function initDashboard() {
             overlay.classList.remove('active');
         });
     }
-
-    // Event Listener Tutup Dropdown Profile jika klik di luar
-    document.addEventListener('click', function(event) {
-        const wrapper = document.querySelector('.profile-wrapper');
-        const dropdown = document.getElementById('profile-dropdown');
-        if (wrapper && !wrapper.contains(event.target)) {
-            if (!dropdown.classList.contains('hidden')) {
-                dropdown.classList.add('hidden');
-            }
-        }
-    });
 }
 
-// --- TOGGLE MENU PROFILE & SIDEBAR ---
-function toggleProfileMenu() {
-    const dropdown = document.getElementById('profile-dropdown');
-    dropdown.classList.toggle('hidden');
-}
-
+// --- SIDEBAR TOGGLE (RESPONSIF) ---
 function toggleSidebar() {
     const sidebar = document.getElementById('mySidebar');
     const overlay = document.getElementById('sidebar-overlay');
@@ -179,9 +163,6 @@ async function saveProfile() {
     btn.innerText = "Simpan Perubahan"; btn.disabled = false;
 }
 
-function openEditModal() { 
-    document.getElementById('profile-dropdown').classList.add('hidden'); // Tutup menu dulu
-    document.getElementById('edit-modal').classList.remove('hidden'); 
-}
+function openEditModal() { document.getElementById('edit-modal').classList.remove('hidden'); }
 function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
 function logout() { if(confirm("Keluar?")) { localStorage.removeItem('user_session'); window.location.href = "../login/index.html"; } }
