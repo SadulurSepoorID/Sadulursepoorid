@@ -8,38 +8,63 @@ const IDLE_LIMIT = 2 * 60 * 1000; // 2 Menit
 
 // --- INISIALISASI ---
 document.addEventListener('DOMContentLoaded', () => {
-    const session = localStorage.getItem('user_session');
-    if (!session) { 
+    // 1. Cek Sesi Awal
+    if (!localStorage.getItem('user_session')) { 
         window.location.replace("../login/index.html"); 
         return; 
     }
     
     try { 
-        window.currentUser = JSON.parse(session); 
+        window.currentUser = JSON.parse(localStorage.getItem('user_session')); 
     } catch (e) {
-        localStorage.removeItem('user_session'); 
-        window.location.replace("../login/index.html"); 
+        logoutLocal(); // Data korup, paksa logout
         return;
     }
 
     initDashboard();
     setupAutoLogout();
+    setupSessionIntegrity(); // Fitur Baru: Cek Hapus Cache
+    setupTabCloseHandler();  // Fitur Baru: Cek Tutup Tab
     
-    // Setup Back Button Blocker dengan delay agar stabil di mobile
+    // Setup Back Button Blocker (Delay sedikit agar aman di Mobile)
     setTimeout(setupBackButtonBlocker, 500);
 });
 
-// --- FITUR: ANTI BACK BUTTON (MOBILE FRIENDLY) ---
+// --- FITUR BARU: DETEKSI HAPUS CACHE & TUTUP TAB ---
+
+// 1. Cek terus menerus apakah storage dihapus manual
+function setupSessionIntegrity() {
+    setInterval(() => {
+        if (!localStorage.getItem('user_session')) {
+            // Jika user menghapus data situs/cache saat sedang login
+            alert("Sesi Anda telah berakhir atau data browser dihapus.");
+            window.location.replace("../login/index.html");
+        }
+    }, 1000); // Cek setiap 1 detik
+}
+
+// 2. Kirim sinyal Logout saat Tab/Browser ditutup paksa
+function setupTabCloseHandler() {
+    // 'pagehide' adalah event paling reliabel di Mobile (iOS/Android) untuk tutup tab
+    window.addEventListener('pagehide', function() {
+        // Gunakan Beacon: Cara browser mengirim data 'terakhir' saat mati
+        // Kita tidak bisa menunggu response, jadi ini 'Fire and Forget'
+        if (navigator.sendBeacon && window.currentUser) {
+            const data = JSON.stringify({ action: 'logout', nia: window.currentUser.nia });
+            // Bungkus dalam Blob agar format text/plain terbaca GAS
+            const blob = new Blob([data], {type: 'text/plain;charset=utf-8'});
+            navigator.sendBeacon(API_URL, blob);
+        }
+    });
+}
+
+// --- FITUR: ANTI BACK BUTTON ---
 function setupBackButtonBlocker() {
-    // Push state berulang untuk menjebak history
     history.pushState(null, document.title, location.href);
     history.pushState(null, document.title, location.href);
 
     window.addEventListener('popstate', function (event) {
-        // Paksa push lagi
         history.pushState(null, document.title, location.href);
-        
-        // Alert konfirmasi
         if (confirm("Anda menekan tombol kembali.\nSistem mengharuskan Logout untuk keamanan.\n\nIngin Logout sekarang?")) {
             logout();
         }
@@ -70,76 +95,60 @@ function setupAutoLogout() {
     function resetTimer() {
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => {
-            // Hapus listener agar tidak bentrok
-            document.onmousemove = null;
-            document.onclick = null;
-            document.ontouchstart = null;
-            document.onscroll = null;
+            // Bersihkan listener
+            document.onmousemove = null; document.onclick = null;
+            document.ontouchstart = null; document.onscroll = null;
             
             alert("Sesi habis (2 Menit Tidak Aktif). Logout otomatis.");
             logout();
         }, IDLE_LIMIT); 
     }
 
-    // Listener aktivitas user
     window.onload = resetTimer;
     document.onmousemove = resetTimer;
     document.onclick = resetTimer;
-    document.ontouchstart = resetTimer; // Wajib untuk Mobile
-    document.onscroll = resetTimer;     // Wajib untuk Mobile
+    document.ontouchstart = resetTimer;
+    document.onscroll = resetTimer;
 }
 
-// --- LOGOUT (REVISI TOTAL: FORCE WAIT) ---
+// --- LOGOUT UTAMA ---
 async function logout() { 
-    // 1. UI Feedback: Matikan interaksi agar user menunggu
+    // UI Loading
     const btnLogout = document.querySelector('.btn-logout');
     if(btnLogout) {
         btnLogout.disabled = true;
-        btnLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Menyimpan Data...';
+        btnLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Keluar...';
     }
-    
-    // Ubah kursor jadi loading
     document.body.style.cursor = 'wait';
 
-    // 2. Persiapkan Data
     const payload = JSON.stringify({ action: 'logout', nia: window.currentUser.nia });
     
-    // 3. Mekanisme Pengiriman Ganda (Fetch + Beacon)
+    // Coba Fetch dengan Timeout, fallback ke Beacon jika gagal
     try {
-        // Kita buat Promise Race: 
-        // Tunggu Fetch selesai ATAU Waktu habis (3 detik).
-        // Ini mencegah HP 'hang' jika sinyal jelek, tapi memaksa HP menunggu jika sinyal ada.
-        
         const fetchRequest = fetch(API_URL, {
-            method: 'POST', 
-            redirect: 'follow', 
+            method: 'POST', redirect: 'follow', 
             headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: payload
         });
-
-        const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000));
-
+        const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 2500)); // Tunggu max 2.5 detik
         await Promise.race([fetchRequest, timeoutPromise]);
-
     } catch (e) {
-        console.error("Fetch gagal/timeout, mencoba Beacon...");
-        // Fallback: Jika fetch gagal, gunakan Beacon (API khusus browser untuk data saat closing)
+        // Fallback Beacon jika fetch gagal/koneksi putus
         if (navigator.sendBeacon) {
-            navigator.sendBeacon(API_URL, payload);
+            const blob = new Blob([payload], {type: 'text/plain;charset=utf-8'});
+            navigator.sendBeacon(API_URL, blob);
         }
     }
 
-    // 4. Finalisasi: Hapus Sesi & Pindah Halaman
-    finalizeLogout();
+    logoutLocal();
 }
 
-function finalizeLogout() {
+function logoutLocal() {
     localStorage.removeItem('user_session'); 
     document.body.style.cursor = 'default';
     window.location.replace("../login/index.html"); 
 }
 
-// Fungsi Logout Manual
 function logoutManual() {
     if(confirm("Yakin ingin keluar?")) {
         logout();
