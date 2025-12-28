@@ -1,9 +1,9 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzAQoSJorqEKzulk7hEntAw1OdCi3RMpjFzxxSe1zX0yE9fSRPUEb6TqtgapyTYcdFJeg/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbzu1U7IfhrvCP2oVX2L8BvHuNdZRBvCNrHsd3mSkV6Ag6DO_ElAVPxeJ9x8WN8O2h9eZg/exec"; 
 
 let html5Scanner = null;
 let isScanning = false;
 let selectedEvent = null;
-let registeredNIAs = new Set(); // DATABASE LOKAL: Untuk nyimpen siapa aja yang udah absen di sesi ini
+let registeredNIAs = new Set(); 
 
 // --- CONFIG SUARA ---
 let isSoundOn = true;
@@ -11,20 +11,15 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playBeep() {
     if (!isSoundOn) return;
-    
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
-
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-
-    // SETTINGAN BARU: LEBIH KERAS
-    oscillator.type = "square"; // Tipe 'square' lebih nyaring/tajam daripada 'sine'
-    oscillator.frequency.value = 1200; // Nada lebih tinggi (seperti scanner barcode asli)
-    gainNode.gain.value = 1.0; // VOLUME MAX (100%) - Sebelumnya 0.1
-
+    oscillator.type = "square"; 
+    oscillator.frequency.value = 1200; 
+    gainNode.gain.value = 1.0; 
     oscillator.start();
-    setTimeout(() => { oscillator.stop(); }, 150); // Bunyi 'BEEP' pendek
+    setTimeout(() => { oscillator.stop(); }, 150); 
 }
 
 function playErrorSound() {
@@ -33,13 +28,11 @@ function playErrorSound() {
     const gainNode = audioCtx.createGain();
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-    
-    oscillator.type = "sawtooth"; // Suara kasar untuk error
-    oscillator.frequency.value = 200; // Nada rendah
+    oscillator.type = "sawtooth"; 
+    oscillator.frequency.value = 200; 
     gainNode.gain.value = 1.0; 
-
     oscillator.start();
-    setTimeout(() => { oscillator.stop(); }, 300); // Bunyi 'TEET' agak panjang
+    setTimeout(() => { oscillator.stop(); }, 300); 
 }
 
 function toggleSound() {
@@ -61,13 +54,22 @@ function toggleSound() {
         showToast("Suara Mati", "normal");
     }
 }
-// --- END CONFIG SUARA ---
 
+// --- INIT APP ---
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Cek Sesi
     const session = localStorage.getItem('user_session');
     if (!session) { window.location.replace("../login/index.html"); return; }
     window.currentUser = JSON.parse(session);
 
+    // 2. Set Tanggal Header
+    const dateEl = document.getElementById('date-display');
+    if (dateEl) { 
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; 
+        dateEl.innerText = new Date().toLocaleDateString('id-ID', options); 
+    }
+
+    // 3. Init View Berdasarkan Role
     const role = (window.currentUser.jabatan || "").toLowerCase().trim();
     if (role === "anggota") {
         initMember();
@@ -83,7 +85,7 @@ function initMember() {
     document.getElementById('lbl-nia').innerText = window.currentUser.nia;
     
     const content = `https://sadulursepoor.web.id/anggota/kta/${window.currentUser.nia}.html`;
-    new QRCode(document.getElementById("qrcode"), { text: content, width: 180, height: 180, colorDark : "#2563eb", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
+    new QRCode(document.getElementById("qrcode"), { text: content, width: 180, height: 180, colorDark : "#0056b3", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
 
     loadMemberHistory();
 }
@@ -183,11 +185,11 @@ async function loadAdminAttendeeList() {
         const json = await res.json();
         
         list.innerHTML = "";
-        registeredNIAs.clear(); // Reset daftar lokal
+        registeredNIAs.clear(); 
         
         if (json.status && json.list.length > 0) {
             json.list.forEach(user => {
-                registeredNIAs.add(user.nia); // SIMPAN NIA YANG SUDAH ABSEN
+                registeredNIAs.add(user.nia); 
 
                 const div = document.createElement('div');
                 div.className = 'att-item';
@@ -208,6 +210,8 @@ async function loadAdminAttendeeList() {
                 `;
                 list.appendChild(div);
             });
+        } else {
+            list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Belum ada data presensi.</div>';
         }
     } catch(e) { list.innerHTML = "Gagal memuat."; }
 }
@@ -230,15 +234,28 @@ async function changeStatus(nia, selectEl) {
     } catch(e) { showToast("Gagal update status", "error"); }
 }
 
-// SCANNER & MODAL
+// SCANNER (Updated for 1:1 Aspect Ratio)
 function startScanner() {
     if(!selectedEvent) return showToast("Pilih kegiatan dulu!", "error");
     if (audioCtx.state === 'suspended') audioCtx.resume();
 
     document.getElementById('card-setup').classList.add('hidden');
     document.getElementById('card-scanner').classList.remove('hidden');
+
     if(!html5Scanner) html5Scanner = new Html5Qrcode("reader");
-    html5Scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } }, onScanSuccess).catch(err => { alert("Error Kamera"); stopScanner(); });
+
+    // Config Aspect Ratio 1:1 untuk kotak
+    const config = { 
+        fps: 10, 
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0 
+    };
+
+    html5Scanner.start({ facingMode: "environment" }, config, onScanSuccess)
+    .catch(err => { 
+        alert("Gagal membuka kamera. Pastikan izin diberikan."); 
+        stopScanner(); 
+    });
 }
 
 function stopScanner() {
@@ -256,19 +273,14 @@ async function onScanSuccess(decodedText) {
     let match = decodedText.match(/(SS|SSBD)[-]?[0-9]+/i);
     let finalNia = match ? match[0] : decodedText;
 
-    // CEK VALIDASI DUPLIKAT (FITUR BARU)
     if (registeredNIAs.has(finalNia)) {
         showToast("⚠️ " + finalNia + " SUDAH ABSEN!", "error");
-        playErrorSound(); // Bunyi TEET (Error)
-        setTimeout(() => { 
-            html5Scanner.resume(); 
-            isScanning = false; 
-        }, 2500); // Jeda agak lama biar admin sadar
-        return; // BERHENTI DISINI, JANGAN KIRIM KE SERVER
+        playErrorSound(); 
+        setTimeout(() => { html5Scanner.resume(); isScanning = false; }, 2500); 
+        return; 
     }
 
-    // Jika belum absen, lanjut proses
-    playBeep(); // Bunyi BEEP (Sukses)
+    playBeep(); 
     showToast("Memproses: " + finalNia);
 
     try {
@@ -285,7 +297,7 @@ async function onScanSuccess(decodedText) {
         
         if (data.status) {
             showToast("✅ " + data.message, "success");
-            registeredNIAs.add(finalNia); // Tambahkan ke daftar lokal supaya ga bisa scan lagi
+            registeredNIAs.add(finalNia); 
         } else {
             showToast("❌ " + data.message, "error");
             playErrorSound();
@@ -296,26 +308,33 @@ async function onScanSuccess(decodedText) {
 }
 
 // UI HELPERS
-function openModal() { document.getElementById('modal-add').classList.remove('hidden'); }
-function closeModal() { document.getElementById('modal-add').classList.add('hidden'); }
-
-async function saveActivity() {
-    const nama = document.getElementById('new-nama').value;
-    const lokasi = document.getElementById('new-lokasi').value;
-    const tanggal = document.getElementById('new-tanggal').value;
-    const btn = document.getElementById('btn-save');
-    if(!nama || !lokasi || !tanggal) return showToast("Lengkapi data!", "error");
-    btn.innerText = "Menyimpan..."; btn.disabled = true;
-    try {
-        await fetch(API_URL, { method: 'POST', redirect: 'follow', body: JSON.stringify({ action: 'add_activity', nama_kegiatan: nama, lokasi: lokasi, tanggal: tanggal }) });
-        closeModal(); loadEventDropdown(); showToast("Kegiatan dibuat!", "success");
-        document.getElementById('new-nama').value = ""; document.getElementById('new-lokasi').value = ""; document.getElementById('new-tanggal').value = "";
-    } catch(e) { showToast("Gagal", "error"); }
-    btn.innerText = "Simpan"; btn.disabled = false;
-}
-
 function showToast(msg, type="normal") {
     const toast = document.getElementById('toast'); toast.innerText = msg;
     toast.style.background = type=="success"?"#10b981":type=="error"?"#ef4444":"#1e293b";
     toast.style.display = "block"; setTimeout(() => { toast.style.display = "none"; }, 2500);
 }
+
+// --- UTILS LAYOUT & SECURITY ---
+function toggleSidebar() { 
+    document.getElementById('mySidebar').classList.toggle('active'); 
+    document.getElementById('sidebar-overlay').classList.toggle('active'); 
+}
+
+function logout() { 
+    localStorage.removeItem('user_session'); 
+    window.location.replace("../login/index.html"); 
+}
+
+let inactivityTime = function () {
+    let time;
+    window.onload = resetTimer;
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+    document.ontouchstart = resetTimer; 
+    function logoutUser() { alert("Sesi Anda telah berakhir."); logout(); }
+    function resetTimer() { clearTimeout(time); time = setTimeout(logoutUser, 120000); }
+};
+inactivityTime();
+
+history.pushState(null, null, location.href);
+window.onpopstate = function () { history.go(1); };

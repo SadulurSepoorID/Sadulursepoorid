@@ -3,82 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Presensi Sadulur Sepoor</title>
+    <title>Presensi - Sadulur Sepoor</title>
     
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-    <link rel="stylesheet" href="../dashboard/style.css">
-
-    <style>
-        /* Reset scope agar tidak merusak layout dashboard */
-        .presensi-wrapper {
-            font-family: 'Inter', sans-serif;
-            color: #1e293b; 
-        }
-
-        /* Container Asli (Sekarang di dalam Main Content) */
-        .container-presensi { max-width: 600px; margin: 0 auto; padding: 0; }
-        .hidden { display: none !important; }
-
-        /* GAYA ASLI KARTU & KONTEN */
-        .card { background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        .card-header { margin-bottom: 15px; }
-        .card-header h3 { font-size: 1.1rem; font-weight: 600; color: #1e293b; margin: 0; }
-        
-        .qr-box { text-align: center; padding: 20px; background: #fff; border: 2px dashed #cbd5e1; border-radius: 12px; display: inline-block; }
-        
-        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .stat-item { background: #fff; padding: 10px 5px; text-align: center; border-radius: 8px; border: 1px solid #e2e8f0; }
-        .stat-val { display: block; font-weight: 700; font-size: 1.1rem; }
-        .stat-lbl { font-size: 0.7rem; color: #64748b; text-transform: uppercase; }
-        
-        /* Warna Status Asli */
-        .st-hadir { color: #10b981; } .st-izin { color: #f59e0b; } 
-        .st-sakit { color: #3b82f6; } .st-alpa { color: #ef4444; }
-
-        /* Admin Controls Asli */
-        .input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #1e293b; }
-        .form-control-presensi { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; font-size: 0.95rem; }
-        
-        /* Tombol Asli */
-        .btn-presensi { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
-        .btn-primary-presensi { background: #2563eb; color: white; }
-        .btn-outline-presensi { background: transparent; border: 1px solid #cbd5e1; color: #64748b; }
-        
-        /* List Attendee Asli */
-        .attendee-list { margin-top: 15px; max-height: 400px; overflow-y: auto; }
-        .att-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #f1f5f9; background: white; }
-        .att-info h4 { font-size: 0.9rem; font-weight: 600; color: #1e293b; margin-bottom: 2px; }
-        .att-info span { font-size: 0.75rem; color: #64748b; }
-        
-        /* Status Badge Select Asli */
-        .status-select { padding: 4px 8px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 0.8rem; font-weight: 600; cursor: pointer; outline: none; }
-        .status-select.Hadir { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
-        .status-select.Izin { background: #fef3c7; color: #b45309; border-color: #fde68a; }
-        .status-select.Sakit { background: #dbeafe; color: #1d4ed8; border-color: #bfdbfe; }
-        .status-select.Alpa { background: #fee2e2; color: #b91c1c; border-color: #fecaca; }
-
-        /* Member History List Asli */
-        .hist-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #f1f5f9; }
-        .hist-info h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
-        .hist-info span { font-size: 0.75rem; color: #64748b; display: flex; align-items: center; gap: 5px; }
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-        .bg-hadir { background: #dcfce7; color: #15803d; }
-        .bg-izin { background: #fef3c7; color: #b45309; }
-        .bg-sakit { background: #dbeafe; color: #1d4ed8; }
-        .bg-alpa { background: #fee2e2; color: #b91c1c; }
-
-        /* Scanner & Toast */
-        .scanner-box { border-radius: 12px; overflow: hidden; background: #000; height: 300px; margin-bottom: 20px; position: relative; }
-        #reader { width: 100%; height: 100%; object-fit: cover; }
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 50px; font-size: 0.9rem; z-index: 3000; display: none; }
-
-        /* Penyesuaian Topbar agar tulisan tidak ketimpa */
-        .greeting h3 { color: #003d82; } /* Mengikuti warna dashboard */
-    </style>
 </head>
 <body>
 
@@ -86,205 +18,137 @@
 
     <div class="app-container">
         
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar" id="mySidebar">
             <div class="sidebar-header">
+                <div class="mobile-close-btn" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+                
                 <i class="fa-solid fa-train-subway logo-icon"></i>
                 <div>
                     <h2>Sadulur Sepoor</h2>
-                    <span class="badge" style="background:var(--bg-body); color:#6c757d;">Member Portal</span>
+                    <span class="badge" style="font-size: 0.7rem; background: #f3f6f9; padding: 2px 8px; border-radius: 4px; color: #6c757d;">Indonesia</span>
                 </div>
-                <div class="mobile-close-btn" onclick="toggleSidebar()"><i class="fa-solid fa-times"></i></div>
             </div>
 
-            <div class="sidebar-footer">
-                <button class="btn-logout" onclick="logout()">
-                    <i class="fa-solid fa-right-from-bracket"></i> Keluar
+            <div class="sidebar-action">
+                <button onclick="logout()" class="btn-logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
                 </button>
             </div>
             
             <nav class="nav-menu">
-                <a href="../dashboard/index.html" class="nav-link">
-                    <i class="fa-solid fa-house"></i> <span>Dashboard</span>
-                </a>
-                <a href="#" class="nav-link active"> <i class="fa-solid fa-qrcode"></i> <span>Presensi</span>
-                </a>
-                <a href="#" class="nav-link">
-                    <i class="fa-solid fa-users"></i> <span>Anggota</span>
-                </a>
-                <a href="#" class="nav-link">
-                    <i class="fa-solid fa-calendar-alt"></i> <span>Kegiatan</span>
-                </a>
-                <a href="#" class="nav-link"><i class="fa-solid fa-newspaper"></i> <span>Berita & Artikel</span></a>
+                <a href="../dashboard/index.html" class="nav-link"><i class="fa-solid fa-house"></i> <span>Beranda</span></a>
+                <a href="#" class="nav-link active"><i class="fa-solid fa-qrcode"></i> <span>Presensi</span></a>
+                <a href="../jadwal/index.html" class="nav-link"><i class="fa-solid fa-calendar-days"></i> <span>Jadwal Kegiatan</span></a>
+                <a href="../anggota/index.html" class="nav-link"><i class="fa-solid fa-users"></i> <span>Data Anggota</span></a>
+                <a href="../berita/index.html" class="nav-link"><i class="fa-solid fa-newspaper"></i> <span>Berita & Artikel</span></a>
             </nav>
-
         </aside>
+
         <main class="main-content">
             
-            <div class="top-bar">
+            <header class="top-bar">
                 <div class="top-left-group">
-                    <button id="hamburger-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                    <button id="hamburger-btn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
                     <div class="greeting">
                         <h3>Menu Presensi</h3>
-                        <p class="date-now" id="current-date">...</p>
+                        <p class="date-now" id="date-display">Memuat tanggal...</p>
                     </div>
                 </div>
+            </header>
 
-                <div class="user-profile">
-                    <div class="text-info">
-                        <span class="name" id="top-user-name">User</span>
-                        <span class="role" id="top-user-role">Anggota</span>
-                    </div>
-                    <div class="avatar-circle">
-                        <img src="https://ui-avatars.com/api/?name=User&background=0056b3&color=fff" id="top-avatar" alt="Profile">
-                    </div>
-                </div>
-            </div>
-
-            <div class="presensi-wrapper">
-                <div class="container-presensi">
-                    
-                    <div id="view-anggota" class="hidden">
-                        <div class="card" style="text-align: center;">
-                            <div class="card-header"><h3>Kartu Tanda Anggota</h3></div>
-                            <div class="qr-box"><div id="qrcode"></div></div>
-                            <div style="margin-top:15px;">
-                                <h2 id="lbl-nama" style="font-size:1.2rem; color:#2563eb;">...</h2>
-                                <span id="lbl-nia" style="background:#f1f5f9; padding:4px 12px; border-radius:20px; font-size:0.85rem; color:#64748b;">...</span>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header"><h3>Ringkasan Kehadiran</h3></div>
-                            <div class="stats-row">
-                                <div class="stat-item"><span class="stat-val st-hadir" id="st-hadir">0</span><span class="stat-lbl">Hadir</span></div>
-                                <div class="stat-item"><span class="stat-val st-izin" id="st-izin">0</span><span class="stat-lbl">Izin</span></div>
-                                <div class="stat-item"><span class="stat-val st-sakit" id="st-sakit">0</span><span class="stat-lbl">Sakit</span></div>
-                                <div class="stat-item"><span class="stat-val st-alpa" id="st-alpa">0</span><span class="stat-lbl">Alpa</span></div>
-                            </div>
-                            <div style="text-align:center; font-size:0.85rem; color:#64748b;">
-                                Total Kegiatan: <strong id="st-total">0</strong>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header"><h3>Riwayat Kegiatan</h3></div>
-                            <div id="history-list">
-                                <div style="text-align:center; padding:20px; color:#cbd5e1;">Memuat data...</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="view-pengurus" class="hidden">
-                        
-                        <div class="card" id="card-setup">
-                            <div class="card-header"><h3>Kelola Presensi</h3></div>
-                            
-                            <div class="input-group">
-                                <label>Pilih Kegiatan</label>
-                                <select id="sel-kegiatan" class="form-control-presensi"><option value="">-- Memuat... --</option></select>
-                            </div>
-
-                            <div id="admin-actions" class="hidden" style="margin-top: 20px;">
-                                
-                                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                                    <button class="btn-presensi" onclick="toggleSound()" id="btn-sound" style="width:50px; flex:none; background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd;">
-                                        <i class="fa-solid fa-volume-high"></i>
-                                    </button>
-                                    
-                                    <button class="btn-presensi btn-outline-presensi" onclick="openModal()" style="flex:1;"><i class="fa-solid fa-plus"></i> Baru</button>
-                                    <button class="btn-presensi btn-primary-presensi" onclick="startScanner()" style="flex:2;"><i class="fa-solid fa-camera"></i> Scan QR</button>
-                                </div>
-
-                                <div style="background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                                    <span style="font-size:0.9rem; font-weight:600; color:#1e293b;">Daftar Kehadiran</span>
-                                    <span style="font-size:0.8rem; color:#64748b;" id="loc-info">-</span>
-                                </div>
-
-                                <div class="attendee-list" id="admin-list-container">
-                                    <div style="text-align:center; padding:30px; color:#cbd5e1;">Pilih kegiatan untuk lihat data</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="card-scanner" class="hidden">
-                            <div class="card" style="padding:15px; border:none; background:transparent; box-shadow:none;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                                    <h3 style="font-size:1.1rem; font-weight:700;">Scanning...</h3>
-                                    <button onclick="stopScanner()" style="background:white; border:none; padding:6px 12px; border-radius:6px; color:#ef4444; font-weight:600; cursor:pointer;">Tutup</button>
-                                </div>
-                                <div class="scanner-box"><div id="reader"></div></div>
-                                <div style="text-align:center; color:#64748b; font-size:0.9rem;">Arahkan ke QR Anggota</div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="container-presensi">
                 
-                </div>
-            </div>
-            </main>
-    </div>
+                <div id="view-anggota" class="hidden">
+                    <div class="card" style="text-align: center; border-top: 4px solid var(--primary);">
+                        <div class="card-header" style="justify-content:center; border:none;"><h3>Kartu Tanda Anggota</h3></div>
+                        <div class="qr-box"><div id="qrcode"></div></div>
+                        <div style="margin-top:20px;">
+                            <h2 id="lbl-nama" style="font-size:1.3rem; color:var(--primary); font-weight:700;">...</h2>
+                            <span id="lbl-nia" style="background:#f1f5f9; padding:5px 15px; border-radius:20px; font-size:0.9rem; color:#64748b; font-weight:500;">...</span>
+                        </div>
+                    </div>
 
-    <div id="modal-add" class="hidden" style="position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index: 2000; display:flex; align-items:center; justify-content:center; padding: 20px;">
-        <div style="background: #fff; width: 100%; max-width: 400px; border-radius: 16px; padding: 24px;">
-            <h3 style="margin-bottom:20px; font-weight:600; font-size:1.1rem; color:#1e293b;">Tambah Kegiatan</h3>
-            <div class="input-group" style="margin-bottom:15px;">
-                <label>Nama Kegiatan</label>
-                <input type="text" id="new-nama" class="form-control-presensi" placeholder="Cth: Kopdar Rutin">
+                    <div class="card">
+                        <div class="card-header"><h3>Ringkasan Kehadiran</h3></div>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-val st-hadir" id="st-hadir">0</span><span class="stat-lbl">Hadir</span></div>
+                            <div class="stat-item"><span class="stat-val st-izin" id="st-izin">0</span><span class="stat-lbl">Izin</span></div>
+                            <div class="stat-item"><span class="stat-val st-sakit" id="st-sakit">0</span><span class="stat-lbl">Sakit</span></div>
+                            <div class="stat-item"><span class="stat-val st-alpa" id="st-alpa">0</span><span class="stat-lbl">Alpa</span></div>
+                        </div>
+                        <div style="text-align:center; font-size:0.85rem; color:#64748b; padding-top:10px; border-top:1px solid #f1f5f9;">
+                            Total Kegiatan Diikuti: <strong id="st-total" style="color:var(--text-dark);">0</strong>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><h3>Riwayat Kegiatan</h3></div>
+                        <div id="history-list">
+                            <div style="text-align:center; padding:30px; color:#cbd5e1;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-pengurus" class="hidden">
+                    
+                    <div class="card" id="card-setup" style="border-left: 4px solid var(--primary);">
+                        <div class="card-header"><h3><i class="fa-solid fa-sliders"></i> Kelola Presensi</h3></div>
+                        
+                        <div class="input-group">
+                            <label>Pilih Kegiatan Aktif</label>
+                            <select id="sel-kegiatan" class="form-control-presensi"><option value="">-- Memuat Data... --</option></select>
+                        </div>
+
+                        <div id="admin-actions" class="hidden" style="margin-top: 25px;">
+                            
+                            <div style="display:flex; gap:10px; margin-bottom:25px;">
+                                <button class="btn-presensi" onclick="toggleSound()" id="btn-sound" style="width:50px; flex:none; background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd;">
+                                    <i class="fa-solid fa-volume-high"></i>
+                                </button>
+                                
+                                <button class="btn-presensi btn-primary-presensi" onclick="startScanner()" style="flex:1;">
+                                    <i class="fa-solid fa-camera"></i> Mulai Scan QR
+                                </button>
+                            </div>
+
+                            <div style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:0.9rem; font-weight:600; color:#1e293b;"><i class="fa-solid fa-list-check"></i> Daftar Hadir</span>
+                                <span style="font-size:0.8rem; color:#64748b;" id="loc-info">-</span>
+                            </div>
+
+                            <div class="attendee-list" id="admin-list-container">
+                                <div style="text-align:center; padding:30px; color:#cbd5e1;">Pilih kegiatan untuk melihat data</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="card-scanner" class="hidden">
+                        <div class="card scanner-card">
+                            <div class="scanner-header-modern">
+                                <h3><i class="fa-solid fa-qrcode" style="color:#3b82f6;"></i> <span>Scanner Aktif</span></h3>
+                                <button onclick="stopScanner()" class="btn-close-scan"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <div class="scanner-viewport">
+                                <div id="reader"></div>
+                                <div class="scan-overlay">
+                                    <div class="scan-guide"><span></span><div class="scan-laser"></div></div>
+                                </div>
+                            </div>
+                            <div class="scanner-footer"><i class="fa-solid fa-camera-rotate"></i> Arahkan kamera ke QR Code Anggota</div>
+                        </div>
+                    </div>
+                </div>
+            
             </div>
-            <div class="input-group" style="margin-bottom:15px;">
-                <label>Lokasi</label>
-                <input type="text" id="new-lokasi" class="form-control-presensi" placeholder="Cth: Stasiun Bogor">
-            </div>
-            <div class="input-group" style="margin-bottom:20px;">
-                <label>Tanggal</label>
-                <input type="date" id="new-tanggal" class="form-control-presensi">
-            </div>
-            <div style="display:flex; gap:10px;">
-                <button class="btn-presensi btn-outline-presensi" onclick="closeModal()">Batal</button>
-                <button class="btn-presensi btn-primary-presensi" onclick="saveActivity()" id="btn-save">Simpan</button>
-            </div>
-        </div>
+        </main>
     </div>
 
     <div id="toast" class="toast">Notifikasi</div>
 
     <script src="script.js"></script>
-
-    <script>
-        // Tanggal di Topbar
-        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', dateOptions);
-
-        // Sidebar Toggle Logic
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            sidebar.classList.toggle('active');
-            
-            if(sidebar.classList.contains('active')) {
-                overlay.style.display = 'block';
-            } else {
-                overlay.style.display = 'none';
-            }
-        }
-
-        // Setup User Info di Topbar (Supaya sinkron dengan login)
-        document.addEventListener('DOMContentLoaded', () => {
-            const session = localStorage.getItem('user_session');
-            if(session) {
-                const user = JSON.parse(session);
-                // Set info di Header/Menu
-                document.getElementById('top-user-name').innerText = user.nama || 'User';
-                document.getElementById('top-user-role').innerText = user.jabatan || 'Anggota';
-                if(user.foto) document.getElementById('top-avatar').src = user.foto;
-            }
-        });
-
-        function logout() {
-            if(confirm('Keluar dari aplikasi?')) {
-                localStorage.removeItem('user_session');
-                window.location.href = '../login/index.html';
-            }
-        }
-    </script>
 </body>
 </html>
