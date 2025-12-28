@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sistem Presensi - Sadulur Sepoor</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0056b3;
+            --primary-dark: #003d82;
+            --bg-light: #f4f7fa;
+            --white: #ffffff;
+            --text-dark: #2c3e50;
+            --text-grey: #6c757d;
+            --success: #28a745;
+            --error: #dc3545;
+            --shadow: 0 8px 20px rgba(0,86,179,0.08);
+            --radius: 16px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg-light); color: var(--text-dark); min-height: 100vh; }
+        
+        .navbar { background: var(--white); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .navbar .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--primary); font-size: 1.1rem; }
+        .btn-back { color: var(--text-grey); text-decoration: none; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+        
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .hidden { display: none !important; }
+        
+        .card { background: var(--white); border-radius: var(--radius); padding: 25px; box-shadow: var(--shadow); margin-bottom: 20px; text-align: center; border: 1px solid #eef2f6; }
+        .card h2 { font-size: 1.2rem; color: var(--primary-dark); margin-bottom: 5px; }
+        .card p { color: var(--text-grey); font-size: 0.9rem; margin-bottom: 20px; }
+        
+        .qr-box { background: #fff; padding: 15px; border: 2px dashed #e0e0e0; border-radius: var(--radius); display: inline-block; margin-bottom: 15px; }
+        .user-tag { background: #e3f2fd; color: var(--primary); padding: 5px 15px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; display: inline-block; margin-top: 10px; }
+        .nia-tag { display: block; margin-top: 5px; color: var(--text-grey); font-size: 0.8rem; letter-spacing: 1px; }
+
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #dfe6e9; border-radius: 10px; font-family: inherit; background: #f8f9fa; }
+        .input-group input:focus { border-color: var(--primary); outline: none; background: #fff; }
+        
+        .scanner-wrapper { overflow: hidden; border-radius: var(--radius); position: relative; background: #000; height: 320px; margin-bottom: 20px; }
+        #reader { width: 100%; height: 100%; object-fit: cover; }
+        .scan-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+        .scan-frame { width: 220px; height: 220px; border: 2px solid rgba(255,255,255,0.6); border-radius: 20px; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5); position: relative; }
+        .scan-frame::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #39ff14; box-shadow: 0 0 10px #39ff14; animation: scanLine 2s infinite linear; }
+        @keyframes scanLine { 0% { top: 10%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 90%; opacity: 0; } }
+
+        .btn-main { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        .list-header { text-align: left; font-size: 0.9rem; color: var(--text-grey); margin: 15px 5px 10px; font-weight: 600; }
+        .attendee-list { text-align: left; max-height: 250px; overflow-y: auto; }
+        .attendee-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: white; border-bottom: 1px solid #f0f0f0; animation: slideDown 0.4s ease; }
+        .attendee-item:first-child { border-radius: 10px 10px 0 0; background: #eef7ff; border-left: 4px solid var(--primary); }
+        .attendee-item:last-child { border-radius: 0 0 10px 10px; border-bottom: none; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 25px; border-radius: 50px; font-size: 0.9rem; z-index: 999; display: none; box-shadow: 0 5px 20px rgba(0,0,0,0.2); white-space: nowrap; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand"><i class="fa-solid fa-train-subway"></i> Sadulur Sepoor</div>
+        <a href="../dashboard/index.html" class="btn-back"><i class="fa-solid fa-chevron-left"></i> Dashboard</a>
+    </nav>
+
+    <div class="container">
+        <div id="view-anggota" class="hidden">
+            <div class="card">
+                <h2>Kartu Tanda Anggota</h2>
+                <p>Tunjukkan QR Code ini kepada pengurus</p>
+                <div class="qr-box"><div id="qrcode"></div></div>
+                <div><span id="lbl-nama" class="user-tag">Memuat...</span><span id="lbl-nia" class="nia-tag">SS-XXXX</span></div>
+            </div>
+            <div style="text-align: center; font-size: 0.8rem; color: #999;"><i class="fa-solid fa-shield-halved"></i> Kode unik terenkripsi sistem</div>
+        </div>
+
+        <div id="view-pengurus" class="hidden">
+            <div class="card" id="card-setup">
+                <h2>Setup Kegiatan</h2>
+                <p>Isi detail sebelum memulai scanning</p>
+                <div class="input-group"><label>Nama Kegiatan</label><input type="text" id="inp-kegiatan" placeholder="Cth: Kopdar Gabungan"></div>
+                <div class="input-group"><label>Lokasi Saat Ini</label><input type="text" id="inp-lokasi" placeholder="Cth: Stasiun Manggarai"></div>
+                <button class="btn-main" onclick="startScannerMode()"><i class="fa-solid fa-camera"></i> Buka Scanner</button>
+            </div>
+
+            <div id="card-scanner" class="hidden">
+                <div class="card" style="padding: 15px; border: none; box-shadow: none; background: transparent;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="font-size:1.1rem; font-weight: 700;">Mode Scan</h3>
+                        <button onclick="stopScannerMode()" style="background:white; border:none; color:#888; font-size:1rem; padding: 5px 12px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor:pointer;"><i class="fa-solid fa-xmark"></i> Tutup</button>
+                    </div>
+                    <div class="scanner-wrapper">
+                        <div id="reader"></div>
+                        <div class="scan-overlay"><div class="scan-frame"></div></div>
+                    </div>
+                    <p style="font-size: 0.8rem; color: #666;">Arahkan kamera ke QR Code. Scan otomatis aktif.</p>
+                </div>
+
+                <div class="list-header">Hadir Baru-baru ini:</div>
+                <div class="attendee-list" id="attendee-list">
+                    <div style="text-align: center; padding: 20px; color: #ccc; font-size: 0.85rem;" id="empty-state">Belum ada data scan.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="toast" class="toast">Notifikasi</div>
+    <script src="script.js"></script>
+</body>
+</html>
