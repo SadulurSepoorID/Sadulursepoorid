@@ -1,5 +1,5 @@
 // GANTI URL INI DENGAN URL DEPLOY TERBARU KAMU
-const API_URL = "https://script.google.com/macros/s/AKfycbzaLFLCiTPEnVNIcwnuUi-d6YErJhJxkRe-ixbPQVQFfrpTO92dlaKT-ZmIl9fuWeas6g/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzu1U7IfhrvCP2oVX2L8BvHuNdZRBvCNrHsd3mSkV6Ag6DO_ElAVPxeJ9x8WN8O2h9eZg/exec";
 
 // Cek Sesi Login
 const session = localStorage.getItem('user_session');
