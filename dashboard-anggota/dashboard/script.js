@@ -1,5 +1,5 @@
 // --- KONFIGURASI ---
-const API_URL = "https://script.google.com/macros/s/AKfycbzAQoSJorqEKzulk7hEntAw1OdCi3RMpjFzxxSe1zX0yE9fSRPUEb6TqtgapyTYcdFJeg/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbzu1U7IfhrvCP2oVX2L8BvHuNdZRBvCNrHsd3mSkV6Ag6DO_ElAVPxeJ9x8WN8O2h9eZg/exec"; 
 
 let cropper; 
 let newFotoUrl = ""; 
