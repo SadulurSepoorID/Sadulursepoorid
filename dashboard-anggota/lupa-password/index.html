@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="split-screen">
+        <div class="left-pane">
+            <div class="content">
+                <i class="fa-solid fa-shield-halved logo"></i>
+                <h1>Keamanan Akun</h1>
+                <p>Pulihkan akses akun Sadulur Sepoor Anda.</p>
+            </div>
+        </div>
+        <div class="right-pane">
+            <div class="form-box">
+                <h2>Reset Password</h2>
+                
+                <div id="step-1">
+                    <p class="subtitle">Masukan Email & NIA untuk verifikasi</p>
+                    <div class="input-group">
+                        <input type="text" id="r-nia" required placeholder=" ">
+                        <label>NIA</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="r-email" required placeholder=" ">
+                        <label>Email</label>
+                    </div>
+                    <button onclick="requestKode()">Kirim Kode OTP</button>
+                </div>
+
+                <div id="step-2" style="display:none;">
+                    <p class="subtitle" style="color:green;">Kode terkirim! Cek email Anda.</p>
+                    <div class="input-group">
+                        <input type="text" id="r-code" required placeholder=" ">
+                        <label>Kode OTP (6 Angka)</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="r-newpass" required placeholder=" ">
+                        <label>Password Baru</label>
+                    </div>
+                    <button onclick="verifyKode()">Simpan Password</button>
+                </div>
+
+                <div class="bottom-link">
+                    <a href="../login/index.html">Kembali ke Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - Sadulur Sepoor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="split-screen">
+        <div class="left-pane">
+            <div class="content">
+                <i class="fa-solid fa-user-plus logo"></i>
+                <h1>Bergabunglah</h1>
+                <p>Jadilah bagian dari komunitas pecinta kereta api terbesar.</p>
+            </div>
+        </div>
+        <div class="right-pane">
+            <div class="form-box">
+                <h2>Buat Akun</h2>
+                <p class="subtitle">Isi data diri Anda dengan benar</p>
+                
+                <form onsubmit="event.preventDefault(); handleRegister()">
+                    <div class="input-group">
+                        <input type="text" id="nama" required placeholder=" " oninput="autoCap(this)">
+                        <label>Nama Lengkap</label>
+                    </div>
+                    <div class="row">
+                        <div class="input-group">
+                            <input type="text" id="nia" required placeholder=" ">
+                            <label>NIA (SS-XXXX)</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="wa" required placeholder=" ">
+                            <label>No. WhatsApp</label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="email" required placeholder=" ">
+                        <label>Email Aktif</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="pass" required placeholder=" ">
+                        <label>Password (Min 8, Kapital, Angka)</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="conf" required placeholder=" ">
+                        <label>Konfirmasi Password</label>
+                    </div>
+
+                    <button type="submit">Daftar Sekarang</button>
+                </form>
+
+                <div class="bottom-link">
+                    Sudah punya akun? <a href="../login/index.html">Login disini</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
