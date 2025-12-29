@@ -28,8 +28,7 @@
                 <a href="../presensi/index.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> <span>Presensi</span></a>
                 <a href="../jadwal/index.html" class="nav-link"><i class="fa-solid fa-calendar-days"></i> <span>Jadwal Kegiatan</span></a>
                 <a href="../anggota/index.html" class="nav-link"><i class="fa-solid fa-users"></i> <span>Data Anggota</span></a>
-                <a href="../berita/index.html" class="nav-link"><i class="fa-solid fa-newspaper"></i> <span>Berita & Artikel</span></a>
-                <a href="#" class="nav-link active"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Iuran Kas</span></a>
+                <a href="../iuran/index.html" class="nav-link active"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Iuran Kas</span></a>
             </nav>
         </aside>
 
@@ -65,24 +64,28 @@
                                 </div>
 
                                 <div class="form-group">
-                                <label>Metode Pembayaran</label>
-                                <div class="method-selector">
-                                    <label class="method-opt" id="cash-opt">
-                                        <input type="radio" name="metode" value="Cash" onchange="toggleQRIS()">
-                                        <div class="box"><i class="fa-solid fa-money-bill-wave"></i> Tunai</div>
-                                    </label>
-                                    
-                                    <label class="method-opt" id="qris-opt">
-                                        <input type="radio" name="metode" value="QRIS" onchange="toggleQRIS()">
-                                        <div class="box"><i class="fa-solid fa-qrcode"></i> QRIS</div>
-                                    </label>
+                                    <label>Metode Pembayaran</label>
+                                    <div class="method-selector">
+                                        <label class="method-opt" id="cash-opt">
+                                            <input type="radio" name="metode" value="Cash" onchange="toggleQRIS()">
+                                            <div class="box"><i class="fa-solid fa-money-bill-wave"></i> Tunai</div>
+                                        </label>
+                                        <label class="method-opt" id="qris-opt">
+                                            <input type="radio" name="metode" value="QRIS" onchange="toggleQRIS()">
+                                            <div class="box"><i class="fa-solid fa-qrcode"></i> QRIS</div>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
 
                                 <div id="qris-container" class="hidden">
                                     <p class="small-text">Scan QRIS di bawah ini:</p>
                                     <img src="https://lh3.googleusercontent.com/d/1ag2in9KvkPRHK0SwFuDoLBpxCY9WK8L8" alt="QRIS Sadulur Sepoor" class="qris-img">
                                     <p class="small-text text-center">A.N Sadulur Sepoor Indonesia</p>
+                                    
+                                    <div style="margin-top: 15px; text-align: left;">
+                                        <label style="font-size: 0.85rem; font-weight: 600;">Upload Bukti Pembayaran (Wajib)</label>
+                                        <input type="file" id="proof-file" accept="image/*" class="input-group" style="padding: 5px;">
+                                    </div>
                                 </div>
 
                                 <button type="submit" class="btn-save" id="btn-pay">Bayar Sekarang</button>
@@ -120,7 +123,7 @@
                         <h4>Data Iuran Anggota</h4>
                         <select id="filter-kegiatan" onchange="loadAdminData()" class="form-select">
                             <option value="">-- Semua Riwayat --</option>
-                            </select>
+                        </select>
                     </div>
                     
                     <div class="tab-header">
@@ -132,7 +135,7 @@
                         <div id="tab-paid" class="tab-content active">
                             <div class="table-responsive">
                                 <table class="custom-table">
-                                    <thead><tr><th>Nama</th><th>Tanggal</th><th>Metode</th><th>Nominal</th><th>Struk</th></tr></thead>
+                                    <thead><tr><th>Nama</th><th>Tanggal</th><th>Metode</th><th>Nominal</th><th>Aksi</th></tr></thead>
                                     <tbody id="table-paid-body"></tbody>
                                 </table>
                             </div>
