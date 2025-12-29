@@ -5,34 +5,48 @@ let isScanning = false;
 let selectedEvent = null;
 let registeredNIAs = new Set(); 
 
-// --- CONFIG SUARA ---
+// --- CONFIG SUARA (DIPERBAIKI: Lazy Load) ---
+// AudioContext tidak boleh di-init global agar tidak memblokir script di mobile
 let isSoundOn = true;
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let audioCtx = null;
+
+function getAudioContext() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioCtx;
+}
 
 function playBeep() {
     if (!isSoundOn) return;
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.type = "square"; 
-    oscillator.frequency.value = 1200; 
-    gainNode.gain.value = 1.0; 
-    oscillator.start();
-    setTimeout(() => { oscillator.stop(); }, 150); 
+    try {
+        const ctx = getAudioContext();
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        oscillator.type = "square"; 
+        oscillator.frequency.value = 1200; 
+        gainNode.gain.value = 1.0; 
+        oscillator.start();
+        setTimeout(() => { oscillator.stop(); }, 150); 
+    } catch(e) { console.error("Audio Error:", e); }
 }
 
 function playErrorSound() {
     if (!isSoundOn) return;
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.type = "sawtooth"; 
-    oscillator.frequency.value = 200; 
-    gainNode.gain.value = 1.0; 
-    oscillator.start();
-    setTimeout(() => { oscillator.stop(); }, 300); 
+    try {
+        const ctx = getAudioContext();
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        oscillator.type = "sawtooth"; 
+        oscillator.frequency.value = 200; 
+        gainNode.gain.value = 1.0; 
+        oscillator.start();
+        setTimeout(() => { oscillator.stop(); }, 300); 
+    } catch(e) { console.error("Audio Error:", e); }
 }
 
 function toggleSound() {
@@ -45,7 +59,9 @@ function toggleSound() {
         btn.style.color = "#0284c7";
         icon.className = "fa-solid fa-volume-high";
         showToast("Suara Aktif", "success");
-        if (audioCtx.state === 'suspended') audioCtx.resume();
+        // Resume context jika suspended (browser policy)
+        const ctx = getAudioContext();
+        if (ctx.state === 'suspended') ctx.resume();
         playBeep(); 
     } else {
         btn.style.background = "#f1f5f9";
@@ -62,20 +78,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!session) { window.location.replace("../login/index.html"); return; }
     window.currentUser = JSON.parse(session);
 
-    // 2. Set Tanggal Header
-    const dateEl = document.getElementById('date-display');
-    if (dateEl) { 
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; 
-        dateEl.innerText = new Date().toLocaleDateString('id-ID', options); 
+    // 2. Set Tanggal Header (DIPERBAIKI: Error Handling)
+    try {
+        const dateEl = document.getElementById('date-display');
+        if (dateEl) { 
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; 
+            dateEl.innerText = new Date().toLocaleDateString('id-ID', options); 
+        }
+    } catch(e) {
+        console.error("Gagal set tanggal", e);
     }
 
     // 3. Init View Berdasarkan Role
-    const role = (window.currentUser.jabatan || "").toLowerCase().trim();
-    if (role === "anggota") {
-        initMember();
-    } else {
-        initAdmin();
-    }
+    try {
+        const role = (window.currentUser.jabatan || "").toLowerCase().trim();
+        if (role === "anggota") {
+            initMember();
+        } else {
+            initAdmin();
+        }
+    } catch(e) { console.error("Init View Error", e); }
 });
 
 // LOGIKA ANGGOTA
@@ -84,8 +106,12 @@ function initMember() {
     document.getElementById('lbl-nama').innerText = window.currentUser.nama;
     document.getElementById('lbl-nia').innerText = window.currentUser.nia;
     
-    const content = `https://sadulursepoor.web.id/anggota/kta/${window.currentUser.nia}.html`;
-    new QRCode(document.getElementById("qrcode"), { text: content, width: 180, height: 180, colorDark : "#0056b3", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
+    // Pastikan container QR ada sebelum render
+    const qrContainer = document.getElementById("qrcode");
+    if(qrContainer) {
+        const content = `https://sadulursepoor.web.id/anggota/kta/${window.currentUser.nia}.html`;
+        new QRCode(qrContainer, { text: content, width: 180, height: 180, colorDark : "#0056b3", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
+    }
 
     loadMemberHistory();
 }
@@ -237,7 +263,10 @@ async function changeStatus(nia, selectEl) {
 // SCANNER (Updated for 1:1 Aspect Ratio)
 function startScanner() {
     if(!selectedEvent) return showToast("Pilih kegiatan dulu!", "error");
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
+    // Resume Audio Context saat user klik tombol scan
+    const ctx = getAudioContext();
+    if (ctx.state === 'suspended') ctx.resume();
 
     document.getElementById('card-setup').classList.add('hidden');
     document.getElementById('card-scanner').classList.remove('hidden');
@@ -315,9 +344,13 @@ function showToast(msg, type="normal") {
 }
 
 // --- UTILS LAYOUT & SECURITY ---
+// Fungsi ini harus tersedia global. Dengan perbaikan di atas, script tidak akan error di awal,
+// sehingga fungsi ini akan terbaca dengan baik oleh tombol HTML.
 function toggleSidebar() { 
-    document.getElementById('mySidebar').classList.toggle('active'); 
-    document.getElementById('sidebar-overlay').classList.toggle('active'); 
+    const sidebar = document.getElementById('mySidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if(sidebar) sidebar.classList.toggle('active'); 
+    if(overlay) overlay.classList.toggle('active'); 
 }
 
 function logout() { 
