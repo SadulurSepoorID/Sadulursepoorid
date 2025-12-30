@@ -2,10 +2,12 @@ let currentUser = null;
 let currentEventRef = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Cek Sesi
     const session = localStorage.getItem('user_session');
     if (!session) { window.location.replace("../login/index.html"); return; }
     currentUser = JSON.parse(session);
 
+    // 2. Setup Sidebar Mobile
     window.toggleSidebar = function() {
         document.getElementById('mySidebar').classList.toggle('active');
         document.getElementById('sidebar-overlay').classList.toggle('active');
@@ -15,13 +17,22 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.replace("../login/index.html");
     };
 
+    // 3. Routing Tampilan Berdasarkan Jabatan
     const jabatan = (currentUser.jabatan || "").toLowerCase();
+    
+    // Inisialisasi Tampilan Anggota
     initMemberView();
+
+    // Jika Pengurus, tampilkan menu admin
     if (jabatan !== 'anggota') {
         document.getElementById('admin-view').classList.remove('hidden');
         initAdminView();
     }
 });
+
+// ==========================
+// LOGIKA ANGGOTA
+// ==========================
 
 async function initMemberView() {
     try {
@@ -32,6 +43,7 @@ async function initMemberView() {
         const data = await res.json();
         
         if (data.status) {
+            // 1. Render History
             const listEl = document.getElementById('my-history');
             listEl.innerHTML = "";
             if (data.history.length === 0) listEl.innerHTML = "<li>Belum ada data pembayaran.</li>";
@@ -48,10 +60,12 @@ async function initMemberView() {
                     </li>`;
             });
 
+            // 2. Logic Alert & Metode Pembayaran
             const alertEl = document.getElementById('event-alert');
             const cashOpt = document.getElementById('cash-opt');
             const qrisRadio = document.querySelector('input[value="QRIS"]');
             
+            // Dapatkan tanggal hari ini (Format YYYY-MM-DD)
             const today = new Date();
             const year = today.getFullYear();
             const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -59,9 +73,15 @@ async function initMemberView() {
             const todayString = `${year}-${month}-${day}`;
 
             if (data.next_event) {
+                // === ADA KEGIATAN MINGGU INI ===
                 currentEventRef = data.next_event.nama; 
                 const lokasi = data.next_event.lokasi || "";
-                alertEl.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-calendar-check"></i> <span>Kas untuk Kegiatan: <b>${data.next_event.nama}</b> ${lokasi ? `<br><small>(${lokasi})</small>` : ''}</span></div>`;
+                
+                alertEl.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <i class="fa-solid fa-calendar-check"></i> 
+                        <span>Kas untuk Kegiatan: <b>${data.next_event.nama}</b> ${lokasi ? `<br><small>(${lokasi})</small>` : ''}</span>
+                    </div>`;
                 alertEl.className = "alert-box active-event"; 
 
                 // LOGIKA TUNAI: Hanya muncul jika tanggal kegiatan == HARI INI
@@ -72,10 +92,17 @@ async function initMemberView() {
                     qrisRadio.checked = true;
                 }
             } else {
+                // === TIDAK ADA KEGIATAN ===
                 currentEventRef = new Date().toISOString().slice(0,10); 
+                
                 const weekNum = Math.ceil(today.getDate() / 7);
                 const monthName = today.toLocaleDateString('id-ID', { month: 'long' });
-                alertEl.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-calendar"></i> <span>Kas untuk Minggu ke-${weekNum} (${monthName})</span></div>`;
+                
+                alertEl.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <i class="fa-solid fa-calendar"></i> 
+                        <span>Kas untuk Minggu ke-${weekNum} (${monthName})</span>
+                    </div>`;
                 alertEl.className = "alert-box"; 
                 
                 cashOpt.style.display = 'none';
@@ -104,10 +131,52 @@ function toggleQRIS() {
     const method = document.querySelector('input[name="metode"]:checked').value;
     const container = document.getElementById('qris-container');
     if (method === 'QRIS') container.classList.remove('hidden');
-    else container.classList.add('hidden');
+    else {
+        container.classList.add('hidden');
+        resetUpload(); // Reset file jika pindah ke tunai
+    }
 }
 
-// Convert File to Base64
+// --- FUNGSI PREVIEW FILE ---
+function previewFile() {
+    const fileInput = document.getElementById('proof-file');
+    const previewBox = document.getElementById('preview-box');
+    const imgPreview = document.getElementById('img-preview');
+    const nameDisplay = document.getElementById('file-name-display');
+    const label = document.querySelector('.upload-label');
+
+    if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        
+        // Validasi Ukuran (Max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert("Ukuran file terlalu besar! Maksimal 5MB.");
+            resetUpload();
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imgPreview.src = e.target.result;
+            nameDisplay.innerText = file.name;
+            
+            previewBox.style.display = 'block';
+            label.style.display = 'none';
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+function resetUpload() {
+    const fileInput = document.getElementById('proof-file');
+    const previewBox = document.getElementById('preview-box');
+    const label = document.querySelector('.upload-label');
+    
+    fileInput.value = ""; 
+    previewBox.style.display = 'none';
+    if(label) label.style.display = 'flex'; 
+}
+
 const toBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -128,10 +197,9 @@ async function handlePayment(e) {
     
     if (metode === 'QRIS') {
         if (fileInput.files.length === 0) {
-            alert("Wajib upload bukti pembayaran jika menggunakan QRIS!");
+            alert("Mohon upload bukti pembayaran QRIS!");
             return;
         }
-        // Proses File
         try {
             const file = fileInput.files[0];
             mimeType = file.type;
@@ -166,10 +234,15 @@ async function handlePayment(e) {
                 showStruk({ id: result.id_transaksi, tanggal: result.tanggal, nama: currentUser.nama, nominal: nominal, metode: metode, kegiatan: currentEventRef });
                 initMemberView(); 
                 document.getElementById('payment-form').reset();
+                resetUpload();
                 document.getElementById('qris-container').classList.add('hidden');
-                // Reset radio
+                
+                // Reset ke default logic QRIS/Cash
                 if (document.getElementById('cash-opt').style.display !== 'none') {
                      document.querySelector('input[name="metode"][value="Cash"]').checked = true;
+                } else {
+                     document.querySelector('input[name="metode"][value="QRIS"]').checked = true;
+                     document.getElementById('qris-container').classList.remove('hidden');
                 }
             } else { alert("Gagal: " + result.message); }
         } catch (err) { alert("Terjadi kesalahan koneksi."); }
@@ -230,7 +303,7 @@ async function loadAdminData() {
             
             tbodyPaid.innerHTML = "";
             result.data.forEach(d => {
-                // LOGIKA KHUSUS SS-0098: TAMPILKAN TOMBOL EDIT/HAPUS
+                // LOGIKA KHUSUS SS-0098
                 let actionButtons = `<button onclick='showStruk(${JSON.stringify(d)})' class="btn-upload"><i class="fa-solid fa-receipt"></i></button>`;
                 
                 if (currentUser.nia === 'SS-0098') {
@@ -246,7 +319,7 @@ async function loadAdminData() {
                         <td>${d.tanggal}</td>
                         <td>
                             <span class="badge-pay ${d.metode}">${d.metode}</span>
-                            ${d.bukti ? `<br><a href="${d.bukti}" target="_blank" style="font-size:0.7rem; color:blue;">Lihat Bukti</a>` : ''}
+                            ${d.bukti ? `<br><a href="${d.bukti}" target="_blank" style="font-size:0.7rem; color:blue; text-decoration:underline;">Lihat Bukti</a>` : ''}
                         </td>
                         <td>Rp ${parseInt(d.nominal).toLocaleString('id-ID')}</td>
                         <td>${actionButtons}</td>

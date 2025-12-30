@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iuran Kas - Sadulur Sepoor</title>
-    <link rel="stylesheet" href="../dashboard/style.css"> <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../dashboard/style.css"> 
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -28,6 +29,7 @@
                 <a href="../presensi/index.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> <span>Presensi</span></a>
                 <a href="../jadwal/index.html" class="nav-link"><i class="fa-solid fa-calendar-days"></i> <span>Jadwal Kegiatan</span></a>
                 <a href="../anggota/index.html" class="nav-link"><i class="fa-solid fa-users"></i> <span>Data Anggota</span></a>
+                <a href="../berita/index.html" class="nav-link"><i class="fa-solid fa-newspaper"></i> <span>Berita & Artikel</span></a>
                 <a href="../iuran/index.html" class="nav-link active"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Iuran Kas</span></a>
             </nav>
         </aside>
@@ -79,12 +81,24 @@
 
                                 <div id="qris-container" class="hidden">
                                     <p class="small-text">Scan QRIS di bawah ini:</p>
-                                    <img src="https://lh3.googleusercontent.com/d/1ag2in9KvkPRHK0SwFuDoLBpxCY9WK8L8" alt="QRIS Sadulur Sepoor" class="qris-img">
+                                    <img src="https://drive.google.com/thumbnail?sz=w1000&id=1ag2in9KvkPRHK0SwFuDoLBpxCY9WK8L8" alt="QRIS Sadulur Sepoor" class="qris-img">
                                     <p class="small-text text-center">A.N Sadulur Sepoor Indonesia</p>
                                     
-                                    <div style="margin-top: 15px; text-align: left;">
-                                        <label style="font-size: 0.85rem; font-weight: 600;">Upload Bukti Pembayaran (Wajib)</label>
-                                        <input type="file" id="proof-file" accept="image/*" class="input-group" style="padding: 5px;">
+                                    <div class="upload-container">
+                                        <label for="proof-file" class="upload-label">
+                                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                                            <span class="upload-text">
+                                                Klik untuk Upload Bukti
+                                                <small>Format: JPG, PNG (Max 5MB)</small>
+                                            </span>
+                                        </label>
+                                        <input type="file" id="proof-file" accept="image/*" onchange="previewFile()">
+                                        
+                                        <div id="preview-box" class="preview-container">
+                                            <img id="img-preview" class="preview-img" src="">
+                                            <div id="file-name-display" class="file-name"></div>
+                                            <button type="button" class="remove-btn" onclick="resetUpload()">Hapus / Ganti</button>
+                                        </div>
                                     </div>
                                 </div>
 
