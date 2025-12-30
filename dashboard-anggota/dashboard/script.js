@@ -2,22 +2,33 @@ let cropper;
 let newFotoUrl = ""; 
 let idleTimer; 
 const IDLE_LIMIT = 2 * 60 * 1000; // 2 Menit
-let isNavigating = false; // <--- PERBAIKAN 1: Flag untuk deteksi navigasi
+let isNavigating = false; 
 
 // --- INISIALISASI ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Deteksi klik link agar tidak dianggap logout
+    // 1. Deteksi Klik Link Internal
     document.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
             isNavigating = true; 
         });
     });
 
-    // Deteksi form submit agar tidak dianggap logout
+    // 2. Deteksi Submit Form
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', () => {
             isNavigating = true;
         });
+    });
+
+    // 3. BARU: Deteksi Tombol Refresh (F5, Ctrl+R, Command+R)
+    window.addEventListener('keydown', (e) => {
+        if (
+            e.key === 'F5' || 
+            (e.ctrlKey && e.key === 'r') || 
+            (e.metaKey && e.key === 'r')
+        ) {
+            isNavigating = true;
+        }
     });
 
     if (!localStorage.getItem('user_session')) { 
@@ -44,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupSessionIntegrity() {
     setInterval(() => {
         if (!localStorage.getItem('user_session')) {
-            // Jangan alert jika sedang navigasi
+            // Jangan alert jika sedang navigasi/refresh
             if(!isNavigating) {
                 alert("Sesi Anda telah berakhir atau data browser dihapus.");
                 window.location.replace("../login/index.html");
@@ -55,8 +66,7 @@ function setupSessionIntegrity() {
 
 function setupTabCloseHandler() {
     window.addEventListener('pagehide', function() {
-        // <--- PERBAIKAN 2: Cek flag isNavigating
-        // Hanya logout jika BUKAN navigasi internal (artinya user menutup tab/browser)
+        // Hanya logout jika BUKAN navigasi (Link) dan BUKAN Refresh (Keyboard)
         if (!isNavigating && navigator.sendBeacon && window.currentUser) {
             const data = JSON.stringify({ action: 'logout', nia: window.currentUser.nia });
             const blob = new Blob([data], {type: 'text/plain;charset=utf-8'});
@@ -70,7 +80,7 @@ function setupBackButtonBlocker() {
     history.pushState(null, document.title, location.href);
     window.addEventListener('popstate', function (event) {
         history.pushState(null, document.title, location.href);
-        // Konfirmasi logout optional, bisa dihapus jika mengganggu
+        // Konfirmasi logout (Optional)
         if (confirm("Anda menekan tombol kembali.\nSistem mengharuskan Logout untuk keamanan.\n\nIngin Logout sekarang?")) {
             logout();
         }
@@ -96,7 +106,7 @@ function initDashboard() {
     });
 }
 
-// --- FUNGSI BARU: STATISTIK DASHBOARD ---
+// --- STATISTIK DASHBOARD ---
 async function fetchDashboardStats() {
     const statEl = document.getElementById('stat-kehadiran');
     if (!statEl) return;
@@ -132,13 +142,9 @@ function setupAutoLogout() {
     function resetTimer() {
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => {
-            // Hapus event listener dulu biar ga double trigger
             document.onmousemove = null; document.onclick = null;
             document.ontouchstart = null; document.onscroll = null;
-            
-            // Set navigating false karena ini paksaan logout
-            isNavigating = false; 
-            
+            isNavigating = false; // Pastikan ini dianggap logout paksa
             alert("Sesi habis (2 Menit Tidak Aktif). Logout otomatis.");
             logout();
         }, IDLE_LIMIT); 
@@ -146,11 +152,13 @@ function setupAutoLogout() {
     window.onload = resetTimer;
     document.onmousemove = resetTimer; document.onclick = resetTimer;
     document.ontouchstart = resetTimer; document.onscroll = resetTimer;
+    // Tambahan event keydown untuk reset timer juga
+    document.onkeydown = resetTimer; 
 }
 
 // --- LOGOUT ---
 async function logout() { 
-    isNavigating = false; // Pastikan ini dianggap logout
+    isNavigating = false; // Reset flag
     const btnLogout = document.querySelector('.btn-logout');
     if(btnLogout) { btnLogout.disabled = true; btnLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Keluar...'; }
     document.body.style.cursor = 'wait';
@@ -178,7 +186,7 @@ function logoutLocal() {
     window.location.replace("../login/index.html"); 
 }
 
-// --- PROFILE ---
+// --- PROFILE & UI UPDATES ---
 async function fetchUserData() {
     try {
         const response = await fetch(API_URL, {
