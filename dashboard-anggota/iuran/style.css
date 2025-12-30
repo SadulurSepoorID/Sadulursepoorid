@@ -1,6 +1,3 @@
-/* Menggunakan variabel dari style.css utama dashboard jika dilink, 
-   tapi kita definisikan ulang yang spesifik di sini untuk safety */
-
 :root {
     --primary: #0056b3;
     --primary-light: #e3f2fd;
