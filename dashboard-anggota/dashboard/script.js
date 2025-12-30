@@ -2,9 +2,24 @@ let cropper;
 let newFotoUrl = ""; 
 let idleTimer; 
 const IDLE_LIMIT = 2 * 60 * 1000; // 2 Menit
+let isNavigating = false; // <--- PERBAIKAN 1: Flag untuk deteksi navigasi
 
 // --- INISIALISASI ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Deteksi klik link agar tidak dianggap logout
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            isNavigating = true; 
+        });
+    });
+
+    // Deteksi form submit agar tidak dianggap logout
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', () => {
+            isNavigating = true;
+        });
+    });
+
     if (!localStorage.getItem('user_session')) { 
         window.location.replace("../login/index.html"); 
         return; 
@@ -29,15 +44,20 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupSessionIntegrity() {
     setInterval(() => {
         if (!localStorage.getItem('user_session')) {
-            alert("Sesi Anda telah berakhir atau data browser dihapus.");
-            window.location.replace("../login/index.html");
+            // Jangan alert jika sedang navigasi
+            if(!isNavigating) {
+                alert("Sesi Anda telah berakhir atau data browser dihapus.");
+                window.location.replace("../login/index.html");
+            }
         }
     }, 1000); 
 }
 
 function setupTabCloseHandler() {
     window.addEventListener('pagehide', function() {
-        if (navigator.sendBeacon && window.currentUser) {
+        // <--- PERBAIKAN 2: Cek flag isNavigating
+        // Hanya logout jika BUKAN navigasi internal (artinya user menutup tab/browser)
+        if (!isNavigating && navigator.sendBeacon && window.currentUser) {
             const data = JSON.stringify({ action: 'logout', nia: window.currentUser.nia });
             const blob = new Blob([data], {type: 'text/plain;charset=utf-8'});
             navigator.sendBeacon(API_URL, blob);
@@ -50,6 +70,7 @@ function setupBackButtonBlocker() {
     history.pushState(null, document.title, location.href);
     window.addEventListener('popstate', function (event) {
         history.pushState(null, document.title, location.href);
+        // Konfirmasi logout optional, bisa dihapus jika mengganggu
         if (confirm("Anda menekan tombol kembali.\nSistem mengharuskan Logout untuk keamanan.\n\nIngin Logout sekarang?")) {
             logout();
         }
@@ -64,7 +85,7 @@ function initDashboard() {
     
     updateUI(window.currentUser);
     fetchUserData(); 
-    fetchDashboardStats(); // <--- PANGGIL FUNGSI BARU INI
+    fetchDashboardStats();
 
     document.addEventListener('click', function(event) {
         const wrapper = document.querySelector('.profile-wrapper');
@@ -94,12 +115,9 @@ async function fetchDashboardStats() {
         
         if (data.status) {
             const jabatan = (window.currentUser.jabatan || "").toLowerCase().trim();
-            
             if (jabatan === "anggota") {
-                // Tampilan Anggota: "Hadir: 5 / 10 Kegiatan"
                 statEl.innerHTML = `<span style="font-size:1.1rem; font-weight:700">${data.user_hadir}</span> <span style="font-size:0.8rem; color:#666">/ ${data.total_kegiatan} Kegiatan</span>`;
             } else {
-                // Tampilan Pengurus: "10 Kegiatan" (Total saja)
                 statEl.innerText = `${data.total_kegiatan} Kegiatan`;
             }
         }
@@ -114,8 +132,13 @@ function setupAutoLogout() {
     function resetTimer() {
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => {
+            // Hapus event listener dulu biar ga double trigger
             document.onmousemove = null; document.onclick = null;
             document.ontouchstart = null; document.onscroll = null;
+            
+            // Set navigating false karena ini paksaan logout
+            isNavigating = false; 
+            
             alert("Sesi habis (2 Menit Tidak Aktif). Logout otomatis.");
             logout();
         }, IDLE_LIMIT); 
@@ -127,6 +150,7 @@ function setupAutoLogout() {
 
 // --- LOGOUT ---
 async function logout() { 
+    isNavigating = false; // Pastikan ini dianggap logout
     const btnLogout = document.querySelector('.btn-logout');
     if(btnLogout) { btnLogout.disabled = true; btnLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Keluar...'; }
     document.body.style.cursor = 'wait';
