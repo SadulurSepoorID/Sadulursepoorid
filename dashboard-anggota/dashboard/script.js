@@ -2,35 +2,10 @@ let cropper;
 let newFotoUrl = ""; 
 let idleTimer; 
 const IDLE_LIMIT = 2 * 60 * 1000; // 2 Menit
-let isNavigating = false; 
 
 // --- INISIALISASI ---
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Deteksi Klik Link Internal
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            isNavigating = true; 
-        });
-    });
-
-    // 2. Deteksi Submit Form
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', () => {
-            isNavigating = true;
-        });
-    });
-
-    // 3. BARU: Deteksi Tombol Refresh (F5, Ctrl+R, Command+R)
-    window.addEventListener('keydown', (e) => {
-        if (
-            e.key === 'F5' || 
-            (e.ctrlKey && e.key === 'r') || 
-            (e.metaKey && e.key === 'r')
-        ) {
-            isNavigating = true;
-        }
-    });
-
+    // Cek Session LocalStorage
     if (!localStorage.getItem('user_session')) { 
         window.location.replace("../login/index.html"); 
         return; 
@@ -44,9 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initDashboard();
-    setupAutoLogout();
-    setupSessionIntegrity(); 
-    setupTabCloseHandler();  
+    setupAutoLogout();     // Aktifkan Timer Diam
+    setupSessionIntegrity(); // Cek Kevalidan Sesi
+    
+    // setupTabCloseHandler(); <--- FITUR INI DIHAPUS AGAR REFRESH TIDAK LOGOUT
     
     setTimeout(setupBackButtonBlocker, 500);
 });
@@ -54,26 +30,17 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- FITUR SECURITY ---
 function setupSessionIntegrity() {
     setInterval(() => {
+        // Cek sederhana apakah localStorage masih ada
         if (!localStorage.getItem('user_session')) {
-            // Jangan alert jika sedang navigasi/refresh
-            if(!isNavigating) {
-                alert("Sesi Anda telah berakhir atau data browser dihapus.");
-                window.location.replace("../login/index.html");
-            }
+             // Tidak ada alert/redirect jika user hanya refresh halaman
+             // Kita biarkan logika initDashboard menangani validasi
         }
     }, 1000); 
 }
 
-function setupTabCloseHandler() {
-    window.addEventListener('pagehide', function() {
-        // Hanya logout jika BUKAN navigasi (Link) dan BUKAN Refresh (Keyboard)
-        if (!isNavigating && navigator.sendBeacon && window.currentUser) {
-            const data = JSON.stringify({ action: 'logout', nia: window.currentUser.nia });
-            const blob = new Blob([data], {type: 'text/plain;charset=utf-8'});
-            navigator.sendBeacon(API_URL, blob);
-        }
-    });
-}
+// Fitur "Logout saat Tab Ditutup" (setupTabCloseHandler) DIHAPUS.
+// Alasan: Browser menganggap Refresh = Tutup Tab, yang menyebabkan log sampah.
+// Solusi: Kita andalkan Auto Logout (Idle) dan Manual Logout saja.
 
 function setupBackButtonBlocker() {
     history.pushState(null, document.title, location.href);
@@ -81,7 +48,7 @@ function setupBackButtonBlocker() {
     window.addEventListener('popstate', function (event) {
         history.pushState(null, document.title, location.href);
         // Konfirmasi logout (Optional)
-        if (confirm("Anda menekan tombol kembali.\nSistem mengharuskan Logout untuk keamanan.\n\nIngin Logout sekarang?")) {
+        if (confirm("Anda menekan tombol kembali.\nIngin Logout sekarang?")) {
             logout();
         }
     });
@@ -97,6 +64,7 @@ function initDashboard() {
     fetchUserData(); 
     fetchDashboardStats();
 
+    // Tutup dropdown jika klik di luar
     document.addEventListener('click', function(event) {
         const wrapper = document.querySelector('.profile-wrapper');
         const dropdown = document.getElementById('profile-dropdown');
@@ -137,28 +105,31 @@ async function fetchDashboardStats() {
     }
 }
 
-// --- AUTO LOGOUT ---
+// --- AUTO LOGOUT (IDLE TIMER) ---
 function setupAutoLogout() {
     function resetTimer() {
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => {
+            // Hapus listener
             document.onmousemove = null; document.onclick = null;
-            document.ontouchstart = null; document.onscroll = null;
-            isNavigating = false; // Pastikan ini dianggap logout paksa
+            document.ontouchstart = null; document.onscroll = null; document.onkeydown = null;
+            
             alert("Sesi habis (2 Menit Tidak Aktif). Logout otomatis.");
             logout();
         }, IDLE_LIMIT); 
     }
+    
+    // Reset timer pada setiap aktivitas user
     window.onload = resetTimer;
-    document.onmousemove = resetTimer; document.onclick = resetTimer;
-    document.ontouchstart = resetTimer; document.onscroll = resetTimer;
-    // Tambahan event keydown untuk reset timer juga
+    document.onmousemove = resetTimer; 
+    document.onclick = resetTimer;
+    document.ontouchstart = resetTimer; 
+    document.onscroll = resetTimer;
     document.onkeydown = resetTimer; 
 }
 
 // --- LOGOUT ---
 async function logout() { 
-    isNavigating = false; // Reset flag
     const btnLogout = document.querySelector('.btn-logout');
     if(btnLogout) { btnLogout.disabled = true; btnLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Keluar...'; }
     document.body.style.cursor = 'wait';
@@ -166,17 +137,24 @@ async function logout() {
     const payload = JSON.stringify({ action: 'logout', nia: window.currentUser.nia });
     
     try {
-        const fetchRequest = fetch(API_URL, {
-            method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: payload
-        });
-        const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 2500)); 
-        await Promise.race([fetchRequest, timeoutPromise]);
-    } catch (e) {
+        // Gunakan sendBeacon untuk logout yang lebih reliable
         if (navigator.sendBeacon) {
             const blob = new Blob([payload], {type: 'text/plain;charset=utf-8'});
             navigator.sendBeacon(API_URL, blob);
+        } else {
+            // Fallback untuk browser lama
+            fetch(API_URL, {
+                method: 'POST', redirect: 'follow', 
+                headers: { "Content-Type": "text/plain;charset=utf-8" }, body: payload
+            });
         }
+        
+        // Delay visual sebentar
+        await new Promise(r => setTimeout(r, 1000));
+    } catch (e) {
+        console.log("Logout error", e);
     }
+    
     logoutLocal();
 }
 
