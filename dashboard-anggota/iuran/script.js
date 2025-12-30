@@ -2,12 +2,10 @@ let currentUser = null;
 let currentEventRef = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Cek Sesi
     const session = localStorage.getItem('user_session');
     if (!session) { window.location.replace("../login/index.html"); return; }
     currentUser = JSON.parse(session);
 
-    // 2. Setup Sidebar Mobile
     window.toggleSidebar = function() {
         document.getElementById('mySidebar').classList.toggle('active');
         document.getElementById('sidebar-overlay').classList.toggle('active');
@@ -17,13 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.replace("../login/index.html");
     };
 
-    // 3. Routing Tampilan Berdasarkan Jabatan
     const jabatan = (currentUser.jabatan || "").toLowerCase();
-    
-    // Inisialisasi Tampilan Anggota
     initMemberView();
-
-    // Jika Pengurus, tampilkan menu admin
     if (jabatan !== 'anggota') {
         document.getElementById('admin-view').classList.remove('hidden');
         initAdminView();
@@ -43,7 +36,6 @@ async function initMemberView() {
         const data = await res.json();
         
         if (data.status) {
-            // 1. Render History
             const listEl = document.getElementById('my-history');
             listEl.innerHTML = "";
             if (data.history.length === 0) listEl.innerHTML = "<li>Belum ada data pembayaran.</li>";
@@ -60,12 +52,10 @@ async function initMemberView() {
                     </li>`;
             });
 
-            // 2. Logic Alert & Metode Pembayaran
             const alertEl = document.getElementById('event-alert');
             const cashOpt = document.getElementById('cash-opt');
             const qrisRadio = document.querySelector('input[value="QRIS"]');
             
-            // Dapatkan tanggal hari ini (Format YYYY-MM-DD)
             const today = new Date();
             const year = today.getFullYear();
             const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -73,18 +63,11 @@ async function initMemberView() {
             const todayString = `${year}-${month}-${day}`;
 
             if (data.next_event) {
-                // === ADA KEGIATAN MINGGU INI ===
                 currentEventRef = data.next_event.nama; 
                 const lokasi = data.next_event.lokasi || "";
-                
-                alertEl.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <i class="fa-solid fa-calendar-check"></i> 
-                        <span>Kas untuk Kegiatan: <b>${data.next_event.nama}</b> ${lokasi ? `<br><small>(${lokasi})</small>` : ''}</span>
-                    </div>`;
+                alertEl.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-calendar-check"></i> <span>Kas untuk Kegiatan: <b>${data.next_event.nama}</b> ${lokasi ? `<br><small>(${lokasi})</small>` : ''}</span></div>`;
                 alertEl.className = "alert-box active-event"; 
 
-                // LOGIKA TUNAI: Hanya muncul jika tanggal kegiatan == HARI INI
                 if (data.next_event.tanggal === todayString) {
                     cashOpt.style.display = 'block'; 
                 } else {
@@ -92,17 +75,10 @@ async function initMemberView() {
                     qrisRadio.checked = true;
                 }
             } else {
-                // === TIDAK ADA KEGIATAN ===
                 currentEventRef = new Date().toISOString().slice(0,10); 
-                
                 const weekNum = Math.ceil(today.getDate() / 7);
                 const monthName = today.toLocaleDateString('id-ID', { month: 'long' });
-                
-                alertEl.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <i class="fa-solid fa-calendar"></i> 
-                        <span>Kas untuk Minggu ke-${weekNum} (${monthName})</span>
-                    </div>`;
+                alertEl.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-calendar"></i> <span>Kas untuk Minggu ke-${weekNum} (${monthName})</span></div>`;
                 alertEl.className = "alert-box"; 
                 
                 cashOpt.style.display = 'none';
@@ -133,11 +109,10 @@ function toggleQRIS() {
     if (method === 'QRIS') container.classList.remove('hidden');
     else {
         container.classList.add('hidden');
-        resetUpload(); // Reset file jika pindah ke tunai
+        resetUpload(); 
     }
 }
 
-// --- FUNGSI PREVIEW FILE ---
 function previewFile() {
     const fileInput = document.getElementById('proof-file');
     const previewBox = document.getElementById('preview-box');
@@ -147,19 +122,15 @@ function previewFile() {
 
     if (fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
-        
-        // Validasi Ukuran (Max 5MB)
         if (file.size > 5 * 1024 * 1024) {
             alert("Ukuran file terlalu besar! Maksimal 5MB.");
             resetUpload();
             return;
         }
-
         const reader = new FileReader();
         reader.onload = function(e) {
             imgPreview.src = e.target.result;
             nameDisplay.innerText = file.name;
-            
             previewBox.style.display = 'block';
             label.style.display = 'none';
         }
@@ -171,7 +142,6 @@ function resetUpload() {
     const fileInput = document.getElementById('proof-file');
     const previewBox = document.getElementById('preview-box');
     const label = document.querySelector('.upload-label');
-    
     fileInput.value = ""; 
     previewBox.style.display = 'none';
     if(label) label.style.display = 'flex'; 
@@ -191,7 +161,6 @@ async function handlePayment(e) {
     const metode = document.querySelector('input[name="metode"]:checked').value;
     const fileInput = document.getElementById('proof-file');
 
-    // Validasi Wajib Upload jika QRIS
     let base64File = "";
     let mimeType = "";
     
@@ -237,7 +206,6 @@ async function handlePayment(e) {
                 resetUpload();
                 document.getElementById('qris-container').classList.add('hidden');
                 
-                // Reset ke default logic QRIS/Cash
                 if (document.getElementById('cash-opt').style.display !== 'none') {
                      document.querySelector('input[name="metode"][value="Cash"]').checked = true;
                 } else {
@@ -301,9 +269,14 @@ async function loadAdminData() {
             document.getElementById('adm-total').innerText = "Rp " + result.total.toLocaleString('id-ID');
             document.getElementById('adm-unpaid-count').innerText = result.unpaid.length + " Orang";
             
+            // --- FITUR 1: SORTING BERDASARKAN NAMA ---
+            // Sort data Paid (Sudah Bayar)
+            result.data.sort((a, b) => a.nama.localeCompare(b.nama));
+            // Sort data Unpaid (Belum Bayar)
+            result.unpaid.sort((a, b) => a.nama.localeCompare(b.nama));
+
             tbodyPaid.innerHTML = "";
             result.data.forEach(d => {
-                // LOGIKA KHUSUS SS-0098
                 let actionButtons = `<button onclick='showStruk(${JSON.stringify(d)})' class="btn-upload"><i class="fa-solid fa-receipt"></i></button>`;
                 
                 if (currentUser.nia === 'SS-0098') {
@@ -328,23 +301,56 @@ async function loadAdminData() {
 
             tbodyUnpaid.innerHTML = "";
             result.unpaid.forEach(u => {
-                tbodyUnpaid.innerHTML += `<tr><td>${u.nia}</td><td>${u.nama}</td><td><button onclick="sendBill('${u.nia}', '${filter || 'Mingguan'}')" class="btn-logout" style="padding: 5px 10px; font-size: 0.8rem; width: auto;"><i class="fa-solid fa-envelope"></i> Tagih</button></td></tr>`;
+                // --- FITUR 2: UPDATE TOMBOL TAGIH (PASS 'this') ---
+                tbodyUnpaid.innerHTML += `
+                    <tr>
+                        <td>${u.nia}</td>
+                        <td>${u.nama}</td>
+                        <td>
+                            <button onclick="sendBill(this, '${u.nia}', '${filter || 'Mingguan'}')" class="btn-logout" style="padding: 5px 10px; font-size: 0.8rem; width: auto;">
+                                <i class="fa-solid fa-envelope"></i> Tagih
+                            </button>
+                        </td>
+                    </tr>`;
             });
             if(result.unpaid.length === 0) tbodyUnpaid.innerHTML = '<tr><td colspan="3" class="text-center">Semua lunas!</td></tr>';
         }
     } catch (e) { console.error(e); }
 }
 
-window.sendBill = async function(nia, kegiatan) {
+// --- FITUR 3: FUNGSI SEND BILL UPDATED (UBAH WARNA TOMBOL) ---
+window.sendBill = async function(btn, nia, kegiatan) {
     if(!confirm("Kirim email tagihan ke anggota ini?")) return;
+    
+    // Simpan teks asli dan ubah ke loading
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    btn.disabled = true;
+
     try {
         const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'send_bill', target_nia: nia, kegiatan: kegiatan }) });
         const result = await res.json();
         alert(result.message); 
-    } catch(e) { alert("Gagal mengirim perintah: " + e); }
+        
+        // Kembalikan tombol agar aktif
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+
+        if(result.status) {
+            // Ubah Warna Jadi Kuning (Warning)
+            btn.style.backgroundColor = '#ffc107'; // Kuning
+            btn.style.color = '#000'; // Teks Hitam
+            btn.style.borderColor = '#e0a800';
+            // btn.innerHTML = '<i class="fa-solid fa-check"></i> Ditagih'; // Opsional: Ganti teks jika mau
+        }
+
+    } catch(e) { 
+        alert("Gagal mengirim perintah: " + e); 
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+    }
 };
 
-// FITUR ADMIN SS-0098
 window.deletePayment = async function(id) {
     if (!confirm("Yakin ingin menghapus data pembayaran ini?")) return;
     try {
