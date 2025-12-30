@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Daftar Akun - Sadulur Sepoor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="visual-side">
+            <div class="visual-content">
+                <div class="logo-box">
+                    <i class="fa-solid fa-train-subway"></i>
+                </div>
+                <div class="desktop-text">
+                    <h1>Sadulur Sepoor</h1>
+                    <p>Wadah digital eksklusif bagi anggota Sadulur Sepoor.</p>
+                </div>
+            </div>
+            <div class="circle-1"></div>
+            <div class="circle-2"></div>
+        </div>
+
+        <div class="form-side">
+            <div class="form-wrapper">
+                <h2>Buat Akun</h2>
+                <p class="subtitle">Silakan lengkapi data diri Anda.</p>
+                
+                <form onsubmit="event.preventDefault(); handleRegister()">
+                    <div class="input-group">
+                          <i class="fa-regular fa-user"></i> <input type="text" id="nama" required placeholder=" " oninput="autoCap(this)" autocomplete="off">
+                          <label>Nama Lengkap</label>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <i class="fa-solid fa-id-card"></i>
+                            <input type="text" id="nia" required placeholder=" " autocomplete="off">
+                            <label>NIA (SS-0000)</label>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <input type="tel" id="wa" required placeholder=" " autocomplete="off">
+                            <label>WhatsApp</label>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input type="email" id="email" required placeholder=" " autocomplete="off">
+                        <label>Email Aktif</label>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="pass" required placeholder=" " autocomplete="new-password">
+                        <label>Password</label>
+                        <i class="fa-regular fa-eye toggle-pass" onclick="togglePassword('pass', this)"></i>
+                    </div>
+
+                    <div class="validation-box">
+                        <p id="req-length"><i class="fa-solid fa-circle"></i> Min 8 karakter</p>
+                        <p id="req-start"><i class="fa-solid fa-circle"></i> Awal Kapital</p>
+                        <p id="req-mix"><i class="fa-solid fa-circle"></i> Huruf & Angka</p>
+                    </div>
+
+                    <div class="input-group mt-3">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="conf" required placeholder=" ">
+                        <label>Ulangi Password</label>
+                    </div>
+
+                    <button type="submit" id="btn-daftar">Daftar Sekarang <i class="fa-solid fa-arrow-right"></i></button>
+                </form>
+
+                <div class="bottom-text">
+                    Sudah punya akun? <a href="../login/index.html">Login disini</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

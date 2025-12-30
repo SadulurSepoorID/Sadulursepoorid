@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reset Password - Sadulur Sepoor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="visual-side">
+            <div class="visual-content">
+                <div class="logo-box">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="desktop-text">
+                    <h1>Keamanan Akun</h1>
+                    <p>Pulihkan akses akun Sadulur Sepoor Anda dengan aman.</p>
+                </div>
+            </div>
+            <div class="circle-1"></div>
+            <div class="circle-2"></div>
+        </div>
+
+        <div class="form-side">
+            <div class="form-wrapper">
+                
+                <div id="step-1">
+                    <h2>Lupa Password?</h2>
+                    <p class="subtitle">Masukkan NIA & Email yang terdaftar.</p>
+                    
+                    <form onsubmit="event.preventDefault(); requestKode()">
+                        <div class="input-group">
+                            <i class="fa-solid fa-id-card"></i>
+                            <input type="text" id="r-nia" required placeholder=" " autocomplete="off">
+                            <label>NIA (SS-XXXX)</label>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="r-email" required placeholder=" " autocomplete="off">
+                            <label>Email Terdaftar</label>
+                        </div>
+                        <button type="submit" id="btn-step-1">
+                            Kirim Kode OTP <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div id="step-2" style="display:none;">
+                    <h2>Buat Password Baru</h2>
+                    <p class="subtitle" style="color: var(--success);">
+                        <i class="fa-solid fa-check-circle"></i> Kode OTP telah dikirim ke email!
+                    </p>
+                    
+                    <form onsubmit="event.preventDefault(); verifyKode()">
+                        <div class="input-group">
+                            <i class="fa-solid fa-key"></i>
+                            <input type="text" id="r-code" required placeholder=" " autocomplete="off">
+                            <label>Kode OTP (6 Digit)</label>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="r-newpass" required placeholder=" ">
+                            <label>Password Baru</label>
+                            <i class="fa-regular fa-eye toggle-pass" onclick="togglePassword('r-newpass', this)"></i>
+                        </div>
+                        <button type="submit" id="btn-step-2">
+                            Simpan Password <i class="fa-solid fa-floppy-disk"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bottom-text">
+                    Sudah ingat password? <a href="../login/index.html">Login disini</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

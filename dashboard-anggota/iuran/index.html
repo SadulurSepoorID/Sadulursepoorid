@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Iuran Kas - Sadulur Sepoor</title>
+    
+    <script>
+        // Cek apakah user sudah punya sesi login?
+        if (!localStorage.getItem('user_session')) {
+            // 1. Simpan Link Iuran ini ke memori browser
+            localStorage.setItem('redirect_after_login', window.location.href);
+            
+            // 2. Tendang ke halaman login SEKARANG JUGA
+            window.location.replace("../login/index.html");
+        }
+    </script>
+    <link rel="stylesheet" href="../dashboard/style.css"> 
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <aside class="sidebar" id="mySidebar">
+            <div class="sidebar-header">
+                <div class="mobile-close-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></div>
+                <i class="fa-solid fa-train-subway logo-icon"></i>
+                <div><h2>Sadulur Sepoor</h2><span class="badge">INDONESIA</span></div>
+            </div>
+            <div class="sidebar-footer">
+                <button onclick="logoutLocal()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span></button>
+            </div>
+            <nav class="nav-menu">
+                <a href="../dashboard/index.html" class="nav-link"><i class="fa-solid fa-house"></i> <span>Beranda</span></a>
+                <a href="../presensi/index.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> <span>Presensi</span></a>
+                <a href="../jadwal/index.html" class="nav-link"><i class="fa-solid fa-calendar-days"></i> <span>Jadwal Kegiatan</span></a>
+                <a href="../anggota/index.html" class="nav-link"><i class="fa-solid fa-users"></i> <span>Data Anggota</span></a>
+                <a href="../berita/index.html" class="nav-link"><i class="fa-solid fa-newspaper"></i> <span>Berita & Artikel</span></a>
+                <a href="../iuran/index.html" class="nav-link active"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Iuran Kas</span></a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="top-left-group">
+                    <button id="hamburger-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                    <div class="greeting">
+                        <h3>Iuran Kas Wajib</h3>
+                        <p class="date-now">Kelola pembayaran dan tagihan</p>
+                    </div>
+                </div>
+            </header>
+
+            <div id="member-view" class="content-section">
+                <div class="split-layout">
+                    <div class="card payment-card">
+                        <div class="card-header">
+                            <h4><i class="fa-solid fa-wallet"></i> Bayar Kas Mingguan</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert-box" id="event-alert">
+                                <i class="fa-solid fa-info-circle"></i> Memuat info kegiatan...
+                            </div>
+                            
+                            <form id="payment-form" onsubmit="handlePayment(event)">
+                                <div class="form-group">
+                                    <label>Nominal (Min. Rp 5.000)</label>
+                                    <div class="input-group">
+                                        <span>Rp</span>
+                                        <input type="number" id="pay-nominal" value="5000" min="5000" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Metode Pembayaran</label>
+                                    <div class="method-selector">
+                                        <label class="method-opt" id="cash-opt">
+                                            <input type="radio" name="metode" value="Cash" onchange="toggleQRIS()">
+                                            <div class="box"><i class="fa-solid fa-money-bill-wave"></i> Tunai</div>
+                                        </label>
+                                        <label class="method-opt" id="qris-opt">
+                                            <input type="radio" name="metode" value="QRIS" onchange="toggleQRIS()">
+                                            <div class="box"><i class="fa-solid fa-qrcode"></i> QRIS</div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="qris-container" class="hidden">
+                                    <p class="small-text">Scan QRIS di bawah ini:</p>
+                                    <img src="https://drive.google.com/thumbnail?sz=w1000&id=1ag2in9KvkPRHK0SwFuDoLBpxCY9WK8L8" alt="QRIS Sadulur Sepoor" class="qris-img">
+                                    <p class="small-text text-center">A.N Sadulur Sepoor Indonesia</p>
+                                    
+                                    <div class="upload-container">
+                                        <label for="proof-file" class="upload-label">
+                                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                                            <span class="upload-text">
+                                                Klik untuk Upload Bukti
+                                                <small>Format: JPG, PNG (Max 5MB)</small>
+                                            </span>
+                                        </label>
+                                        <input type="file" id="proof-file" accept="image/*" onchange="previewFile()">
+                                        
+                                        <div id="preview-box" class="preview-container">
+                                            <img id="img-preview" class="preview-img" src="">
+                                            <div id="file-name-display" class="file-name"></div>
+                                            <button type="button" class="remove-btn" onclick="resetUpload()">Hapus / Ganti</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-save" id="btn-pay">Bayar Sekarang</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card history-card">
+                        <div class="card-header">
+                            <h4>Riwayat Pembayaran Saya</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="history-list" id="my-history">
+                                <li>Memuat data...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="admin-view" class="content-section hidden">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="icon-box blue"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                        <div><h4>Total Kas Masuk</h4><p id="adm-total">Rp 0</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon-box orange"><i class="fa-solid fa-user-xmark"></i></div>
+                        <div><h4>Belum Bayar</h4><p id="adm-unpaid-count">0 Orang</p></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header flex-between">
+                        <h4>Data Iuran Anggota</h4>
+                        <select id="filter-kegiatan" onchange="loadAdminData()" class="form-select">
+                            <option value="">-- Semua Riwayat --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="tab-header">
+                        <button class="tab-btn active" onclick="switchTab('paid')">Sudah Bayar</button>
+                        <button class="tab-btn" onclick="switchTab('unpaid')">Belum Bayar (Tagihan)</button>
+                    </div>
+
+                    <div class="card-body">
+                        <div id="tab-paid" class="tab-content active">
+                            <div class="table-responsive">
+                                <table class="custom-table">
+                                    <thead><tr><th>Nama</th><th>Tanggal</th><th>Metode</th><th>Nominal</th><th>Aksi</th></tr></thead>
+                                    <tbody id="table-paid-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="tab-unpaid" class="tab-content">
+                            <div style="margin-bottom: 15px; text-align: right;">
+                                <button onclick="sendBillAll()" id="btn-bill-all" class="btn-save" style="background: #e65100; width: auto; display: none;">
+                                    <i class="fa-solid fa-paper-plane"></i> Tagih Semua (<span id="bill-count">0</span>)
+                                </button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="custom-table">
+                                    <thead><tr><th>NIA</th><th>Nama</th><th>Aksi</th></tr></thead>
+                                    <tbody id="table-unpaid-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="struk-modal" class="modal hidden">
+        <div class="modal-content struk-content">
+            <div class="struk-paper">
+                <div class="struk-header">
+                    <i class="fa-solid fa-train-subway"></i>
+                    <h3>SADULUR SEPOOR</h3>
+                    <p>BUKTI PEMBAYARAN KAS</p>
+                </div>
+                <div class="dashed-line"></div>
+                <div class="struk-body">
+                    <div class="row"><span>ID Trx:</span> <span id="s-id">...</span></div>
+                    <div class="row"><span>Tanggal:</span> <span id="s-date">...</span></div>
+                    <div class="row"><span>Anggota:</span> <span id="s-name">...</span></div>
+                    <div class="row"><span>Untuk:</span> <span id="s-ref">...</span></div>
+                    <div class="dashed-line"></div>
+                    <div class="row big"><span>TOTAL:</span> <span id="s-nominal">...</span></div>
+                    <div class="row"><span>Metode:</span> <span id="s-method">...</span></div>
+                </div>
+                <div class="dashed-line"></div>
+                <div class="struk-footer">
+                    <p>Terima kasih atas kontribusi Anda.</p>
+                    <p>#JujurDisiplinCintaDamai</p>
+                </div>
+            </div>
+            <button class="btn-save" onclick="document.getElementById('struk-modal').classList.add('hidden')" style="margin-top:20px">Tutup</button>
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

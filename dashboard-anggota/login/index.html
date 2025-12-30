@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Masuk - Sadulur Sepoor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="visual-side">
+            <div class="visual-content">
+                <div class="logo-box">
+                    <i class="fa-solid fa-train-subway"></i>
+                </div>
+                <div class="desktop-text">
+                    <h1>Sadulur Sepoor</h1>
+                    <p>Jujur, Disiplin dan Cinta Damai.</p>
+                </div>
+            </div>
+            <div class="circle-1"></div>
+            <div class="circle-2"></div>
+        </div>
+
+        <div class="form-side">
+            <div class="form-wrapper">
+                <h2>Selamat Datang</h2>
+                <p class="subtitle">Silakan masuk dengan akun Anda.</p>
+                
+                <form onsubmit="event.preventDefault(); handleLogin()">
+                    <div class="input-group">
+                        <i class="fa-solid fa-id-card"></i>
+                        <input type="text" id="nia" required placeholder=" " autocomplete="off">
+                        <label>NIA (SS-XXXX)</label>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="pass" required placeholder=" ">
+                        <label>Password</label>
+                        <i class="fa-regular fa-eye toggle-pass" onclick="togglePassword('pass', this)"></i>
+                    </div>
+                    
+                    <div class="forgot-pass">
+                        <a href="../lupa-password/index.html">Lupa Kata Sandi?</a>
+                    </div>
+
+                    <button type="submit" id="btn-login">Masuk Sekarang <i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+                </form>
+
+                <div class="bottom-text">
+                    Belum punya akun? <a href="../registrasi/index.html">Daftar disini</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

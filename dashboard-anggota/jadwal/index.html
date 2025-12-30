@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Kegiatan - Sadulur Sepoor</title>
+    
+    <script>
+        // Cek apakah user sudah punya sesi login?
+        if (!localStorage.getItem('user_session')) {
+            // 1. Simpan Link Jadwal ini ke memori browser
+            localStorage.setItem('redirect_after_login', window.location.href);
+            
+            // 2. Tendang ke halaman login SEKARANG JUGA
+            window.location.replace("../login/index.html");
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <aside class="sidebar" id="mySidebar">
+            <div class="sidebar-header">
+                <div class="mobile-close-btn" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+                
+                <i class="fa-solid fa-train-subway logo-icon"></i>
+                <div>
+                    <h2>Sadulur Sepoor</h2>
+                    <span class="badge" style="font-size: 0.7rem; background: #f3f6f9; padding: 2px 8px; border-radius: 4px; color: #6c757d;">INDONESIA</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn-logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+                </button>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="../dashboard/index.html" class="nav-link"><i class="fa-solid fa-house"></i> <span>Beranda</span></a>
+                <a href="../presensi/index.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> <span>Presensi</span></a>
+                <a href="#" class="nav-link active"><i class="fa-solid fa-calendar-days"></i> <span>Jadwal Kegiatan</span></a>
+                <a href="../anggota/index.html" class="nav-link"><i class="fa-solid fa-users"></i> <span>Data Anggota</span></a>
+                <a href="../berita/index.html" class="nav-link"><i class="fa-solid fa-newspaper"></i> <span>Berita & Artikel</span></a>
+                <a href="../iuran/index.html" class="nav-link"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Iuran Kas</span></a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="top-left-group">
+                    <button id="hamburger-btn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    
+                    <div class="greeting">
+                        <h3>Agenda Kegiatan</h3>
+                        <p class="date-now" id="date-display">Memuat tanggal...</p>
+                    </div>
+                </div>
+            </header>
+
+            <div id="admin-panel" class="admin-panel hidden">
+                <div class="admin-header">
+                    <i class="fa-solid fa-plus-circle"></i> Tambah Jadwal Baru
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nama Kegiatan</label>
+                        <input type="text" id="input-nama" placeholder="Contoh: Gathering...">
+                    </div>
+                    <div class="form-group">
+                        <label>Lokasi</label>
+                        <input type="text" id="input-lokasi" placeholder="Contoh: RPTRA...">
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal</label>
+                        <input type="date" id="input-tanggal">
+                    </div>
+                    <div class="form-group">
+                        <label>Jam (WIB)</label>
+                        <input type="time" id="input-jam">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Kode Embed Map (HTML)</label>
+                    <textarea id="input-map" rows="3" placeholder='Paste kode <div class="map-container">...</div> disini'></textarea>
+                </div>
+                <div style="text-align: right;">
+                    <button onclick="addActivity()" class="btn-save" id="btn-submit" style="width: auto; padding: 10px 25px;">
+                        <i class="fa-solid fa-paper-plane"></i> Publikasikan
+                    </button>
+                </div>
+            </div>
+
+            <div id="timeline-container" class="timeline-section">
+                <div class="state-msg"><i class="fa-solid fa-circle-notch fa-spin"></i> Memuat Jadwal...</div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modal-edit" class="modal hidden">
+        <div class="modal-content" style="border-left: 4px solid #f39c12;">
+            <div class="admin-header" style="color: #f39c12; justify-content: space-between;">
+                <span><i class="fa-solid fa-pen-to-square"></i> Edit Kegiatan</span>
+                <span onclick="closeEditModal()" style="cursor:pointer; color:#333; font-size:1.5rem;">&times;</span>
+            </div>
+            <input type="hidden" id="edit-id"> 
+            
+            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Nama Kegiatan</label>
+                    <input type="text" id="edit-nama">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Lokasi</label>
+                    <input type="text" id="edit-lokasi">
+                </div>
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" id="edit-tanggal">
+                </div>
+                <div class="form-group">
+                    <label>Jam</label>
+                    <input type="time" id="edit-jam">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label>Kode Map HTML</label>
+                <textarea id="edit-map" rows="4"></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button onclick="closeEditModal()" style="padding:10px 20px; border:none; background:#eee; border-radius:6px; cursor:pointer;">Batal</button>
+                <button onclick="saveEditActivity()" class="btn-save" id="btn-save-edit" style="background: #f39c12; width: auto;">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
