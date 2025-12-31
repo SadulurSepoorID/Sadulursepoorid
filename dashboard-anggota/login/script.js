@@ -1,42 +1,50 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Cek jika user iseng buka halaman login padahal sudah login
+    // 1. Cek Sesi (Auto Redirect jika sudah login)
     if(localStorage.getItem('user_session')) {
         window.location.replace("../dashboard/index.html");
     }
 
-    const btnLogin = document.querySelector('button'); // Atau gunakan ID tombol login Anda
-    const inputNia = document.querySelector('input[type="text"]'); // Atau ID input NIA
-    const inputPass = document.querySelector('input[type="password"]'); // Atau ID input Pass
-    
-    // Toggle Password Visibility
-    const toggleIcon = document.querySelector('.toggle-password');
-    if(toggleIcon) {
+    // 2. Definisi Elemen (Menggunakan ID agar lebih spesifik dan akurat)
+    const btnLogin = document.getElementById('btn-login'); 
+    const inputNia = document.getElementById('nia');       
+    const inputPass = document.getElementById('pass');     
+    const toggleIcon = document.querySelector('.toggle-pass'); 
+
+    // 3. Fitur Toggle Password (Lihat/Sembunyikan)
+    if(toggleIcon && inputPass) {
         toggleIcon.addEventListener('click', () => {
+            // Cek tipe saat ini (password atau text)
             const type = inputPass.getAttribute('type') === 'password' ? 'text' : 'password';
             inputPass.setAttribute('type', type);
+
+            // Ubah Ikon Mata (Buka vs Coret)
+            // Kita toggle class fa-eye dan fa-eye-slash
+            toggleIcon.classList.toggle('fa-eye');
             toggleIcon.classList.toggle('fa-eye-slash');
         });
     }
 
-    // Handle Login Button Click
+    // 4. Handle Tombol Login
     if(btnLogin) {
         btnLogin.addEventListener('click', async (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Mencegah form reload halaman
             
             const nia = inputNia.value;
             const password = inputPass.value;
 
+            // Validasi Input Kosong
             if(!nia || !password) {
                 alert("Harap isi NIA dan Password!");
                 return;
             }
 
-            btnLogin.innerText = "Memuat...";
+            // Ubah tombol jadi loading
+            btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memuat...';
             btnLogin.disabled = true;
 
             try {
-                // Pastikan config.js sudah dimuat di HTML login agar API_URL terbaca
+                // Pastikan config.js sudah dimuat di HTML agar API_URL terbaca
                 const res = await fetch(API_URL, {
                     method: 'POST',
                     redirect: 'follow',
@@ -47,38 +55,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json();
 
                 if (data.status) {
-                    // 1. Simpan Sesi
+                    // A. Simpan Sesi
                     localStorage.setItem('user_session', JSON.stringify({ 
                         nama: data.nama, 
                         nia: data.nia, 
                         jabatan: data.jabatan 
                     }));
                     
-                    // 2. LOGIKA REDIRECT PINTAR (DEEP LINKING)
+                    // B. Logika Redirect Pintar (Deep Linking)
+                    // Cek apakah user sebelumnya mau ke halaman khusus (misal: presensi)
                     const linkTitipan = localStorage.getItem('redirect_after_login');
 
                     if (linkTitipan) {
-                        // Bersihkan jejak
-                        localStorage.removeItem('redirect_after_login');
-                        // Antar ke tujuan awal (misal: presensi)
-                        window.location.replace(linkTitipan);
+                        localStorage.removeItem('redirect_after_login'); // Hapus jejak
+                        window.location.replace(linkTitipan); // Antar ke tujuan awal
                     } else {
-                        // Login normal, masuk ke dashboard
+                        // Login normal, masuk ke dashboard utama
                         window.location.replace("../dashboard/index.html");
                     }
 
                 } else {
-                    alert(data.message || "Login Gagal");
-                    btnLogin.innerText = "Masuk";
-                    btnLogin.disabled = false;
+                    // Login Gagal (Password/NIA salah)
+                    alert(data.message || "Login Gagal, periksa NIA dan Password Anda.");
+                    resetButton();
                 }
 
             } catch (error) {
-                console.error(error);
-                alert("Terjadi kesalahan koneksi. Coba lagi.");
-                btnLogin.innerText = "Masuk";
-                btnLogin.disabled = false;
+                console.error("Error Login:", error);
+                alert("Terjadi kesalahan koneksi atau server. Silakan coba lagi.");
+                resetButton();
             }
         });
+    }
+
+    // Fungsi helper untuk mengembalikan tombol ke semula
+    function resetButton() {
+        btnLogin.innerHTML = 'Masuk Sekarang <i class="fa-solid fa-arrow-right-to-bracket"></i>';
+        btnLogin.disabled = false;
     }
 });
