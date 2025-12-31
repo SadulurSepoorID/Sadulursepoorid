@@ -155,3 +155,31 @@
     margin-top: 5px;
     text-decoration: underline;
 }
+
+/* =========================================
+   TAMBAHAN STYLE UNTUK ALERT TUNGGAKAN
+   ========================================= */
+.alert-box.alert-danger {
+    background-color: #ffebee; /* Latar Merah Muda */
+    color: #c62828;            /* Teks Merah Gelap */
+    border: 1px solid #ffcdd2;
+    border-left: 5px solid #d32f2f; /* Garis tebal merah di kiri */
+    animation: pulse-red 2s infinite;
+}
+
+.alert-box.alert-danger i {
+    font-size: 1.3rem;
+    margin-right: 10px;
+    color: #b71c1c;
+}
+
+.alert-box.alert-danger strong {
+    font-weight: 800;
+    text-decoration: underline;
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(211, 47, 47, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+}
