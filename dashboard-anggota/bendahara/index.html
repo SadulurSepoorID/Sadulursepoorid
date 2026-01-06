@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Panel Bendahara - Sadulur Sepoor</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+       <aside class="sidebar" id="mySidebar">
+    <div class="sidebar-header">
+        <div class="mobile-close-btn" onclick="toggleSidebar()">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+        <i class="fa-solid fa-train-subway logo-icon"></i>
+        <div>
+            <h2>Sadulur Sepoor</h2>
+            <span class="badge">BENDAHARA</span>
+        </div>
+    </div>
+
+    <div class="sidebar-action">
+        <button onclick="logout()" class="btn-logout-pink">
+            <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+        </button>
+    </div>
+    
+    <nav class="nav-menu">
+        <a href="../dashboard/index.html" class="nav-link"><i class="fa-solid fa-house"></i> <span>Beranda</span></a>
+        <a href="../presensi/index.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> <span>Presensi</span></a>
+        <a href="../jadwal/index.html" class="nav-link"><i class="fa-solid fa-calendar-days"></i> <span>Jadwal Kegiatan</span></a>
+        <a href="../anggota/index.html" class="nav-link"><i class="fa-solid fa-users"></i> <span>Data Anggota</span></a>
+        <a href="../berita/index.html" class="nav-link"><i class="fa-solid fa-newspaper"></i> <span>Berita & Artikel</span></a>
+        <a href="../iuran/index.html" class="nav-link"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Iuran Kas</span></a>
+    </nav>
+    
+    </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="top-left-group">
+                    <button id="hamburger-btn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="greeting">
+                        <h3>Panel Bendahara</h3>
+                        <p class="date-now">Kelola pemasukan, pengeluaran, dan laporan kas.</p>
+                    </div>
+                </div>
+                </header>
+
+            <div class="content-section">
+                <div class="section-header-row" style="margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center;">
+                    <h4 style="margin:0;">Pemantauan Arus Kas</h4>
+                    <button class="btn-download" onclick="downloadPDF()">
+                        <i class="fa-solid fa-file-pdf"></i> Laporan
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card blue-card">
+                        <div class="icon-box-lg"><i class="fa-solid fa-vault"></i></div>
+                        <div>
+                            <h4>Total Saldo Kas</h4>
+                            <p class="nominal-lg" id="stat-saldo">Rp 0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon-box green"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                        <div>
+                            <h4>Masuk (Minggu Ini)</h4>
+                            <p class="nominal" id="stat-in">Rp 0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon-box red"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                        <div>
+                            <h4>Keluar (Minggu Ini)</h4>
+                            <p class="nominal" id="stat-out">Rp 0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:20px;">
+                    <div class="card-header">
+                        <h4>Statistik Keuangan (Bulanan)</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="financeChart" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -105,7 +105,7 @@ async function initMemberView() {
                         ${tampilanRinci}
 
                         <div style="margin-top:10px; font-size:0.75rem; color:#b71c1c; font-style:italic;">
-                            *Mohon segera dilunasi agar data tercatat rapi.
+                            *Mohon segera dilunasi demi kebaikan bersama.
                         </div>
                     </div>`;
 

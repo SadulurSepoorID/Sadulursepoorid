@@ -1,0 +1,294 @@
+/* SETUP VARIABEL WARNA (Sama dengan Iuran) */
+:root {
+    --primary: #0056b3;        /* Biru Utama */
+    --primary-light: #e3f2fd;  /* Biru Muda (Background Icon) */
+    --white: #ffffff;
+    --bg-body: #f3f6f9;        /* Background Halaman */
+    --text-dark: #333333;
+    --text-grey: #666666;
+    --danger: #dc3545;
+    --success: #28a745;
+    --sidebar-width: 260px;
+    --radius: 12px;
+}
+
+body {
+    background-color: var(--bg-body);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    color: var(--text-dark);
+}
+
+/* --- SIDEBAR STYLE FINAL (Persis Iuran) --- */
+.sidebar {
+    width: 260px;
+    background: #ffffff; /* Putih Bersih */
+    height: 100vh;
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #e0e0e0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+    padding: 25px 20px 15px 20px; /* Padding bawah dikurangi sedikit */
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    font-size: 2rem;
+    color: #0056b3; /* Biru Utama */
+}
+
+.sidebar-header h2 {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 700;
+    color: #0056b3;
+}
+
+.badge {
+    font-size: 0.65rem;
+    background: #f1f5f9; /* Abu muda */
+    color: #64748b;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    display: inline-block; /* Agar rapi */
+}
+
+/* --- TOMBOL KELUAR MERAH MUDA (Posisi Atas) --- */
+.sidebar-action {
+    padding: 0 20px 20px 20px; /* Padding kiri kanan 20px */
+}
+
+.btn-logout-pink {
+    width: 100%;
+    padding: 12px;
+    background-color: #fff1f2; /* Latar Merah Muda Soft */
+    color: #e11d48;            /* Teks Merah */
+    border: none;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.btn-logout-pink:hover {
+    background-color: #e11d48;
+    color: white;
+}
+
+/* --- MENU NAVIGASI --- */
+.nav-menu {
+    flex-grow: 1;
+    padding: 0; /* Reset padding container */
+    overflow-y: auto;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 25px; /* Padding item menu diperluas */
+    color: #64748b;     /* Abu-abu teks */
+    text-decoration: none;
+    transition: 0.3s;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-left: 0px solid transparent; /* Reset border kiri lama */
+}
+
+.nav-link i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* State Hover & Active */
+.nav-link:hover, .nav-link.active {
+    background-color: #f0f9ff; /* Biru langit sangat muda (Background Aktif) */
+    color: #0056b3;            /* Biru teks */
+}
+
+/* FOOTER SIDEBAR (Tombol Keluar) */
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.btn-logout {
+    width: 100%;
+    padding: 12px;
+    background: #fff5f5; /* Merah sangat muda */
+    color: var(--danger);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.3s;
+    font-family: inherit;
+}
+
+.btn-logout:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* --- MAIN CONTENT & HEADER --- */
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 30px;
+    min-height: 100vh;
+}
+
+.top-bar {
+    margin-bottom: 30px;
+    /* Tidak ada background box di iuran, hanya teks. 
+       Tapi jika ingin box putih seperti screenshot bendahara sebelumnya,
+       bisa ditambahkan background:white. 
+       Berdasarkan screenshot Iuran, header itu bersih (hanya teks). */
+}
+
+.top-left-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.greeting h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.greeting p {
+    margin: 5px 0 0 0;
+    color: var(--text-grey);
+    font-size: 0.9rem;
+}
+
+#hamburger-btn {
+    display: none; /* Mobile only */
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+/* --- COMPONENTS (Card, Stats, dll untuk Dashboard Bendahara) --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 25px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Warna border kiri card (Opsional, agar lebih cantik) */
+.blue-card { border-left: 4px solid var(--primary); }
+.green-card { border-left: 4px solid var(--success); }
+.red-card { border-left: 4px solid var(--danger); }
+
+.icon-box-lg, .icon-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px; /* Sedikit kotak rounded */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4rem;
+}
+
+.icon-box-lg { background: var(--primary-light); color: var(--primary); }
+.green { background: #e8f5e9; color: var(--success); }
+.red { background: #fbe9eb; color: var(--danger); }
+
+.nominal-lg {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 5px 0 0 0;
+}
+
+.nominal {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 5px 0 0 0;
+}
+
+/* Button Download/Action */
+.btn-download {
+    background: var(--white);
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: var(--text-dark);
+    transition: 0.3s;
+}
+.btn-download:hover { background: #f8f9fa; border-color: #ccc; }
+
+.card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 20px;
+}
+
+.card-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+.card-header h4 { margin: 0; color: var(--primary); }
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.active { transform: translateX(0); }
+    .main-content { margin-left: 0; padding: 20px; }
+    #hamburger-btn { display: block; }
+    .mobile-close-btn { 
+        display: block; 
+        position: absolute; 
+        right: 20px; 
+        top: 25px; 
+        font-size: 1.2rem; 
+        color: #333; 
+        cursor: pointer; 
+    }
+}
+@media (min-width: 769px) { .mobile-close-btn { display: none; } }

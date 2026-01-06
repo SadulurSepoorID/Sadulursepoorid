@@ -1,11 +1,11 @@
 let cropper; 
 let newFotoUrl = ""; 
 let idleTimer; 
-const IDLE_LIMIT = 2 * 60 * 1000; // 2 Menit
+const IDLE_LIMIT = 2 * 60 * 1000; // 2 Menit (Auto Logout)
 
 // --- INISIALISASI ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Cek Session LocalStorage
+    // 1. Cek Sesi LocalStorage
     if (!localStorage.getItem('user_session')) { 
         window.location.replace("../login/index.html"); 
         return; 
@@ -18,63 +18,97 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // 2. Load UI & Data
     initDashboard();
-    setupAutoLogout();     // Aktifkan Timer Diam
-    setupSessionIntegrity(); // Cek Kevalidan Sesi
+    setupAutoLogout();     
+    setupSessionIntegrity(); 
     
-    // setupTabCloseHandler(); <--- FITUR INI DIHAPUS AGAR REFRESH TIDAK LOGOUT
-    
+    // Prevent Back Button
     setTimeout(setupBackButtonBlocker, 500);
 });
 
-// --- FITUR SECURITY ---
-function setupSessionIntegrity() {
-    setInterval(() => {
-        // Cek sederhana apakah localStorage masih ada
-        if (!localStorage.getItem('user_session')) {
-             // Tidak ada alert/redirect jika user hanya refresh halaman
-             // Kita biarkan logika initDashboard menangani validasi
-        }
-    }, 1000); 
-}
-
-// Fitur "Logout saat Tab Ditutup" (setupTabCloseHandler) DIHAPUS.
-// Alasan: Browser menganggap Refresh = Tutup Tab, yang menyebabkan log sampah.
-// Solusi: Kita andalkan Auto Logout (Idle) dan Manual Logout saja.
-
-function setupBackButtonBlocker() {
-    history.pushState(null, document.title, location.href);
-    history.pushState(null, document.title, location.href);
-    window.addEventListener('popstate', function (event) {
-        history.pushState(null, document.title, location.href);
-        // Konfirmasi logout (Optional)
-        if (confirm("Anda menekan tombol kembali.\nIngin Logout sekarang?")) {
-            logout();
-        }
-    });
-}
+// --- FITUR UTAMA ---
 
 function initDashboard() {
+    // Tampilkan Tanggal & Salam
     const dateEl = document.getElementById('date-display');
     if (dateEl) { const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; dateEl.innerText = new Date().toLocaleDateString('id-ID', options); }
+    
     const greetEl = document.getElementById('greet-msg');
     if (greetEl) { const h = new Date().getHours(); greetEl.innerText = (h<12?"Selamat Pagi":h<15?"Selamat Siang":h<18?"Selamat Sore":"Selamat Malam") + ","; }
     
+    // Render Data Awal
     updateUI(window.currentUser);
+    
+    // Ambil Data Terbaru dari Server (Sync)
     fetchUserData(); 
     fetchDashboardStats();
-
-    // Tutup dropdown jika klik di luar
-    document.addEventListener('click', function(event) {
-        const wrapper = document.querySelector('.profile-wrapper');
-        const dropdown = document.getElementById('profile-dropdown');
-        if (wrapper && !wrapper.contains(event.target)) {
-            if (dropdown && dropdown.classList.contains('show')) dropdown.classList.remove('show');
-        }
-    });
 }
 
-// --- STATISTIK DASHBOARD ---
+function updateUI(user) {
+    if (!user) return;
+    
+    // Helper Update Text
+    const setText = (id, txt) => { const el = document.getElementById(id); if(el) el.innerText = txt; };
+    const setValue = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+    
+    setText('top-nama', user.nama);
+    setText('top-jabatan', user.jabatan || "Anggota");
+    setText('stat-nia', user.nia || window.currentUser.nia);
+
+    // Update Avatar
+    const avatarUrl = user.foto && user.foto.length > 5 ? user.foto : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama)}&background=0056b3&color=fff`;
+    if(document.getElementById('top-avatar')) document.getElementById('top-avatar').src = avatarUrl;
+    if(document.getElementById('edit-avatar-preview')) document.getElementById('edit-avatar-preview').src = avatarUrl;
+    
+    setValue('edit-nama', user.nama);
+
+    // --- [FITUR KHUSUS PENGURUS/BENDAHARA - MODIFIKASI MENU CEPAT] ---
+    // Jika jabatan BUKAN "Anggota", munculkan tombol akses ke Panel Admin/Bendahara di Grid Menu
+    const jabatan = (user.jabatan || "Anggota").toLowerCase().trim();
+    
+    if (jabatan !== 'anggota') {
+        const menuGrid = document.querySelector('.menu-grid');
+        
+        // Cek agar tidak duplikat
+        if (!document.getElementById('btn-admin-panel') && menuGrid) {
+            const adminLink = document.createElement('a');
+            adminLink.id = 'btn-admin-panel';
+            adminLink.href = "../bendahara/index.html"; // Link ke folder bendahara
+            adminLink.className = 'menu-card'; // Menggunakan class menu-card agar tampilan kotak
+            
+            // Styling Highlight Orange (Agar terlihat beda dan spesial)
+            adminLink.style.backgroundColor = '#fff3e0'; 
+            adminLink.style.color = '#e65100';
+            adminLink.style.border = '1px solid #ffe0b2';
+            
+            // Text tombol menyesuaikan jabatan
+            const btnText = jabatan.includes('bendahara') ? 'Panel Bendahara' : 'Transparansi Kas';
+            const btnIcon = jabatan.includes('bendahara') ? 'fa-vault' : 'fa-chart-pie';
+            
+            adminLink.innerHTML = `<i class="fa-solid ${btnIcon}"></i> <span>${btnText}</span>`;
+            
+            // Masukkan di urutan PERTAMA di menu grid (Prepend)
+            menuGrid.prepend(adminLink);
+        }
+    }
+}
+
+async function fetchUserData() {
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: 'get_profile', nia: window.currentUser.nia })
+        });
+        const data = await response.json();
+        if (data.status) {
+            updateUI(data); // Update UI dengan data baru
+            window.currentUser = { ...window.currentUser, ...data }; // Update session lokal
+            localStorage.setItem('user_session', JSON.stringify(window.currentUser));
+        }
+    } catch (error) {}
+}
+
 async function fetchDashboardStats() {
     const statEl = document.getElementById('stat-kehadiran');
     if (!statEl) return;
@@ -83,77 +117,61 @@ async function fetchDashboardStats() {
         const response = await fetch(API_URL, {
             method: 'POST', redirect: 'follow',
             headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ 
-                action: 'get_dashboard_stats', 
-                nia: window.currentUser.nia 
-            })
+            body: JSON.stringify({ action: 'get_dashboard_stats', nia: window.currentUser.nia })
         });
         
         const data = await response.json();
         
         if (data.status) {
-            const jabatan = (window.currentUser.jabatan || "").toLowerCase().trim();
-            if (jabatan === "anggota") {
-                statEl.innerHTML = `<span style="font-size:1.1rem; font-weight:700">${data.user_hadir}</span> <span style="font-size:0.8rem; color:#666">/ ${data.total_kegiatan} Kegiatan</span>`;
-            } else {
-                statEl.innerText = `${data.total_kegiatan} Kegiatan`;
-            }
+            statEl.innerHTML = `<span style="font-size:1.1rem; font-weight:700">${data.user_hadir}</span> <span style="font-size:0.8rem; color:#666">/ ${data.total_kegiatan} Kegiatan</span>`;
         }
     } catch (e) {
-        console.error("Gagal ambil statistik", e);
         statEl.innerText = "-";
     }
 }
 
-// --- AUTO LOGOUT (IDLE TIMER) ---
+// --- SECURITY & LOGOUT ---
+
+function setupSessionIntegrity() {
+    setInterval(() => {
+        if (!localStorage.getItem('user_session')) { /* logic if needed */ }
+    }, 2000); 
+}
+
+function setupBackButtonBlocker() {
+    history.pushState(null, document.title, location.href);
+    window.addEventListener('popstate', function (event) {
+        history.pushState(null, document.title, location.href);
+    });
+}
+
 function setupAutoLogout() {
     function resetTimer() {
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => {
-            // Hapus listener
-            document.onmousemove = null; document.onclick = null;
-            document.ontouchstart = null; document.onscroll = null; document.onkeydown = null;
-            
             alert("Sesi habis (2 Menit Tidak Aktif). Logout otomatis.");
             logout();
         }, IDLE_LIMIT); 
     }
-    
-    // Reset timer pada setiap aktivitas user
-    window.onload = resetTimer;
-    document.onmousemove = resetTimer; 
-    document.onclick = resetTimer;
-    document.ontouchstart = resetTimer; 
-    document.onscroll = resetTimer;
-    document.onkeydown = resetTimer; 
+    window.onload = resetTimer; document.onmousemove = resetTimer; document.onclick = resetTimer;
+    document.ontouchstart = resetTimer; document.onscroll = resetTimer; document.onkeydown = resetTimer; 
 }
 
-// --- LOGOUT ---
 async function logout() { 
     const btnLogout = document.querySelector('.btn-logout');
-    if(btnLogout) { btnLogout.disabled = true; btnLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Keluar...'; }
+    if(btnLogout) { btnLogout.disabled = true; btnLogout.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Keluar...'; }
     document.body.style.cursor = 'wait';
 
     const payload = JSON.stringify({ action: 'logout', nia: window.currentUser.nia });
-    
     try {
-        // Gunakan sendBeacon untuk logout yang lebih reliable
         if (navigator.sendBeacon) {
             const blob = new Blob([payload], {type: 'text/plain;charset=utf-8'});
             navigator.sendBeacon(API_URL, blob);
         } else {
-            // Fallback untuk browser lama
-            fetch(API_URL, {
-                method: 'POST', redirect: 'follow', 
-                headers: { "Content-Type": "text/plain;charset=utf-8" }, body: payload
-            });
+            fetch(API_URL, { method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: payload });
         }
-        
-        // Delay visual sebentar
-        await new Promise(r => setTimeout(r, 1000));
-    } catch (e) {
-        console.log("Logout error", e);
-    }
+        await new Promise(r => setTimeout(r, 800));
+    } catch (e) {}
     
     logoutLocal();
 }
@@ -164,37 +182,7 @@ function logoutLocal() {
     window.location.replace("../login/index.html"); 
 }
 
-// --- PROFILE & UI UPDATES ---
-async function fetchUserData() {
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: 'get_profile', nia: window.currentUser.nia })
-        });
-        const data = await response.json();
-        if (data.status) {
-            updateUI(data);
-            window.currentUser = { ...window.currentUser, ...data };
-            localStorage.setItem('user_session', JSON.stringify(window.currentUser));
-        }
-    } catch (error) {}
-}
-
-function updateUI(user) {
-    if (!user) return;
-    const setText = (id, txt) => { const el = document.getElementById(id); if(el) el.innerText = txt; };
-    const setValue = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
-    
-    setText('top-nama', user.nama);
-    setText('top-jabatan', user.jabatan || "Anggota");
-    setText('stat-nia', user.nia || window.currentUser.nia);
-
-    const avatarUrl = user.foto && user.foto.length > 5 ? user.foto : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama)}&background=0056b3&color=fff`;
-    if(document.getElementById('top-avatar')) document.getElementById('top-avatar').src = avatarUrl;
-    if(document.getElementById('edit-avatar-preview')) document.getElementById('edit-avatar-preview').src = avatarUrl;
-    setValue('edit-nama', user.nama);
-}
-
+// --- UI HELPERS ---
 function openEditModal() { document.getElementById('edit-modal').classList.remove('hidden'); }
 function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
 function toggleSidebar() {
@@ -202,7 +190,7 @@ function toggleSidebar() {
     document.getElementById('sidebar-overlay').classList.toggle('active');
 }
 
-// --- CROPPER ---
+// --- CROPPER & UPLOAD FOTO ---
 function handleFileSelect(event) {
     const file = event.target.files[0];
     if (file) {

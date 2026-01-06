@@ -59,10 +59,14 @@ async function loadActivities() {
                     btnText = `<i class="fa-solid fa-lock"></i> Selesai`;
                 }
 
-                // 2. Logic Tombol Edit (Khusus Pengurus)
-                let btnEdit = "";
+                // 2. Logic Tombol Edit & Hapus (Khusus Pengurus)
+                let adminButtons = "";
                 if (isPengurus) {
-                    btnEdit = `<button onclick="openEditModal(${index})" style="margin-right:10px; border:1px solid #f39c12; background:none; color:#f39c12; padding:6px 15px; border-radius:20px; cursor:pointer; font-weight:500; font-size:0.8rem;"><i class="fa-solid fa-pen"></i> Edit</button>`;
+                    // Tombol Edit (Kuning)
+                    adminButtons += `<button onclick="openEditModal(${index})" style="margin-right:5px; border:1px solid #f39c12; background:none; color:#f39c12; padding:6px 12px; border-radius:20px; cursor:pointer; font-weight:500; font-size:0.8rem;"><i class="fa-solid fa-pen"></i> Edit</button>`;
+                    
+                    // Tombol Hapus (Merah) - BARU
+                    adminButtons += `<button onclick="deleteActivity('${item.id}', '${item.nama}')" style="margin-right:10px; border:1px solid #d32f2f; background:none; color:#d32f2f; padding:6px 12px; border-radius:20px; cursor:pointer; font-weight:500; font-size:0.8rem;"><i class="fa-solid fa-trash"></i></button>`;
                 }
 
                 const mapHtml = item.map_html ? item.map_html : `<div style="text-align:center; padding:30px; color:#aaa;">Peta belum disematkan.</div>`;
@@ -89,7 +93,7 @@ async function loadActivities() {
                                 </button>
                             </div>
                             <div>
-                                ${btnEdit}
+                                ${adminButtons}
                                 <a href="../presensi/index.html" class="btn-presensi-link" ${btnAttr}>
                                     ${btnText}
                                 </a>
@@ -180,6 +184,39 @@ async function addActivity() {
         } else { alert("Gagal: " + result.message); }
     } catch (e) { alert("Error koneksi."); }
     btn.innerHTML = originalText; btn.disabled = false;
+}
+
+// --- LOGIKA HAPUS (BARU) ---
+async function deleteActivity(id, nama) {
+    if (!confirm(`Apakah Anda yakin ingin menghapus kegiatan "${nama}"?\nData yang dihapus tidak bisa dikembalikan.`)) {
+        return;
+    }
+
+    const originalCursor = document.body.style.cursor;
+    document.body.style.cursor = 'wait';
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: 'delete_activity', id: id })
+        });
+        
+        const result = await response.json();
+        
+        document.body.style.cursor = originalCursor;
+
+        if (result.status) {
+            alert("Berhasil: " + result.message);
+            loadActivities(); // Refresh list untuk menghilangkan item yang dihapus
+        } else {
+            alert("Gagal: " + result.message);
+        }
+    } catch (e) {
+        document.body.style.cursor = originalCursor;
+        alert("Error koneksi saat menghapus.");
+    }
 }
 
 // Utilitas

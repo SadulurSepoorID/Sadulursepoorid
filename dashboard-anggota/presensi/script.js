@@ -69,12 +69,11 @@ function toggleSound() {
 
 // --- INIT APP ---
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Ambil Sesi (Tidak perlu cek existency, karena sudah dicek di HTML)
+    // 1. Ambil Sesi 
     try {
         window.currentUser = JSON.parse(localStorage.getItem('user_session'));
         if (!window.currentUser) throw new Error("No Session");
     } catch(e) {
-        // Fallback terakhir jika localStorage korup/dihapus paksa
         window.location.replace("../login/index.html");
         return;
     }
@@ -211,22 +210,59 @@ async function loadAdminAttendeeList() {
         registeredNIAs.clear(); 
         
         if (json.status && json.list.length > 0) {
+            
+            // --- FITUR SORTING (Baru) ---
+            // Urutkan: Belum Hadir (Alpa/Kosong) di ATAS, Sudah Hadir di BAWAH.
+            // Jika status sama, urutkan Nama A-Z.
+            json.list.sort((a, b) => {
+                const getScore = (status) => {
+                    // Skor 0 = Prioritas Tinggi (Belum Absen)
+                    // Skor 1 = Prioritas Rendah (Sudah Absen/Izin/Sakit)
+                    if (!status || status === "" || status === "Alpa") return 0;
+                    return 1;
+                };
+
+                const scoreA = getScore(a.status);
+                const scoreB = getScore(b.status);
+
+                if (scoreA !== scoreB) {
+                    return scoreA - scoreB;
+                }
+                return a.nama.localeCompare(b.nama);
+            });
+            // ---------------------------
+
             json.list.forEach(user => {
-                registeredNIAs.add(user.nia); 
+                // Hanya kunci Scanner jika status SUDAH TERISI dan BUKAN Alpa
+                if (user.status && user.status !== "" && user.status !== "Alpa") {
+                    registeredNIAs.add(user.nia); 
+                }
+
+                // Cek status "Selesai" untuk visual
+                const isDone = (user.status && user.status !== "" && user.status !== "Alpa");
 
                 const div = document.createElement('div');
                 div.className = 'att-item';
+                
+                // Jika sudah absen, beri background abu-abu
+                if (isDone) {
+                    div.style.background = "#f8fafc";
+                    div.style.opacity = "0.75";
+                }
+
                 const selectHtml = `
                     <select class="status-select ${user.status}" onchange="changeStatus('${user.nia}', this)">
+                        <option value="" ${!user.status || user.status=='' ? 'selected' : ''} style="color:#999;">-- Belum --</option>
                         <option value="Hadir" ${user.status=='Hadir'?'selected':''}>Hadir</option>
                         <option value="Izin" ${user.status=='Izin'?'selected':''}>Izin</option>
                         <option value="Sakit" ${user.status=='Sakit'?'selected':''}>Sakit</option>
                         <option value="Alpa" ${user.status=='Alpa'?'selected':''}>Alpa</option>
                     </select>
                 `;
+                
                 div.innerHTML = `
                     <div class="att-info">
-                        <h4>${user.nama}</h4>
+                        <h4 style="${isDone ? 'color:#64748b' : ''}">${user.nama}</h4>
                         <span>${user.nia}</span>
                     </div>
                     <div>${selectHtml}</div>
@@ -236,12 +272,13 @@ async function loadAdminAttendeeList() {
         } else {
             list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Belum ada data presensi.</div>';
         }
-    } catch(e) { list.innerHTML = "Gagal memuat."; }
+    } catch(e) { list.innerHTML = "Gagal memuat."; console.error(e); }
 }
 
 async function changeStatus(nia, selectEl) {
     const newStatus = selectEl.value;
-    selectEl.className = `status-select ${newStatus}`;
+    selectEl.className = `status-select ${newStatus}`; 
+    
     try {
         await fetch(API_URL, {
             method: 'POST', redirect: 'follow',
@@ -253,7 +290,20 @@ async function changeStatus(nia, selectEl) {
                 lokasi: selectedEvent.lokasi
             })
         });
-        showToast(`Status ${nia} diubah: ${newStatus}`, "success");
+
+        // Update Set registeredNIAs secara real-time
+        // Jika status diubah jadi Kosong/Alpa, hapus dari list registered (agar bisa discan ulang jika perlu)
+        if (newStatus === "" || newStatus === "Alpa") {
+            registeredNIAs.delete(nia); 
+            showToast(`Status ${nia} di-reset`, "normal");
+        } else {
+            registeredNIAs.add(nia);
+            showToast(`Status ${nia} diubah: ${newStatus}`, "success");
+        }
+        
+        // Opsional: Reload list jika ingin sorting langsung berubah saat itu juga
+        // loadAdminAttendeeList(); 
+
     } catch(e) { showToast("Gagal update status", "error"); }
 }
 
@@ -277,7 +327,7 @@ function stopScanner() {
     if(html5Scanner) html5Scanner.stop().then(()=>html5Scanner.clear()).catch(()=>{});
     document.getElementById('card-scanner').classList.add('hidden');
     document.getElementById('card-setup').classList.remove('hidden');
-    loadAdminAttendeeList();
+    loadAdminAttendeeList(); // Saat scanner ditutup, list direfresh & disorting ulang
 }
 
 async function onScanSuccess(decodedText) {
