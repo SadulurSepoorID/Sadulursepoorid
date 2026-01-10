@@ -11,24 +11,26 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Install & Build
+      - name: Build Process
         run: |
-          # Masuk ke folder login
+          # Masuk ke folder login sesuai screenshot kamu
           cd dashboard-anggota/login
           
-          # Kita buat file android secara bersih
+          # Install tool pembungkus aplikasi
           npm install @capacitor/core @capacitor/cli @capacitor/android
+          
+          # Inisialisasi aplikasi dengan nama DSS
           npx cap init "DSS" "com.dss.app" --web-dir .
           npx cap add android
           
-          # Proses pembuatan APK
+          # Masuk ke folder android untuk menciptakan file APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Upload APK ke GitHub
         uses: actions/upload-artifact@v4
         with:
           name: DSS-App-Installer
