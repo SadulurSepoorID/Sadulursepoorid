@@ -15,19 +15,22 @@ jobs:
 
       - name: Build Process
         run: |
-          # Pindah ke folder login sesuai screenshot kamu
+          # Pindah ke folder login
           cd dashboard-anggota/login
           
-          # Install tool pembungkus aplikasi (Capacitor)
+          # Hapus folder android lama jika ada agar tidak bentrok
+          rm -rf android
+          
+          # Install tool utama
           npm install @capacitor/core @capacitor/cli @capacitor/android
           
-          # Inisialisasi ulang agar bersih
+          # Inisialisasi ulang
           npx cap init "DSS" "com.dss.app" --web-dir .
           
-          # Menambahkan folder Android
+          # Tambah platform android secara bersih
           npx cap add android
           
-          # Proses final pembuatan file APK
+          # Masuk ke folder android untuk pembuatan APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
