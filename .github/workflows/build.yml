@@ -13,20 +13,19 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install & Build from Subfolder
+      - name: Install & Build
         run: |
-          # Masuk ke folder tempat kode aplikasi berada
+          # Masuk ke folder login
           cd dashboard-anggota/login
           
-          # Install Capacitor di folder tersebut
+          # Kita buat file android secara bersih
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          
-          # Inisialisasi Capacitor
           npx cap init "DSS" "com.dss.app" --web-dir .
           npx cap add android
           
-          # Masuk ke folder android yang baru dibuat untuk proses build
+          # Proses pembuatan APK
           cd android
+          chmod +x gradlew
           ./gradlew assembleDebug
 
       - name: Upload APK
