@@ -1,0 +1,36 @@
+name: Build Android APK
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install & Build from Subfolder
+        run: |
+          # Masuk ke folder tempat kode aplikasi berada
+          cd dashboard-anggota/login
+          
+          # Install Capacitor di folder tersebut
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          
+          # Inisialisasi Capacitor
+          npx cap init "DSS" "com.dss.app" --web-dir .
+          npx cap add android
+          
+          # Masuk ke folder android yang baru dibuat untuk proses build
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: DSS-App-Installer
+          path: dashboard-anggota/login/android/app/build/outputs/apk/debug/app-debug.apk
