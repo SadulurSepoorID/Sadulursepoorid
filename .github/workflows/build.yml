@@ -8,6 +8,12 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
 
+      - name: Setup Java (PENTING UNTUK APK)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -15,25 +21,20 @@ jobs:
 
       - name: Build Process
         run: |
-          # Pindah ke folder login sesuai screenshot kamu
           cd dashboard-anggota/login
           
-          # Hapus sisa-sisa build lama agar bersih
+          # Bersihkan sisa kegagalan sebelumnya
           rm -rf android node_modules package-lock.json
           
-          # Paksa buat package.json yang benar jika ada error sebelumnya
-          echo '{"name": "dss-app", "version": "1.0.0", "dependencies": {"@capacitor/android": "^5.0.0", "@capacitor/cli": "^5.0.0", "@capacitor/core": "^5.0.0"}}' > package.json
+          # Buat package.json otomatis agar tidak ada error file missing
+          echo '{"name": "dss-app", "version": "1.0.0", "dependencies": {"@capacitor/android": "^6.0.0", "@capacitor/cli": "^6.0.0", "@capacitor/core": "^6.0.0"}}' > package.json
           
-          # Install tool utama
+          # Install dan Setup
           npm install
-          
-          # Inisialisasi ulang Capacitor
           npx cap init "DSS" "com.dss.app" --web-dir .
-          
-          # Tambah platform android
           npx cap add android
           
-          # Proses final pembuatan file APK
+          # Proses pembuatan APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
