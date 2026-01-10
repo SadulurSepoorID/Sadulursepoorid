@@ -15,22 +15,24 @@ jobs:
 
       - name: Build Process
         run: |
-          # Masuk ke folder login sesuai screenshot kamu
+          # Pindah ke folder login sesuai screenshot kamu
           cd dashboard-anggota/login
           
-          # Install tool pembungkus aplikasi
+          # Install tool pembungkus aplikasi (Capacitor)
           npm install @capacitor/core @capacitor/cli @capacitor/android
           
-          # Inisialisasi aplikasi dengan nama DSS
+          # Inisialisasi ulang agar bersih
           npx cap init "DSS" "com.dss.app" --web-dir .
+          
+          # Menambahkan folder Android
           npx cap add android
           
-          # Masuk ke folder android untuk menciptakan file APK
+          # Proses final pembuatan file APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK ke GitHub
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: DSS-App-Installer
