@@ -15,22 +15,25 @@ jobs:
 
       - name: Build Process
         run: |
-          # Pindah ke folder login
+          # Pindah ke folder login sesuai screenshot kamu
           cd dashboard-anggota/login
           
-          # Hapus folder android lama jika ada agar tidak bentrok
-          rm -rf android
+          # Hapus sisa-sisa build lama agar bersih
+          rm -rf android node_modules package-lock.json
+          
+          # Paksa buat package.json yang benar jika ada error sebelumnya
+          echo '{"name": "dss-app", "version": "1.0.0", "dependencies": {"@capacitor/android": "^5.0.0", "@capacitor/cli": "^5.0.0", "@capacitor/core": "^5.0.0"}}' > package.json
           
           # Install tool utama
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install
           
-          # Inisialisasi ulang
+          # Inisialisasi ulang Capacitor
           npx cap init "DSS" "com.dss.app" --web-dir .
           
-          # Tambah platform android secara bersih
+          # Tambah platform android
           npx cap add android
           
-          # Masuk ke folder android untuk pembuatan APK
+          # Proses final pembuatan file APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
