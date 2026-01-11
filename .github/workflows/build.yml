@@ -5,52 +5,66 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Source
+      - name: 1. Ambil Kode
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: 2. Siapkan Java (Wajib)
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Node.js
+      - name: 3. Siapkan Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
 
-      - name: Prepare Clean Build Zone
+      - name: 4. PERBAIKAN OTOMATIS & RAKIT ULANG
         run: |
-          # 1. Buat folder rakitan baru yang bersih
-          mkdir rakit_apk
+          # 1. Buat folder kerja baru yang bersih
+          mkdir rakit_app
           
-          # 2. Salin HANYA file website kamu ke sana (abaikan file setting lama yang rusak)
-          cp dashboard-anggota/login/index.html rakit_apk/
-          cp dashboard-anggota/login/*.css rakit_apk/ || true
-          cp dashboard-anggota/login/*.js rakit_apk/ || true
-          cp dashboard-anggota/login/*.png rakit_apk/ || true
+          # 2. Ambil file aplikasi utama
+          cp dashboard-anggota/login/index.html rakit_app/
+          cp dashboard-anggota/login/style.css rakit_app/
+          cp dashboard-anggota/login/script.js rakit_app/
           
-          # 3. Masuk ke folder bersih
-          cd rakit_apk
+          # 3. BUAT ULANG config.js (Versi Perbaikan) DI DALAM FOLDER
+          # Kita perbaiki 'Const' jadi 'const' dan tambah tanda kutip penutup
+          echo 'const API_URL = "https://script.google.com/macros/s/AKfycbxy4kFEmbltbIbu0InwZt1GMNCgpkzbIKZ0m5hOSFzKHNW3ULuhoglCJ1yivLTAyoUglw";' > rakit_app/config.js
           
-          # 4. Buat identitas aplikasi baru dari nol
-          npm init -y
+          # 4. Patch index.html
+          # Ubah <script src="../config.js"> jadi <script src="config.js">
+          sed -i 's|\.\./config.js|config.js|g' rakit_app/index.html
           
-          # 5. Install mesin Capacitor terbaru
+          # 5. Download Ikon (Wajib ada file fisik)
+          wget -O rakit_app/icon.png "https://sadulursepoor.web.id/img/Logo%20SS.png"
+          
+          # Cek isi folder untuk memastikan semua ada
+          echo "=== ISI FOLDER FINAL ==="
+          ls -R rakit_app/
+
+      - name: 5. PROSES BUILD APK
+        run: |
+          cd rakit_app
+          
+          # Buat identitas aplikasi baru
+          echo '{"name": "dss-app", "version": "1.0.0"}' > package.json
+          
+          # Install mesin Capacitor
           npm install @capacitor/core @capacitor/cli @capacitor/android
           
-          # 6. Setup Aplikasi
+          # Inisialisasi
           npx cap init "DSS" "com.dss.app" --web-dir .
           npx cap add android
           
-          # 7. Build APK
+          # Jahit APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: 6. Upload Hasil APK
         uses: actions/upload-artifact@v4
         with:
-          name: DSS-App-Installer
-          # Perhatikan: Path-nya sekarang berubah karena kita pakai folder 'rakit_apk'
-          path: rakit_apk/android/app/build/outputs/apk/debug/app-debug.apk
+          name: DSS-App-Siap-Pakai
+          path: rakit_app/android/app/build/outputs/apk/debug/app-debug.apk
