@@ -5,66 +5,45 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 1. Ambil Kode
+      - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: 2. Siapkan Java (Wajib)
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: 3. Siapkan Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: 4. PERBAIKAN OTOMATIS & RAKIT ULANG
+      - name: Build APK
         run: |
-          # 1. Buat folder kerja baru yang bersih
-          mkdir rakit_app
+          # Masuk ke folder login (Sekarang semua file SUDAH LENGKAP disini)
+          cd dashboard-anggota/login
           
-          # 2. Ambil file aplikasi utama
-          cp dashboard-anggota/login/index.html rakit_app/
-          cp dashboard-anggota/login/style.css rakit_app/
-          cp dashboard-anggota/login/script.js rakit_app/
-          
-          # 3. BUAT ULANG config.js (Versi Perbaikan) DI DALAM FOLDER
-          # Kita perbaiki 'Const' jadi 'const' dan tambah tanda kutip penutup
-          echo 'const API_URL = "https://script.google.com/macros/s/AKfycbxy4kFEmbltbIbu0InwZt1GMNCgpkzbIKZ0m5hOSFzKHNW3ULuhoglCJ1yivLTAyoUglw";' > rakit_app/config.js
-          
-          # 4. Patch index.html
-          # Ubah <script src="../config.js"> jadi <script src="config.js">
-          sed -i 's|\.\./config.js|config.js|g' rakit_app/index.html
-          
-          # 5. Download Ikon (Wajib ada file fisik)
-          wget -O rakit_app/icon.png "https://sadulursepoor.web.id/img/Logo%20SS.png"
-          
-          # Cek isi folder untuk memastikan semua ada
-          echo "=== ISI FOLDER FINAL ==="
-          ls -R rakit_app/
-
-      - name: 5. PROSES BUILD APK
-        run: |
-          cd rakit_app
+          # Bersihkan sisa-sisa lama
+          rm -rf android node_modules package-lock.json package.json
           
           # Buat identitas aplikasi baru
           echo '{"name": "dss-app", "version": "1.0.0"}' > package.json
           
-          # Install mesin Capacitor
+          # Install Capacitor
           npm install @capacitor/core @capacitor/cli @capacitor/android
           
           # Inisialisasi
           npx cap init "DSS" "com.dss.app" --web-dir .
           npx cap add android
           
-          # Jahit APK
+          # Build APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: 6. Upload Hasil APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: DSS-App-Siap-Pakai
-          path: rakit_app/android/app/build/outputs/apk/debug/app-debug.apk
+          name: DSS-App-Final
+          path: dashboard-anggota/login/android/app/build/outputs/apk/debug/app-debug.apk
