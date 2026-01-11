@@ -8,7 +8,7 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: Setup Java (PENTING UNTUK APK)
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
@@ -21,18 +21,22 @@ jobs:
 
       - name: Build Process
         run: |
+          # Pindah ke folder login
           cd dashboard-anggota/login
           
-          # Bersihkan sisa kegagalan sebelumnya
-          rm -rf android node_modules package-lock.json
+          # Hapus sisa-sisa lama secara total agar tidak bentrok
+          rm -rf android node_modules package-lock.json package.json
           
-          # Buat package.json otomatis agar tidak ada error file missing
-          echo '{"name": "dss-app", "version": "1.0.0", "dependencies": {"@capacitor/android": "^6.0.0", "@capacitor/cli": "^6.0.0", "@capacitor/core": "^6.0.0"}}' > package.json
+          # Buat package.json baru yang bersih
+          echo '{"name": "dss-app","version": "1.0.0","dependencies": {"@capacitor/android": "6.0.0","@capacitor/cli": "6.0.0","@capacitor/core": "6.0.0"}}' > package.json
           
-          # Install dan Setup
+          # Install dan Paksa buat folder android baru
           npm install
           npx cap init "DSS" "com.dss.app" --web-dir .
           npx cap add android
+          
+          # Salin file web kamu ke dalam folder android agar sinkron
+          npx cap copy
           
           # Proses pembuatan APK
           cd android
