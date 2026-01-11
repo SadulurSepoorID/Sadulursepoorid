@@ -8,7 +8,7 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: Setup Java (Mesin Utama APK)
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
@@ -19,33 +19,38 @@ jobs:
         with:
           node-version: 20
 
-      - name: Build Process
+      - name: Prepare Clean Build Zone
         run: |
-          # Masuk ke folder sesuai screenshot kamu
-          cd dashboard-anggota/login
+          # 1. Buat folder rakitan baru yang bersih
+          mkdir rakit_apk
           
-          # Hapus semua sisa kegagalan sebelumnya agar tidak bentrok
-          rm -rf android node_modules package-lock.json capacitor.config.json package.json
+          # 2. Salin HANYA file website kamu ke sana (abaikan file setting lama yang rusak)
+          cp dashboard-anggota/login/index.html rakit_apk/
+          cp dashboard-anggota/login/*.css rakit_apk/ || true
+          cp dashboard-anggota/login/*.js rakit_apk/ || true
+          cp dashboard-anggota/login/*.png rakit_apk/ || true
           
-          # Buat pondasi aplikasi baru secara otomatis
-          echo '{"name": "dss-app", "version": "1.0.0"}' > package.json
+          # 3. Masuk ke folder bersih
+          cd rakit_apk
           
-          # Install alat pembungkus terbaru
-          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest
+          # 4. Buat identitas aplikasi baru dari nol
+          npm init -y
           
-          # Inisialisasi Capacitor dengan Nama DSS
-          npx cap init DSS com.dss.app --web-dir .
+          # 5. Install mesin Capacitor terbaru
+          npm install @capacitor/core @capacitor/cli @capacitor/android
           
-          # Tambahkan folder android secara fresh
+          # 6. Setup Aplikasi
+          npx cap init "DSS" "com.dss.app" --web-dir .
           npx cap add android
           
-          # Proses final menjahit APK
+          # 7. Build APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK ke GitHub
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: DSS-App-Installer
-          path: dashboard-anggota/login/android/app/build/outputs/apk/debug/app-debug.apk
+          # Perhatikan: Path-nya sekarang berubah karena kita pakai folder 'rakit_apk'
+          path: rakit_apk/android/app/build/outputs/apk/debug/app-debug.apk
