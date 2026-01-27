@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel MSDM & Ketua - Sadulur Sepoor</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-train-subway logo-icon"></i>
+                <div class="logo-text">
+                    <h3>Sadulur Sepoor</h3>
+                    <span>Portal Organisasi</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <a href="../dashboard/index.html" class="menu-item">
+                    <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+                </a>
+                <a href="#" class="menu-item active">
+                    <i class="fa-solid fa-users-gear"></i> <span>Kelola SDM</span>
+                </a>
+                <a href="presensi/index.html" class="menu-item">
+                    <i class="fa-solid fa-eye"></i> <span>Pantau Presensi</span>
+                </a>
+                <a href="#" class="menu-item logout" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div style="display:flex; align-items:center;">
+                    <button class="menu-toggle" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 class="page-title">Panel MSDM</h2>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-text">
+                        <span id="admin-name">Memuat...</span>
+                        <small id="admin-role">MSDM</small>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="icon-box blue"><i class="fa-solid fa-users"></i></div>
+                        <div>
+                            <h4>Total Anggota</h4>
+                            <p id="total-anggota">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon-box red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div>
+                            <h4>Dalam Pengawasan</h4>
+                            <p id="anggota-bermasalah">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toolbar-section">
+                    <div class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Cari Nama atau NIA...">
+                    </div>
+                    <button class="btn-secondary" onclick="openTemplateModal()">
+                        <i class="fa-solid fa-bookmark"></i> Kelola Template
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-wrapper"> 
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Anggota</th>
+                                    <th>Jabatan</th>
+                                    <th style="text-align:center;">Skor</th>
+                                    <th>Status</th>
+                                    <th style="text-align:right;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="member-table-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay-custom hidden" id="sanksi-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-scale-balanced"></i> Input Kedisiplinan</h3>
+                <span class="close-modal" onclick="closeModal('sanksi-modal')">&times;</span>
+            </div>
+            
+            <div class="modal-body">
+                <input type="hidden" id="target-nia">
+                <input type="hidden" id="target-nama">
+                
+                <div class="form-group">
+                    <label>Target Anggota</label>
+                    <input type="text" id="display-target-nama" class="form-input" disabled style="background:#f5f5f5;">
+                </div>
+
+                <div class="form-group">
+                    <label>Jenis Tindakan</label>
+                    <select id="sanksi-tipe" class="form-select" onchange="toggleSanksiType()">
+                        <option value="violation">🚨 Pelanggaran (Kurangi Poin)</option>
+                        <option value="reward">🎁 Pemutihan / Reward (Tambah Poin)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                     <label style="color:var(--primary);">Pilih Template (Opsional)</label>
+                     <select id="select-template-apply" class="form-select" style="border-color:var(--primary);" onchange="applyTemplateToForm()">
+                         <option value="">-- Manual --</option>
+                     </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Keterangan / Masalah</label>
+                    <input type="text" id="sanksi-masalah" class="form-input" placeholder="Contoh: Terlambat Hadir">
+                </div>
+
+                <div class="form-group">
+                    <label id="label-poin" style="color:var(--accent-red);">Poin Pengurang</label>
+                    <input type="number" id="sanksi-poin" class="form-input" placeholder="10" min="1">
+                </div>
+
+                <div style="display:flex; gap:15px;">
+                    <div style="flex:1;" class="form-group">
+                        <label>Mulai Berlaku</label>
+                        <input type="date" id="sanksi-start-date" class="form-input">
+                    </div>
+                    <div style="flex:1;" class="form-group">
+                        <label>Sampai (Exp)</label>
+                        <input type="date" id="sanksi-end-date" class="form-input">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn-save" onclick="submitSanksi()">Simpan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay-custom hidden" id="history-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Riwayat Poin Anggota</h3>
+                <span class="close-modal" onclick="closeModal('history-modal')">&times;</span>
+            </div>
+            
+            <div class="modal-body">
+                <div id="admin-history-list" style="max-height:300px; overflow-y:auto; margin-bottom:20px; border:1px solid #eee; padding:10px; border-radius:8px; background:#f9f9f9;">
+                    </div>
+                
+                <div style="text-align:right;">
+                    <button id="btn-delete-all" style="background:#fff1f0; color:#d32f2f; border:1px solid #ffccc7; padding:8px 15px; border-radius:6px; cursor:pointer; font-size:0.9rem;">
+                        <i class="fa-solid fa-trash"></i> Hapus Semua Data (Reset)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay-custom hidden" id="template-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Kelola Template Pelanggaran</h3>
+                <span class="close-modal" onclick="closeModal('template-modal')">&times;</span>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Judul Pelanggaran</label>
+                    <input type="text" id="tmpl-judul" class="form-input" placeholder="Misal: Atribut Tidak Lengkap">
+                </div>
+                <div class="form-group">
+                    <label>Default Poin (-)</label>
+                    <input type="number" id="tmpl-poin" class="form-input" placeholder="5">
+                </div>
+                <button onclick="saveTemplate()" class="btn-save" style="width:100%; background:var(--accent-green); margin-bottom:20px;">
+                    <i class="fa-solid fa-plus"></i> Simpan Template Baru
+                </button>
+
+                <h4 style="border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:10px;">Daftar Template Tersimpan</h4>
+                <div id="template-list-container" style="max-height:150px; overflow-y:auto; font-size:0.9rem;">
+                    <p style="color:#888;">Memuat...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pantau Presensi - Sadulur Sepoor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../msdm/style.css"> 
+    <style>
+        /* Style Tambahan Khusus Halaman Ini */
+        .badge-alpa { background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
+        .badge-aman { background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
+        .wa-btn { background: #25D366; color: white; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; }
+        .wa-btn:hover { background: #128C7E; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-train-subway logo-icon"></i>
+                <div class="logo-text">
+                    <h3>Sadulur Sepoor</h3>
+                    <span>Portal Organisasi</span>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="../../dashboard/index.html" class="menu-item">
+                    <i class="fa-solid fa-house"></i> <span>Dashboard Utama</span>
+                </a>
+                <a href="../../msdm/index.html" class="menu-item">
+                    <i class="fa-solid fa-users-gear"></i> <span>Panel MSDM</span>
+                </a>
+                <a href="#" class="menu-item active">
+                    <i class="fa-solid fa-eye"></i> <span>Pantau Presensi</span>
+                </a>
+                <a href="#" class="menu-item logout" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div style="display:flex; align-items:center;">
+                    <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                    <h2 class="page-title">Monitoring Kehadiran</h2>
+                </div>
+                <div class="user-info">
+                    <div class="user-text">
+                        <span id="admin-name">Memuat...</span>
+                        <small>MSDM View</small>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="icon-box blue"><i class="fa-solid fa-user-check"></i></div>
+                        <div>
+                            <h4>Total Anggota</h4>
+                            <p id="total-anggota">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon-box red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div>
+                            <h4>Dalam Pengawasan</h4>
+                            <p id="total-pengawasan">0</p>
+                            <small style="color:#d32f2f;">(Alpa > 3x)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toolbar-section">
+                    <div class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Cari Nama Anggota...">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <label><input type="checkbox" id="filter-pengawasan" onchange="renderTable()"> Hanya Pengawasan</label>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-wrapper"> 
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Anggota</th>
+                                    <th style="text-align:center;">Hadir</th>
+                                    <th style="text-align:center;">Izin/Sakit</th>
+                                    <th style="text-align:center;">Alpa (x)</th>
+                                    <th>Status</th>
+                                    <th style="text-align:right;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <tr><td colspan="6" style="text-align:center;">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay-custom hidden" id="detail-modal">
+        <div class="modal-box" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Riwayat Kehadiran</h3>
+                <span class="close-modal" onclick="closeModal('detail-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <h4 id="detail-nama" style="font-size:1.2rem;">Nama Anggota</h4>
+                    <span id="detail-nia" style="color:#666;">SS-XXXX</span>
+                </div>
+                <div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:15px; border:1px solid #eee;">
+                    <strong style="display:block; margin-bottom:10px;">Statistik:</strong>
+                    <div style="display:flex; justify-content:space-around; text-align:center;">
+                        <div><div style="font-size:1.2rem; font-weight:bold; color:green;" id="d-hadir">0</div><small>Hadir</small></div>
+                        <div><div style="font-size:1.2rem; font-weight:bold; color:orange;" id="d-izin">0</div><small>Izin</small></div>
+                        <div><div style="font-size:1.2rem; font-weight:bold; color:red;" id="d-alpa">0</div><small>Alpa</small></div>
+                    </div>
+                </div>
+                <h5 style="border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:10px;">Log Kegiatan:</h5>
+                <div id="history-list" style="max-height:300px; overflow-y:auto;">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
