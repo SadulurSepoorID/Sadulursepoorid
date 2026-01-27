@@ -11,25 +11,20 @@
     <div class="container">
         <div class="visual-side">
             <div class="visual-content">
-                <div class="logo-box">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
+                <div class="logo-box"><i class="fa-solid fa-shield-halved"></i></div>
                 <div class="desktop-text">
                     <h1>Keamanan Akun</h1>
                     <p>Pulihkan akses akun Sadulur Sepoor Anda dengan aman.</p>
                 </div>
             </div>
-            <div class="circle-1"></div>
-            <div class="circle-2"></div>
+            <div class="circle-1"></div><div class="circle-2"></div>
         </div>
 
         <div class="form-side">
             <div class="form-wrapper">
-                
                 <div id="step-1">
                     <h2>Lupa Password?</h2>
                     <p class="subtitle">Masukkan NIA & Email yang terdaftar.</p>
-                    
                     <form onsubmit="event.preventDefault(); requestKode()">
                         <div class="input-group">
                             <i class="fa-solid fa-id-card"></i>
@@ -41,43 +36,45 @@
                             <input type="email" id="r-email" required placeholder=" " autocomplete="off">
                             <label>Email Terdaftar</label>
                         </div>
-                        <button type="submit" id="btn-step-1">
-                            Kirim Kode OTP <i class="fa-solid fa-paper-plane"></i>
-                        </button>
+                        <button type="submit" id="btn-step-1">Kirim Kode OTP <i class="fa-solid fa-paper-plane"></i></button>
                     </form>
                 </div>
 
                 <div id="step-2" style="display:none;">
-                    <h2>Buat Password Baru</h2>
-                    <p class="subtitle" style="color: var(--success);">
-                        <i class="fa-solid fa-check-circle"></i> Kode OTP telah dikirim ke email!
-                    </p>
-                    
-                    <form onsubmit="event.preventDefault(); verifyKode()">
+                    <h2>Verifikasi OTP</h2>
+                    <p class="subtitle" style="color: var(--success);"><i class="fa-solid fa-check-circle"></i> Kode telah dikirim ke email!</p>
+                    <form onsubmit="event.preventDefault(); verifyOnly()">
                         <div class="input-group">
                             <i class="fa-solid fa-key"></i>
                             <input type="text" id="r-code" required placeholder=" " autocomplete="off">
                             <label>Kode OTP (6 Digit)</label>
                         </div>
+                        <button type="submit" id="btn-step-2">Verifikasi Kode <i class="fa-solid fa-shield-check"></i></button>
+                    </form>
+                    <div class="resend-container" style="text-align: center; margin-top: 15px; font-size: 0.85rem;">
+                        Belum menerima kode? <span id="timer-text"></span>
+                        <a href="javascript:void(0)" id="btn-resend" onclick="requestKode(true)" style="display:none; color: var(--primary); font-weight:600; text-decoration:none;">Kirim Ulang</a>
+                    </div>
+                </div>
+
+                <div id="step-3" style="display:none;">
+                    <h2>Password Baru</h2>
+                    <p class="subtitle">Buat password baru untuk akun Anda.</p>
+                    <form onsubmit="event.preventDefault(); updatePassword()">
                         <div class="input-group">
                             <i class="fa-solid fa-lock"></i>
                             <input type="password" id="r-newpass" required placeholder=" ">
                             <label>Password Baru</label>
                             <i class="fa-regular fa-eye toggle-pass" onclick="togglePassword('r-newpass', this)"></i>
                         </div>
-                        <button type="submit" id="btn-step-2">
-                            Simpan Password <i class="fa-solid fa-floppy-disk"></i>
-                        </button>
+                        <button type="submit" id="btn-step-3">Simpan Password <i class="fa-solid fa-floppy-disk"></i></button>
                     </form>
                 </div>
 
-                <div class="bottom-text">
-                    Sudah ingat password? <a href="../login/index.html">Login disini</a>
-                </div>
+                <div class="bottom-text">Sudah ingat password? <a href="../login/index.html">Login disini</a></div>
             </div>
         </div>
     </div>
-
     <script src="../config.js"></script>
     <script src="script.js"></script>
 </body>
