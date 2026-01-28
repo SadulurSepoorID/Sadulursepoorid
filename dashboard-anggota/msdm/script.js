@@ -138,7 +138,7 @@ function renderTable(keyword = "") {
     });
 }
 
-// --- 4. LOGIKA SANKSI & TEMPLATE (Sama seperti sebelumnya) ---
+// --- 4. LOGIKA SANKSI & TEMPLATE ---
 
 function openSanksiModal(nia) {
     const user = allMembers.find(m => m.nia === nia);
@@ -167,15 +167,26 @@ function toggleSanksiType() {
     const type = document.getElementById('sanksi-tipe').value;
     const label = document.getElementById('label-poin');
     const input = document.getElementById('sanksi-poin');
+    const templateGroup = document.getElementById('group-pilih-template');
+    const templateSelect = document.getElementById('select-template-apply');
     
     if (type === 'reward') {
         label.innerText = "Poin Tambahan (Pemutihan)";
         label.style.color = "#2e7d32"; 
         input.placeholder = "Contoh: 10";
+        
+        // HIDE Template
+        if(templateGroup) templateGroup.style.display = 'none';
+        // Reset Template Selection
+        if(templateSelect) templateSelect.value = "";
+        
     } else {
         label.innerText = "Poin Pengurang (Sanksi)";
         label.style.color = "#d32f2f"; 
         input.placeholder = "Contoh: 10";
+        
+        // SHOW Template
+        if(templateGroup) templateGroup.style.display = 'block';
     }
 }
 
