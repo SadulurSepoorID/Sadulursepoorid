@@ -18,7 +18,24 @@ a { text-decoration: none; color: inherit; }
 .app-container { display: flex; min-height: 100vh; position: relative; }
 
 /* SIDEBAR DESKTOP */
-.sidebar { width: var(--sidebar-width); background: var(--white); display: flex; flex-direction: column; border-right: 1px solid #e0e0e0; position: fixed; height: 100vh; left: 0; top: 0; z-index: 1000; transition: transform 0.3s ease; }
+/* Pastikan z-index sidebar lebih tinggi dari overlay */
+.sidebar { 
+    width: var(--sidebar-width); 
+    background: var(--white); 
+    display: flex; 
+    flex-direction: column; 
+    border-right: 1px solid #e0e0e0; 
+    position: fixed; 
+    height: 100vh; 
+    left: 0; 
+    top: 0; 
+    z-index: 2000; /* Ditingkatkan dari 1000 */
+    transition: transform 0.3s ease; 
+}
+
+#sidebar-overlay { 
+    z-index: 1999; /* Ditingkatkan agar di bawah sidebar */
+}
 .sidebar-header { padding: 30px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f0f0f0; position: relative; }
 .logo-icon { font-size: 2rem; color: var(--primary); }
 .sidebar-header h2 { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); }
