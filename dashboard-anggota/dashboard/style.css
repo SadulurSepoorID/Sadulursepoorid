@@ -17,8 +17,7 @@ a { text-decoration: none; color: inherit; }
 /* LAYOUT */
 .app-container { display: flex; min-height: 100vh; position: relative; }
 
-/* SIDEBAR DESKTOP */
-/* Pastikan z-index sidebar lebih tinggi dari overlay */
+/* SIDEBAR */
 .sidebar { 
     width: var(--sidebar-width); 
     background: var(--white); 
@@ -29,13 +28,11 @@ a { text-decoration: none; color: inherit; }
     height: 100vh; 
     left: 0; 
     top: 0; 
-    z-index: 2000; /* Ditingkatkan dari 1000 */
+    z-index: 2000; 
     transition: transform 0.3s ease; 
 }
 
-#sidebar-overlay { 
-    z-index: 1999; /* Ditingkatkan agar di bawah sidebar */
-}
+#sidebar-overlay { z-index: 1999; }
 .sidebar-header { padding: 30px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f0f0f0; position: relative; }
 .logo-icon { font-size: 2rem; color: var(--primary); }
 .sidebar-header h2 { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); }
@@ -53,7 +50,12 @@ a { text-decoration: none; color: inherit; }
 .btn-save { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
 .btn-save:hover { background: var(--primary-dark); }
 .btn-save:disabled { background: #ccc; cursor: not-allowed; }
+
+/* BTN UPLOAD & DELETE (BARU) */
 .btn-upload { background: #f0f4f8; border: 1px solid #dce2e8; padding: 8px 12px; border-radius: 6px; cursor: pointer; color: var(--text-dark); font-size: 0.85rem; font-weight: 500; }
+.btn-delete-foto { background: #ffebee; border: 1px solid #ffcdd2; padding: 8px 12px; border-radius: 6px; cursor: pointer; color: #c62828; font-size: 0.85rem; font-weight: 500; transition: 0.3s; margin-left: 5px; }
+.btn-delete-foto:hover { background: #ef9a9a; color: white; }
+
 .btn-cancel { padding: 10px 15px; background: #f1f1f1; border: none; border-radius: 8px; cursor: pointer; }
 
 /* MAIN CONTENT */

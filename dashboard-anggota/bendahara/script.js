@@ -1,18 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inisialisasi Tanggal & Jam
     initDateTime();
-    
-    // 2. Cek Login (Opsional tapi disarankan)
     checkLogin();
-
-    // 3. Load Data Dashboard dari Google Sheets
     loadDashboardData();
 });
 
 // --- Auth Check ---
 function checkLogin() {
-    const session = localStorage.getItem('user_session');
-    // Jika perlu redirect:
+    // const session = localStorage.getItem('user_session');
     // if (!session) window.location.replace("../login/index.html"); 
 }
 
@@ -29,7 +23,6 @@ function toggleSidebar() {
 // --- Logic Dashboard & API ---
 
 async function loadDashboardData() {
-    // Tampilkan state loading sementara (opsional)
     document.getElementById('stat-saldo').innerText = "Memuat...";
     
     try {
@@ -45,87 +38,78 @@ async function loadDashboardData() {
             document.getElementById('stat-in').innerText = formatRupiah(result.minggu_masuk);
             document.getElementById('stat-out').innerText = formatRupiah(result.minggu_keluar);
 
-            // 2. Render Chart dengan Data Real
+            // 2. Render Grafik
             initChart(result.chart);
+
+            // 3. Render Tabel Riwayat
+            renderHistoryTable(result.riwayat || []); 
+
         } else {
             console.error("Gagal load data:", result.message);
             document.getElementById('stat-saldo').innerText = "Error";
+            document.getElementById('history-table-body').innerHTML = 
+                `<tr><td colspan="4" style="text-align:center; color:red; padding:20px;">Gagal memuat data.</td></tr>`;
         }
     } catch (error) {
         console.error("Error connection:", error);
         document.getElementById('stat-saldo').innerText = "Offline";
+        document.getElementById('history-table-body').innerHTML = 
+            `<tr><td colspan="4" style="text-align:center; padding:20px;">Koneksi terputus.</td></tr>`;
     }
 }
 
-// --- Handle Submit Form Transaksi ---
-async function handleFormSubmit(event) {
-    event.preventDefault();
-    
-    const btn = document.querySelector('.btn-save');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
-    btn.disabled = true;
+// --- Fungsi Render Tabel (PERBAIKAN DI SINI) ---
+function renderHistoryTable(data) {
+    const tbody = document.getElementById('history-table-body');
+    tbody.innerHTML = ''; 
 
-    // Ambil Data dari Form
-    const type = document.querySelector('input[name="trxType"]:checked').value;
-    let category = document.getElementById('trxCategory').value;
-    if (category === 'Lainnya') {
-        category = document.getElementById('trxCategoryOther').value;
+    if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Belum ada data transaksi.</td></tr>`;
+        return;
     }
-    const nominal = document.getElementById('trxNominal').value;
-    const date = document.getElementById('trxDate').value;
-    const time = document.getElementById('trxTime').value;
-    const pic = document.getElementById('trxPic').value || "-";
 
-    const payload = {
-        action: 'input_general',
-        type: type,
-        category: category,
-        nominal: nominal,
-        date: date,
-        time: time,
-        pic: pic
-    };
+    data.forEach(item => {
+        let badgeClass = 'badge-general';
+        let nominalClass = '';
+        
+        // PENTING: Menggunakan item.category (bukan item.kategori)
+        let labelKategori = item.category || 'Umum'; 
 
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        });
-        const result = await response.json();
-
-        if (result.status) {
-            alert("✅ Transaksi Berhasil Disimpan!");
-            event.target.reset();
-            initDateTime(); // Reset tanggal ke hari ini
-            document.getElementById('trxCategoryOther').classList.add('hidden');
-            
-            // Refresh Dashboard setelah simpan
-            loadDashboardData(); 
+        if (item.tipe === 'Masuk') {
+            badgeClass = 'badge-success';
+            nominalClass = 'text-success';
         } else {
-            alert("❌ Gagal: " + result.message);
+            badgeClass = 'badge-danger';
+            nominalClass = 'text-danger';
         }
-    } catch (error) {
-        console.error(error);
-        alert("❌ Terjadi kesalahan koneksi.");
-    } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    }
+
+        const row = `
+            <tr>
+                <td>${item.tanggal}</td>
+                <td>
+                    <span class="${badgeClass}">${labelKategori}</span>
+                    ${item.note && item.note !== '-' ? `<br><small style="color:#888; font-size:0.8em;">${item.note}</small>` : ''}
+                </td>
+                <td>${item.pic || '-'}</td>
+                <td class="${nominalClass}">
+                    ${formatRupiah(item.nominal)}
+                </td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
 }
 
-// --- Chart.js Real Data ---
+// --- Chart.js Configuration ---
 let financeChartInstance = null;
 
 function initChart(chartData) {
     const ctx = document.getElementById('financeChart').getContext('2d');
     
-    // Hapus chart lama jika ada (agar tidak menumpuk saat refresh)
     if (financeChartInstance) {
         financeChartInstance.destroy();
     }
 
-    // Default data kosong agar tidak error jika data belum ada
     const labels = chartData ? chartData.labels : [];
     const dMasuk = chartData ? chartData.masuk : [];
     const dKeluar = chartData ? chartData.keluar : [];
@@ -162,9 +146,7 @@ function initChart(chartData) {
                     callbacks: {
                         label: function(context) {
                             let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
+                            if (label) label += ': ';
                             if (context.parsed.y !== null) {
                                 label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(context.parsed.y);
                             }
@@ -189,33 +171,10 @@ function initChart(chartData) {
 
 // --- Utilities ---
 function initDateTime() {
-    const dateInput = document.getElementById('trxDate');
-    const timeInput = document.getElementById('trxTime');
     const dateDisplay = document.getElementById('date-display');
     const now = new Date();
-    
-    if(dateInput) dateInput.value = now.toISOString().split('T')[0];
-    if(timeInput) timeInput.value = now.toTimeString().slice(0,5);
-
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     if(dateDisplay) dateDisplay.innerText = now.toLocaleDateString('id-ID', options);
-}
-
-function checkOtherOption(selectElement) {
-    const otherInput = document.getElementById('trxCategoryOther');
-    if (selectElement.value === 'Lainnya') {
-        otherInput.classList.remove('hidden');
-        otherInput.required = true;
-        otherInput.focus();
-    } else {
-        otherInput.classList.add('hidden');
-        otherInput.required = false;
-        otherInput.value = '';
-    }
-}
-
-function toggleCategoryColor() {
-    // Bisa tambahkan logika visual ganti warna border form saat radio button berubah
 }
 
 function formatRupiah(angka) {

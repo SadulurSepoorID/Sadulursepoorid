@@ -6,12 +6,8 @@
     <title>Jadwal Kegiatan - Sadulur Sepoor</title>
     
     <script>
-        // Cek apakah user sudah punya sesi login?
         if (!localStorage.getItem('user_session')) {
-            // 1. Simpan Link Jadwal ini ke memori browser
             localStorage.setItem('redirect_after_login', window.location.href);
-            
-            // 2. Tendang ke halaman login SEKARANG JUGA
             window.location.replace("../login/index.html");
         }
     </script>
@@ -22,34 +18,28 @@
 <body>
 
     <div class="app-container">
-        
         <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
-
         <aside class="sidebar" id="mySidebar">
             <div class="sidebar-header">
                 <div class="mobile-close-btn" onclick="toggleSidebar()">
                     <i class="fa-solid fa-xmark"></i>
                 </div>
-                
                 <i class="fa-solid fa-train-subway logo-icon"></i>
                 <div>
                     <h2>Sadulur Sepoor</h2>
                     <span class="badge" style="font-size: 0.7rem; background: #f3f6f9; padding: 2px 8px; border-radius: 4px; color: #6c757d;">INDONESIA</span>
                 </div>
             </div>
-            
             <div class="sidebar-footer">
                 <button onclick="logout()" class="btn-logout">
                     <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
                 </button>
             </div>
-
             <nav class="nav-menu">
                 <a href="../dashboard/index.html" class="nav-link"><i class="fa-solid fa-house"></i> <span>Beranda</span></a>
                 <a href="../presensi/index.html" class="nav-link"><i class="fa-solid fa-qrcode"></i> <span>Presensi</span></a>
                 <a href="#" class="nav-link active"><i class="fa-solid fa-calendar-days"></i> <span>Jadwal Kegiatan</span></a>
                 <a href="../anggota/index.html" class="nav-link"><i class="fa-solid fa-users"></i> <span>Data Anggota</span></a>
-                <a href="../berita/index.html" class="nav-link"><i class="fa-solid fa-newspaper"></i> <span>Berita & Artikel</span></a>
                 <a href="../iuran/index.html" class="nav-link"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Iuran Kas</span></a>
             </nav>
         </aside>
@@ -60,7 +50,6 @@
                     <button id="hamburger-btn" onclick="toggleSidebar()">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    
                     <div class="greeting">
                         <h3>Agenda Kegiatan</h3>
                         <p class="date-now" id="date-display">Memuat tanggal...</p>
@@ -89,6 +78,10 @@
                         <label>Jam (WIB)</label>
                         <input type="time" id="input-jam">
                     </div>
+                    <div class="form-group">
+                        <label>Batas Peserta (0 = Unlimited)</label>
+                        <input type="number" id="input-batas" placeholder="Contoh: 50" min="0">
+                    </div>
                 </div>
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Kode Embed Map (HTML)</label>
@@ -111,10 +104,9 @@
         <div class="modal-content" style="border-left: 4px solid #f39c12;">
             <div class="admin-header" style="color: #f39c12; justify-content: space-between;">
                 <span><i class="fa-solid fa-pen-to-square"></i> Edit Kegiatan</span>
-                <span onclick="closeEditModal()" style="cursor:pointer; color:#333; font-size:1.5rem;">&times;</span>
+                <span onclick="closeEditModal()" style="cursor:pointer; color:#333; font-size:1.5rem;">×</span>
             </div>
             <input type="hidden" id="edit-id"> 
-            
             <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="form-group" style="grid-column: span 2;">
                     <label>Nama Kegiatan</label>
@@ -132,12 +124,15 @@
                     <label>Jam</label>
                     <input type="time" id="edit-jam">
                 </div>
+                <div class="form-group">
+                    <label>Batas Peserta</label>
+                    <input type="number" id="edit-batas" min="0">
+                </div>
             </div>
             <div class="form-group" style="margin-bottom: 20px;">
                 <label>Kode Map HTML</label>
                 <textarea id="edit-map" rows="4"></textarea>
             </div>
-            
             <div style="display: flex; gap: 10px; justify-content: flex-end;">
                 <button onclick="closeEditModal()" style="padding:10px 20px; border:none; background:#eee; border-radius:6px; cursor:pointer;">Batal</button>
                 <button onclick="saveEditActivity()" class="btn-save" id="btn-save-edit" style="background: #f39c12; width: auto;">
@@ -146,6 +141,27 @@
             </div>
         </div>
     </div>
+
+    <div id="modal-ticket" class="modal hidden">
+        <div class="modal-content" style="border-left: 4px solid #28a745; text-align: center; max-width: 400px;">
+            <div style="color: #28a745; font-size: 3rem; margin-bottom: 10px;">
+                <i class="fa-solid fa-ticket"></i>
+            </div>
+            <h2 style="margin-bottom: 10px; color: #333;">Konfirmasi Tiket</h2>
+            <p style="color: #666; margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem;">
+                Anda akan mengambil kuota kepesertaan untuk kegiatan ini.<br>
+                <strong>Pastikan Anda berkomitmen untuk hadir.</strong>
+            </p>
+            <input type="hidden" id="ticket-id-target">
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="closeTicketModal()" style="padding:10px 25px; border:none; background:#eee; border-radius:30px; cursor:pointer; font-weight: 500;">Batal</button>
+                <button onclick="confirmTakeTicket()" id="btn-confirm-ticket" style="padding:10px 25px; border:none; background:#28a745; color:white; border-radius:30px; cursor:pointer; font-weight: 600; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);">
+                    Ambil Tiket
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="../config.js"></script>
     <script src="script.js"></script>
 </body>
