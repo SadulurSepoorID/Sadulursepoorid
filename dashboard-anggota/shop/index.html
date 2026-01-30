@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sadulur Shop | Official Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        // AUTH CHECK
+        if (!localStorage.getItem('user_session')) {
+            localStorage.setItem('redirect_after_login', window.location.href);
+            window.location.replace("../login/index.html");
+        }
+    </script>
+</head>
+<body>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <nav class="shop-nav">
+        <div class="nav-container">
+            <div class="brand">
+                <div class="brand-icon"><i class="fa-solid fa-train-subway"></i></div>
+                <div class="brand-text">
+                    <span>Sadulur</span>
+                    <span class="highlight">Store</span>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <a href="../dashboard/index.html" class="nav-link">
+                    <i class="fa-solid fa-arrow-left"></i> <span class="desktop-text">Dashboard</span>
+                </a>
+                <div class="cart-trigger" onclick="toggleCart()">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span id="cart-count" class="cart-badge">0</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="hero-content">
+            <span class="badge-capsule">Official Merchandise</span>
+            <h1>Style & Pride</h1>
+            <p>Koleksi eksklusif atribut resmi komunitas Sadulur Sepoor Indonesia.</p>
+        </div>
+        <div class="hero-pattern"></div>
+    </header>
+
+    <div class="main-wrapper">
+        
+        <div id="admin-tabs" class="tabs-pill-container hidden">
+            <button class="tab-pill active" onclick="switchTab('catalog')">Katalog</button>
+            <button class="tab-pill" onclick="switchTab('admin-product')">Produk</button>
+            <button class="tab-pill" onclick="switchTab('admin-orders')">Pesanan</button>
+        </div>
+
+        <section id="view-catalog" class="view-section active">
+            <div class="section-header">
+                <h2>New Arrivals</h2>
+                <div class="filter-sort">
+                    <i class="fa-solid fa-filter"></i> Filter
+                </div>
+            </div>
+            <div id="product-grid" class="product-grid">
+                </div>
+        </section>
+
+        <section id="view-admin-product" class="view-section hidden">
+            <div class="card-panel">
+                <div class="panel-head">
+                    <div>
+                        <h3>Manajemen Produk</h3>
+                        <p>Atur inventaris toko</p>
+                    </div>
+                    <button class="btn-primary" onclick="openProductModal()"><i class="fa-solid fa-plus"></i> Tambah</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Produk</th>
+                                <th>Harga</th>
+                                <th>Stok</th>
+                                <th style="text-align:right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-product-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-admin-orders" class="view-section hidden">
+            <div class="card-panel">
+                <div class="panel-head">
+                    <div>
+                        <h3>Pesanan Masuk</h3>
+                        <p>Pantau transaksi member</p>
+                    </div>
+                    <button class="btn-icon-only" onclick="fetchAdminOrders()"><i class="fa-solid fa-rotate"></i></button>
+                </div>
+                <div id="admin-orders-list" class="orders-grid"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <div id="cart-modal" class="modal-overlay hidden">
+        <div class="modal-sheet-right">
+            <div class="modal-header">
+                <h3>Shopping Bag</h3>
+                <button class="btn-close" onclick="toggleCart()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body-scroll">
+                <div id="cart-items" class="cart-list"></div>
+            </div>
+            <div class="modal-footer-sticky">
+                <div class="price-row">
+                    <span>Total</span>
+                    <span id="cart-total" class="price-val">Rp 0</span>
+                </div>
+                <button id="btn-checkout-start" class="btn-block-dark" onclick="openCheckoutForm()">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkout-modal" class="modal-overlay hidden">
+        <div class="modal-center">
+            <div class="modal-header">
+                <h3>Pembayaran</h3>
+                <button class="btn-close" onclick="closeCheckoutForm()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body-scroll">
+                <form id="checkout-form" onsubmit="handleCheckout(event)">
+                    
+                    <div class="qris-box">
+                        <div class="qris-info">
+                            <span class="qris-tag">QRIS</span>
+                            <small>Scan untuk membayar</small>
+                        </div>
+                        <img src="https://drive.google.com/thumbnail?sz=w1000&id=1ag2in9KvkPRHK0SwFuDoLBpxCY9WK8L8" alt="QRIS" class="qris-image" onclick="window.open(this.src)">
+                    </div>
+
+                    <div class="bank-list">
+                        <div class="bank-item">
+                            <i class="fa-solid fa-building-columns"></i>
+                            <div>
+                                <strong>Bank BTN</strong>
+                                <span class="copiable">2410161-245577 (Fathir Ahmad)</span>
+                            </div>
+                        </div>
+                        <div class="bank-item">
+                            <i class="fa-solid fa-wallet"></i>
+                            <div>
+                                <strong>Gopay</strong>
+                                <span class="copiable">082112964343 (Fathir Ahmad)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="input-group">
+                            <label>Metode Bayar</label>
+                            <select id="pay-method" required class="input-modern">
+                                <option value="QRIS">QRIS</option>
+                                <option value="Transfer Bank BTN">Transfer BTN</option>
+                                <option value="Gopay">Gopay</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Opsi Pembayaran</label>
+                            <select id="pay-type" onchange="toggleCicilanInput()" required class="input-modern">
+                                <option value="full">Lunas (Full)</option>
+                                <option value="cicil">Cicilan / DP</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group fade-in hidden" id="cicilan-group">
+                        <label>Nominal Transfer (Rp)</label>
+                        <input type="number" id="pay-nominal-input" class="input-modern" placeholder="0">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Bukti Transfer</label>
+                        <div class="file-drop-zone">
+                            <input type="file" id="pay-proof" accept="image/*" required onchange="previewFile()">
+                            <div class="drop-content" id="drop-content-text">
+                                <i class="fa-solid fa-image"></i>
+                                <span>Upload Bukti</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-block-primary" id="btn-confirm-pay">
+                        <span>Konfirmasi Pesanan</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="product-modal" class="modal-overlay hidden">
+        <div class="modal-center">
+            <div class="modal-header">
+                <h3 id="prod-modal-title">Editor Produk</h3>
+                <button class="btn-close" onclick="closeProductModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body-scroll">
+                <form id="product-form" onsubmit="saveProduct(event)">
+                    <input type="hidden" id="prod-id">
+                    
+                    <div class="input-group">
+                        <label>Nama Produk</label>
+                        <input type="text" id="prod-name" class="input-modern" required placeholder="Ex: Kemeja PDL v2">
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="input-group">
+                            <label>Harga (Rp)</label>
+                            <input type="number" id="prod-price" class="input-modern" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Diskon (Rp)</label>
+                            <input type="number" id="prod-disc" class="input-modern" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="input-group">
+                            <label>Tipe Stok</label>
+                            <select id="prod-type" class="input-modern" onchange="toggleStockInput()">
+                                <option value="Ready">Ready</option>
+                                <option value="PO">Pre-Order</option>
+                            </select>
+                        </div>
+                        <div class="input-group" id="stok-group">
+                            <label>Stok Tersedia</label>
+                            <input type="number" id="prod-stock" class="input-modern" value="0">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Varian Size/Warna (Pisahkan koma)</label>
+                        <input type="text" id="prod-sizes" class="input-modern" placeholder="S, M, L, XL, XXL">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Foto Produk</label>
+                        <input type="file" id="prod-img" accept="image/*" class="input-modern">
+                    </div>
+
+                    <button type="submit" class="btn-block-primary" id="btn-save-prod">Simpan Perubahan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

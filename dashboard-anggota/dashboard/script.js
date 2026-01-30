@@ -51,7 +51,7 @@ function updateUI(user) {
         if (user.foto.includes("drive.google.com") || user.foto.includes("open?id=")) {
             const idMatch = user.foto.match(/[-\w]{25,}/);
             if (idMatch) {
-                avatarUrl = `https://lh3.googleusercontent.com/d/$${idMatch[0]}=s200`;
+                avatarUrl = `https://lh3.googleusercontent.com/d/${idMatch[0]}`; // Koreksi sedikit URL drive
             } else {
                 avatarUrl = user.foto;
             }
@@ -69,7 +69,14 @@ function updateUI(user) {
     const menuGrid = document.querySelector('.menu-grid');
     if(!menuGrid) return;
     
+    // --- UPDATE MENU GRID (TAMBAH SHOP) ---
+    // Tombol Shop ditaruh paling awal atau strategis, dengan aksen biru muda agar mencolok
     menuGrid.innerHTML = `
+        <a href="../shop/index.html" class="menu-card" style="background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%); border: 1px solid #bbdefb;">
+            <i class="fa-solid fa-shirt" style="color: #1565c0;"></i>
+            <span style="color: #0d47a1;">Official Shop</span>
+        </a>
+
         <a href="../presensi/index.html" class="menu-card"><i class="fa-solid fa-qrcode"></i><span>Scan Presensi</span></a>
         <a href="../jadwal/index.html" class="menu-card"><i class="fa-solid fa-calendar-check"></i><span>Jadwal Terdekat</span></a>
         <a href="../anggota/index.html" class="menu-card"><i class="fa-solid fa-user-group"></i><span>Cari Anggota</span></a>
@@ -79,10 +86,10 @@ function updateUI(user) {
     const role = (user.jabatan || "").toLowerCase().trim();
     if (role !== 'anggota') {
         if ((role.includes('ketua') || role.includes('msdm') || role.includes('sdm'))) {
-            menuGrid.innerHTML = `<a href="../msdm/index.html" class="menu-card" style="background:#f3e5f5; color:#6a1b9a; border:1px solid #e1bee7"><i class="fa-solid fa-users-gear"></i><span>Panel MSDM</span></a>` + menuGrid.innerHTML;
+            menuGrid.innerHTML += `<a href="../msdm/index.html" class="menu-card" style="background:#f3e5f5; color:#6a1b9a; border:1px solid #e1bee7"><i class="fa-solid fa-users-gear"></i><span>Panel MSDM</span></a>`;
         }
         if (role.includes('bendahara') || role.includes('ketua')) {
-            menuGrid.innerHTML = `<a href="../bendahara/index.html" class="menu-card" style="background:#fff3e0; color:#e65100; border:1px solid #ffe0b2"><i class="fa-solid fa-vault"></i><span>Panel Bendahara</span></a>` + menuGrid.innerHTML;
+            menuGrid.innerHTML += `<a href="../bendahara/index.html" class="menu-card" style="background:#fff3e0; color:#e65100; border:1px solid #ffe0b2"><i class="fa-solid fa-vault"></i><span>Panel Bendahara</span></a>`;
         }
     }
 }
