@@ -74,7 +74,7 @@ function updateUI(user) {
     menuGrid.innerHTML = `
         <a href="../shop/index.html" class="menu-card" style="background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%); border: 1px solid #bbdefb;">
             <i class="fa-solid fa-shirt" style="color: #1565c0;"></i>
-            <span style="color: #0d47a1;">Official Shop</span>
+            <span style="color: #0d47a1;">Merchandise</span>
         </a>
 
         <a href="../presensi/index.html" class="menu-card"><i class="fa-solid fa-qrcode"></i><span>Scan Presensi</span></a>
