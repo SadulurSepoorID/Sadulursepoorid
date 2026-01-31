@@ -8,10 +8,7 @@
     <script>
         // Cek apakah user sudah punya sesi login?
         if (!localStorage.getItem('user_session')) {
-            // 1. Simpan Link Iuran ini ke memori browser
             localStorage.setItem('redirect_after_login', window.location.href);
-            
-            // 2. Tendang ke halaman login SEKARANG JUGA
             window.location.replace("../login/index.html");
         }
     </script>
@@ -88,6 +85,13 @@
                                             <div class="box"><i class="fa-solid fa-qrcode"></i> QRIS</div>
                                         </label>
                                     </div>
+                                </div>
+
+                                <div id="cash-container" class="info-box-cash hidden">
+                                    <i class="fa-solid fa-hand-holding-dollar icon-cash"></i>
+                                    <p>
+                                        Silakan serahkan <strong>Uang Tunai</strong> beserta <strong>Struk</strong> (setelah klik Bayar) kepada Pengurus di lokasi kegiatan.
+                                    </p>
                                 </div>
 
                                 <div id="qris-container" class="hidden">

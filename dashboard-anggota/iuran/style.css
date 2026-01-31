@@ -31,7 +31,7 @@
 .method-opt input:checked + .box { background: var(--primary-light); border-color: var(--primary); color: var(--primary); font-weight: 700; }
 
 /* QRIS */
-#qris-container { text-align: center; background: #fff; padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-top: 15px; }
+#qris-container { text-align: center; background: #fff; padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-top: 15px; margin-bottom: 15px; }
 .qris-img { max-width: 200px; width: 100%; height: auto; display: block; margin: 10px auto; border-radius: 4px; }
 .hidden { display: none; }
 
@@ -70,116 +70,47 @@
 .tab-content { display: none; padding-top: 20px; }
 .tab-content.active { display: block; }
 
-/* --- CUSTOM UPLOAD AREA (MODERN & RESPONSIVE) --- */
-.upload-container {
-    margin-top: 20px;
-    width: 100%;
-}
+/* Upload Area */
+.upload-container { margin-top: 20px; width: 100%; }
+.upload-label { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; padding: 20px; border: 2px dashed #cbd5e0; border-radius: 10px; background-color: #f8f9fa; cursor: pointer; transition: all 0.3s ease; text-align: center; }
+.upload-label:hover { border-color: var(--primary); background-color: var(--primary-light); }
+.upload-icon { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
+.upload-text { font-size: 0.9rem; color: #555; font-weight: 500; }
+.upload-text small { display: block; font-size: 0.75rem; color: #888; margin-top: 5px; }
+#proof-file { display: none; }
+.preview-container { margin-top: 15px; display: none; text-align: center; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.preview-img { max-width: 100%; max-height: 200px; border-radius: 6px; object-fit: contain; }
+.file-name { font-size: 0.8rem; color: #333; margin-top: 8px; word-break: break-all; }
+.remove-btn { background: none; border: none; color: #dc3545; font-size: 0.8rem; cursor: pointer; margin-top: 5px; text-decoration: underline; }
 
-.upload-label {
+/* Alert Tunggakan */
+.alert-box.alert-danger { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; border-left: 5px solid #d32f2f; animation: pulse-red 2s infinite; }
+.alert-box.alert-danger i { font-size: 1.3rem; margin-right: 10px; color: #b71c1c; }
+.alert-box.alert-danger strong { font-weight: 800; text-decoration: underline; }
+@keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(211, 47, 47, 0); } 100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); } }
+
+/* INFO BOX CASH (NEW) */
+.info-box-cash {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background: #e3f2fd;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #90caf9;
+    color: #01579b;
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    padding: 20px;
-    border: 2px dashed #cbd5e0;
-    border-radius: 10px;
-    background-color: #f8f9fa;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
 }
-
-.upload-label:hover {
-    border-color: var(--primary);
-    background-color: var(--primary-light);
-}
-
-.upload-icon {
-    font-size: 2rem;
-    color: var(--primary);
+.info-box-cash .icon-cash {
+    font-size: 2.5rem;
     margin-bottom: 10px;
+    color: #0277bd;
 }
-
-.upload-text {
-    font-size: 0.9rem;
-    color: #555;
-    font-weight: 500;
-}
-
-.upload-text small {
-    display: block;
-    font-size: 0.75rem;
-    color: #888;
-    margin-top: 5px;
-}
-
-/* Sembunyikan input file asli */
-#proof-file {
-    display: none;
-}
-
-/* Area Preview Gambar */
-.preview-container {
-    margin-top: 15px;
-    display: none; /* Hidden by default */
-    text-align: center;
-    background: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #eee;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.preview-img {
-    max-width: 100%;
-    max-height: 200px;
-    border-radius: 6px;
-    object-fit: contain;
-}
-
-.file-name {
-    font-size: 0.8rem;
-    color: #333;
-    margin-top: 8px;
-    word-break: break-all; /* Agar nama file panjang tidak merusak layout */
-}
-
-.remove-btn {
-    background: none;
-    border: none;
-    color: #dc3545;
-    font-size: 0.8rem;
-    cursor: pointer;
-    margin-top: 5px;
-    text-decoration: underline;
-}
-
-/* =========================================
-   TAMBAHAN STYLE UNTUK ALERT TUNGGAKAN
-   ========================================= */
-.alert-box.alert-danger {
-    background-color: #ffebee; /* Latar Merah Muda */
-    color: #c62828;            /* Teks Merah Gelap */
-    border: 1px solid #ffcdd2;
-    border-left: 5px solid #d32f2f; /* Garis tebal merah di kiri */
-    animation: pulse-red 2s infinite;
-}
-
-.alert-box.alert-danger i {
-    font-size: 1.3rem;
-    margin-right: 10px;
-    color: #b71c1c;
-}
-
-.alert-box.alert-danger strong {
-    font-weight: 800;
-    text-decoration: underline;
-}
-
-@keyframes pulse-red {
-    0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
-    70% { box-shadow: 0 0 0 6px rgba(211, 47, 47, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+.info-box-cash p {
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.5;
 }

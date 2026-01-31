@@ -31,8 +31,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// --- HELPER: AMBIL TANGGAL LOKAL (WIB/Perangkat) ---
+function getLocalISODate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 // ==========================
-// 1. LOGIKA UTAMA ANGGOTA (DIPERBARUI)
+// 1. LOGIKA UTAMA ANGGOTA (FINAL)
 // ==========================
 
 async function initMemberView() {
@@ -63,33 +72,40 @@ async function initMemberView() {
                 });
             }
 
-            // B. LOGIKA TAGIHAN & ALERT (LOGIKA BARU)
+            // B. LOGIKA TAGIHAN & ALERT
             const alertEl = document.getElementById('event-alert');
             const inputNominal = document.getElementById('pay-nominal');
             const cashOpt = document.getElementById('cash-opt');
             const qrisRadio = document.querySelector('input[value="QRIS"]');
             
             const bill = data.bill_status; 
-            const unpaidList = data.unpaid_list || []; // Data rinci hutang
+            const unpaidList = data.unpaid_list || [];
 
-            // Reset state
+            // --- DETEKSI APAKAH HARI INI ADA KEGIATAN? ---
+            let isEventToday = data.is_event_today || false;
+
+            // Fallback: Cek manual di client jika server belum update
+            if (!isEventToday && data.next_event && data.next_event.tanggal) {
+                const todayStr = getLocalISODate();
+                if (data.next_event.tanggal === todayStr) {
+                    isEventToday = true;
+                }
+            }
+
+            // Reset Default State
             alertEl.className = "alert-box"; 
             inputNominal.disabled = false;
 
-            // --- CEK APAKAH ADA TUNGGAKAN? ---
+            // --- LOGIKA UTAMA ---
             if (bill && bill.count > 0) {
-                // KONDISI: MENUNGGAK
+                // KASUS 1: PUNYA TUNGGAKAN
                 const totalHutang = bill.total_must_pay;
                 
-                // 1. Kunci Nominal
                 inputNominal.value = totalHutang;
                 inputNominal.min = totalHutang;
                 currentEventRef = bill.label; 
-
-                // 2. Format Tampilan Rapi (Grouping per Bulan)
                 const tampilanRinci = formatBillGrouped(unpaidList);
 
-                // 3. Tampilkan Alert MERAH
                 alertEl.className = "alert-box alert-danger";
                 alertEl.innerHTML = `
                     <div style="width:100%">
@@ -109,27 +125,39 @@ async function initMemberView() {
                         </div>
                     </div>`;
 
-                cashOpt.style.display = 'none'; 
-                qrisRadio.checked = true;
+                // Jika MENUNGGAK TAPI HARI INI EVENT -> Boleh Tunai
+                if (isEventToday) {
+                    cashOpt.style.display = 'block';
+                    if(!document.querySelector('input[name="metode"]:checked')) qrisRadio.checked = true;
+                } else {
+                    cashOpt.style.display = 'none'; 
+                    qrisRadio.checked = true;
+                }
 
             } else {
-                // KONDISI: LUNAS (NORMAL)
+                // KASUS 2: LUNAS (NORMAL)
                 inputNominal.value = 5000;
                 inputNominal.min = 5000;
 
                 if (data.next_event) {
-                    // Ada Event Kegiatan
-                    currentEventRef = data.next_event.nama; 
+                    // Ada Event
+                    const namaEvent = data.event_today_name || data.next_event.nama; 
+                    currentEventRef = namaEvent; 
                     const lokasi = data.next_event.lokasi || "";
-                    alertEl.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-calendar-check"></i> <span>Kas untuk Kegiatan: <b>${data.next_event.nama}</b> ${lokasi ? `<br><small>(${lokasi})</small>` : ''}</span></div>`;
+                    
+                    alertEl.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-calendar-check"></i> <span>Kas untuk Kegiatan: <b>${namaEvent}</b> ${lokasi ? `<br><small>(${lokasi})</small>` : ''}</span></div>`;
                     alertEl.classList.add("active-event");
                     
-                    const todayStr = new Date().toISOString().slice(0,10);
-                    if (data.next_event.tanggal === todayStr) cashOpt.style.display = 'block'; 
-                    else { cashOpt.style.display = 'none'; qrisRadio.checked = true; }
+                    // Cek Hari H
+                    if (isEventToday) {
+                        cashOpt.style.display = 'block'; 
+                    } else { 
+                        cashOpt.style.display = 'none'; 
+                    }
+                    qrisRadio.checked = true; 
 
                 } else {
-                    // Kas Mingguan Biasa
+                    // Minggu Biasa
                     const today = new Date();
                     const weekNum = Math.ceil(today.getDate() / 7);
                     const monthName = today.toLocaleDateString('id-ID', { month: 'long' });
@@ -143,7 +171,7 @@ async function initMemberView() {
                     qrisRadio.checked = true;
                 }
             }
-            toggleQRIS(); 
+            toggleQRIS(); // Jalankan toggle untuk set tampilan awal
         }
     } catch (e) { 
         console.error("Error load member:", e);
@@ -152,76 +180,68 @@ async function initMemberView() {
 }
 
 // ==========================
-// 2. FUNGSI FORMAT TAMPILAN (GROUPING)
+// 2. HELPER UI & FORMATTING
 // ==========================
+
+function toggleQRIS() {
+    const methodEl = document.querySelector('input[name="metode"]:checked');
+    if(!methodEl) return;
+    
+    const method = methodEl.value;
+    const qrisContainer = document.getElementById('qris-container');
+    const cashContainer = document.getElementById('cash-container');
+    
+    if (method === 'QRIS') {
+        qrisContainer.classList.remove('hidden');
+        
+        // PERBAIKAN: Paksa sembunyi dengan style.display agar tidak kalah oleh CSS
+        if(cashContainer) {
+            cashContainer.classList.add('hidden');
+            cashContainer.style.display = 'none'; 
+        }
+    } else {
+        qrisContainer.classList.add('hidden');
+        resetUpload(); 
+        
+        // PERBAIKAN: Paksa muncul dengan style.display flex
+        if(cashContainer) {
+            cashContainer.classList.remove('hidden');
+            cashContainer.style.display = 'flex'; 
+        }
+    }
+}
+
 function formatBillGrouped(list) {
     if (!list || list.length === 0) return "";
-
-    const months = {};
-    const events = [];
-
-    // 1. Pisahkan Data (Mingguan vs Kegiatan)
+    const months = {}; const events = [];
     list.forEach(item => {
-        // Regex: Mencari pola "Minggu ke-X (Bulan)"
         const match = item.display.match(/Minggu ke-(\d+)\s*\((.+)\)/i);
-        
         if (match) {
-            const week = match[1];      // Angka minggu
-            const month = match[2];     // Nama bulan
+            const week = match[1]; const month = match[2];
             if (!months[month]) months[month] = [];
             months[month].push(week);
         } else {
-            // Jika tidak cocok pola mingguan, berarti KEGIATAN
-            // Hapus prefix "Kegiatan: " agar bersih
             const cleanName = item.display.replace(/^Kegiatan:\s*/i, "");
             events.push(cleanName);
         }
     });
-
     let html = `<div style="background:rgba(255,255,255,0.6); padding:10px; border-radius:8px; font-size:0.85rem; color:#333;">`;
-
-    // 2. Render Bagian BULAN
     for (const [month, weeks] of Object.entries(months)) {
-        // Format minggu: "1, 2, dan 3"
-        let weekStr = "";
-        if (weeks.length === 1) {
-            weekStr = weeks[0];
-        } else {
-            const last = weeks.pop();
-            weekStr = weeks.join(", ") + " dan " + last;
-        }
-
-        html += `<div style="margin-bottom:6px;">
-                    <strong>${month}:</strong><br>
-                    Minggu ke ${weekStr}
-                 </div>`;
+        let weekStr = weeks.length === 1 ? weeks[0] : weeks.slice(0, -1).join(", ") + " dan " + weeks[weeks.length - 1];
+        html += `<div style="margin-bottom:6px;"><strong>${month}:</strong><br>Minggu ke ${weekStr}</div>`;
     }
-
-    // 3. Render Bagian KEGIATAN (Jika ada)
     if (events.length > 0) {
-        // Beri garis pemisah jika ada data bulan sebelumnya
-        if (Object.keys(months).length > 0) {
-            html += `<hr style="border:0; border-top:1px dashed #aaa; margin:8px 0;">`;
-        }
-        
+        if (Object.keys(months).length > 0) html += `<hr style="border:0; border-top:1px dashed #aaa; margin:8px 0;">`;
         html += `<div style="margin-bottom:4px;"><strong>Kegiatan:</strong></div>`;
-        events.forEach(ev => {
-            html += `<div style="padding-left:0px;">- ${ev}</div>`;
-        });
+        events.forEach(ev => html += `<div style="padding-left:0px;">- ${ev}</div>`);
     }
-
     html += `</div>`;
     return html;
 }
 
-// ==========================
-// 3. HELPER LAINNYA
-// ==========================
-
 function formatDisplayText(text) {
     if (!text) return "-";
-    if (text.includes(',')) return text; // Jika teks panjang, biarkan
-    
+    if (text.includes(',')) return text; 
     const datePattern = /^\d{4}-\d{2}-\d{2}/;
     if (datePattern.test(text)) {
         const d = new Date(text);
@@ -231,19 +251,6 @@ function formatDisplayText(text) {
         return `Minggu ke-${mingguKe} ${bulan}`; 
     } else {
         return `Kegiatan: ${text}`;
-    }
-}
-
-function toggleQRIS() {
-    const methodEl = document.querySelector('input[name="metode"]:checked');
-    if(!methodEl) return;
-    const method = methodEl.value;
-    const container = document.getElementById('qris-container');
-    
-    if (method === 'QRIS') container.classList.remove('hidden');
-    else {
-        container.classList.add('hidden');
-        resetUpload(); 
     }
 }
 
@@ -258,8 +265,7 @@ function previewFile() {
         const file = fileInput.files[0];
         if (file.size > 5 * 1024 * 1024) {
             alert("Ukuran file terlalu besar! Maksimal 5MB.");
-            resetUpload();
-            return;
+            resetUpload(); return;
         }
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -306,17 +312,13 @@ async function handlePayment(e) {
     
     if (metode === 'QRIS') {
         if (fileInput.files.length === 0) {
-            alert("Mohon upload bukti pembayaran QRIS!");
-            return;
+            alert("Mohon upload bukti pembayaran QRIS!"); return;
         }
         try {
             const file = fileInput.files[0];
             mimeType = file.type;
             base64File = await toBase64(file);
-        } catch (err) {
-            alert("Gagal memproses gambar.");
-            return;
-        }
+        } catch (err) { alert("Gagal memproses gambar."); return; }
     }
 
     if(confirm(`Konfirmasi pembayaran Rp ${nominal.toLocaleString('id-ID')} via ${metode}?`)) {
@@ -333,10 +335,7 @@ async function handlePayment(e) {
                 bukti_mime: mimeType
             };
 
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
             const result = await res.json();
             
             if (result.status) {
@@ -345,6 +344,11 @@ async function handlePayment(e) {
                 document.getElementById('payment-form').reset();
                 resetUpload();
                 document.getElementById('qris-container').classList.add('hidden');
+                
+                // Pastikan container cash juga disembunyikan setelah bayar
+                const cashCont = document.getElementById('cash-container');
+                if(cashCont) { cashCont.classList.add('hidden'); cashCont.style.display = 'none'; }
+                
             } else { alert("Gagal: " + result.message); }
         } catch (err) { alert("Terjadi kesalahan koneksi."); }
         btn.disabled = false; btn.innerText = "Bayar Sekarang";
@@ -460,14 +464,12 @@ async function loadAdminData() {
 window.sendBill = async function(btn, nia, kegiatan) {
     if(!confirm("Kirim email tagihan ke anggota ini?")) return;
     const originalContent = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
     try {
         const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'send_bill', target_nia: nia, kegiatan: kegiatan }) });
         const result = await res.json();
         alert(result.message); 
-        btn.disabled = false;
-        btn.innerHTML = originalContent;
+        btn.disabled = false; btn.innerHTML = originalContent;
         if(result.status) { btn.style.backgroundColor = '#ffc107'; btn.style.color = '#000'; }
     } catch(e) { alert("Gagal: " + e); btn.disabled = false; btn.innerHTML = originalContent; }
 };
