@@ -148,11 +148,17 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header flex-between">
+                    <div class="card-header flex-between" style="flex-wrap: wrap; gap: 10px;">
                         <h4>Data Iuran Anggota</h4>
-                        <select id="filter-kegiatan" onchange="loadAdminData()" class="form-select">
-                            <option value="">-- Semua Riwayat --</option>
-                        </select>
+                        <div style="display:flex; gap:5px; align-items: center;">
+                            <button onclick="openManualModal()" class="btn-save" style="background: #2e7d32; width: auto; font-size: 0.8rem; padding: 8px 12px; margin: 0;">
+                                <i class="fa-solid fa-hand-holding-dollar"></i> Input Manual
+                            </button>
+                            
+                            <select id="filter-kegiatan" onchange="loadAdminData()" class="form-select" style="width: auto; margin:0;">
+                                <option value="">-- Semua Riwayat --</option>
+                            </select>
+                        </div>
                     </div>
                     
                     <div class="tab-header">
@@ -216,6 +222,45 @@
                 </div>
             </div>
             <button class="btn-save" onclick="document.getElementById('struk-modal').classList.add('hidden')" style="margin-top:20px">Tutup</button>
+        </div>
+    </div>
+
+    <div id="manual-input-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="card-header" style="border-bottom:none; background:none; padding:0 0 15px 0;">
+                <h4 style="color:#2e7d32;"><i class="fa-solid fa-pen-to-square"></i> Input Kas Manual</h4>
+            </div>
+            <div class="card-body" style="padding:0;">
+                <form onsubmit="submitManualPayment(event)">
+                    <div class="form-group">
+                        <label>Pilih Anggota</label>
+                        <select id="input-member-select" class="form-select" style="width:100%; padding:10px;" onchange="checkMemberDebt(this.value)" required>
+                            <option value="">-- Pilih Anggota --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bayar Untuk (Tagihan)</label>
+                        <select id="input-ref-select" class="form-select" style="width:100%; padding:10px;" required disabled>
+                            <option value="">-- Pilih Anggota Dulu --</option>
+                        </select>
+                        <small id="debt-loading" style="color:#666; display:none; font-style:italic; margin-top:5px;"><i class="fa-solid fa-spinner fa-spin"></i> Mencari tagihan...</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nominal (Min. Rp 5.000)</label>
+                        <div class="input-group">
+                            <span>Rp</span>
+                            <input type="number" id="input-manual-nominal" value="5000" min="5000" required>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button type="button" class="btn-logout" onclick="closeManualModal()" style="flex:1; background:#eee; color:#333; justify-content:center;">Batal</button>
+                        <button type="submit" id="btn-submit-manual" class="btn-save" style="flex:1;">Simpan</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

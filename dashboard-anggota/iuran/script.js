@@ -525,3 +525,150 @@ window.editPayment = async function(id) {
         if(result.status) loadAdminData();
     } catch(e) { alert("Error: " + e); }
 };
+
+// ==========================================
+// FITUR BARU: INPUT MANUAL ADMIN (LOGIKA)
+// ==========================================
+
+// 1. Buka Modal & Load Daftar Anggota
+async function openManualModal() {
+    const modal = document.getElementById('manual-input-modal');
+    const select = document.getElementById('input-member-select');
+    
+    modal.classList.remove('hidden');
+    select.innerHTML = '<option value="">Memuat data...</option>';
+
+    try {
+        // Gunakan get_all_members yang sudah ada di backend
+        const res = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: 'get_all_members' }) 
+        });
+        const data = await res.json();
+        
+        if (data.status) {
+            select.innerHTML = '<option value="">-- Pilih Anggota --</option>';
+            data.members.sort((a,b) => a.nama.localeCompare(b.nama));
+            
+            data.members.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.nia;
+                opt.innerText = `${m.nama} (${m.nia})`;
+                opt.setAttribute('data-name', m.nama);
+                select.appendChild(opt);
+            });
+        }
+    } catch (e) {
+        alert("Gagal memuat anggota: " + e);
+        closeManualModal();
+    }
+}
+
+function closeManualModal() {
+    document.getElementById('manual-input-modal').classList.add('hidden');
+    document.getElementById('input-member-select').value = "";
+    document.getElementById('input-ref-select').innerHTML = '<option value="">-- Pilih Anggota Dulu --</option>';
+    document.getElementById('input-ref-select').disabled = true;
+    document.getElementById('input-manual-nominal').value = "5000";
+}
+
+// 2. Cek Tagihan Anggota (Saat dropdown anggota dipilih)
+async function checkMemberDebt(nia) {
+    const refSelect = document.getElementById('input-ref-select');
+    const loading = document.getElementById('debt-loading');
+    
+    if (!nia) {
+        refSelect.disabled = true;
+        refSelect.innerHTML = '<option value="">-- Pilih Anggota Dulu --</option>';
+        return;
+    }
+
+    refSelect.disabled = true;
+    loading.style.display = 'block';
+
+    try {
+        // Reuse get_kas_history untuk mendapatkan list tagihan si anggota
+        const res = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: 'get_kas_history', nia: nia }) 
+        });
+        const data = await res.json();
+
+        refSelect.innerHTML = '';
+        
+        if (data.status && data.unpaid_list && data.unpaid_list.length > 0) {
+            refSelect.innerHTML += `<option value="" disabled selected>-- Pilih Tagihan (${data.unpaid_list.length}) --</option>`;
+            data.unpaid_list.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.label; // Label ini yang akan dikirim ke backend
+                opt.innerText = item.display;
+                refSelect.appendChild(opt);
+            });
+        } else {
+            refSelect.innerHTML = '<option value="">Tidak ada tunggakan (Bebas Input)</option>';
+        }
+        
+        refSelect.innerHTML += '<option value="Lainnya">-- Input Kegiatan Lain / Custom --</option>';
+        refSelect.disabled = false;
+    } catch (e) {
+        console.error(e);
+        refSelect.innerHTML = '<option value="">Gagal memuat tagihan</option>';
+    } finally {
+        loading.style.display = 'none';
+    }
+}
+
+// 3. Submit Pembayaran Manual
+async function submitManualPayment(e) {
+    e.preventDefault();
+    
+    const memberSelect = document.getElementById('input-member-select');
+    const nia = memberSelect.value;
+    const nama = memberSelect.options[memberSelect.selectedIndex].getAttribute('data-name');
+    
+    let ref = document.getElementById('input-ref-select').value;
+    const nominal = document.getElementById('input-manual-nominal').value;
+    const btn = document.getElementById('btn-submit-manual');
+
+    if (!nia || !ref) {
+        alert("Mohon pilih anggota dan jenis tagihan.");
+        return;
+    }
+
+    if (ref === "Lainnya") {
+        ref = prompt("Masukkan nama Kegiatan / Keterangan Pembayaran:");
+        if(!ref) return;
+    }
+
+    if(!confirm(`Input pembayaran manual?\n\nAnggota: ${nama}\nUntuk: ${ref}\nNominal: Rp ${parseInt(nominal).toLocaleString()}`)) return;
+
+    btn.innerText = "Menyimpan...";
+    btn.disabled = true;
+
+    try {
+        const payload = {
+            action: 'admin_input_payment',
+            admin_nia: currentUser.nia,
+            target_nia: nia,
+            target_nama: nama,
+            ref_kegiatan: ref,
+            nominal: nominal
+        };
+
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const result = await res.json();
+
+        if (result.status) {
+            alert("Berhasil disimpan!");
+            closeManualModal();
+            loadAdminData(); // Refresh tabel admin
+        } else {
+            alert("Gagal: " + result.message);
+        }
+    } catch (err) {
+        alert("Error koneksi: " + err);
+    }
+    
+    btn.innerText = "Simpan";
+    btn.disabled = false;
+}
