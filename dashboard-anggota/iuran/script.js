@@ -180,7 +180,7 @@ async function initMemberView() {
 }
 
 // ==========================
-// 2. HELPER UI & FORMATTING
+// 2. HELPER UI & FORMATTING (UPDATED ROBUST)
 // ==========================
 
 function toggleQRIS() {
@@ -193,8 +193,6 @@ function toggleQRIS() {
     
     if (method === 'QRIS') {
         qrisContainer.classList.remove('hidden');
-        
-        // PERBAIKAN: Paksa sembunyi dengan style.display agar tidak kalah oleh CSS
         if(cashContainer) {
             cashContainer.classList.add('hidden');
             cashContainer.style.display = 'none'; 
@@ -202,8 +200,6 @@ function toggleQRIS() {
     } else {
         qrisContainer.classList.add('hidden');
         resetUpload(); 
-        
-        // PERBAIKAN: Paksa muncul dengan style.display flex
         if(cashContainer) {
             cashContainer.classList.remove('hidden');
             cashContainer.style.display = 'flex'; 
@@ -221,6 +217,7 @@ function formatBillGrouped(list) {
             if (!months[month]) months[month] = [];
             months[month].push(week);
         } else {
+            // Bersihkan prefix Kegiatan saat menampilkan di grup alert
             const cleanName = item.display.replace(/^Kegiatan:\s*/i, "");
             events.push(cleanName);
         }
@@ -239,19 +236,37 @@ function formatBillGrouped(list) {
     return html;
 }
 
+// [FUNGSI UTAMA YANG DIPERBAIKI]
 function formatDisplayText(text) {
     if (!text) return "-";
-    if (text.includes(',')) return text; 
+    
+    let str = text.toString().trim(); 
+
+    // 1. Jika mengandung koma (gabungan), biarkan apa adanya
+    if (str.includes(',')) return str; 
+    
+    // 2. Cek pola tanggal ISO
     const datePattern = /^\d{4}-\d{2}-\d{2}/;
-    if (datePattern.test(text)) {
-        const d = new Date(text);
-        if (isNaN(d.getTime())) return text;
+    if (datePattern.test(str)) {
+        const d = new Date(str);
+        if (isNaN(d.getTime())) return str;
         const bulan = d.toLocaleDateString('id-ID', { month: 'long' });
         const mingguKe = Math.ceil(d.getDate() / 7);
         return `Minggu ke-${mingguKe} ${bulan}`; 
-    } else {
-        return `Kegiatan: ${text}`;
+    } 
+
+    // 3. Jika sudah "Minggu ke-", jangan tambah Kegiatan
+    if (str.toLowerCase().startsWith("minggu ke-")) {
+        return str;
     }
+
+    // 4. [FIX AMPUH] Hapus dulu "Kegiatan:" (case insensitive) jika ada, lalu tambah lagi.
+    // Ini menangani "Kegiatan: ABC" -> jadi "ABC" -> ditambah prefix jadi "Kegiatan: ABC"
+    // Menangani "Sosialisasi" -> jadi "Sosialisasi" -> ditambah prefix jadi "Kegiatan: Sosialisasi"
+    let cleanName = str.replace(/^kegiatan\s*:\s*/i, "");
+
+    // 5. Return dengan satu prefix standar
+    return `Kegiatan: ${cleanName}`;
 }
 
 function previewFile() {
