@@ -236,16 +236,11 @@ function formatBillGrouped(list) {
     return html;
 }
 
-// [FUNGSI UTAMA YANG DIPERBAIKI]
 function formatDisplayText(text) {
     if (!text) return "-";
-    
     let str = text.toString().trim(); 
-
-    // 1. Jika mengandung koma (gabungan), biarkan apa adanya
     if (str.includes(',')) return str; 
     
-    // 2. Cek pola tanggal ISO
     const datePattern = /^\d{4}-\d{2}-\d{2}/;
     if (datePattern.test(str)) {
         const d = new Date(str);
@@ -255,17 +250,8 @@ function formatDisplayText(text) {
         return `Minggu ke-${mingguKe} ${bulan}`; 
     } 
 
-    // 3. Jika sudah "Minggu ke-", jangan tambah Kegiatan
-    if (str.toLowerCase().startsWith("minggu ke-")) {
-        return str;
-    }
-
-    // 4. [FIX AMPUH] Hapus dulu "Kegiatan:" (case insensitive) jika ada, lalu tambah lagi.
-    // Ini menangani "Kegiatan: ABC" -> jadi "ABC" -> ditambah prefix jadi "Kegiatan: ABC"
-    // Menangani "Sosialisasi" -> jadi "Sosialisasi" -> ditambah prefix jadi "Kegiatan: Sosialisasi"
+    if (str.toLowerCase().startsWith("minggu ke-")) return str;
     let cleanName = str.replace(/^kegiatan\s*:\s*/i, "");
-
-    // 5. Return dengan satu prefix standar
     return `Kegiatan: ${cleanName}`;
 }
 
@@ -359,11 +345,8 @@ async function handlePayment(e) {
                 document.getElementById('payment-form').reset();
                 resetUpload();
                 document.getElementById('qris-container').classList.add('hidden');
-                
-                // Pastikan container cash juga disembunyikan setelah bayar
                 const cashCont = document.getElementById('cash-container');
                 if(cashCont) { cashCont.classList.add('hidden'); cashCont.style.display = 'none'; }
-                
             } else { alert("Gagal: " + result.message); }
         } catch (err) { alert("Terjadi kesalahan koneksi."); }
         btn.disabled = false; btn.innerText = "Bayar Sekarang";
@@ -542,7 +525,7 @@ window.editPayment = async function(id) {
 };
 
 // ==========================================
-// FITUR BARU: INPUT MANUAL ADMIN (LOGIKA)
+// FITUR BARU: INPUT MANUAL ADMIN (CHECKBOX LIST)
 // ==========================================
 
 // 1. Buka Modal & Load Daftar Anggota
@@ -554,7 +537,6 @@ async function openManualModal() {
     select.innerHTML = '<option value="">Memuat data...</option>';
 
     try {
-        // Gunakan get_all_members yang sudah ada di backend
         const res = await fetch(API_URL, { 
             method: 'POST', 
             body: JSON.stringify({ action: 'get_all_members' }) 
@@ -582,58 +564,92 @@ async function openManualModal() {
 function closeManualModal() {
     document.getElementById('manual-input-modal').classList.add('hidden');
     document.getElementById('input-member-select').value = "";
-    document.getElementById('input-ref-select').innerHTML = '<option value="">-- Pilih Anggota Dulu --</option>';
-    document.getElementById('input-ref-select').disabled = true;
+    
+    // Reset Container Checkbox
+    document.getElementById('checkbox-container').innerHTML = 
+        '<div style="color:#888; text-align:center; padding-top:20px;">-- Pilih Anggota Terlebih Dahulu --</div>';
+    
     document.getElementById('input-manual-nominal').value = "5000";
 }
 
-// 2. Cek Tagihan Anggota (Saat dropdown anggota dipilih)
+// [BARU] Fungsi Hitung Otomatis saat Checkbox berubah
+window.calculateManualTotal = function() {
+    // Ambil semua checkbox yang dicentang
+    const checkedBoxes = document.querySelectorAll('#checkbox-container input[type="checkbox"]:checked');
+    const nominalInput = document.getElementById('input-manual-nominal');
+    
+    // Hitung jumlah item (Minimal 1)
+    const count = checkedBoxes.length || 1;
+
+    // Rumus: Jumlah Centang x 5000
+    const totalWajib = count * 5000;
+
+    // Update UI
+    nominalInput.min = totalWajib;
+    nominalInput.value = totalWajib;
+}
+
+// 2. Generate Checkbox Tagihan Anggota
 async function checkMemberDebt(nia) {
-    const refSelect = document.getElementById('input-ref-select');
+    const container = document.getElementById('checkbox-container');
+    const nominalInput = document.getElementById('input-manual-nominal');
     const loading = document.getElementById('debt-loading');
     
+    // Reset Nominal
+    nominalInput.value = 5000;
+    nominalInput.min = 5000;
+
+    // Reset Container
+    container.innerHTML = '<div style="color:#888; text-align:center; padding-top:20px;">-- Memuat Data... --</div>';
+
     if (!nia) {
-        refSelect.disabled = true;
-        refSelect.innerHTML = '<option value="">-- Pilih Anggota Dulu --</option>';
+        container.innerHTML = '<div style="color:#888; text-align:center; padding-top:20px;">-- Pilih Anggota Terlebih Dahulu --</div>';
         return;
     }
 
-    refSelect.disabled = true;
     loading.style.display = 'block';
 
     try {
-        // Reuse get_kas_history untuk mendapatkan list tagihan si anggota
         const res = await fetch(API_URL, { 
             method: 'POST', 
             body: JSON.stringify({ action: 'get_kas_history', nia: nia }) 
         });
         const data = await res.json();
 
-        refSelect.innerHTML = '';
-        
+        container.innerHTML = ''; // Bersihkan loading
+
+        // 1. Render Tagihan (Jika ada)
         if (data.status && data.unpaid_list && data.unpaid_list.length > 0) {
-            refSelect.innerHTML += `<option value="" disabled selected>-- Pilih Tagihan (${data.unpaid_list.length}) --</option>`;
             data.unpaid_list.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.label; // Label ini yang akan dikirim ke backend
-                opt.innerText = item.display;
-                refSelect.appendChild(opt);
+                // Buat elemen label pembungkus
+                const label = document.createElement('label');
+                label.className = 'checkbox-item';
+                
+                label.innerHTML = `
+                    <input type="checkbox" value="${item.label}" onchange="calculateManualTotal()">
+                    <span>${item.display}</span>
+                `;
+                container.appendChild(label);
             });
         } else {
-            refSelect.innerHTML = '<option value="">Tidak ada tunggakan (Bebas Input)</option>';
+            const emptyMsg = document.createElement('div');
+            emptyMsg.style.padding = "10px";
+            emptyMsg.style.color = "green";
+            emptyMsg.innerHTML = "<i class='fa-solid fa-check'></i> Tidak ada tunggakan.";
+            container.appendChild(emptyMsg);
         }
         
-        refSelect.innerHTML += '<option value="Lainnya">-- Input Kegiatan Lain / Custom --</option>';
-        refSelect.disabled = false;
+        // CATATAN: Opsi "Lainnya" telah DIHAPUS sesuai permintaan.
+
     } catch (e) {
         console.error(e);
-        refSelect.innerHTML = '<option value="">Gagal memuat tagihan</option>';
+        container.innerHTML = '<div style="color:red; padding:10px;">Gagal memuat tagihan.</div>';
     } finally {
         loading.style.display = 'none';
     }
 }
 
-// 3. Submit Pembayaran Manual
+// 3. Submit Pembayaran Manual (Ambil dari Checkbox)
 async function submitManualPayment(e) {
     e.preventDefault();
     
@@ -641,21 +657,25 @@ async function submitManualPayment(e) {
     const nia = memberSelect.value;
     const nama = memberSelect.options[memberSelect.selectedIndex].getAttribute('data-name');
     
-    let ref = document.getElementById('input-ref-select').value;
-    const nominal = document.getElementById('input-manual-nominal').value;
-    const btn = document.getElementById('btn-submit-manual');
+    // --- AMBIL VALUE DARI CHECKBOX ---
+    const checkedBoxes = document.querySelectorAll('#checkbox-container input[type="checkbox"]:checked');
+    let selectedValues = [];
 
-    if (!nia || !ref) {
-        alert("Mohon pilih anggota dan jenis tagihan.");
+    checkedBoxes.forEach(box => {
+        selectedValues.push(box.value);
+    });
+
+    if (!nia || selectedValues.length === 0) {
+        alert("Mohon pilih anggota dan CENTANG minimal satu tagihan.");
         return;
     }
 
-    if (ref === "Lainnya") {
-        ref = prompt("Masukkan nama Kegiatan / Keterangan Pembayaran:");
-        if(!ref) return;
-    }
+    // Gabung jadi string koma
+    const refFinal = selectedValues.join(",");
+    const nominal = document.getElementById('input-manual-nominal').value;
+    const btn = document.getElementById('btn-submit-manual');
 
-    if(!confirm(`Input pembayaran manual?\n\nAnggota: ${nama}\nUntuk: ${ref}\nNominal: Rp ${parseInt(nominal).toLocaleString()}`)) return;
+    if(!confirm(`Input pembayaran manual?\n\nAnggota: ${nama}\nItem: ${selectedValues.length} Tagihan Terpilih\nTotal: Rp ${parseInt(nominal).toLocaleString()}`)) return;
 
     btn.innerText = "Menyimpan...";
     btn.disabled = true;
@@ -666,7 +686,7 @@ async function submitManualPayment(e) {
             admin_nia: currentUser.nia,
             target_nia: nia,
             target_nama: nama,
-            ref_kegiatan: ref,
+            ref_kegiatan: refFinal, 
             nominal: nominal
         };
 
@@ -676,7 +696,7 @@ async function submitManualPayment(e) {
         if (result.status) {
             alert("Berhasil disimpan!");
             closeManualModal();
-            loadAdminData(); // Refresh tabel admin
+            loadAdminData(); 
         } else {
             alert("Gagal: " + result.message);
         }

@@ -16,6 +16,40 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS TAMBAHAN UNTUK CHECKBOX LIST */
+        .checkbox-list-container {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            height: 150px; /* Tinggi tetap dengan scroll */
+            overflow-y: auto;
+            background: #fdfdfd;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 5px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .checkbox-item:hover {
+            background-color: #f0f0f0;
+        }
+        .checkbox-item:last-child {
+            border-bottom: none;
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #2e7d32; /* Warna hijau saat dicentang */
+        }
+    </style>
 </head>
 <body>
 
@@ -240,15 +274,21 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Bayar Untuk (Tagihan)</label>
-                        <select id="input-ref-select" class="form-select" style="width:100%; padding:10px;" required disabled>
-                            <option value="">-- Pilih Anggota Dulu --</option>
-                        </select>
-                        <small id="debt-loading" style="color:#666; display:none; font-style:italic; margin-top:5px;"><i class="fa-solid fa-spinner fa-spin"></i> Mencari tagihan...</small>
+                        <label>Pilih Tagihan (Checklist)</label>
+                        
+                        <div id="checkbox-container" class="checkbox-list-container">
+                            <div style="color:#888; text-align:center; padding-top:20px;">
+                                -- Pilih Anggota Terlebih Dahulu --
+                            </div>
+                        </div>
+
+                        <small id="debt-loading" style="color:#666; display:none; font-style:italic; margin-top:5px;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Mencari tagihan...
+                        </small>
                     </div>
 
                     <div class="form-group">
-                        <label>Nominal (Min. Rp 5.000)</label>
+                        <label>Nominal (Auto Hitung: Rp 5.000 / item)</label>
                         <div class="input-group">
                             <span>Rp</span>
                             <input type="number" id="input-manual-nominal" value="5000" min="5000" required>
