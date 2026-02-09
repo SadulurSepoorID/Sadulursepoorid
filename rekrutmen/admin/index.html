@@ -3,460 +3,426 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Rekrutmen - Sadulur Sepoor</title>
+  <meta name="referrer" content="no-referrer">
+  <title>Admin Rekrutmen - Sadulur Sepoor</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --primary-color: #004aad; /* Biru Profesional */
-      --secondary-color: #f0f4f8; /* Putih Kebiruan */
-      --accent-color: #002b64; /* Biru Tua */
-      --text-color: #333;
+      --primary-blue: #004aad;
+      --secondary-blue: #003075;
+      --light-bg: #f4f7fa;
+      --text-dark: #32325d;
+      --text-muted: #8898aa;
     }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--secondary-color);
-      color: var(--text-color);
-      font-size: 0.9rem;
-    }
-
+    body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); color: var(--text-dark); }
+    
     /* Navbar */
-    .navbar-custom {
-      background-color: #fff;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      padding: 1rem 0;
-    }
-    .navbar-brand {
-      font-weight: 600;
-      color: var(--primary-color) !important;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .navbar { background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05); padding: 1rem 0; }
+    .navbar-brand { font-weight: 700; color: var(--primary-blue) !important; font-size: 1.2rem; }
+    
+    /* Main Card */
+    .main-card { background: white; border-radius: 16px; border: none; box-shadow: 0 8px 30px rgba(0,0,0,0.04); margin-top: 2rem; overflow: hidden; }
+    
+    /* Table */
+    .table thead th { background-color: var(--primary-blue); color: white; font-weight: 600; border: none; padding: 18px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; }
+    .table tbody td { padding: 18px; vertical-align: middle; border-bottom: 1px solid #f0f2f5; color: #525f7f; font-weight: 500; }
+    .table tbody tr:hover { background-color: #f6f9fc; cursor: pointer; transition: all 0.2s; }
 
-    /* Card Container */
-    .card-dashboard {
-      background: #fff;
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      margin-top: 2rem;
-      margin-bottom: 2rem;
+    /* Modal Styling Modern */
+    .modal-content { border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+    
+    .photo-area { 
+      background: linear-gradient(135deg, #f6f9fc 0%, #e9ecef 100%);
+      text-align: center; 
+      padding: 30px; 
+      border-bottom: 1px solid #e9ecef;
     }
     
-    .card-header-custom {
-      background-color: #fff;
-      padding: 1.5rem;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
+    .detail-img { 
+      max-width: 100%; 
+      max-height: 350px; 
+      width: auto; height: auto; 
+      border-radius: 12px; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+      object-fit: contain;
     }
 
-    /* Table Styling */
-    .table-container {
-      max-height: 75vh;
-      overflow-y: auto;
+    /* Data Styling - Clean Professional */
+    .detail-section-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--primary-blue);
+        margin-top: 20px;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 5px;
+    }
+
+    .detail-item { margin-bottom: 16px; }
+    
+    .detail-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
     
-    .table-custom {
-      margin-bottom: 0;
+    .detail-value {
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        font-weight: 500;
+        line-height: 1.4;
+        word-wrap: break-word;
     }
 
-    .table-custom thead th {
-      background-color: var(--primary-color);
-      color: white;
-      font-weight: 500;
-      border: none;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      padding: 1rem;
-      white-space: nowrap;
-    }
+    /* Status Badge */
+    .badge-status { padding: 8px 16px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+    .st-pending { background: #fff8e1; color: #ff9f43; border: 1px solid #ffeeba; }
+    .st-ok { background: #e0fbf2; color: #2dce89; border: 1px solid #baffeb; }
+    .st-fail { background: #fee6e6; color: #f5365c; border: 1px solid #fadbd8; }
+    .st-neu { background: #f6f9fc; color: #8898aa; }
 
-    .table-custom tbody td {
-      padding: 1rem;
-      vertical-align: middle;
-      border-bottom: 1px solid #f0f0f0;
-      color: #555;
-      max-width: 250px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .table-custom tbody tr:hover {
-      background-color: #f8fbff;
-    }
-
-    /* Buttons */
-    .btn-refresh {
-      background-color: var(--secondary-color);
-      color: var(--primary-color);
-      border: 1px solid transparent;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      transition: all 0.3s;
-    }
-    .btn-refresh:hover {
-      background-color: var(--primary-color);
-      color: #fff;
-    }
-
-    .btn-action {
-      border-radius: 50px;
-      font-size: 0.8rem;
-      padding: 0.4rem 1rem;
-      font-weight: 500;
-    }
-
-    /* Status Badges */
-    .badge-custom {
-      padding: 0.5em 1em;
-      border-radius: 50px;
-      font-weight: 500;
-      font-size: 0.75rem;
-      letter-spacing: 0.5px;
-    }
-    .bg-pending { background-color: #e3f2fd; color: #0d47a1; }
-    .bg-success-soft { background-color: #e8f5e9; color: #1b5e20; }
-    .bg-danger-soft { background-color: #ffebee; color: #b71c1c; }
-    .bg-neutral { background-color: #f5f5f5; color: #616161; }
-
-    /* Loading Spinner */
-    .loading-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255,255,255,0.8);
-      z-index: 20;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(2px);
-    }
-
-    /* Floating Alert (Toast style) */
-    #statusMessage {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1050;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      border: none;
-      min-width: 300px;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-      .card-header-custom {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .btn-refresh {
-        width: 100%;
-      }
-    }
+    #loader { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
   </style>
 </head>
 <body>
 
-  <nav class="navbar navbar-custom">
-    <div class="container-fluid px-4">
-      <span class="navbar-brand">
-        <i class="fa-solid fa-train-subway"></i>
+  <div id="loader">
+    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+    <div class="fw-bold text-secondary tracking-wide">MEMUAT DATA...</div>
+  </div>
+
+  <div id="statusMessage" class="alert position-fixed top-0 end-0 m-3 shadow-sm border-0" style="display: none; z-index: 10000; border-radius: 10px;"></div>
+
+  <nav class="navbar px-4">
+    <div class="container-fluid">
+      <span class="navbar-brand d-flex align-items-center">
+        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width:35px; height:35px; font-size:1rem;">
+            <i class="fa-solid fa-train"></i>
+        </div>
         Admin Rekrutmen
       </span>
-      <span class="text-muted small d-none d-md-block">Sadulur Sepoor Indonesia</span>
+      <button class="btn btn-outline-primary rounded-pill px-4 fw-bold btn-sm" onclick="refreshData()">
+        <i class="fa-solid fa-rotate me-1"></i> Refresh
+      </button>
     </div>
   </nav>
 
-  <div class="container-fluid px-lg-5">
-    
-    <div id="statusMessage" class="alert" style="display: none;" role="alert"></div>
-
-    <div class="card card-dashboard position-relative">
-      
-      <div id="loader" class="loading-overlay">
-        <div class="spinner-border text-primary mb-2" role="status" style="width: 3rem; height: 3rem;"></div>
-        <span class="text-muted fw-medium">Mengambil data terbaru...</span>
-      </div>
-
-      <div class="card-header-custom">
-        <div>
-          <h4 class="mb-1 fw-bold text-dark">Data Pendaftar</h4>
-          <p class="text-muted mb-0 small">Kelola data masuk, wawancara, dan kelulusan anggota.</p>
+  <div class="container pb-5">
+    <div class="card main-card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table mb-0" id="mainTable">
+            <thead>
+              <tr>
+                <th width="15%" class="text-center">No Camsas</th> <th width="35%">Nama Lengkap</th>
+                <th width="20%">Kontak (Email)</th>
+                <th width="15%">Status</th>
+                <th width="15%" class="text-end">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
         </div>
-        <button class="btn btn-refresh rounded-pill" onclick="refreshData()">
-          <i class="fa-solid fa-rotate me-2"></i> Refresh Data
-        </button>
       </div>
+    </div>
+  </div>
 
-      <div class="table-container table-responsive">
-        <table class="table table-custom table-hover" id="dataTable" style="display: none;">
-          <thead></thead>
-          <tbody></tbody>
-        </table>
+  <div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        
+        <div class="modal-header border-0 pb-0 pt-4 px-4 bg-white">
+          <div>
+              <h4 class="modal-title fw-bold text-dark mb-1">
+                  <span id="detailName">Nama Peserta</span>
+                  <span id="detailId" class="badge bg-light text-primary border ms-2 fs-6" style="vertical-align: middle;">ID</span>
+              </h4>
+              <div id="detailStatusBadge" class="mt-2"></div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" style="background-color: #f0f2f5; border-radius: 50%; padding: 10px;"></button>
+        </div>
+        
+        <div class="modal-body p-0">
+          <div class="photo-area mt-3">
+             <img id="detailImg" src="" class="detail-img" alt="Foto" referrerpolicy="no-referrer" onerror="this.style.display='none'; document.getElementById('noPhotoMsg').style.display='block';">
+             
+             <div id="noPhotoMsg" class="py-4" style="display:none;">
+                <div class="text-muted mb-2"><i class="fa-regular fa-image fa-2x"></i></div>
+                <span class="text-muted small fw-bold">Pratinjau Tidak Tersedia</span><br>
+                <a id="btnOpenLink" href="#" target="_blank" class="btn btn-sm btn-primary mt-2 rounded-pill px-4">
+                    Buka Link Asli <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+                </a>
+             </div>
+          </div>
+
+          <div class="px-4 pb-5 pt-2">
+            
+            <div class="detail-section-title"><i class="fa-solid fa-address-book me-2"></i> Kontak & Akun</div>
+            <div class="row" id="sectionContact"></div>
+
+            <div class="detail-section-title"><i class="fa-solid fa-user-shield me-2"></i> Data Pribadi</div>
+            <div class="row" id="sectionPersonal"></div>
+
+            <div class="detail-section-title"><i class="fa-solid fa-circle-info me-2"></i> Informasi Tambahan</div>
+            <div class="row" id="sectionOther"></div>
+            
+             <div id="sectionMotivationContainer" style="display:none;">
+                <div class="detail-section-title"><i class="fa-solid fa-quote-left me-2"></i> Motivasi / Alasan</div>
+                <div class="p-3 bg-light rounded text-dark fst-italic border" id="detailMotivation"></div>
+             </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light border-0 px-4 py-3" id="modalFooter">
+          <button type="button" class="btn btn-secondary px-4 rounded-pill fw-bold" data-bs-dismiss="modal">Tutup</button>
+        </div>
+
       </div>
-      
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // ================== PENGATURAN ==================
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwZ3u5eWEzuG0dGd7U8JL-YpJKYWtu3eyNfgNJCo2j4kvpen9dtr8uEHMY7uOLDCFSeZw/exec';
-    const MINIMUM_PASSING_SCORE = 60; 
+    const MIN_SCORE = 60;
+    
+    let applicantsCache = {}; 
+    let detailModalBS = null;
 
     document.addEventListener("DOMContentLoaded", () => {
+      detailModalBS = new bootstrap.Modal(document.getElementById('detailModal'));
       refreshData();
     });
 
     function refreshData() {
-        const loader = document.getElementById("loader");
-        const table = document.getElementById("dataTable");
-        
-        loader.style.display = "flex"; // Show flex overlay
-        // Jangan hide table, biar tampilannya tidak 'jumpy', cukup overlay saja
-        
+        document.getElementById("loader").style.display = "flex";
         fetch(GAS_API_URL + '?action=getApplicants')
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                return response.json();
-            })
+            .then(res => res.json())
             .then(res => {
-                if (res.success) {
-                    populateTable(res.data);
-                } else {
-                    throw new Error(res.message);
-                }
+                if (res.success) renderTable(res.data);
+                else showToast(res.message, 'danger');
             })
-            .catch(err => showError(err))
-            .finally(() => {
-               loader.style.display = "none";
-               table.style.display = "table";
-            });
+            .catch(err => showToast('Gagal: ' + err.message, 'danger'))
+            .finally(() => document.getElementById("loader").style.display = "none");
     }
 
-    function populateTable(data) {
-      const table = document.getElementById("dataTable");
-      const thead = table.querySelector("thead");
-      const tbody = table.querySelector("tbody");
-      
-      tbody.innerHTML = ''; // Clear existing
-      thead.innerHTML = '';
+    function renderTable(data) {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = '';
+      applicantsCache = {}; 
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="100%" class="text-center py-5 text-muted">Belum ada data pendaftar saat ini.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">Belum ada data.</td></tr>';
         return;
       }
 
-      // Header Logic
-      const headers = Object.keys(data[0]).filter(h => h !== 'rowNum');
-      
-      // Reorder Score & Status
-      const statusIndex = headers.indexOf('Status');
-      const scoreIndex = headers.indexOf('Skor Wawancara');
-      if (scoreIndex > -1 && statusIndex > -1) {
-          const scoreHeader = headers.splice(scoreIndex, 1)[0]; 
-          headers.splice(statusIndex + 1, 0, scoreHeader); 
-      }
-      
-      let headerHtml = '<tr>';
-      headers.forEach(header => headerHtml += `<th>${header}</th>`);
-      headerHtml += '<th class="text-center">Aksi</th></tr>'; 
-      thead.innerHTML = headerHtml;
+      data.reverse().forEach((item, index) => {
+        applicantsCache[item.rowNum] = item;
+        let s = (item.Status || '').toLowerCase();
+        let cls = 'st-neu';
+        if (s === 'pending') cls = 'st-pending';
+        else if (s.includes('lolos') || s.includes('lulus')) cls = 'st-ok';
+        else if (s.includes('gagal')) cls = 'st-fail';
 
-      // Body Logic
-      let bodyHtml = '';
-      data.reverse().forEach(applicant => {
-        bodyHtml += `<tr id="row-${applicant.rowNum}">`;
+        // --- LOGIKA MENCARI ID ASLI ---
+        // Mencari kolom yang bernama "No Camsas", "No", atau "ID"
+        let realId = item["No Camsas"] || item["No"] || item["ID"] || item["Id"] || item[Object.keys(item)[0]]; 
+
+        const tr = document.createElement('tr');
+        tr.onclick = () => openDetail(item.rowNum);
+        tr.innerHTML = `
+            <td class="text-center fw-bold text-primary">${realId}</td>
+            <td class="fw-bold text-dark">${item["Nama Lengkap"]}</td>
+            <td class="text-muted small">${item["Email"] || '-'}</td>
+            <td><span class="badge badge-status ${cls}">${item.Status || 'Menunggu'}</span></td>
+            <td class="text-end"><button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">Detail</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openDetail(rowNum) {
+        const data = applicantsCache[rowNum];
+        if (!data) return;
+
+        // 1. Header & ID
+        let realId = data["No Camsas"] || data["No"] || data["ID"] || "-";
+        document.getElementById('detailName').innerText = data["Nama Lengkap"];
+        document.getElementById('detailId').innerText = realId;
         
-        headers.forEach(header => {
-          let cellValue = applicant[header];
-          let cellRaw = applicant[header];
-          
-          // Format Link Foto
-          if (typeof cellValue === 'string' && cellValue.startsWith('http')) {
-            cellValue = `<a href="${cellValue}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill"><i class="fa-solid fa-image me-1"></i> Foto</a>`;
-          } 
-          // Format Tanggal
-          else if (header.toLowerCase().includes('timestamp') && applicant[header]) {
-             cellValue = new Date(applicant[header]).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
-          } 
-          // Format Skor
-          else if (header === 'Skor Wawancara' && typeof cellValue === 'number') {
-              let colorClass = cellValue >= MINIMUM_PASSING_SCORE ? 'text-success fw-bold' : 'text-danger fw-bold';
-              cellValue = `<span class="${colorClass}">${cellValue}%</span>`;
-          }
-          // Format Status dengan Badge
-          else if (header === 'Status') {
-             cellValue = getStatusBadge(cellValue);
-          }
-          
-          bodyHtml += `<td title="${cellRaw}">${cellValue}</td>`;
+        renderPhoto(data);
+        renderStatus(data);
+
+        // 2. Render Data Grid
+        const sContact = document.getElementById('sectionContact');
+        const sPersonal = document.getElementById('sectionPersonal');
+        const sOther = document.getElementById('sectionOther');
+        const sMotiv = document.getElementById('sectionMotivationContainer');
+        
+        sContact.innerHTML = ''; sPersonal.innerHTML = ''; sOther.innerHTML = ''; sMotiv.style.display='none';
+
+        const ignoredKeys = ['rowNum', 'Status', 'Nama Lengkap', 'Upload Foto', 'No Camsas', 'No'];
+        
+        Object.keys(data).forEach(key => {
+            if (ignoredKeys.includes(key)) return;
+            const val = data[key];
+            const k = key.toLowerCase();
+            
+            if (typeof val === 'string' && val.includes('drive.google.com')) return; 
+
+            if (k.includes('email') || k.includes('wa') || k.includes('hp') || k.includes('telp') || k.includes('instagram') || k.includes('tiktok') || k.includes('facebook')) {
+                sContact.appendChild(createDetailItem(key, val, 'col-md-6'));
+            } 
+            else if (k.includes('alamat') || k.includes('domisili') || k.includes('tgl') || k.includes('lahir') || k.includes('kelamin') || k.includes('kota') || k.includes('provinsi')) {
+                sPersonal.appendChild(createDetailItem(key, val, 'col-md-6'));
+            } 
+            else if (k.includes('alasan') || k.includes('motivasi')) {
+                document.getElementById('detailMotivation').innerText = val;
+                sMotiv.style.display = 'block';
+            } 
+            else {
+                sOther.appendChild(createDetailItem(key, val, 'col-md-6'));
+            }
         });
 
-        // ================ LOGIKA AKSI ================
-        const applicantStatus = (applicant.Status || "").trim();
-        const applicantScore = applicant['Skor Wawancara']; 
-        const rowNum = applicant.rowNum;
-        const name = applicant["Nama Lengkap"]; 
-        const email = applicant.Email; 
-        
-        bodyHtml += '<td class="text-center">';
-        const statusLower = applicantStatus.toLowerCase();
+        setupActionButtons(data);
+        detailModalBS.show();
+    }
 
-        // 1. TAHAP 1: Pendaftar Pending
-        if (statusLower === 'pending') {
-            bodyHtml += `<button class="btn btn-primary btn-action btn-sm shadow-sm" 
-                                  id="btn-approve-${rowNum}"
-                                  onclick="approveApplicantClicked(${rowNum}, '${name}', '${email}')">
-                            <i class="fa-solid fa-check me-1"></i> Setujui
-                          </button>`;
-        } 
-        // 2. TAHAP 2: Lolos Admin
-        else if (statusLower === 'lolos') {
-            bodyHtml += `<span class="badge bg-neutral text-dark"><i class="fa-regular fa-clock me-1"></i> Menunggu Wawancara</span>`;
-        } 
-        // 3. TAHAP 3: Lulus
-        else if (statusLower.includes('lolos wawancara') && 
-                 typeof applicantScore === 'number' && 
-                 applicantScore >= MINIMUM_PASSING_SCORE) {
-             bodyHtml += `<button class="btn btn-success btn-action btn-sm shadow-sm" 
-                                    id="btn-graduate-${rowNum}"
-                                    onclick="graduateApplicantClicked(${rowNum}, '${name}', '${email}')">
-                              <i class="fa-solid fa-graduation-cap me-1"></i> Luluskan
-                            </button>`;
-        } 
-        // 4. Gagal / Lainnya
-        else {
-             bodyHtml += `<span class="text-muted small">–</span>`;
+    function createDetailItem(label, value, colClass) {
+        let displayVal = value;
+        if ((label.toLowerCase().includes('time') || label.toLowerCase().includes('tgl')) && value) {
+             try { displayVal = new Date(value).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }); } catch(e){}
         }
         
-        bodyHtml += `</td></tr>`;
-      });
-      tbody.innerHTML = bodyHtml;
+        let icon = '<i class="fa-solid fa-circle-small me-1"></i>';
+        const l = label.toLowerCase();
+        if(l.includes('email')) icon = '<i class="fa-solid fa-envelope me-1"></i>';
+        if(l.includes('wa') || l.includes('hp')) icon = '<i class="fa-brands fa-whatsapp me-1"></i>';
+        if(l.includes('instagram')) icon = '<i class="fa-brands fa-instagram me-1"></i>';
+        if(l.includes('pekerjaan')) icon = '<i class="fa-solid fa-briefcase me-1"></i>';
+        if(l.includes('alamat') || l.includes('kota')) icon = '<i class="fa-solid fa-location-dot me-1"></i>';
+
+        const wrapper = document.createElement('div');
+        wrapper.className = colClass; 
+        wrapper.innerHTML = `
+            <div class="detail-item">
+                <div class="detail-label">${icon} ${label}</div>
+                <div class="detail-value">${displayVal || '-'}</div>
+            </div>
+        `;
+        return wrapper;
     }
 
-    // Helper untuk membuat Badge Status Keren
-    function getStatusBadge(statusText) {
-        if (!statusText) return '<span class="badge badge-custom bg-neutral">Unknown</span>';
-        
-        const text = statusText.toLowerCase();
-        let badgeClass = 'bg-neutral';
-        let icon = '';
-
-        if (text === 'pending') {
-            badgeClass = 'bg-pending';
-            icon = '<i class="fa-solid fa-hourglass-start me-1"></i>';
-        } else if (text === 'lolos' || text.includes('lolos wawancara')) {
-            badgeClass = 'bg-success-soft';
-            icon = '<i class="fa-solid fa-check-circle me-1"></i>';
-        } else if (text.includes('gagal') || text.includes('tolak')) {
-            badgeClass = 'bg-danger-soft';
-            icon = '<i class="fa-solid fa-circle-xmark me-1"></i>';
+    function renderPhoto(data) {
+        let url = data["Upload Foto"] || "";
+        if(!url) {
+             for (let k in data) {
+                 if (String(data[k]).includes('drive.google.com') && (k.toLowerCase().includes('foto') || k.toLowerCase().includes('upload'))) {
+                     url = data[k]; break;
+                 }
+             }
         }
-
-        return `<span class="badge badge-custom ${badgeClass}">${icon}${statusText}</span>`;
-    }
-    
-    // --- FUNGSI POST TETAP SAMA (Hanya update UI Button) ---
-
-    function approveApplicantClicked(rowNum, name, email) {
-      const btn = document.getElementById(`btn-approve-${rowNum}`);
-      setBtnLoading(btn, true);
-
-      const payload = {
-          action: 'approveApplicant',
-          applicantInfo: { rowNum, NamaLengkap: name, Email: email }
-      };
-      
-      callGasPostApi(payload, 'Persetujuan administrasi berhasil.', btn);
-    }
-
-    function graduateApplicantClicked(rowNum, name, email) {
-      if (!confirm(`Konfirmasi Kelulusan:\n\nNama: ${name}\n\nData akan dipindah ke database anggota tetap.`)) {
-          return;
-      }
         
-      const btn = document.getElementById(`btn-graduate-${rowNum}`);
-      setBtnLoading(btn, true);
+        const img = document.getElementById('detailImg');
+        const msg = document.getElementById('noPhotoMsg');
+        const btn = document.getElementById('btnOpenLink');
+        
+        if(url) {
+            let cleanUrl = url;
+            const parts = url.split(/\/d\/|\?id=/);
+            if(parts.length > 1) {
+                const id = parts[1].split('/')[0];
+                cleanUrl = `https://lh3.googleusercontent.com/d/${id}=s1000?authuser=0`;
+            }
 
-      const payload = {
-          action: 'graduateApplicant',
-          applicantInfo: { rowNum, NamaLengkap: name, Email: email } 
-      };
-      
-      callGasPostApi(payload, 'Anggota berhasil diluluskan!', btn);
-    }
-    
-    function setBtnLoading(btn, isLoading) {
-        if(isLoading) {
-            btn.disabled = true;
-            btn.dataset.originalText = btn.innerHTML;
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Proses...`;
+            img.src = cleanUrl;
+            img.style.display = 'inline-block';
+            msg.style.display = 'none';
+            btn.href = url;
         } else {
-            btn.disabled = false;
-            btn.innerHTML = btn.dataset.originalText;
+            img.style.display = 'none';
+            msg.style.display = 'block';
+            btn.style.display = 'none';
         }
     }
 
-    function callGasPostApi(payload, successMessage, btn) {
-       fetch(GAS_API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-      })
-      .then(response => response.json())
-      .then(res => {
-          if (res.success) {
-              showStatus(res.message, 'success');
-              refreshData(); // Auto refresh
-          } else {
-              throw new Error(res.message);
-          }
-      })
-      .catch(err => {
-          showError(err);
-          if (btn) setBtnLoading(btn, false);
-      });
+    function renderStatus(data) {
+        const el = document.getElementById('detailStatusBadge');
+        let s = data.Status || 'Pending';
+        let cls = 'st-neu';
+        if(s.toLowerCase() === 'pending') cls = 'st-pending';
+        if(s.toLowerCase().includes('lolos') || s.toLowerCase().includes('lulus')) cls = 'st-ok';
+        if(s.toLowerCase().includes('gagal')) cls = 'st-fail';
+        
+        el.innerHTML = `<span class="badge badge-status ${cls}">${s}</span>`;
     }
 
-    function showError(error) {
-      let errorMessage = 'Terjadi kesalahan koneksi.';
-      if (error && error.message) errorMessage = error.message;
-      console.error(error);
-      showStatus(errorMessage, 'danger');
+    function setupActionButtons(data) {
+        const footer = document.getElementById('modalFooter');
+        footer.innerHTML = '<button type="button" class="btn btn-light text-muted fw-bold rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>';
+        
+        const s = (data.Status || '').toLowerCase();
+        const score = data['Skor Wawancara'];
+        
+        if (s === 'pending') {
+            addBtn(footer, 'Setujui & Undang', 'btn-primary', () => callApi('approveApplicant', data));
+        } else if (s.includes('lolos wawancara') && score >= MIN_SCORE) {
+            addBtn(footer, 'Luluskan Anggota', 'btn-success', () => {
+                if(confirm('Konfirmasi kelulusan anggota ini?')) callApi('graduateApplicant', data);
+            });
+        }
     }
 
-    function showStatus(message, type) {
-        const statusDiv = document.getElementById('statusMessage');
+    function addBtn(parent, text, cls, callback) {
+        const btn = document.createElement('button');
+        btn.className = `btn ${cls} ms-2 fw-bold rounded-pill px-4 shadow-sm`;
+        btn.innerHTML = `<i class="fa-solid fa-check me-2"></i>${text}`;
+        btn.onclick = (e) => {
+            const b = e.target.closest('button');
+            const old = b.innerHTML;
+            b.disabled = true; b.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Proses...';
+            callback().catch(() => { b.disabled=false; b.innerHTML=old; });
+        };
+        parent.appendChild(btn);
+    }
+
+    function callApi(action, data) {
+        return fetch(GAS_API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: action,
+                applicantInfo: { rowNum: data.rowNum, NamaLengkap: data["Nama Lengkap"], Email: data.Email }
+            })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.success) { showToast(res.message, 'success'); detailModalBS.hide(); refreshData(); }
+            else throw new Error(res.message);
+        })
+        .catch(err => showToast(err.message, 'danger'));
+    }
+
+    function showToast(msg, type) {
+        const el = document.getElementById('statusMessage');
         const icon = type === 'success' ? '<i class="fa-solid fa-circle-check me-2"></i>' : '<i class="fa-solid fa-circle-exclamation me-2"></i>';
-        
-        statusDiv.className = `alert alert-${type} d-flex align-items-center border-0`;
-        statusDiv.innerHTML = `${icon} <div>${message}</div>`;
-        statusDiv.style.display = 'block';
-        
-        // Auto hide after 5 seconds
-        setTimeout(() => { 
-             statusDiv.style.display = 'none'; 
-        }, 5000);
+        el.className = `alert alert-${type} shadow-lg border-0 d-flex align-items-center fw-medium px-4 py-3`;
+        el.innerHTML = icon + msg;
+        el.style.display = 'block';
+        setTimeout(() => el.style.display = 'none', 4000);
     }
   </script>
 </body>
