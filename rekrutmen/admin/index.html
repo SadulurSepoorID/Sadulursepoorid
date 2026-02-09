@@ -20,74 +20,42 @@
     }
     body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); color: var(--text-dark); }
     
-    /* Navbar */
     .navbar { background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05); padding: 1rem 0; }
     .navbar-brand { font-weight: 700; color: var(--primary-blue) !important; font-size: 1.2rem; }
     
-    /* Main Card */
     .main-card { background: white; border-radius: 16px; border: none; box-shadow: 0 8px 30px rgba(0,0,0,0.04); margin-top: 2rem; overflow: hidden; }
     
-    /* Table */
     .table thead th { background-color: var(--primary-blue); color: white; font-weight: 600; border: none; padding: 18px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; }
     .table tbody td { padding: 18px; vertical-align: middle; border-bottom: 1px solid #f0f2f5; color: #525f7f; font-weight: 500; }
     .table tbody tr:hover { background-color: #f6f9fc; cursor: pointer; transition: all 0.2s; }
 
-    /* Modal Styling Modern */
+    /* Modal Styling */
     .modal-content { border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
     
     .photo-area { 
       background: linear-gradient(135deg, #f6f9fc 0%, #e9ecef 100%);
-      text-align: center; 
-      padding: 30px; 
-      border-bottom: 1px solid #e9ecef;
+      text-align: center; padding: 30px; border-bottom: 1px solid #e9ecef;
     }
     
     .detail-img { 
-      max-width: 100%; 
-      max-height: 350px; 
-      width: auto; height: auto; 
-      border-radius: 12px; 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-      object-fit: contain;
+      max-width: 100%; max-height: 350px; width: auto; height: auto; 
+      border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); object-fit: contain;
     }
 
-    /* Data Styling - Clean Professional */
     .detail-section-title {
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: var(--primary-blue);
-        margin-top: 20px;
-        margin-bottom: 15px;
-        border-bottom: 2px solid #e9ecef;
-        padding-bottom: 5px;
+        font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        color: var(--primary-blue); margin-top: 20px; margin-bottom: 15px;
+        border-bottom: 2px solid #e9ecef; padding-bottom: 5px;
     }
 
     .detail-item { margin-bottom: 16px; }
-    
-    .detail-label {
-        font-size: 0.7rem;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        font-weight: 600;
-        margin-bottom: 4px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    
-    .detail-value {
-        font-size: 0.95rem;
-        color: var(--text-dark);
-        font-weight: 500;
-        line-height: 1.4;
-        word-wrap: break-word;
-    }
+    .detail-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+    .detail-value { font-size: 0.95rem; color: var(--text-dark); font-weight: 500; line-height: 1.4; word-wrap: break-word; }
 
     /* Status Badge */
     .badge-status { padding: 8px 16px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
     .st-pending { background: #fff8e1; color: #ff9f43; border: 1px solid #ffeeba; }
+    .st-admin { background: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb; } 
     .st-ok { background: #e0fbf2; color: #2dce89; border: 1px solid #baffeb; }
     .st-fail { background: #fee6e6; color: #f5365c; border: 1px solid #fadbd8; }
     .st-neu { background: #f6f9fc; color: #8898aa; }
@@ -125,9 +93,10 @@
           <table class="table mb-0" id="mainTable">
             <thead>
               <tr>
-                <th width="15%" class="text-center">No Camsas</th> <th width="35%">Nama Lengkap</th>
-                <th width="20%">Kontak (Email)</th>
-                <th width="15%">Status</th>
+                <th width="15%" class="text-center">No Camsas</th>
+                <th width="35%">Nama Lengkap</th>
+                <th width="20%">Status</th>
+                <th width="15%" class="text-center">Skor</th>
                 <th width="15%" class="text-end">Aksi</th>
               </tr>
             </thead>
@@ -156,7 +125,6 @@
         <div class="modal-body p-0">
           <div class="photo-area mt-3">
              <img id="detailImg" src="" class="detail-img" alt="Foto" referrerpolicy="no-referrer" onerror="this.style.display='none'; document.getElementById('noPhotoMsg').style.display='block';">
-             
              <div id="noPhotoMsg" class="py-4" style="display:none;">
                 <div class="text-muted mb-2"><i class="fa-regular fa-image fa-2x"></i></div>
                 <span class="text-muted small fw-bold">Pratinjau Tidak Tersedia</span><br>
@@ -167,21 +135,19 @@
           </div>
 
           <div class="px-4 pb-5 pt-2">
-            
             <div class="detail-section-title"><i class="fa-solid fa-address-book me-2"></i> Kontak & Akun</div>
             <div class="row" id="sectionContact"></div>
-
+            
             <div class="detail-section-title"><i class="fa-solid fa-user-shield me-2"></i> Data Pribadi</div>
             <div class="row" id="sectionPersonal"></div>
-
+            
             <div class="detail-section-title"><i class="fa-solid fa-circle-info me-2"></i> Informasi Tambahan</div>
             <div class="row" id="sectionOther"></div>
             
-             <div id="sectionMotivationContainer" style="display:none;">
+            <div id="sectionMotivationContainer" style="display:none;">
                 <div class="detail-section-title"><i class="fa-solid fa-quote-left me-2"></i> Motivasi / Alasan</div>
                 <div class="p-3 bg-light rounded text-dark fst-italic border" id="detailMotivation"></div>
-             </div>
-
+            </div>
           </div>
         </div>
 
@@ -232,41 +198,66 @@
       data.reverse().forEach((item, index) => {
         applicantsCache[item.rowNum] = item;
         let s = (item.Status || '').toLowerCase();
-        let cls = 'st-neu';
-        if (s === 'pending') cls = 'st-pending';
-        else if (s.includes('lolos') || s.includes('lulus')) cls = 'st-ok';
-        else if (s.includes('gagal')) cls = 'st-fail';
+        
+        let badgeHtml = '';
+        if (s === 'pending') {
+            badgeHtml = '<span class="badge badge-status st-pending">Menunggu Review</span>';
+        } else if (s === 'lolos' || s === 'lolos administrasi') {
+            badgeHtml = '<span class="badge badge-status st-admin"><i class="fa-solid fa-check me-1"></i> Lolos Administrasi</span>';
+        } else if (s.includes('lolos wawancara')) {
+            badgeHtml = '<span class="badge badge-status st-ok"><i class="fa-solid fa-star me-1"></i> Lolos Wawancara</span>';
+        } else if (s.includes('gagal')) {
+            badgeHtml = '<span class="badge badge-status st-fail">Tidak Lolos</span>';
+        } else {
+            badgeHtml = `<span class="badge badge-status st-neu">${item.Status}</span>`;
+        }
 
-        // --- LOGIKA MENCARI ID ASLI ---
-        // Mencari kolom yang bernama "No Camsas", "No", atau "ID"
-        let realId = item["No Camsas"] || item["No"] || item["ID"] || item["Id"] || item[Object.keys(item)[0]]; 
+        let score = item["Skor Wawancara"];
+        let scoreDisplay = (score && score !== "Belum Dinilai") ? `<span class="fw-bold text-dark">${score}</span>` : `<span class="text-muted small">-</span>`;
+
+        // === PERBAIKAN PENCARIAN ID (NO CAMSAS) ===
+        let realId = findCamsasId(item) || "-";
 
         const tr = document.createElement('tr');
         tr.onclick = () => openDetail(item.rowNum);
         tr.innerHTML = `
             <td class="text-center fw-bold text-primary">${realId}</td>
             <td class="fw-bold text-dark">${item["Nama Lengkap"]}</td>
-            <td class="text-muted small">${item["Email"] || '-'}</td>
-            <td><span class="badge badge-status ${cls}">${item.Status || 'Menunggu'}</span></td>
+            <td>${badgeHtml}</td>
+            <td class="text-center">${scoreDisplay}</td>
             <td class="text-end"><button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">Detail</button></td>
         `;
         tbody.appendChild(tr);
       });
     }
 
+    // FUNGSI BARU: Cari Data yang isinya "Camsas..."
+    function findCamsasId(item) {
+        // 1. Cek header umum dulu
+        if (item["No Camsas"]) return item["No Camsas"];
+        if (item["No"]) return item["No"];
+        
+        // 2. Loop semua value, cari yang teksnya diawali "Camsas"
+        for (let key in item) {
+            let val = String(item[key]);
+            if (val.trim().toLowerCase().startsWith("camsas")) {
+                return val;
+            }
+        }
+        return null;
+    }
+
     function openDetail(rowNum) {
         const data = applicantsCache[rowNum];
         if (!data) return;
 
-        // 1. Header & ID
-        let realId = data["No Camsas"] || data["No"] || data["ID"] || "-";
+        let realId = findCamsasId(data) || "-";
         document.getElementById('detailName').innerText = data["Nama Lengkap"];
         document.getElementById('detailId').innerText = realId;
         
         renderPhoto(data);
-        renderStatus(data);
+        renderDetailStatus(data); 
 
-        // 2. Render Data Grid
         const sContact = document.getElementById('sectionContact');
         const sPersonal = document.getElementById('sectionPersonal');
         const sOther = document.getElementById('sectionOther');
@@ -274,29 +265,32 @@
         
         sContact.innerHTML = ''; sPersonal.innerHTML = ''; sOther.innerHTML = ''; sMotiv.style.display='none';
 
-        const ignoredKeys = ['rowNum', 'Status', 'Nama Lengkap', 'Upload Foto', 'No Camsas', 'No'];
+        const ignoredKeys = ['rowNum', 'Status', 'Nama Lengkap', 'Upload Foto', 'No Camsas', 'No', 'Skor Wawancara'];
         
         Object.keys(data).forEach(key => {
             if (ignoredKeys.includes(key)) return;
+            // Skip jika value sama dengan ID (supaya tidak dobel)
             const val = data[key];
-            const k = key.toLowerCase();
-            
+            if (val === realId) return; 
+
             if (typeof val === 'string' && val.includes('drive.google.com')) return; 
 
-            if (k.includes('email') || k.includes('wa') || k.includes('hp') || k.includes('telp') || k.includes('instagram') || k.includes('tiktok') || k.includes('facebook')) {
+            const k = key.toLowerCase();
+            if (k.includes('email') || k.includes('wa') || k.includes('hp') || k.includes('telp') || k.includes('sosmed') || k.includes('instagram')) {
                 sContact.appendChild(createDetailItem(key, val, 'col-md-6'));
-            } 
-            else if (k.includes('alamat') || k.includes('domisili') || k.includes('tgl') || k.includes('lahir') || k.includes('kelamin') || k.includes('kota') || k.includes('provinsi')) {
+            } else if (k.includes('alamat') || k.includes('lahir') || k.includes('kota') || k.includes('domisili')) {
                 sPersonal.appendChild(createDetailItem(key, val, 'col-md-6'));
-            } 
-            else if (k.includes('alasan') || k.includes('motivasi')) {
+            } else if (k.includes('alasan') || k.includes('motivasi')) {
                 document.getElementById('detailMotivation').innerText = val;
                 sMotiv.style.display = 'block';
-            } 
-            else {
+            } else {
                 sOther.appendChild(createDetailItem(key, val, 'col-md-6'));
             }
         });
+        
+        if (data["Skor Wawancara"] && data["Skor Wawancara"] !== "Belum Dinilai") {
+            sOther.appendChild(createDetailItem("Skor Wawancara", data["Skor Wawancara"] + " / 100", 'col-md-6 fw-bold text-primary'));
+        }
 
         setupActionButtons(data);
         detailModalBS.show();
@@ -311,10 +305,8 @@
         let icon = '<i class="fa-solid fa-circle-small me-1"></i>';
         const l = label.toLowerCase();
         if(l.includes('email')) icon = '<i class="fa-solid fa-envelope me-1"></i>';
-        if(l.includes('wa') || l.includes('hp')) icon = '<i class="fa-brands fa-whatsapp me-1"></i>';
-        if(l.includes('instagram')) icon = '<i class="fa-brands fa-instagram me-1"></i>';
-        if(l.includes('pekerjaan')) icon = '<i class="fa-solid fa-briefcase me-1"></i>';
-        if(l.includes('alamat') || l.includes('kota')) icon = '<i class="fa-solid fa-location-dot me-1"></i>';
+        if(l.includes('wa')) icon = '<i class="fa-brands fa-whatsapp me-1"></i>';
+        if(l.includes('alamat')) icon = '<i class="fa-solid fa-location-dot me-1"></i>';
 
         const wrapper = document.createElement('div');
         wrapper.className = colClass; 
@@ -336,7 +328,6 @@
                  }
              }
         }
-        
         const img = document.getElementById('detailImg');
         const msg = document.getElementById('noPhotoMsg');
         const btn = document.getElementById('btnOpenLink');
@@ -348,27 +339,27 @@
                 const id = parts[1].split('/')[0];
                 cleanUrl = `https://lh3.googleusercontent.com/d/${id}=s1000?authuser=0`;
             }
-
-            img.src = cleanUrl;
-            img.style.display = 'inline-block';
-            msg.style.display = 'none';
-            btn.href = url;
+            img.src = cleanUrl; img.style.display = 'inline-block'; msg.style.display = 'none'; btn.href = url;
         } else {
-            img.style.display = 'none';
-            msg.style.display = 'block';
-            btn.style.display = 'none';
+            img.style.display = 'none'; msg.style.display = 'block'; btn.style.display = 'none';
         }
     }
 
-    function renderStatus(data) {
+    function renderDetailStatus(data) {
         const el = document.getElementById('detailStatusBadge');
-        let s = data.Status || 'Pending';
-        let cls = 'st-neu';
-        if(s.toLowerCase() === 'pending') cls = 'st-pending';
-        if(s.toLowerCase().includes('lolos') || s.toLowerCase().includes('lulus')) cls = 'st-ok';
-        if(s.toLowerCase().includes('gagal')) cls = 'st-fail';
+        let s = (data.Status || '').toLowerCase();
         
-        el.innerHTML = `<span class="badge badge-status ${cls}">${s}</span>`;
+        if (s === 'pending') {
+            el.innerHTML = '<span class="badge badge-status st-pending">Menunggu Review</span>';
+        } else if (s === 'lolos' || s === 'lolos administrasi') {
+            el.innerHTML = '<span class="badge badge-status st-admin"><i class="fa-solid fa-check me-1"></i> Lolos Administrasi</span>';
+        } else if (s.includes('lolos wawancara')) {
+            el.innerHTML = '<span class="badge badge-status st-ok"><i class="fa-solid fa-star me-1"></i> Lolos Wawancara</span>';
+        } else if (s.includes('gagal')) {
+            el.innerHTML = '<span class="badge badge-status st-fail">Gagal / Ditolak</span>';
+        } else {
+            el.innerHTML = `<span class="badge badge-status st-neu">${data.Status}</span>`;
+        }
     }
 
     function setupActionButtons(data) {
@@ -376,32 +367,52 @@
         footer.innerHTML = '<button type="button" class="btn btn-light text-muted fw-bold rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>';
         
         const s = (data.Status || '').toLowerCase();
-        const score = data['Skor Wawancara'];
+        const score = parseInt(data['Skor Wawancara']) || 0;
         
+        // 1. PENDING -> LOLOS ADMIN
         if (s === 'pending') {
-            addBtn(footer, 'Setujui & Undang', 'btn-primary', () => callApi('approveApplicant', data));
-        } else if (s.includes('lolos wawancara') && score >= MIN_SCORE) {
-            addBtn(footer, 'Luluskan Anggota', 'btn-success', () => {
-                if(confirm('Konfirmasi kelulusan anggota ini?')) callApi('graduateApplicant', data);
-            });
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-primary ms-2 fw-bold rounded-pill px-4 shadow-sm';
+            btn.innerHTML = '<i class="fa-solid fa-file-circle-check me-2"></i>Lolos Administrasi';
+            btn.onclick = () => {
+                 callApi('approveApplicant', data, btn);
+            };
+            footer.appendChild(btn);
+        } 
+        // 2. LOLOS ADMIN -> MENUNGGU WAWANCARA
+        else if (s === 'lolos' || s === 'lolos administrasi') {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-secondary ms-2 fw-bold rounded-pill px-4';
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-user-clock me-2"></i>Tahap Wawancara';
+            footer.appendChild(btn);
+            
+            const msg = document.createElement('div');
+            msg.className = 'w-100 text-center mt-2 small text-muted';
+            msg.innerText = '*Menunggu nilai wawancara diinput.';
+            footer.parentElement.appendChild(msg);
+        }
+        // 3. LOLOS WAWANCARA -> GRADUATE
+        else if (s.includes('lolos wawancara') && score >= MIN_SCORE) {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-success ms-2 fw-bold rounded-pill px-4 shadow-sm';
+            btn.innerHTML = '<i class="fa-solid fa-graduation-cap me-2"></i>Luluskan Anggota';
+            btn.onclick = () => {
+                if(confirm('Yakin ingin meluluskan anggota ini? Data akan dipindah.')) {
+                    callApi('graduateApplicant', data, btn);
+                }
+            };
+            footer.appendChild(btn);
         }
     }
 
-    function addBtn(parent, text, cls, callback) {
-        const btn = document.createElement('button');
-        btn.className = `btn ${cls} ms-2 fw-bold rounded-pill px-4 shadow-sm`;
-        btn.innerHTML = `<i class="fa-solid fa-check me-2"></i>${text}`;
-        btn.onclick = (e) => {
-            const b = e.target.closest('button');
-            const old = b.innerHTML;
-            b.disabled = true; b.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Proses...';
-            callback().catch(() => { b.disabled=false; b.innerHTML=old; });
-        };
-        parent.appendChild(btn);
-    }
+    function callApi(action, data, btnElement) {
+        if(btnElement) {
+            btnElement.disabled = true;
+            btnElement.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+        }
 
-    function callApi(action, data) {
-        return fetch(GAS_API_URL, {
+        fetch(GAS_API_URL, {
             method: 'POST',
             body: JSON.stringify({
                 action: action,
@@ -410,10 +421,21 @@
         })
         .then(res => res.json())
         .then(res => {
-            if(res.success) { showToast(res.message, 'success'); detailModalBS.hide(); refreshData(); }
-            else throw new Error(res.message);
+            if(res.success) { 
+                showToast(res.message, 'success'); 
+                detailModalBS.hide(); 
+                refreshData(); 
+            } else {
+                throw new Error(res.message);
+            }
         })
-        .catch(err => showToast(err.message, 'danger'));
+        .catch(err => {
+            showToast(err.message, 'danger');
+            if(btnElement) {
+                btnElement.disabled = false;
+                btnElement.innerText = 'Coba Lagi';
+            }
+        });
     }
 
     function showToast(msg, type) {
