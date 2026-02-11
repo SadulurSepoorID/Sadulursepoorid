@@ -1,20 +1,71 @@
-/* Style.css - Luxury & Motion Theme */
+/* Style.css - Clean Luxury Theme */
 
-/* -- Scrollbar Halus & Hidden -- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+body { font-family: 'Outfit', sans-serif; }
+
+/* -- Custom Scrollbar -- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* -- Slider Utilities -- */
+/* -- Slider & Snap -- */
 .snap-x { scroll-snap-type: x mandatory; }
 .snap-center { scroll-snap-align: center; }
 
-/* -- Focus Ring Global -- */
-*:focus-visible { outline: 2px solid #0ea5e9; outline-offset: 2px; }
+/* -- Navigation Item Active State -- */
+.nav-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 16px;
+    color: #64748b; /* slate-500 */
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.nav-item:hover { color: #0f172a; background-color: #f1f5f9; }
+.nav-item.active-tab { background-color: #eff6ff; color: #2563eb; font-weight: 600; }
+.nav-icon { width: 20px; text-align: center; }
+
+/* -- Input Fields -- */
+.label-input { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; margin-bottom: 6px; display: block; }
+.input-field {
+    width: 100%; padding: 12px 16px;
+    background-color: #f8fafc;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    outline: none; transition: all 0.2s;
+    font-weight: 500; color: #334155;
+}
+.input-field:focus { background-color: #ffffff; border-color: #bfdbfe; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+
+/* -- Upload Slots -- */
+.upload-slot {
+    aspect-ratio: 1/1; border-radius: 16px;
+    border: 2px dashed #e2e8f0;
+    background-color: #f8fafc;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: all 0.3s ease;
+    background-size: cover; background-position: center;
+}
+.upload-slot:hover { border-color: #3b82f6; background-color: #eff6ff; }
+.upload-slot.filled { border-style: solid; border-color: #cbd5e1; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+
+.btn-remove {
+    position: absolute; top: 4px; right: 4px;
+    width: 24px; height: 24px;
+    background: rgba(239, 68, 68, 0.9);
+    color: white; border-radius: 50%;
+    font-size: 10px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 10;
+}
 
 /* -- Animations -- */
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -27,27 +78,13 @@
 .stagger-2 { animation-delay: 200ms; }
 .stagger-3 { animation-delay: 300ms; }
 
-/* -- Image Dots Navigation (Carousel) -- */
+/* -- Image Dots -- */
 .img-dot { 
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
     width: 6px; height: 6px; 
     border-radius: 99px; 
-    background: rgba(0,0,0,0.2); 
+    background: rgba(255,255,255,0.5); 
     backdrop-filter: blur(4px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-.img-dot.active { width: 20px; background: #0ea5e9; }
-
-/* -- Upload Slots (Admin) -- */
-.upload-slot {
-    border: 2px dashed #cbd5e1; transition: all 0.3s;
-    background-size: cover; background-position: center; background-repeat: no-repeat;
-}
-.upload-slot:hover { border-color: #0ea5e9; background-color: #f0f9ff; }
-.upload-slot.filled { border-style: solid; border-color: #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-
-/* -- Cropper Custom UI -- */
-.cropper-view-box, .cropper-face { border-radius: 1rem; }
-.cropper-bg { background: #f8fafc; }
-
-/* -- QR Code Blend -- */
-#barcode-display img { margin: 0 auto; mix-blend-mode: multiply; }
+.img-dot.active { width: 24px; background: #ffffff; }
