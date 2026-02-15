@@ -152,24 +152,101 @@
         </div>
 
         <div class="modal-footer bg-light border-0 px-4 py-3" id="modalFooter">
-          <button type="button" class="btn btn-secondary px-4 rounded-pill fw-bold" data-bs-dismiss="modal">Tutup</button>
-        </div>
+          </div>
 
       </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="rejectModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation me-2"></i>Konfirmasi Gugur</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted">Anda akan menggugurkan peserta: <br><strong id="rejectName" class="text-dark"></strong></p>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-uppercase">Pilih Alasan Gugur</label>
+                    <select class="form-select" id="rejectReasonSelect" onchange="toggleOtherReason()">
+                        <option value="" selected disabled>-- Pilih Alasan --</option>
+                        <option value="Tidak Menghadiri Wawancara">Tidak Menghadiri Wawancara</option>
+                        <option value="Hasil Skor Wawancara Tidak Tercapai">Hasil Skor Wawancara Tidak Tercapai</option>
+                        <option value="Tidak Lolos Administrasi">Tidak Lolos Administrasi</option>
+                        <option value="Lainnya">Lainnya (Isi Manual)</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3" id="otherReasonContainer" style="display:none;">
+                    <label class="form-label fw-bold small text-uppercase">Isi Alasan Manual</label>
+                    <textarea class="form-control" id="rejectReasonManual" rows="3" placeholder="Tuliskan alasan spesifik..."></textarea>
+                </div>
+
+                <div class="alert alert-warning small border-0 d-flex">
+                    <i class="fa-solid fa-envelope me-2 mt-1"></i>
+                    <div>Peserta akan menerima email notifikasi bahwa mereka tidak lolos seleksi dengan alasan di atas.</div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                <button type="button" id="btnConfirmReject" class="btn btn-danger rounded-pill px-4 fw-bold" onclick="submitRejection()">
+                    <i class="fa-solid fa-user-xmark me-2"></i>Proses Gugur
+                </button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="interviewOptionModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold"><i class="fa-solid fa-clipboard-list me-2"></i>Opsi Penilaian Wawancara</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted mb-4">Pilih metode penilaian untuk <strong id="interviewName" class="text-dark"></strong>:</p>
+                
+                <div class="d-grid gap-3">
+                    <a id="btnLinkRekrutmen333" href="/rekrutmen/rekrutmen333.html" target="_blank" class="btn btn-outline-primary p-3 text-start rounded-3 border-2" onclick="closeInterviewModal()">
+                        <div class="fw-bold"><i class="fa-solid fa-up-right-from-square me-2"></i>Buka Form Penilaian</div>
+                        <div class="small text-muted mt-1">Masuk ke halaman form terpisah untuk mengisi penilaian per-pertanyaan.</div>
+                    </a>
+                    
+                    <div class="border border-2 rounded-3 p-3 bg-light">
+                        <div class="fw-bold text-dark mb-2"><i class="fa-solid fa-keyboard me-2"></i>Input Skor Cepat (Manual)</div>
+                        <div class="small text-muted mb-3">Masukkan total skor akhir (0-100) langsung ke database tanpa mengisi rincian pertanyaan.</div>
+                        <div class="input-group">
+                            <input type="number" id="manualScoreInput" class="form-control" placeholder="Cth: 85" min="0" max="100">
+                            <button class="btn btn-primary px-4 fw-bold" id="btnSubmitManualScore" onclick="submitManualScore()">Simpan Skor</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzlSO03i4xJ6--QmsM6oDfW7fQle_R5zkKMxJFAkz-nTbHW_T-nMzyGFVgQ-6O9dCL7Cw/exec';
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwhsGX17krNW_xfwkrpPOnkZdaJzTLlUhpDkMzUynxPw5YsPsAePmf2ZCyYyTj_mOkxyw/exec';
     const MIN_SCORE = 60;
     
     let applicantsCache = {}; 
     let detailModalBS = null;
+    let rejectModalBS = null;
+    let interviewOptionModalBS = null;
+    
+    let currentRejectData = null;
+    let currentInterviewData = null;
 
     document.addEventListener("DOMContentLoaded", () => {
       detailModalBS = new bootstrap.Modal(document.getElementById('detailModal'));
+      rejectModalBS = new bootstrap.Modal(document.getElementById('rejectModal'));
+      interviewOptionModalBS = new bootstrap.Modal(document.getElementById('interviewOptionModal'));
       refreshData();
     });
 
@@ -206,7 +283,7 @@
             badgeHtml = '<span class="badge badge-status st-admin"><i class="fa-solid fa-check me-1"></i> Lolos Administrasi</span>';
         } else if (s.includes('lolos wawancara')) {
             badgeHtml = '<span class="badge badge-status st-ok"><i class="fa-solid fa-star me-1"></i> Lolos Wawancara</span>';
-        } else if (s.includes('gagal')) {
+        } else if (s.includes('gagal') || s.includes('tidak lolos')) {
             badgeHtml = '<span class="badge badge-status st-fail">Tidak Lolos</span>';
         } else {
             badgeHtml = `<span class="badge badge-status st-neu">${item.Status}</span>`;
@@ -215,7 +292,6 @@
         let score = item["Skor Wawancara"];
         let scoreDisplay = (score && score !== "Belum Dinilai") ? `<span class="fw-bold text-dark">${score}</span>` : `<span class="text-muted small">-</span>`;
 
-        // === PERBAIKAN PENCARIAN ID (NO CAMSAS) ===
         let realId = findCamsasId(item) || "-";
 
         const tr = document.createElement('tr');
@@ -231,13 +307,9 @@
       });
     }
 
-    // FUNGSI BARU: Cari Data yang isinya "Camsas..."
     function findCamsasId(item) {
-        // 1. Cek header umum dulu
         if (item["No Camsas"]) return item["No Camsas"];
         if (item["No"]) return item["No"];
-        
-        // 2. Loop semua value, cari yang teksnya diawali "Camsas"
         for (let key in item) {
             let val = String(item[key]);
             if (val.trim().toLowerCase().startsWith("camsas")) {
@@ -269,10 +341,8 @@
         
         Object.keys(data).forEach(key => {
             if (ignoredKeys.includes(key)) return;
-            // Skip jika value sama dengan ID (supaya tidak dobel)
             const val = data[key];
             if (val === realId) return; 
-
             if (typeof val === 'string' && val.includes('drive.google.com')) return; 
 
             const k = key.toLowerCase();
@@ -355,55 +425,169 @@
             el.innerHTML = '<span class="badge badge-status st-admin"><i class="fa-solid fa-check me-1"></i> Lolos Administrasi</span>';
         } else if (s.includes('lolos wawancara')) {
             el.innerHTML = '<span class="badge badge-status st-ok"><i class="fa-solid fa-star me-1"></i> Lolos Wawancara</span>';
-        } else if (s.includes('gagal')) {
-            el.innerHTML = '<span class="badge badge-status st-fail">Gagal / Ditolak</span>';
+        } else if (s.includes('gagal') || s.includes('tidak lolos')) {
+            el.innerHTML = '<span class="badge badge-status st-fail">Status: '+ data.Status +'</span>';
         } else {
             el.innerHTML = `<span class="badge badge-status st-neu">${data.Status}</span>`;
         }
     }
 
+    // ==========================================
+    // LOGIKA TOMBOL & MODAL
+    // ==========================================
+    
     function setupActionButtons(data) {
         const footer = document.getElementById('modalFooter');
-        footer.innerHTML = '<button type="button" class="btn btn-light text-muted fw-bold rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>';
+        footer.innerHTML = '<button type="button" class="btn btn-light text-muted fw-bold rounded-pill px-4 me-auto" data-bs-dismiss="modal">Tutup</button>';
         
         const s = (data.Status || '').toLowerCase();
         const score = parseInt(data['Skor Wawancara']) || 0;
         
+        if (s.includes('gagal') || s.includes('tidak lolos') || s.includes('anggota')) {
+             return; 
+        }
+
+        // Tombol Gugur
+        const btnGugur = document.createElement('button');
+        btnGugur.className = 'btn btn-outline-danger fw-bold rounded-pill px-4 ms-2';
+        btnGugur.innerHTML = '<i class="fa-solid fa-ban me-2"></i>Gugur';
+        btnGugur.onclick = () => openRejectModal(data);
+        footer.appendChild(btnGugur);
+
         // 1. PENDING -> LOLOS ADMIN
         if (s === 'pending') {
-            const btn = document.createElement('button');
-            btn.className = 'btn btn-primary ms-2 fw-bold rounded-pill px-4 shadow-sm';
-            btn.innerHTML = '<i class="fa-solid fa-file-circle-check me-2"></i>Lolos Administrasi';
-            btn.onclick = () => {
-                 callApi('approveApplicant', data, btn);
-            };
-            footer.appendChild(btn);
+            const btnApprove = document.createElement('button');
+            btnApprove.className = 'btn btn-primary ms-2 fw-bold rounded-pill px-4 shadow-sm';
+            btnApprove.innerHTML = '<i class="fa-solid fa-file-circle-check me-2"></i>Lolos Administrasi';
+            btnApprove.onclick = () => callApi('approveApplicant', data, btnApprove);
+            footer.appendChild(btnApprove);
         } 
-        // 2. LOLOS ADMIN -> MENUNGGU WAWANCARA
+        // 2. LOLOS ADMIN -> BUKA OPSI WAWANCARA (PERUBAHAN DISINI)
         else if (s === 'lolos' || s === 'lolos administrasi') {
-            const btn = document.createElement('button');
-            btn.className = 'btn btn-secondary ms-2 fw-bold rounded-pill px-4';
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-user-clock me-2"></i>Tahap Wawancara';
-            footer.appendChild(btn);
-            
-            const msg = document.createElement('div');
-            msg.className = 'w-100 text-center mt-2 small text-muted';
-            msg.innerText = '*Menunggu nilai wawancara diinput.';
-            footer.parentElement.appendChild(msg);
+            const btnAssess = document.createElement('button');
+            btnAssess.className = 'btn btn-primary ms-2 fw-bold rounded-pill px-4 shadow-sm';
+            btnAssess.innerHTML = '<i class="fa-solid fa-clipboard-check me-2"></i>Beri Penilaian';
+            btnAssess.onclick = () => openInterviewOptionModal(data);
+            footer.appendChild(btnAssess);
         }
         // 3. LOLOS WAWANCARA -> GRADUATE
         else if (s.includes('lolos wawancara') && score >= MIN_SCORE) {
-            const btn = document.createElement('button');
-            btn.className = 'btn btn-success ms-2 fw-bold rounded-pill px-4 shadow-sm';
-            btn.innerHTML = '<i class="fa-solid fa-graduation-cap me-2"></i>Luluskan Anggota';
-            btn.onclick = () => {
+            const btnGraduate = document.createElement('button');
+            btnGraduate.className = 'btn btn-success ms-2 fw-bold rounded-pill px-4 shadow-sm';
+            btnGraduate.innerHTML = '<i class="fa-solid fa-graduation-cap me-2"></i>Luluskan Anggota';
+            btnGraduate.onclick = () => {
                 if(confirm('Yakin ingin meluluskan anggota ini? Data akan dipindah.')) {
-                    callApi('graduateApplicant', data, btn);
+                    callApi('graduateApplicant', data, btnGraduate);
                 }
             };
-            footer.appendChild(btn);
+            footer.appendChild(btnGraduate);
         }
+    }
+
+    // Modal Gugur
+    function openRejectModal(data) {
+        currentRejectData = data;
+        document.getElementById('rejectName').innerText = data["Nama Lengkap"];
+        document.getElementById('rejectReasonSelect').value = "";
+        document.getElementById('rejectReasonManual').value = "";
+        toggleOtherReason();
+        detailModalBS.hide(); 
+        rejectModalBS.show(); 
+    }
+
+    function toggleOtherReason() {
+        const val = document.getElementById('rejectReasonSelect').value;
+        document.getElementById('otherReasonContainer').style.display = (val === 'Lainnya') ? 'block' : 'none';
+    }
+
+    function submitRejection() {
+        if (!currentRejectData) return;
+        const selectVal = document.getElementById('rejectReasonSelect').value;
+        const manualVal = document.getElementById('rejectReasonManual').value.trim();
+        
+        if (!selectVal) { alert("Harap pilih alasan gugur!"); return; }
+        
+        let finalReason = selectVal;
+        if (selectVal === 'Lainnya') {
+            if (!manualVal) { alert("Harap isi alasan manual!"); return; }
+            finalReason = manualVal;
+        }
+
+        const btn = document.getElementById('btnConfirmReject');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+
+        fetch(GAS_API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'rejectApplicant',
+                applicantInfo: { rowNum: currentRejectData.rowNum, NamaLengkap: currentRejectData["Nama Lengkap"], Email: currentRejectData.Email },
+                reason: finalReason
+            })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.success) { 
+                showToast(res.message, 'success'); rejectModalBS.hide(); refreshData(); 
+            } else throw new Error(res.message);
+        })
+        .catch(err => showToast(err.message, 'danger'))
+        .finally(() => {
+            btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-user-xmark me-2"></i>Proses Gugur';
+        });
+    }
+
+    // Modal Penilaian Wawancara (BARU)
+    function openInterviewOptionModal(data) {
+        currentInterviewData = data;
+        document.getElementById('interviewName').innerText = data["Nama Lengkap"];
+        document.getElementById('manualScoreInput').value = "";
+        
+        // Kita bisa tambahkan parameter URL siapa tahu form Anda bisa mengambil nama otomatis
+        let urlRekrutmen333 = "/rekrutmen/rekrutmen333.html?nama=" + encodeURIComponent(data["Nama Lengkap"]);
+        document.getElementById('btnLinkRekrutmen333').href = urlRekrutmen333;
+
+        detailModalBS.hide();
+        interviewOptionModalBS.show();
+    }
+
+    function closeInterviewModal() {
+        interviewOptionModalBS.hide();
+    }
+
+    function submitManualScore() {
+        if(!currentInterviewData) return;
+        
+        const scoreVal = document.getElementById('manualScoreInput').value;
+        if(scoreVal === "" || scoreVal < 0 || scoreVal > 100) {
+            alert("Harap masukkan skor yang valid (0 - 100).");
+            return;
+        }
+
+        const btn = document.getElementById('btnSubmitManualScore');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+
+        fetch(GAS_API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'inputManualScore',
+                applicantInfo: { rowNum: currentInterviewData.rowNum, NamaLengkap: currentInterviewData["Nama Lengkap"] },
+                score: scoreVal
+            })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.success) { 
+                showToast(res.message, 'success'); 
+                interviewOptionModalBS.hide(); 
+                refreshData(); 
+            } else throw new Error(res.message);
+        })
+        .catch(err => showToast(err.message, 'danger'))
+        .finally(() => {
+            btn.disabled = false; btn.innerText = 'Simpan Skor';
+        });
     }
 
     function callApi(action, data, btnElement) {
@@ -422,19 +606,12 @@
         .then(res => res.json())
         .then(res => {
             if(res.success) { 
-                showToast(res.message, 'success'); 
-                detailModalBS.hide(); 
-                refreshData(); 
-            } else {
-                throw new Error(res.message);
-            }
+                showToast(res.message, 'success'); detailModalBS.hide(); refreshData(); 
+            } else throw new Error(res.message);
         })
         .catch(err => {
             showToast(err.message, 'danger');
-            if(btnElement) {
-                btnElement.disabled = false;
-                btnElement.innerText = 'Coba Lagi';
-            }
+            if(btnElement) { btnElement.disabled = false; btnElement.innerText = 'Coba Lagi'; }
         });
     }
 
