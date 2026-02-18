@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Informasi | Sadulur Sepoor Indonesia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #0056b3;
+            --secondary-blue: #e6f2ff;
+            --accent-blue: #007bff;
+            --text-dark: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --bg-color: #f4f7f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header & Navbar */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-container img {
+            height: 50px;
+            width: auto;
+        }
+
+        .logo-text h1 {
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Search Bar */
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+            background-color: var(--bg-color);
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            background-color: var(--white);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h2 {
+            color: var(--primary-blue);
+            font-size: 2rem;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+        }
+
+        /* Cards Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            text-decoration: none;
+            color: var(--text-dark);
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            border-left: 4px solid var(--accent-blue);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+            background-color: var(--secondary-blue);
+        }
+
+        .card-icon {
+            background-color: var(--secondary-blue);
+            color: var(--primary-blue);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .card-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--primary-blue);
+        }
+
+        .card-content p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* PDF Modal (Pop-up) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            width: 90%;
+            max-width: 1000px;
+            height: 90vh;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .close-btn {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #ff4d4d;
+        }
+
+        .modal-body {
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--white);
+            border-top: 1px solid #ddd;
+            padding: 30px 20px;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            text-decoration: none;
+        }
+
+        .contact-item:hover {
+            color: var(--primary-blue);
+        }
+
+        @media (max-width: 768px) {
+            .nav-container { flex-direction: column; }
+            .search-box { max-width: 100%; }
+            .modal-content { width: 95%; height: 95vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="https://sadulursepoor.web.id/img/Logo%20SS.png" alt="Logo SS">
+                <div class="logo-text">
+                    <h1>Sadulur Sepoor</h1>
+                    <p>Pusat Informasi Anggota</p>
+                </div>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Cari informasi..." onkeyup="filterCards()">
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="section-title">
+            <h2>Direktori Informasi</h2>
+            <p>Akses cepat ke seluruh layanan komunitas</p>
+        </div>
+
+        <div class="grid" id="infoGrid">
+            
+            <a href="https://sadulursepoor.web.id/dashboard-anggota/registrasi" target="_blank" class="card" data-search="buat akun daftar registrasi pendaftaran register">
+                <div class="card-icon"><i class="fas fa-user-plus"></i></div>
+                <div class="card-content">
+                    <h3>Registrasi Anggota</h3>
+                    <p>Pendaftaran akun baru untuk anggota komunitas.</p>
+                </div>
+            </a>
+
+            <a href="https://sadulursepoor.web.id/dashboard-anggota/login" target="_blank" class="card" data-search="login masuk sign in dashboard akun">
+                <div class="card-icon"><i class="fas fa-sign-in-alt"></i></div>
+                <div class="card-content">
+                    <h3>Login Dashboard</h3>
+                    <p>Akses masuk ke panel dashboard anggota Anda.</p>
+                </div>
+            </a>
+
+            <a href="https://sadulursepoor.web.id/dashboard-anggota/jadwal" target="_blank" class="card" data-search="jadwal kegiatan agenda event acara kalender">
+                <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="card-content">
+                    <h3>Jadwal Kegiatan</h3>
+                    <p>Pantau agenda dan kegiatan terbaru komunitas.</p>
+                </div>
+            </a>
+
+            <a href="https://sadulursepoor.web.id/dashboard-anggota/presensi" target="_blank" class="card" data-search="presensi kehadiran absen absensi hadir kegiatan">
+                <div class="card-icon"><i class="fas fa-clipboard-check"></i></div>
+                <div class="card-content">
+                    <h3>Presensi Kegiatan</h3>
+                    <p>Catat dan verifikasi kehadiran Anda saat kegiatan.</p>
+                </div>
+            </a>
+
+            <a href="https://sadulursepoor.web.id/dashboard-anggota/iuran" target="_blank" class="card" data-search="iuran kas bayar uang keuangan finance tagihan">
+                <div class="card-icon"><i class="fas fa-wallet"></i></div>
+                <div class="card-content">
+                    <h3>Iuran Kas</h3>
+                    <p>Informasi dan pembayaran iuran kas keanggotaan.</p>
+                </div>
+            </a>
+
+            <a href="https://sadulursepoor.web.id/dashboard-anggota/shop" target="_blank" class="card" data-search="shop toko merchandise atribut seragam beli belanja">
+                <div class="card-icon"><i class="fas fa-store"></i></div>
+                <div class="card-content">
+                    <h3>Shop & Atribut</h3>
+                    <p>Pusat pembelian atribut dan merchandise resmi.</p>
+                </div>
+            </a>
+
+            <a onclick="openPdfModal()" class="card" data-search="tata tertib peraturan pdf aturan sk dokumen">
+                <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
+                <div class="card-content">
+                    <h3>Tata Tertib & Peraturan</h3>
+                    <p>Klik untuk membaca dokumen resmi peraturan.</p>
+                </div>
+            </a>
+
+            <a href="https://Sadulursepoor.web.id" target="_blank" class="card" data-search="website utama web portal home">
+                <div class="card-icon"><i class="fas fa-globe"></i></div>
+                <div class="card-content">
+                    <h3>Website Utama</h3>
+                    <p>Kunjungi portal utama Sadulur Sepoor.</p>
+                </div>
+            </a>
+
+            <a href="https://Sadulursepoor.web.id/anggota" target="_blank" class="card" data-search="cek identifikasi anggota id profil verifikasi">
+                <div class="card-icon"><i class="fas fa-id-card"></i></div>
+                <div class="card-content">
+                    <h3>Cek Identitas Anggota</h3>
+                    <p>Verifikasi data dan status keanggotaan publik.</p>
+                </div>
+            </a>
+
+            <a href="https://forms.gle/smUgb8FqK7ugqhqs6" target="_blank" class="card" data-search="aspirasi form saran masukan keluhan google form">
+                <div class="card-icon"><i class="fas fa-comments"></i></div>
+                <div class="card-content">
+                    <h3>Formulir Aspirasi</h3>
+                    <p>Sampaikan saran dan masukan untuk komunitas.</p>
+                </div>
+            </a>
+
+            <a href="https://chat.whatsapp.com/DoNTwJqmYB9AghSh1dyWHl" target="_blank" class="card" data-search="grup non formal whatsapp wa ngobrol chat santai">
+                <div class="card-icon"><i class="fab fa-whatsapp"></i></div>
+                <div class="card-content">
+                    <h3>Grup WA Non-Formal</h3>
+                    <p>Bergabung dengan grup diskusi santai anggota.</p>
+                </div>
+            </a>
+
+            <a href="https://whatsapp.com/channel/0029VaANzBd9WtC0eH6wkn0F" target="_blank" class="card" data-search="saluran channel whatsapp wa informasi pengumuman">
+                <div class="card-icon"><i class="fas fa-bullhorn"></i></div>
+                <div class="card-content">
+                    <h3>Saluran Whatsapp</h3>
+                    <p>Ikuti saluran resmi untuk update terbaru.</p>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <div id="pdfModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Dokumen Tata Tertib Anggota</h3>
+                <span class="close-btn" onclick="closePdfModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <iframe id="pdfIframe" src="" allow="autoplay"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
+        <div class="contact-info">
+            <a href="tel:085211150310" class="contact-item"><i class="fas fa-phone-alt"></i> 0852-1115-0310</a>
+            <a href="mailto:sadulursepoor@gmail.com" class="contact-item"><i class="fas fa-envelope"></i> sadulursepoor@gmail.com</a>
+        </div>
+    </footer>
+
+    <script>
+        // Fitur Pencarian Cepat
+        function filterCards() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                let searchData = card.getAttribute('data-search').toLowerCase();
+                card.style.display = searchData.includes(input) ? "flex" : "none";
+            });
+        }
+
+        // Fitur Buka/Tutup PDF
+        function openPdfModal() {
+            document.getElementById('pdfModal').style.display = 'flex';
+            document.getElementById('pdfIframe').src = "https://drive.google.com/file/d/1IMbS6m8CJpMyztkvPKGFhE7nuDFeKwej/preview";
+            document.body.style.overflow = "hidden";
+        }
+
+        function closePdfModal() {
+            document.getElementById('pdfModal').style.display = 'none';
+            document.getElementById('pdfIframe').src = "";
+            document.body.style.overflow = "auto";
+        }
+
+        window.onclick = function(event) {
+            let modal = document.getElementById('pdfModal');
+            if (event.target == modal) {
+                closePdfModal();
+            }
+        }
+    </script>
+</body>
+</html>
