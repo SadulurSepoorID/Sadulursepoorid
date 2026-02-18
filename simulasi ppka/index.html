@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTC VDU - Stasiun Cakung</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="device-warning">
+    <h1 style="color: #ff3333; margin-bottom: 10px;">⚠️ PERINGATAN SISTEM</h1>
+    <p style="font-size: 14px; line-height: 1.6; color: #ccc; max-width: 500px;">
+        Simulasi CTC VDU ini memiliki antarmuka yang sangat padat dan tidak mendukung tampilan layar kecil/vertikal.<br><br>
+        Jika Anda menggunakan Handphone, harap aktifkan <b>"Mode Desktop" (Desktop Site)</b> di pengaturan browser Anda, lalu putar perangkat menjadi <b>Horizontal (Landscape)</b>.<br><br>
+        <span style="color: #ffcc00;">Sistem dikunci sementara hingga rotasi dan resolusi layar sesuai.</span>
+    </p>
+    <div class="warning-icon">📱 🔄 🖥️</div>
+</div>
+
+<header>
+    <div class="header-left">
+        <span class="logo-text">SYS_CTC_DAOP1</span>
+        <span class="sub-text">| STATION CONTROLLER : CAKUNG (CUK)</span>
+    </div>
+    
+    <div class="header-right">
+        <div class="speed-control">
+            <label>SPEED MULTIPLIER</label>
+            <div class="speed-inputs">
+                <input type="range" id="speed-slider" min="0" max="100" value="1" oninput="setSpeed(this.value)">
+                <input type="number" id="speed-input" min="0" max="100" value="1" onchange="setSpeed(this.value)">
+                <span>x</span>
+            </div>
+        </div>
+        
+        <button class="menu-btn" id="btn-sound" onclick="toggleSound()">🔊 SOUND ON</button>
+        <button class="menu-btn call-btn" id="btn-telepon" onclick="openModal('comm-modal')">📞 TELEPON <span id="notif-badge">(0)</span></button>
+        <button class="menu-btn" onclick="openModal('schedule-modal')">📅 JADWAL KA</button>
+        <button class="menu-btn" onclick="openModal('settings-modal')">⚙️ MENU</button>
+        
+        <div id="clock">05:00:00</div>
+    </div>
+</header>
+
+<div id="game-container">
+    <svg id="track-layer"></svg>
+    <div id="entities"></div>
+</div>
+
+<div id="bottom-panel">
+    <div class="panel-section schedule-section">
+        <div class="panel-title">LIVE TRAIN MANIFEST</div>
+        <table id="schedule-table">
+            <thead>
+                <tr>
+                    <th>NO KA</th>
+                    <th>NAMA KA</th>
+                    <th>TUJUAN</th>
+                    <th>POSISI BLOK</th>
+                    <th>STATUS OPERASIONAL</th>
+                </tr>
+            </thead>
+            <tbody id="schedule-body"></tbody>
+        </table>
+    </div>
+    <div class="panel-section log-section">
+        <div class="panel-title">COMMUNICATION LOG / RADIO</div>
+        <div id="log-content">
+            <span class="log-time">[SYSTEM]</span> Interlocking Stasiun Cakung diaktifkan.<br>
+        </div>
+    </div>
+</div>
+
+<div id="comm-modal" class="modal">
+    <div class="modal-content responsive-modal" style="max-width: 550px;">
+        <span class="modal-close" onclick="closeModal('comm-modal')">✖ TUTUP</span>
+        <h3 class="modal-title" style="color: #00ccff; margin-top:0;">📞 PANEL KOMUNIKASI STASIUN</h3>
+        
+        <div style="display:flex; gap:10px; margin-bottom: 15px;">
+            <button onclick="switchCommTab('masuk')" id="tab-masuk" style="flex:1; padding:10px; background:#333; color:#fff; font-weight:bold; border:1px solid #555; cursor:pointer;">PANGGILAN MASUK <span id="tab-notif-badge" style="color:#ff5555;">(0)</span></button>
+            <button onclick="switchCommTab('keluar')" id="tab-keluar" style="flex:1; padding:10px; background:#111; color:#aaa; font-weight:bold; border:1px solid #555; cursor:pointer;">PANGGILAN KELUAR</button>
+        </div>
+
+        <div id="panel-masuk" style="display:block;">
+            <div id="incoming-list">
+                <p style="color:#888; text-align:center;">Tidak ada panggilan masuk saat ini.</p>
+            </div>
+        </div>
+
+        <div id="panel-keluar" style="display:none;">
+            <label style="color:#aaa; font-size:12px;">Pilih Stasiun Tujuan:</label>
+            <select id="out-station" onchange="updateOutgoingTrainList()" style="width:100%; padding:10px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #555;">
+                <option value="KRI">Stasiun Kranji (Arah Timur / Cikarang)</option>
+                <option value="KLDB">Stasiun Klender Baru (Arah Barat / Jatinegara)</option>
+            </select>
+
+            <label style="color:#aaa; font-size:12px;">Pilih KA yang Tersedia (Auto-Detect):</label>
+            <select id="out-noka" style="width:100%; padding:10px; margin-bottom:10px; background:#000; color:#00ffcc; border:1px solid #555; font-family: monospace;">
+                <option value="">-- Tidak ada KA --</option>
+            </select>
+
+            <label style="color:#aaa; font-size:12px;">Pilih Berita / Pesan:</label>
+            <select id="out-msg" style="width:100%; padding:10px; margin-bottom:15px; background:#000; color:#fff; border:1px solid #555;">
+                <option value="siap">KA [no_ka] siap diberangkatkan dari Cakung, apakah stasiun Anda aman?</option>
+                <option value="tahan">KA [no_ka] belum bisa diberangkatkan dari Cakung, harap tunggu.</option>
+            </select>
+
+            <button onclick="sendOutgoingCall()" id="btn-send-out" style="width:100%; padding:12px; background:#0066ff; color:#fff; font-weight:bold; border:none; border-radius:4px; cursor:pointer; transition: 0.2s;">KIRIM PANGGILAN</button>
+            
+            <div id="out-status" style="margin-top:15px; padding:12px; background:#111; border:1px dashed #444; color:#aaa; font-size: 13px; text-align: center; min-height:40px;">
+                Status: Standby.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="schedule-modal" class="modal">
+    <div class="modal-content responsive-modal" style="max-width: 650px;">
+        <span class="modal-close" onclick="closeModal('schedule-modal')">✖ TUTUP</span>
+        <h3 class="modal-title" style="color: #00ffcc;">📅 TIMETABLE (JADWAL HARIAN)</h3>
+        <div class="table-container">
+            <table class="schedule-view-table">
+                <thead><tr><th>WAKTU</th><th>NO KA</th><th>NAMA KA</th><th>TUJUAN</th><th>JENIS</th></tr></thead>
+                <tbody id="full-schedule-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="settings-modal" class="modal">
+    <div class="modal-content responsive-modal" style="max-width: 450px;">
+        <span class="modal-close" onclick="closeModal('settings-modal')">✖ TUTUP</span>
+        <h3 class="modal-title" style="color: #ffcc00;">⚙️ MENU</h3>
+        
+        <div class="settings-section">
+            <h4>🔊 PENGATURAN AUDIO</h4>
+            <div class="setting-row">
+                <label>Suara Efek Radio (Ringtone & Klik HT)</label>
+                <input type="checkbox" id="check-sfx" checked onchange="toggleSfx(this)">
+            </div>
+            <div class="setting-row">
+                <label>Suara Announcer (Voice Text-to-Speech)</label>
+                <input type="checkbox" id="check-voice" checked onchange="toggleVoice(this)">
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h4>🕒 RESET SIMULASI WAKTU</h4>
+            <p style="color: #aaa; font-size: 11px; margin-top:0; margin-bottom: 10px;">Hapus seluruh kereta di layar dan mulai ulang dari jam tertentu.</p>
+            <label style="font-weight: bold; display: block; margin-bottom: 5px; color:#ddd; font-size: 12px;">Mulai dari Jam (HH:MM):</label>
+            <input type="text" id="start-time-input" value="05:00" placeholder="00:00 - 23:59" maxlength="5" class="time-input">
+            <button onclick="resetGame()" class="reset-btn" style="margin-top: 10px;">♻️ RESET PERMAINAN SEKARANG</button>
+        </div>
+
+        <div class="settings-section" style="border-left-color: #00ccff;">
+            <h4>📖 BANTUAN & PANDUAN PPKA</h4>
+            <p style="color: #aaa; font-size: 11px; margin-top:0; margin-bottom: 10px;">Lupa cara melayani kereta? Buka contekan di sini.</p>
+            <button onclick="closeModal('settings-modal'); openModal('info-modal')" class="menu-btn" style="width: 100%; padding: 10px; background: #004466; color:#fff; border-color: #0088cc;">BUKA BUKU PANDUAN</button>
+        </div>
+    </div>
+</div>
+
+<div id="info-modal" class="modal">
+    <div class="modal-content responsive-modal">
+        <span class="modal-close" onclick="closeModal('info-modal')">✖ TUTUP</span>
+        <h3 class="modal-title" style="color: #00ccff;">📖 PANDUAN PPKA</h3>
+        <div class="modal-body">
+            <div class="guide-item">
+                <h4>🎯 Tujuan Utama</h4>
+                <p>Mengatur lalu lintas kereta api agar aman masuk dan keluar stasiun tanpa terjadi tabrakan.</p>
+            </div>
+            <div class="guide-item">
+                <h4>🔀 Mengatur Wesel</h4>
+                <p>Klik kotak wesel untuk mengubah arah. <span style="color:#ff3333;">Wesel terkunci otomatis jika ada sinyal hijau/kuning atau ada kereta di atasnya!</span></p>
+            </div>
+            <div class="guide-item">
+                <h4>🚦 Sinyal & Rute</h4>
+                <ul>
+                    <li><span style="color:#00ff00; font-weight:bold;">Hijau (S5):</span> Rute aman (Jalur Lurus).</li>
+                    <li><span style="color:#ffff00; font-weight:bold;">Kuning (S6):</span> Masuk jalur belok / hati-hati 20 km/jam.</li>
+                    <li><span style="color:#ff3333; font-weight:bold;">Merah (S7):</span> Berhenti mutlak.</li>
+                </ul>
+            </div>
+            <div class="guide-item">
+                <h4>📞 Komunikasi Antar Stasiun</h4>
+                <p>KRL tidak akan masuk ke layar jika telepon masuk belum Anda balas. Dan Anda tidak akan bisa menarik sinyal keluar jika belum menelpon stasiun tujuan!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="masinis-modal" class="modal">
+    <div class="modal-content responsive-modal" style="max-width: 450px; border-left: 5px solid #ff8800;">
+        <span class="modal-close" onclick="closeModal('masinis-modal')">✖ TUTUP</span>
+        <h3 class="modal-title" id="masinis-title" style="color: #ff8800; margin-top:0;">📻 RADIO MASINIS KA ---</h3>
+        
+        <p style="color:#ccc; font-size: 13px;">Masinis meminta konfirmasi pelayanan jalan. Pilih instruksi balasan Anda:</p>
+        
+        <select id="masinis-reply" style="width:100%; padding:10px; margin-bottom:15px; background:#000; color:#fff; border:1px solid #555;">
+        </select>
+
+        <button onclick="replyToMasinis()" style="width:100%; padding:12px; background:#ff8800; color:#000; font-weight:bold; border:none; border-radius:4px; cursor:pointer; transition: 0.2s;">KIRIM INSTRUKSI KE MASINIS</button>
+    </div>
+</div>
+
+<script src="api.js"></script> 
+<script src="script.js"></script>
+</body>
+</html>

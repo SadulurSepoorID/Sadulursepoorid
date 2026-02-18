@@ -1,0 +1,172 @@
+/* TEMA PROFESIONAL TRAIN DISPATCHER (DARK MODE) */
+:root { --bg-main: #0a0a0c; --panel-dark: #151518; --track-base: #3a3a40; --track-route: #00ff00; --track-occ: #ff0000; --text-light: #e0e0e0; }
+* { box-sizing: border-box; }
+body { background-color: var(--bg-main); color: var(--text-light); font-family: 'Consolas', 'Courier New', monospace; margin: 0; overflow: hidden; display: flex; flex-direction: column; height: 100vh; user-select: none; }
+
+header { background: #111; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; z-index: 100; }
+.header-left { display: flex; align-items: baseline; gap: 10px; }
+.logo-text { font-size: 18px; font-weight: bold; color: #00ccff; }
+.sub-text { font-size: 14px; color: #aaa; }
+#clock { font-size: 20px; font-weight: bold; color: #ffcc00; width: 105px; text-align: right; }
+
+.header-right { display: flex; align-items: center; gap: 12px; }
+.speed-control { display: flex; flex-direction: column; align-items: flex-start; background: #222; padding: 4px 10px; border-radius: 4px; border: 1px solid #444;}
+.speed-control label { font-size: 10px; font-weight: bold; color: #aaa; margin-bottom: 4px; }
+.speed-inputs { display: flex; align-items: center; gap: 5px; }
+input[type=range] { width: 100px; cursor: pointer; accent-color: #00ffcc; margin: 0; }
+input[type=number] { width: 45px; background: #000; color: #00ffcc; border: 1px solid #555; font-family: monospace; font-weight: bold; font-size: 12px; text-align: center; padding: 2px; border-radius: 3px; }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.speed-inputs span { font-size: 12px; color: #888; font-weight: bold; }
+
+.menu-btn { background: #1a1a1c; color: #ccc; border: 1px solid #555; padding: 8px 12px; cursor: pointer; font-family: monospace; font-weight: bold; border-radius: 4px; transition: all 0.2s; font-size: 12px; }
+.menu-btn:hover { background: #444; color: #fff; border-color: #00ffcc; }
+
+/* ANIMASI TOMBOL TELEPON KEDIP */
+.call-btn { background: #0055ff; color: #fff; border-color: #0077ff; }
+.call-btn.blinking { animation: call-blink 1s linear infinite; }
+@keyframes call-blink { 50% { background-color: #ff3333; box-shadow: 0 0 12px #ff3333; border-color: #ff5555; } }
+
+/* MODAL UI */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
+.modal.active { display: flex; }
+.modal-content { background: #1a1a1c; border: 2px solid #333; padding: 25px; border-radius: 8px; max-width: 500px; width: 90%; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+.modal-title { margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
+.modal-close { float: right; cursor: pointer; color: #ff5555; font-weight: bold; font-family: sans-serif; font-size: 12px; background: #333; padding: 4px 8px; border-radius: 4px;}
+.modal-close:hover { background: #ff5555; color: #fff; }
+.responsive-modal { max-height: 85vh; overflow-y: auto; }
+.responsive-modal::-webkit-scrollbar { width: 8px; }
+.responsive-modal::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+
+.modal-body { display: flex; flex-direction: column; gap: 15px; }
+.guide-item { background: #222; padding: 12px; border-radius: 6px; border-left: 3px solid #00ccff; }
+.guide-item h4 { margin: 0 0 8px 0; color: #fff; font-size: 14px; }
+.guide-item p { margin: 0 0 5px 0; color: #ccc; font-size: 13px; line-height: 1.5; }
+.guide-item ul { margin: 0; padding-left: 20px; color: #ccc; font-size: 13px; line-height: 1.6; }
+
+.table-container { overflow-x: auto; border: 1px solid #333; border-radius: 4px; }
+.schedule-view-table { width: 100%; border-collapse: collapse; min-width: 400px; }
+.schedule-view-table th { background: #222; padding: 10px; font-size: 12px; text-align: left; color: #aaa; border-bottom: 2px solid #444; position: sticky; top: 0; }
+.schedule-view-table td { padding: 8px 10px; font-size: 13px; border-bottom: 1px solid #333; }
+.schedule-view-table tr:hover td { background: #111; }
+
+.time-input { background:#000; color:#00ffcc; border:1px solid #555; padding:10px; width: 100%; font-family: monospace; font-size: 18px; text-align: center; border-radius: 4px; }
+.time-input:focus { outline: none; border-color: #00ffcc; }
+.reset-btn { width: 100%; background:#cc0000; border:none; color:#fff; padding: 12px; font-weight:bold; cursor:pointer; border-radius:4px; font-size: 14px; transition: background 0.2s; }
+.reset-btn:hover { background: #ff3333; }
+
+/* AREA SIMULASI */
+#game-container { position: relative; flex-grow: 1; background: var(--bg-main); }
+svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+line { stroke: var(--track-base); stroke-width: 4; stroke-linecap: round; }
+line.route-layer { stroke: var(--track-route); stroke-width: 4; opacity: 0; transition: opacity 0.2s; }
+line.route-layer.active { opacity: 1; }
+line.occupied-layer { stroke: var(--track-occ); stroke-width: 4; opacity: 0; transition: opacity 0.1s; }
+line.occupied-layer.active { opacity: 1; }
+
+.svg-label { fill: #00ccff; font-family: 'Consolas', monospace; font-size: 12px; font-weight: bold; dominant-baseline: central; }
+.svg-platform { fill: #999; font-size: 11px; font-weight: bold; dominant-baseline: central; text-anchor: middle; letter-spacing: 1px; }
+
+#entities { position: absolute; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
+
+.train-entity {
+    position: absolute; color: #fff; background: #0066ff; padding: 2px 6px; border-radius: 4px;
+    border: 1px solid #66aaff; font-weight: bold; font-size: 11px; transform: translate(-50%, -50%); 
+    white-space: nowrap; z-index: 20; box-shadow: 0 2px 5px rgba(0,0,0,0.8); transition: background-color 0.3s;
+    pointer-events: auto; /* Wajib agar bisa diklik */
+    cursor: pointer;      /* Wajib agar kursor jadi tangan */
+}
+.train-docked { background: #ff8800; border-color: #ffcc00; color: #000; } 
+
+@keyframes train-blink {
+    0% { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; color: #fff; transform: translate(-50%, -50%) scale(1.1); }
+    50% { background-color: #ffffff; box-shadow: 0 0 20px #ffffff; color: #000; transform: translate(-50%, -50%) scale(1.2); }
+    100% { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; color: #fff; transform: translate(-50%, -50%) scale(1.1); }
+}
+.train-alarm {
+    animation: train-blink 0.6s infinite !important;
+    border-color: #ff0000 !important;
+    z-index: 100;
+}
+
+.switch-point { position: absolute; width: 14px; height: 14px; background: #222; border: 2px solid #666; cursor: pointer; pointer-events: auto; transform: translate(-50%, -50%); z-index: 15; transition: all 0.2s; }
+.switch-point:hover { background: #444; border-color: #00ff00; transform: translate(-50%, -50%) scale(1.2); }
+
+.signal-housing {
+    position: absolute; width: 42px; height: 16px; background: #111; border: 2px solid #555; border-radius: 4px;
+    transform: translate(-50%, -50%); cursor: pointer; pointer-events: auto; z-index: 30; 
+    display: flex; flex-direction: row; align-items: center; justify-content: space-evenly;
+    padding: 0 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); transition: transform 0.1s;
+}
+.signal-housing:active { transform: translate(-50%, -50%) scale(0.95); } 
+.signal-lamp { width: 10px; height: 10px; border-radius: 50%; background: #333; border: 1px solid #222; transition: all 0.2s; }
+.lamp-r.on { background: #ff0000; box-shadow: 0 0 8px #ff0000, inset 0 0 4px #ffaaaa; border-color: #ff0000;}
+.lamp-y.on { background: #ffcc00; box-shadow: 0 0 8px #ffcc00, inset 0 0 4px #ffffaa; border-color: #ffcc00;}
+.lamp-g.on { background: #00ff00; box-shadow: 0 0 8px #00ff00, inset 0 0 4px #aaffaa; border-color: #00ff00;}
+.signal-pole { position: absolute; width: 3px; background: #333; transform: translate(-50%, 0); pointer-events: none; z-index: 14; }
+
+#bottom-panel { height: 180px; background: var(--panel-dark); border-top: 2px solid #333; display: flex; font-size: 12px; z-index: 100; }
+.panel-section { flex: 1; padding: 10px 15px; border-right: 1px solid #222; overflow-y: auto; }
+.panel-title { font-weight: bold; color: #888; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 8px; font-size: 13px; }
+
+table { width: 100%; border-collapse: collapse; background: #0a0a0c; color: #ccc; }
+th { text-align: left; background: #1a1a1c; padding: 6px; color: #888; border-bottom: 1px solid #333; position: sticky; top:0;}
+td { border-bottom: 1px solid #222; padding: 6px; }
+tr:hover td { background: #111; color: #fff; }
+.log-section { background: #050505; color: #00ff00; line-height: 1.5; }
+.log-time { color: #666; margin-right: 5px; }
+
+/* GAYA KHUSUS UNTUK MENU PENGATURAN DALAM MODAL */
+.settings-section { 
+    background: #222; 
+    padding: 15px; 
+    border-radius: 6px; 
+    margin-bottom: 15px; 
+    border-left: 4px solid #ffcc00; 
+}
+.settings-section h4 { 
+    margin: 0 0 10px 0; 
+    color: #fff; 
+    font-size: 13px; 
+    border-bottom: 1px solid #333; 
+    padding-bottom: 6px;
+}
+.setting-row { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    margin-bottom: 10px; 
+    font-size: 12px; 
+    color: #ccc; 
+}
+input[type=checkbox] { 
+    transform: scale(1.3); 
+    cursor: pointer; 
+    accent-color: #00ffcc; 
+}
+
+/* TAMPILAN PERINGATAN DEVICE (HP PORTRAIT / BUKAN DESKTOP MODE) */
+#device-warning {
+    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(10,10,12,0.95); z-index: 999999; backdrop-filter: blur(10px);
+    flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;
+}
+.warning-icon { font-size: 50px; margin-top: 20px; animation: bounce 2s infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+/* PENYESUAIAN RESPONSIF: LAYAR KECIL NAMUN HORIZONTAL (HP MODE DESKTOP) */
+@media screen and (max-height: 650px) {
+    header { padding: 5px 15px; }
+    .logo-text { font-size: 15px; }
+    .sub-text { font-size: 11px; }
+    #clock { font-size: 16px; width: 85px; }
+    .menu-btn { padding: 5px 8px; font-size: 10px; }
+    .speed-control { padding: 2px 8px; }
+    .speed-control label { font-size: 8px; }
+    
+    #bottom-panel { height: 135px; }
+    .panel-section { padding: 5px 10px; }
+    .panel-title { margin-bottom: 5px; font-size: 11px; }
+    th, td { padding: 4px; font-size: 11px; }
+    .log-time { font-size: 11px; }
+    .log-section { font-size: 11px; }
+}
