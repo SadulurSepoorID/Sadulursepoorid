@@ -1,5 +1,5 @@
 /**
- * ENGINE DISPATCHER PROFESIONAL (V49 - PURE S5 SPEED LOGIC)
+ * ENGINE DISPATCHER PROFESIONAL (V50 - FINAL RESPONSIVE & SECURE ROUTE)
  */
 
 window.addEventListener('beforeunload', function (e) {
@@ -14,11 +14,17 @@ let previousSpeedForLock = 1;
 function checkDeviceLock() {
     let warning = document.getElementById('device-warning');
     if(!warning) return;
-    let isLandscape = window.innerWidth > window.innerHeight;
-    let isDesktopWidth = window.innerWidth >= 768; 
-    if (!isLandscape || !isDesktopWidth) {
+    
+    // Cek orientasi layar portrait
+    let isPortrait = window.innerHeight > window.innerWidth;
+    
+    if (isPortrait) {
         warning.style.display = 'flex';
-        if (timeMultiplier > 0) { previousSpeedForLock = timeMultiplier; setSpeed(0); }
+        // Pause simulasi
+        if (typeof timeMultiplier !== 'undefined' && timeMultiplier > 0) { 
+            previousSpeedForLock = timeMultiplier; 
+            if (typeof setSpeed === 'function') setSpeed(0); 
+        }
     } else {
         warning.style.display = 'none';
     }
@@ -668,7 +674,6 @@ function updateRoutesVisual() {
     
     let isEastClear = (SIGNALS['P_2_E'] !== 'RED' || SIGNALS['P_1_E'] !== 'RED');
     if (isEastClear) { 
-        // Mengaktifkan warna hijau untuk jalur keluar Timur
         let e1 = document.getElementById('r_t2_out_2'); if(e1) e1.classList.add('active');
         let e2 = document.getElementById('r_t2_out_end'); if(e2) e2.classList.add('active');
         let e3 = document.getElementById('r_t2_exit'); if(e3) e3.classList.add('active');
@@ -679,7 +684,6 @@ function updateRoutesVisual() {
     
     let isWestClear = (SIGNALS['P_3_W'] !== 'RED' || SIGNALS['P_4_W'] !== 'RED');
     if (isWestClear) { 
-        // Mengaktifkan warna hijau untuk jalur keluar Barat
         let w1 = document.getElementById('r_t3_out_2'); if(w1) w1.classList.add('active');
         let w2 = document.getElementById('r_t3_out_end'); if(w2) w2.classList.add('active');
         let w3 = document.getElementById('r_t3_exit'); if(w3) w3.classList.add('active');
@@ -1032,10 +1036,8 @@ function checkTimetable() {
             let fromDirection = isEven ? "Barat (Klender Baru)" : "Timur (Kranji)";
             let expectedJalur = isEven ? "Jalur 2" : "Jalur 3";
             
-            // Masukkan ke log komunikasi dengan warna kuning mencolok
             addLog(`<span style="color:#ffcc00; font-weight:bold; background: #331a00; padding: 2px 4px; border-radius: 3px;">[INFO PK] PERHATIAN: KA ${t.noKA} (${t.namaKA}) dari arah ${fromDirection} akan melintas langsung di ${expectedJalur} dalam 1 Menit!</span>`);
             
-            // Bunyikan peringatan suara otomatis lewat radio
             playRadioClick(); 
             speakVoice(`Info PK. Perhatian Stasiun Cakung. Kereta Api ${t.noKA}, ${t.namaKA}, akan segera melintas langsung dari arah ${fromDirection}. Mohon amankan ${expectedJalur}. Ganti.`, 500);
         }
