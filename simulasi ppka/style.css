@@ -118,23 +118,34 @@ line.occupied-layer.active { opacity: 1; }
 .setting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: #ccc; }
 
 /* =======================================================
-   RESPONSIVE MOBILE RULES (Khusus Layar HP / Vertikal) 
+   RESPONSIVE MOBILE RULES (Khusus Layar HP / Landscape) 
    ======================================================= */
-@media screen and (max-width: 768px) {
-    header { padding: 8px 10px; }
+@media screen and (max-width: 900px), screen and (max-height: 500px) {
+    header { padding: 6px 10px; }
     .header-left, .header-right { width: 100%; justify-content: space-between; margin-bottom: 5px;}
     .header-left { flex-wrap: wrap; gap: 5px; }
-    .logo-text { font-size: 16px; }
+    .logo-text { font-size: 15px; }
     .sub-text { font-size: 11px; }
     
     .hide-mobile { display: none; } 
-    #clock { font-size: 18px; width: auto; }
-    .menu-btn { padding: 6px 10px; }
+    #clock { font-size: 16px; width: auto; }
+    .menu-btn { padding: 5px 8px; font-size: 11px; }
     input[type=range] { width: 60px; }
     
-    #bottom-panel { flex-direction: column; height: auto; max-height: 50vh; }
-    .panel-section { flex: none; height: 25vh; border-right: none; border-bottom: 2px solid #222; }
+    /* 1. Atur panel bawah agar tidak makan banyak tempat di HP */
+    #bottom-panel { flex-direction: row; height: 140px; }
+    .panel-section { height: 100%; }
     .modal-content { padding: 15px; }
+
+    /* 2. KUNCI RAHASIA: Memperbesar area rel agar bisa di-swipe & tidak dempet */
+    #game-container { 
+        overflow: auto; /* Memunculkan fitur scroll/swipe */
+        -webkit-overflow-scrolling: touch; /* Biar swipe mulus di iPhone/Android */
+    }
+    #map-area { 
+        min-width: 1400px; /* Merenggangkan jarak horizontal (Wesel & Sinyal) */
+        min-height: 550px; /* Merenggangkan jarak vertikal (Jarak antar Jalur 1, 2, 3, 4) */
+    }
 }
 
 /* =======================================================
