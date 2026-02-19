@@ -1,9 +1,14 @@
 /* TEMA PROFESIONAL TRAIN DISPATCHER (DARK MODE) */
 :root { --bg-main: #0a0a0c; --panel-dark: #151518; --track-base: #3a3a40; --track-route: #00ff00; --track-occ: #ff0000; --text-light: #e0e0e0; }
 * { box-sizing: border-box; }
-body { background-color: var(--bg-main); color: var(--text-light); font-family: 'Consolas', 'Courier New', monospace; margin: 0; overflow: hidden; display: flex; flex-direction: column; height: 100vh; user-select: none; }
 
-header { background: #111; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; z-index: 100; flex-wrap: wrap; gap: 10px; }
+/* KUNCI TATA LETAK ANTI-BERANTAKAN */
+body { 
+    background-color: var(--bg-main); color: var(--text-light); font-family: 'Consolas', 'Courier New', monospace; 
+    margin: 0; padding: 0; overflow: hidden; display: flex; flex-direction: column; height: 100vh; width: 100vw; user-select: none; 
+}
+
+header { flex: 0 0 auto; background: #111; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; z-index: 100; flex-wrap: wrap; gap: 10px; }
 .header-left { display: flex; align-items: baseline; gap: 10px; }
 .logo-text { font-size: 18px; font-weight: bold; color: #00ccff; }
 .sub-text { font-size: 14px; color: #aaa; }
@@ -25,29 +30,34 @@ input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin
 .call-btn.blinking { animation: call-blink 1s linear infinite; }
 @keyframes call-blink { 50% { background-color: #ff3333; box-shadow: 0 0 12px #ff3333; border-color: #ff5555; } }
 
-/* MODAL UI */
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
-.modal.active { display: flex; }
-.modal-content { background: #1a1a1c; border: 2px solid #333; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-.modal-title { margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
-.modal-close { float: right; cursor: pointer; color: #ff5555; font-weight: bold; font-family: sans-serif; font-size: 12px; background: #333; padding: 4px 8px; border-radius: 4px;}
-.modal-close:hover { background: #ff5555; color: #fff; }
-.responsive-modal { max-height: 85vh; overflow-y: auto; }
-.responsive-modal::-webkit-scrollbar { width: 8px; }
-.responsive-modal::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+/* AREA SIMULASI UTAMA (ISOLASI SCROLL) */
+#game-wrapper {
+    flex: 1 1 auto; position: relative; display: flex; overflow: hidden; background: var(--bg-main);
+}
+#game-container {
+    flex: 1; display: flex; overflow: auto; -webkit-overflow-scrolling: touch; cursor: grab;
+}
+#game-container:active { cursor: grabbing; }
 
-.modal-body { display: flex; flex-direction: column; gap: 15px; }
-.guide-item { background: #222; padding: 12px; border-radius: 6px; border-left: 3px solid #00ccff; }
-.guide-item h4 { margin: 0 0 8px 0; color: #fff; font-size: 14px; }
-.guide-item p, .guide-item ul { margin: 0; padding-left: 20px; color: #ccc; font-size: 13px; line-height: 1.5; }
+/* TATA LETAK PETA YG BISA MEMBESAR & SELALU DI TENGAH */
+#map-area { 
+    position: relative; 
+    margin: auto; /* Ini kunci rahasianya agar selalu ke tengah layar */
+    transform-origin: center center; 
+    transition: width 0.1s, height 0.1s; 
+}
 
-.time-input { background:#000; color:#00ffcc; border:1px solid #555; padding:10px; width: 100%; font-family: monospace; font-size: 18px; text-align: center; border-radius: 4px; }
-.reset-btn { width: 100%; background:#cc0000; border:none; color:#fff; padding: 12px; font-weight:bold; cursor:pointer; border-radius:4px; font-size: 14px; transition: background 0.2s; }
-.reset-btn:hover { background: #ff3333; }
+/* TOMBOL ZOOM MELAYANG DI KIRI ATAS PETA */
+#zoom-controls {
+    position: absolute; top: 15px; left: 15px; z-index: 900; display: flex; gap: 8px;
+}
+.btn-zoom {
+    background: rgba(0, 0, 0, 0.75); color: #00ccff; border: 1px solid #00ccff;
+    width: 40px; height: 40px; border-radius: 6px; font-size: 20px; font-weight: bold; 
+    cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+.btn-zoom:active { background: #00ccff; color: #000; }
 
-/* AREA SIMULASI - RESPONSIVE SCROLL */
-#game-container { position: relative; flex-grow: 1; background: var(--bg-main); overflow: auto; }
-#map-area { position: relative; width: 100%; height: 100%; min-width: 900px; min-height: 350px; }
 svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
 line { stroke: var(--track-base); stroke-width: 4; stroke-linecap: round; }
 line.route-layer { stroke: var(--track-route); stroke-width: 4; opacity: 0; transition: opacity 0.2s; }
@@ -85,8 +95,8 @@ line.occupied-layer.active { opacity: 1; }
 .lamp-g.on { background: #00ff00; box-shadow: 0 0 8px #00ff00; border-color: #00ff00;}
 .signal-pole { position: absolute; width: 3px; background: #333; transform: translate(-50%, 0); pointer-events: none; z-index: 14; }
 
-/* PANEL BAWAH */
-#bottom-panel { height: 210px; background: var(--panel-dark); border-top: 2px solid #333; display: flex; font-size: 12px; z-index: 100; }
+/* PANEL BAWAH (LOG & JADWAL) */
+#bottom-panel { flex: 0 0 210px; background: var(--panel-dark); border-top: 2px solid #333; display: flex; font-size: 12px; z-index: 100; }
 .panel-section { flex: 1; padding: 10px 15px; border-right: 1px solid #222; overflow-y: hidden; display: flex; flex-direction: column; }
 .panel-title { font-weight: bold; color: #888; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 8px; font-size: 13px; }
 
@@ -113,27 +123,46 @@ line.occupied-layer.active { opacity: 1; }
 .log-section { background: #050505; color: #00ff00; line-height: 1.5; overflow-y: auto; }
 .log-time { color: #666; margin-right: 5px; }
 
+/* MODAL & INFO */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
+.modal.active { display: flex; }
+.modal-content { background: #1a1a1c; border: 2px solid #333; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+.modal-title { margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
+.modal-close { float: right; cursor: pointer; color: #ff5555; font-weight: bold; font-family: sans-serif; font-size: 12px; background: #333; padding: 4px 8px; border-radius: 4px;}
+.modal-close:hover { background: #ff5555; color: #fff; }
+.responsive-modal { max-height: 85vh; overflow-y: auto; }
+.responsive-modal::-webkit-scrollbar { width: 8px; }
+.responsive-modal::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+.modal-body { display: flex; flex-direction: column; gap: 15px; }
+.guide-item { background: #222; padding: 12px; border-radius: 6px; border-left: 3px solid #00ccff; }
+.guide-item h4 { margin: 0 0 8px 0; color: #fff; font-size: 14px; }
+.guide-item p, .guide-item ul { margin: 0; padding-left: 20px; color: #ccc; font-size: 13px; line-height: 1.5; }
+
 .settings-section { background: #222; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid #ffcc00; }
 .settings-section h4 { margin: 0 0 10px 0; color: #fff; font-size: 13px; border-bottom: 1px solid #333; padding-bottom: 6px;}
 .setting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: #ccc; }
+.time-input { background:#000; color:#00ffcc; border:1px solid #555; padding:10px; width: 100%; font-family: monospace; font-size: 18px; text-align: center; border-radius: 4px; }
+.reset-btn { width: 100%; background:#cc0000; border:none; color:#fff; padding: 12px; font-weight:bold; cursor:pointer; border-radius:4px; font-size: 14px; transition: background 0.2s; }
+.reset-btn:hover { background: #ff3333; }
 
 /* =======================================================
-   RESPONSIVE MOBILE RULES (Khusus Layar HP / Vertikal) 
+   RESPONSIVE MOBILE RULES (Khusus Layar HP / Landscape) 
    ======================================================= */
-@media screen and (max-width: 768px) {
-    header { padding: 8px 10px; }
+@media screen and (max-width: 900px), screen and (max-height: 500px) {
+    header { padding: 6px 10px; }
     .header-left, .header-right { width: 100%; justify-content: space-between; margin-bottom: 5px;}
     .header-left { flex-wrap: wrap; gap: 5px; }
-    .logo-text { font-size: 16px; }
+    .logo-text { font-size: 15px; }
     .sub-text { font-size: 11px; }
     
     .hide-mobile { display: none; } 
-    #clock { font-size: 18px; width: auto; }
-    .menu-btn { padding: 6px 10px; }
+    #clock { font-size: 16px; width: auto; }
+    .menu-btn { padding: 5px 8px; font-size: 11px; }
     input[type=range] { width: 60px; }
     
-    #bottom-panel { flex-direction: column; height: auto; max-height: 50vh; }
-    .panel-section { flex: none; height: 25vh; border-right: none; border-bottom: 2px solid #222; }
+    /* Panel sedikit di-keatasin agar pas di HP */
+    #bottom-panel { flex: 0 0 180px; } 
+    .panel-section { height: 100%; }
     .modal-content { padding: 15px; }
 }
 
@@ -148,7 +177,7 @@ line.occupied-layer.active { opacity: 1; }
 .warning-icon { font-size: 50px; margin-top: 20px; animation: bounce 2s infinite; }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-/* Paksa overlay muncul jika HP dalam posisi berdiri (Portrait) */
+/* Paksa overlay peringatan muncul jika HP dipegang berdiri (Portrait) */
 @media screen and (orientation: portrait) {
     #device-warning { display: flex !important; }
 }

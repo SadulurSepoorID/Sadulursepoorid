@@ -1,5 +1,5 @@
 /**
- * ENGINE DISPATCHER PROFESIONAL (V50 - FINAL RESPONSIVE & SECURE ROUTE)
+ * ENGINE DISPATCHER PROFESIONAL (V50 - FINAL ZOOM & ISOLATED SWIPE)
  */
 
 window.addEventListener('beforeunload', function (e) {
@@ -15,12 +15,10 @@ function checkDeviceLock() {
     let warning = document.getElementById('device-warning');
     if(!warning) return;
     
-    // Cek orientasi layar portrait
     let isPortrait = window.innerHeight > window.innerWidth;
     
     if (isPortrait) {
         warning.style.display = 'flex';
-        // Pause simulasi
         if (typeof timeMultiplier !== 'undefined' && timeMultiplier > 0) { 
             previousSpeedForLock = timeMultiplier; 
             if (typeof setSpeed === 'function') setSpeed(0); 
@@ -108,7 +106,56 @@ function speakVoice(text, delayMs = 0) {
 }
 
 // ==========================================
-// 1. SISTEM TELEPON & MODAL UI
+// 1. SISTEM ZOOM MAP (Pinch & Buttons)
+// ==========================================
+let currentMapW = 1400; 
+let currentMapH = 500;
+
+function setMapZoom(factor) {
+    let area = document.getElementById('map-area');
+    currentMapW *= factor; 
+    currentMapH *= factor;
+    
+    // Batasan maksimal & minimal Zoom agar tidak hilang dari layar
+    if (currentMapW < 900) currentMapW = 900;
+    if (currentMapH < 350) currentMapH = 350;
+    if (currentMapW > 3500) currentMapW = 3500;
+    if (currentMapH > 1200) currentMapH = 1200;
+    
+    area.style.width = currentMapW + 'px';
+    area.style.height = currentMapH + 'px';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    let gc = document.getElementById('game-container');
+    let initialDist = null;
+
+    gc.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            initialDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+        }
+    }, {passive: false});
+
+    gc.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && initialDist) {
+            e.preventDefault(); // Menghentikan browser bawaan nge-zoom halaman
+            let currentDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+            let diff = currentDist - initialDist;
+            
+            if (Math.abs(diff) > 10) {
+                setMapZoom(diff > 0 ? 1.05 : 0.95);
+                initialDist = currentDist;
+            }
+        }
+    }, {passive: false});
+
+    gc.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) initialDist = null;
+    });
+});
+
+// ==========================================
+// 2. SISTEM TELEPON & MODAL UI
 // ==========================================
 let incomingCalls = []; let clearedDepartures = new Set(); 
 function openModal(id) { document.getElementById(id).classList.add('active'); if (id === 'comm-modal') updateCommUI(); }
@@ -425,11 +472,9 @@ let TRACKS = [
     {id: 'p_1', from: 'P_1_W', to: 'P_1_E', dir: 'east'},
     {id: 't1_out', from: 'P_1_E', to: 'SW_E_2', type: 'diverge', dir: 'east'},
 
-    // WESEL SILANG
     {id: 'x_e_32', from: 'SW_E_3_CROSS', to: 'SW_E_2_CROSS', type: 'diverge', dir: 'west'}, 
     {id: 'x_w_23', from: 'SW_W_2_CROSS', to: 'SW_W_3_CROSS', type: 'diverge', dir: 'west'}, 
 
-    // CONTRAFLOW
     {id: 'cw_t2_in', from: 'SW_E_2_CROSS', to: 'SW_E_2', dir: 'west'}, 
     {id: 'cw_t2_main', from: 'SW_E_2', to: 'P_2_E', type: 'straight', dir: 'west'},
     {id: 'cw_t1_div', from: 'SW_E_2', to: 'P_1_E', type: 'diverge', dir: 'west'},
@@ -443,15 +488,12 @@ let TRACKS = [
 const SVG_LABELS = [
     {x: 5, y: 7, text: "← J3 (KE KLENDER)"},
     {x: 5, y: 13, text: "J2 (DARI KLENDER) →"},
-    
     {x: 95, y: 7, text: "← J3 (DARI KRANJI)", anchor: "end"},
     {x: 95, y: 13, text: "J2 (KE KRANJI) →", anchor: "end"},
-
     {x: 4, y: 42, text: "J3 OUT ↰"},
     {x: 4, y: 68, text: "J2 IN ↴"},
     {x: 96, y: 42, text: "↱ J3 IN", anchor: "end"},
     {x: 96, y: 68, text: "↳ J2 OUT", anchor: "end"},
-
     {x: 27, y: 34, text: "J4 (SIDING) ←"}, 
     {x: 27, y: 80, text: "J1 (SIDING) →"}, 
 ];
@@ -737,11 +779,9 @@ class Train {
         
         let chosenTrack = null;
         
-        // Jika di wesel keluar (trailing point) hanya ada 1 jalur terusan, langsung masuk.
         if (candidates.length === 1) {
             chosenTrack = candidates[0];
         } 
-        // Jika di wesel masuk (facing point) ada cabang, barulah ikuti arah wesel.
         else if (switches.hasOwnProperty(this.currentNode)) {
             let targetType = switches[this.currentNode] ? 'straight' : 'diverge'; 
             chosenTrack = candidates.find(t => t.type === targetType);
@@ -754,7 +794,6 @@ class Train {
             this.percent = 0; 
             this.hasDocked = false; 
             
-            // Pemulihan otomatis jika sebelumnya sempat tertahan wesel salah arah
             if (this.state === 'ERROR') this.state = 'RUNNING'; 
             
             if (!this.currentTrack.isTeleport) {
@@ -763,7 +802,6 @@ class Train {
             }
         } 
         else { 
-            // SAFETY FIX: Bekukan kereta jika wesel masuk salah arah (persen tidak akan tembus > 100%)
             this.baseSpeed = 0; 
             this.state = 'ERROR'; 
             this.updateTable("TERTAHAN (WESEL SALAH ARAH)"); 
@@ -788,22 +826,18 @@ class Train {
             return; 
         }
 
-        // --- LOGIKA KECEPATAN (KAJJ & COMMUTER, COMPENSATOR, PENGEREMAN) ---
         if (this.state === 'RUNNING') {
             
-            // 1. Tentukan Kecepatan Dasar Berdasarkan Jenis Kereta
             let speedCfgNormal = this.isCommuter ? CONFIG_SIMULASI.SPEED_NORMAL : (CONFIG_SIMULASI.SPEED_NORMAL * 1.5);
             let speedCfgCaution = this.isCommuter ? CONFIG_SIMULASI.SPEED_CAUTION : (CONFIG_SIMULASI.SPEED_CAUTION * 1.4);
             let speedCfgSwitch = this.isCommuter ? CONFIG_SIMULASI.SPEED_SWITCH : (CONFIG_SIMULASI.SPEED_SWITCH * 1.7); 
 
-            // 2. Kompensator Jarak Visual
             let trackLength = Math.sqrt(Math.pow(n2_ini.x - n1_ini.x, 2) + Math.pow(n2_ini.y - n1_ini.y, 2));
             let visualMultiplier = 18 / (trackLength || 18); 
             
             let targetSpeed = speedCfgNormal;
             let statusStr = "BERJALAN (S5)";
 
-            // 3. Cek Kondisi Wesel & Sinyal
             if (this.currentTrack.type === 'diverge' || this.currentTrack.type === 'crossover') { 
                 targetSpeed = speedCfgSwitch; 
                 statusStr = "WESEL BELOK (S6)";
@@ -812,22 +846,17 @@ class Train {
                 statusStr = "HATI-HATI (S6)";
             }
 
-            // --- FIX: Status S6 Sepur Salah & Kecepatan ---
-            // Cek apakah kereta sudah kembali ke jalur utama ke arah luar (Outbound)
             let isOutboundTrack = ['t3_out_end', 't3_exit', 't3_out_teleport', 't3_out_blk_drop', 't3_out_blk_app', 't3_out_blk_sig', 
                                    't2_out_end', 't2_exit', 't2_out_teleport', 't2_out_blk_drop', 't2_out_blk_app', 't2_out_blk_sig'].includes(this.currentTrack.id);
             
-            // Jika masuk jalur salah dan belum mencapai rute keluar normal, tetapkan status Sepur Salah
             if (this.contraflowEntryCleared && !isOutboundTrack) {
                 targetSpeed = speedCfgSwitch; 
                 statusStr = "SEPUR SALAH (S6)";
             }
 
-            // Eksekusi kecepatan
             this.baseSpeed = targetSpeed * visualMultiplier;
             this.updateTable(statusStr);
 
-            // 4. Pengereman Dinamis (Hanya pengereman fisik, teks indikator UI dihapus agar sesuai status di atas)
             const exitNodes = ['P_1_E', 'P_2_E', 'P_3_W', 'P_4_W'];
             if (exitNodes.includes(this.currentTrack.to)) {
                 let nextSignal = SIGNALS[this.currentTrack.to];
@@ -845,24 +874,19 @@ class Train {
         let nextSignal = SIGNALS[this.currentTrack.to]; 
         let isRedSignal = (nextSignal && nextSignal === 'RED');
 
-        // Abaikan sinyal yang menghadap ke arah berlawanan saat contraflow!
         if (!this.isEven && (this.currentTrack.to === 'P_1_E' || this.currentTrack.to === 'P_2_E')) isRedSignal = false;
         if (this.isEven && (this.currentTrack.to === 'P_3_W' || this.currentTrack.to === 'P_4_W')) isRedSignal = false;
 
         let weselConflict = false;
         let contraflowConflict = false;
         
-        // Pengecekan Wesel Normal (Trailing Point)
         const trailingTracks = ['t3_out_1', 't4_out', 't2_out_1', 't1_out', 'cw_t2_out', 'cw_t1_out'];
-        
         if (trailingTracks.includes(this.currentTrack.id) && switches.hasOwnProperty(this.currentTrack.to)) { 
             let isNormal = switches[this.currentTrack.to]; 
             if (this.currentTrack.type === 'straight' && !isNormal) weselConflict = true; 
             if (this.currentTrack.type === 'diverge' && isNormal) weselConflict = true; 
         }
 
-        // Proteksi Ekstra Jalur Contraflow (Sepur Salah)
-        // Memastikan rute aman HANYA SAAT kereta sudah berada di peron dan mau berangkat
         let isDepartingContraflowW = ['P_1_W', 'P_2_W', 'SW_W_2', 'SW_W_2_CROSS'].includes(this.currentTrack.to);
         if (!this.isEven && isDepartingContraflowW && this.currentTrack.id.startsWith('cw_')) {
             let w2Conflict = false;
@@ -889,7 +913,6 @@ class Train {
 
         if (contraflowConflict) weselConflict = true;
 
-        // Menentukan ujung peron tempat lokomotif harus berhenti secara dinamis berdasarkan arah
         let isPlatformEnd = false;
         if (this.isEven) {
             isPlatformEnd = ['P_1_E', 'P_2_E', 'P_3_E', 'P_4_E'].includes(this.currentTrack.to);
@@ -1016,7 +1039,6 @@ function addLog(msg) { let logBox = document.getElementById('log-content'); if(!
 
 function checkTimetable() {
     TIMETABLE.forEach(t => {
-        // 1. PERINGATAN DINI KRL (Telepon masuk 30 detik sebelum tiba)
         if (t.isCommuter && gameTime >= t.spawnTime - 30 && !t.hasCalled) {
             t.hasCalled = true; t.isClearedToEnter = false; 
             let noAngka = parseInt(t.noKA.replace(/\D/g, '')); let isEven = (noAngka % 2 === 0);
@@ -1029,7 +1051,6 @@ function checkTimetable() {
             playIncomingRing(); speakVoice(`Panggilan masuk dari Stasiun ${fromStation}. ${voiceMsg}`, 1500); 
         }
 
-        // 2. PERINGATAN DINI KAJJ/KLB (Info Radio PK 60 detik sebelum muncul di layar)
         if (!t.isCommuter && gameTime >= t.spawnTime - 60 && !t.hasCalled) {
             t.hasCalled = true; 
             let noAngka = parseInt(t.noKA.replace(/\D/g, '')); let isEven = (noAngka % 2 === 0);
@@ -1037,12 +1058,10 @@ function checkTimetable() {
             let expectedJalur = isEven ? "Jalur 2" : "Jalur 3";
             
             addLog(`<span style="color:#ffcc00; font-weight:bold; background: #331a00; padding: 2px 4px; border-radius: 3px;">[INFO PK] PERHATIAN: KA ${t.noKA} (${t.namaKA}) dari arah ${fromDirection} akan melintas langsung di ${expectedJalur} dalam 1 Menit!</span>`);
-            
             playRadioClick(); 
             speakVoice(`Info PK. Perhatian Stasiun Cakung. Kereta Api ${t.noKA}, ${t.namaKA}, akan segera melintas langsung dari arah ${fromDirection}. Mohon amankan ${expectedJalur}. Ganti.`, 500);
         }
 
-        // 3. PROSES KEMUNCULAN KERETA (SPAWN)
         if (gameTime >= t.spawnTime && !t.hasSpawned) {
             t.hasSpawned = true; 
             let noAngka = parseInt(t.noKA.replace(/\D/g, '')); let isEven = (noAngka % 2 === 0);

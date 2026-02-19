@@ -46,10 +46,16 @@
     </div>
 </header>
 
-<div id="game-container">
-    <div id="map-area">
-        <svg id="track-layer"></svg>
-        <div id="entities"></div>
+<div id="game-wrapper">
+    <div id="zoom-controls">
+        <button class="btn-zoom" onclick="setMapZoom(1.2)">➕</button>
+        <button class="btn-zoom" onclick="setMapZoom(0.8)">➖</button>
+    </div>
+    <div id="game-container">
+        <div id="map-area" style="width: 1400px; height: 500px;">
+            <svg id="track-layer"></svg>
+            <div id="entities"></div>
+        </div>
     </div>
 </div>
 
