@@ -1131,4 +1131,41 @@ function loadJadwalAndInit() {
         .catch(err => { console.error(err); alert("GAGAL MEMUAT JADWAL: Pastikan data bisa diakses."); });
 }
 
+// ==========================================
+// 5. SISTEM AUTO-HIDE TOMBOL ZOOM
+// ==========================================
+let zoomTimeout;
+const zoomControls = document.getElementById('zoom-controls');
+const gameContainer = document.getElementById('game-container');
+
+function wakeUpZoomControls() {
+    if (!zoomControls) return;
+    
+    // Munculkan tombol
+    zoomControls.classList.remove('zoom-hidden');
+    
+    // Reset timer
+    clearTimeout(zoomTimeout);
+    
+    // Sembunyikan kembali setelah 2.5 detik tidak ada pergerakan
+    zoomTimeout = setTimeout(() => {
+        zoomControls.classList.add('zoom-hidden');
+    }, 2500); 
+}
+
+if (gameContainer && zoomControls) {
+    // Bangunkan tombol JIKA layar digeser (scroll) atau di-swipe (touchmove)
+    gameContainer.addEventListener('scroll', wakeUpZoomControls, { passive: true });
+    gameContainer.addEventListener('touchmove', wakeUpZoomControls, { passive: true });
+
+    // Tahan tombol agar tidak hilang kalau user sedang memencet/menahan tombol zoom-nya
+    zoomControls.addEventListener('mouseenter', () => clearTimeout(zoomTimeout));
+    zoomControls.addEventListener('mouseleave', wakeUpZoomControls);
+    zoomControls.addEventListener('touchstart', () => clearTimeout(zoomTimeout), { passive: true });
+    zoomControls.addEventListener('touchend', wakeUpZoomControls, { passive: true });
+
+    // Mulai timer pertama kali saat web dimuat
+    wakeUpZoomControls();
+}
+
 loadJadwalAndInit();

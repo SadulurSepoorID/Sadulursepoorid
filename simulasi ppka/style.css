@@ -49,7 +49,20 @@ input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin
 
 /* TOMBOL ZOOM MELAYANG DI KIRI ATAS PETA */
 #zoom-controls {
-    position: absolute; top: 15px; left: 15px; z-index: 900; display: flex; gap: 8px;
+    position: absolute; 
+    top: 15px; 
+    left: 15px; 
+    z-index: 900; 
+    display: flex; 
+    gap: 8px;
+    transition: opacity 0.4s ease, visibility 0.4s ease; /* Transisi halus */
+    opacity: 1;
+    visibility: visible;
+}
+
+#zoom-controls.zoom-hidden {
+    opacity: 0;
+    visibility: hidden;
 }
 .btn-zoom {
     background: rgba(0, 0, 0, 0.75); color: #00ccff; border: 1px solid #00ccff;
@@ -96,15 +109,37 @@ line.occupied-layer.active { opacity: 1; }
 .signal-pole { position: absolute; width: 3px; background: #333; transform: translate(-50%, 0); pointer-events: none; z-index: 14; }
 
 /* PANEL BAWAH (LOG & JADWAL) */
-#bottom-panel { flex: 0 0 210px; background: var(--panel-dark); border-top: 2px solid #333; display: flex; font-size: 12px; z-index: 100; }
-.panel-section { flex: 1; padding: 10px 15px; border-right: 1px solid #222; overflow-y: hidden; display: flex; flex-direction: column; }
+#bottom-panel { 
+    flex: 0 0 210px; 
+    height: 210px; 
+    max-height: 210px; /* Gembok tinggi desktop agar tidak menjebol */
+    background: var(--panel-dark); 
+    border-top: 2px solid #333; 
+    display: flex; 
+    font-size: 12px; 
+    z-index: 100; 
+}
+.panel-section { 
+    flex: 1; 
+    padding: 10px 15px; 
+    border-right: 1px solid #222; 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; /* Potong konten yang melewati batas parent */
+}
 .panel-title { font-weight: bold; color: #888; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 8px; font-size: 13px; }
 
 .tab-btn { font-family: monospace; font-weight: bold; padding: 4px 12px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
 .active-tab { background: #00ccff; color: #000; border: 1px solid #00ccff; }
 .inactive-tab { background: #222; color: #ccc; border: 1px solid #444; }
 
-.table-container { flex: 1; overflow-y: auto; overflow-x: auto; }
+.table-container { 
+    flex: 1; 
+    min-height: 0; /* Kunci rahasia Flexbox agar scroll-nya aktif */
+    overflow-y: auto; 
+    overflow-x: auto; 
+    width: 100%; 
+}
 .table-container::-webkit-scrollbar { width: 6px; height: 6px; }
 .table-container::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
 
@@ -173,12 +208,26 @@ line.occupied-layer.active { opacity: 1; }
     input[type=range] { width: 45px; height: 10px; margin-top: 2px; }
     input[type=number] { width: 35px; font-size: 10px; padding: 1px; }
     
-    /* PANEL BAWAH & FIX TABEL MELUBER */
-    #bottom-panel { flex: 0 0 160px; } /* Sedikit dikecilkan agar jalur rel lebih luas */
-    .panel-section { padding: 5px 8px; height: 100%; min-height: 0; } /* min-height: 0 mengunci elemen agar tidak meluber keluar parent */
+   /* PANEL BAWAH & FIX TABEL MELUBER */
+    #bottom-panel { 
+        flex: 0 0 160px; 
+        height: 160px;
+        max-height: 160px; 
+    } 
+    .panel-section { 
+        padding: 5px 8px; 
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; 
+    }
     .panel-title { margin-bottom: 4px; padding-bottom: 4px; font-size: 11px; }
     
-    .table-container { flex: 1; min-height: 0; overflow-y: auto; } /* Mencegah tabel jadwal menutupi layar */
+    .table-container { 
+        flex: 1; 
+        min-height: 0; 
+        overflow-y: auto; 
+        width: 100%;
+    }
     
     .modern-table th { padding: 4px 6px; font-size: 9px; }
     .modern-table td { padding: 4px 6px; font-size: 10px; }
