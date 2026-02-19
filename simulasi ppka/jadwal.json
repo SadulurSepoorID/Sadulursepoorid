@@ -2,7 +2,6 @@
     { "time": "05:02:00", "noKA": "5500A", "namaKA": "Commuter Line", "destName": "Cikarang", "isCommuter": true },
     { "time": "05:04:00", "noKA": "5029B", "namaKA": "Commuter Line", "destName": "Angke via MRI", "isCommuter": true },
     { "time": "05:08:00", "noKA": "5008", "namaKA": "Commuter Line", "destName": "Bekasi", "isCommuter": true },
-    { "time": "05:10:00", "noKA": "4", "namaKA": "Argo Bromo Anggrek", "destName": "Surabaya Ps. Turi", "isCommuter": false }, 
     { "time": "05:12:00", "noKA": "6001", "namaKA": "Commuter Line", "destName": "Kp. Bandan via PSE", "isCommuter": true },
     { "time": "05:17:00", "noKA": "5010", "namaKA": "Commuter Line", "destName": "Cikarang", "isCommuter": true },
     { "time": "05:21:00", "noKA": "5507B", "namaKA": "Commuter Line", "destName": "Kp. Bandan via MRI", "isCommuter": true },
@@ -23,7 +22,6 @@
     { "time": "06:13:00", "noKA": "5022C", "namaKA": "Commuter Line", "destName": "Tambun", "isCommuter": true },
     { "time": "06:18:00", "noKA": "5024C", "namaKA": "Commuter Line", "destName": "Bekasi", "isCommuter": true },
     { "time": "06:18:00", "noKA": "5039C", "namaKA": "Commuter Line", "destName": "Angke", "isCommuter": true },
-    { "time": "06:20:00", "noKA": "6", "namaKA": "Argo Lawu", "destName": "Solo Balapan", "isCommuter": false }, 
     { "time": "06:23:00", "noKA": "5026", "namaKA": "Commuter Line", "destName": "Cikarang", "isCommuter": true },
     { "time": "06:23:00", "noKA": "5041C", "namaKA": "Commuter Line", "destName": "Angke via MRI", "isCommuter": true },
     { "time": "06:30:00", "noKA": "5043C", "namaKA": "Commuter Line", "destName": "Angke", "isCommuter": true },
@@ -300,5 +298,12 @@
     { "time": "22:47:00", "noKA": "6078B", "namaKA": "Commuter Line", "destName": "Cikarang via MRI", "isCommuter": true },
     { "time": "22:48:00", "noKA": "6083", "namaKA": "Commuter Line", "destName": "Jakarta Kota", "isCommuter": true },
     { "time": "22:54:00", "noKA": "5582", "namaKA": "Commuter Line", "destName": "Bekasi", "isCommuter": true },
-    { "time": "22:58:00", "noKA": "5197C", "namaKA": "Commuter Line", "destName": "Angke", "isCommuter": true }
+    { "time": "22:58:00", "noKA": "5197C", "namaKA": "Commuter Line", "destName": "Angke", "isCommuter": true },
+    { "time": "06:38:00", "noKA": "6", "namaKA": "Argo Semeru", "destName": "Surabaya Gubeng", "isCommuter": false },
+    { "time": "08:08:00", "noKA": "46", "namaKA": "Taksaka", "destName": "Yogyakarta", "isCommuter": false },
+    { "time": "09:27:00", "noKA": "KP/10752", "namaKA": "KLB Rombongan Baraswasta", "destName": "Cirebon", "isCommuter": false },
+    { "time": "14:45:00", "noKA": "KP/10491", "namaKA": "Kereta Inspeksi 4", "destName": "Gambir", "isCommuter": false },
+    { "time": "17:18:00", "noKA": "8", "namaKA": "Bima", "destName": "Surabaya Gubeng", "isCommuter": false },
+    { "time": "19:30:00", "noKA": "2509", "namaKA": "Banteng Cargo", "destName": "Jakarta Gudang", "isCommuter": false },
+    { "time": "20:47:00", "noKA": "4", "namaKA": "Argo Bromo Anggrek", "destName": "Surabaya Pasarturi", "isCommuter": false }
 ]

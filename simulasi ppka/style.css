@@ -21,7 +21,6 @@ input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin
 .menu-btn { background: #1a1a1c; color: #ccc; border: 1px solid #555; padding: 8px 12px; cursor: pointer; font-family: monospace; font-weight: bold; border-radius: 4px; transition: all 0.2s; font-size: 12px; }
 .menu-btn:hover { background: #444; color: #fff; border-color: #00ffcc; }
 
-/* ANIMASI TOMBOL TELEPON KEDIP */
 .call-btn { background: #0055ff; color: #fff; border-color: #0077ff; }
 .call-btn.blinking { animation: call-blink 1s linear infinite; }
 @keyframes call-blink { 50% { background-color: #ff3333; box-shadow: 0 0 12px #ff3333; border-color: #ff5555; } }
@@ -42,12 +41,6 @@ input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin
 .guide-item h4 { margin: 0 0 8px 0; color: #fff; font-size: 14px; }
 .guide-item p { margin: 0 0 5px 0; color: #ccc; font-size: 13px; line-height: 1.5; }
 .guide-item ul { margin: 0; padding-left: 20px; color: #ccc; font-size: 13px; line-height: 1.6; }
-
-.table-container { overflow-x: auto; border: 1px solid #333; border-radius: 4px; }
-.schedule-view-table { width: 100%; border-collapse: collapse; min-width: 400px; }
-.schedule-view-table th { background: #222; padding: 10px; font-size: 12px; text-align: left; color: #aaa; border-bottom: 2px solid #444; position: sticky; top: 0; }
-.schedule-view-table td { padding: 8px 10px; font-size: 13px; border-bottom: 1px solid #333; }
-.schedule-view-table tr:hover td { background: #111; }
 
 .time-input { background:#000; color:#00ffcc; border:1px solid #555; padding:10px; width: 100%; font-family: monospace; font-size: 18px; text-align: center; border-radius: 4px; }
 .time-input:focus { outline: none; border-color: #00ffcc; }
@@ -72,8 +65,8 @@ line.occupied-layer.active { opacity: 1; }
     position: absolute; color: #fff; background: #0066ff; padding: 2px 6px; border-radius: 4px;
     border: 1px solid #66aaff; font-weight: bold; font-size: 11px; transform: translate(-50%, -50%); 
     white-space: nowrap; z-index: 20; box-shadow: 0 2px 5px rgba(0,0,0,0.8); transition: background-color 0.3s;
-    pointer-events: auto; /* Wajib agar bisa diklik */
-    cursor: pointer;      /* Wajib agar kursor jadi tangan */
+    pointer-events: auto; 
+    cursor: pointer;      
 }
 .train-docked { background: #ff8800; border-color: #ffcc00; color: #000; } 
 
@@ -104,47 +97,46 @@ line.occupied-layer.active { opacity: 1; }
 .lamp-g.on { background: #00ff00; box-shadow: 0 0 8px #00ff00, inset 0 0 4px #aaffaa; border-color: #00ff00;}
 .signal-pole { position: absolute; width: 3px; background: #333; transform: translate(-50%, 0); pointer-events: none; z-index: 14; }
 
-#bottom-panel { height: 180px; background: var(--panel-dark); border-top: 2px solid #333; display: flex; font-size: 12px; z-index: 100; }
-.panel-section { flex: 1; padding: 10px 15px; border-right: 1px solid #222; overflow-y: auto; }
+/* PANEL BAWAH & TABEL MODERN */
+#bottom-panel { height: 210px; background: var(--panel-dark); border-top: 2px solid #333; display: flex; font-size: 12px; z-index: 100; }
+.panel-section { flex: 1; padding: 10px 15px; border-right: 1px solid #222; overflow-y: hidden; display: flex; flex-direction: column; }
 .panel-title { font-weight: bold; color: #888; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 8px; font-size: 13px; }
 
-table { width: 100%; border-collapse: collapse; background: #0a0a0c; color: #ccc; }
-th { text-align: left; background: #1a1a1c; padding: 6px; color: #888; border-bottom: 1px solid #333; position: sticky; top:0;}
-td { border-bottom: 1px solid #222; padding: 6px; }
-tr:hover td { background: #111; color: #fff; }
-.log-section { background: #050505; color: #00ff00; line-height: 1.5; }
+/* TAB BUTTONS */
+.tab-btn { font-family: monospace; font-weight: bold; padding: 4px 12px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+.active-tab { background: #00ccff; color: #000; border: 1px solid #00ccff; }
+.inactive-tab { background: #222; color: #ccc; border: 1px solid #444; }
+.inactive-tab:hover { background: #333; }
+
+/* MODERN DATA GRID */
+.table-container { flex: 1; overflow-y: auto; overflow-x: hidden; }
+.table-container::-webkit-scrollbar { width: 6px; }
+.table-container::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
+.modern-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.modern-table th { position: sticky; top: 0; background: #1a1a1c; padding: 8px 10px; color: #888; font-weight: bold; border-bottom: 2px solid #333; z-index: 5; font-size: 11px; letter-spacing: 1px; text-align: left; }
+.modern-table td { padding: 8px 10px; border-bottom: 1px solid #1f1f22; font-size: 12px; vertical-align: middle; }
+.modern-table tr:hover td { background: #151518; }
+
+/* MODERN BADGES */
+.badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-block; white-space: nowrap; letter-spacing: 0.5px; }
+.badge-commuter { background: rgba(0, 204, 255, 0.1); color: #00ccff; border: 1px solid rgba(0, 204, 255, 0.3); }
+.badge-kajj { background: rgba(255, 136, 0, 0.1); color: #ffcc00; border: 1px solid rgba(255, 136, 0, 0.3); }
+.badge-green { background: rgba(0, 255, 0, 0.1); color: #00ff00; border: 1px solid rgba(0, 255, 0, 0.3); }
+.badge-red { background: rgba(255, 51, 51, 0.1); color: #ff3333; border: 1px solid rgba(255, 51, 51, 0.3); }
+.badge-yellow { background: rgba(255, 255, 0, 0.1); color: #ffff00; border: 1px solid rgba(255, 255, 0, 0.3); }
+.badge-cyan { background: rgba(0, 255, 255, 0.1); color: #00ffff; border: 1px solid rgba(0, 255, 255, 0.3); }
+
+.log-section { background: #050505; color: #00ff00; line-height: 1.5; overflow-y: auto; }
 .log-time { color: #666; margin-right: 5px; }
 
-/* GAYA KHUSUS UNTUK MENU PENGATURAN DALAM MODAL */
-.settings-section { 
-    background: #222; 
-    padding: 15px; 
-    border-radius: 6px; 
-    margin-bottom: 15px; 
-    border-left: 4px solid #ffcc00; 
-}
-.settings-section h4 { 
-    margin: 0 0 10px 0; 
-    color: #fff; 
-    font-size: 13px; 
-    border-bottom: 1px solid #333; 
-    padding-bottom: 6px;
-}
-.setting-row { 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    margin-bottom: 10px; 
-    font-size: 12px; 
-    color: #ccc; 
-}
-input[type=checkbox] { 
-    transform: scale(1.3); 
-    cursor: pointer; 
-    accent-color: #00ffcc; 
-}
+/* SETTINGS MODAL */
+.settings-section { background: #222; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #ffcc00; }
+.settings-section h4 { margin: 0 0 10px 0; color: #fff; font-size: 13px; border-bottom: 1px solid #333; padding-bottom: 6px;}
+.setting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: #ccc; }
+input[type=checkbox] { transform: scale(1.3); cursor: pointer; accent-color: #00ffcc; }
 
-/* TAMPILAN PERINGATAN DEVICE (HP PORTRAIT / BUKAN DESKTOP MODE) */
+/* DEVICE WARNING OVERLAY */
 #device-warning {
     display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: rgba(10,10,12,0.95); z-index: 999999; backdrop-filter: blur(10px);
@@ -153,7 +145,6 @@ input[type=checkbox] {
 .warning-icon { font-size: 50px; margin-top: 20px; animation: bounce 2s infinite; }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-/* PENYESUAIAN RESPONSIF: LAYAR KECIL NAMUN HORIZONTAL (HP MODE DESKTOP) */
 @media screen and (max-height: 650px) {
     header { padding: 5px 15px; }
     .logo-text { font-size: 15px; }
@@ -163,10 +154,10 @@ input[type=checkbox] {
     .speed-control { padding: 2px 8px; }
     .speed-control label { font-size: 8px; }
     
-    #bottom-panel { height: 135px; }
+    #bottom-panel { height: 150px; }
     .panel-section { padding: 5px 10px; }
     .panel-title { margin-bottom: 5px; font-size: 11px; }
-    th, td { padding: 4px; font-size: 11px; }
+    .modern-table th, .modern-table td { padding: 4px 6px; font-size: 11px; }
     .log-time { font-size: 11px; }
     .log-section { font-size: 11px; }
 }

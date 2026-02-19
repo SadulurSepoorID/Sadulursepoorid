@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <title>CTC VDU - Stasiun Cakung</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+    <title>CTC VDU - Stasiun Cakung</title>
     <link rel="stylesheet" href="style.css">
     
     <link rel="manifest" href="manifest.json">
@@ -38,9 +39,7 @@
             </div>
         </div>
         
-        <button class="menu-btn" id="btn-sound" onclick="toggleSound()">🔊 SOUND ON</button>
         <button class="menu-btn call-btn" id="btn-telepon" onclick="openModal('comm-modal')">📞 TELEPON <span id="notif-badge">(0)</span></button>
-        <button class="menu-btn" onclick="openModal('schedule-modal')">📅 JADWAL KA</button>
         <button class="menu-btn" onclick="openModal('settings-modal')">⚙️ MENU</button>
         
         <div id="clock">05:00:00</div>
@@ -53,23 +52,48 @@
 </div>
 
 <div id="bottom-panel">
-    <div class="panel-section schedule-section">
-        <div class="panel-title">LIVE TRAIN MANIFEST</div>
-        <table id="schedule-table">
-            <thead>
-                <tr>
-                    <th>NO KA</th>
-                    <th>NAMA KA</th>
-                    <th>TUJUAN</th>
-                    <th>POSISI BLOK</th>
-                    <th>STATUS OPERASIONAL</th>
-                </tr>
-            </thead>
-            <tbody id="schedule-body"></tbody>
-        </table>
+    <div class="panel-section schedule-section" style="display: flex; flex-direction: column;">
+        <div class="panel-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 0;">
+            <span style="color: #00ccff; font-weight: bold; letter-spacing: 1px;">TRAIN MANIFEST & SCHEDULE</span>
+            <div style="display: flex; gap: 5px;">
+                <button id="tab-btn-live" onclick="switchManifestTab('live')" class="tab-btn active-tab">LIVE TRAIN</button>
+                <button id="tab-btn-jadwal" onclick="switchManifestTab('jadwal')" class="tab-btn inactive-tab">JADWAL KA</button>
+            </div>
+        </div>
+        
+        <div id="manifest-live" class="table-container">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">NO KA</th>
+                        <th style="width: 25%;">NAMA KA</th>
+                        <th style="width: 20%;">TUJUAN</th>
+                        <th style="width: 15%;">POSISI BLOK</th>
+                        <th style="width: 30%;">STATUS OPERASIONAL</th>
+                    </tr>
+                </thead>
+                <tbody id="schedule-body"></tbody>
+            </table>
+        </div>
+
+        <div id="manifest-jadwal" class="table-container" style="display: none;">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">DI JADWALKAN</th>
+                        <th style="width: 20%;">REALTIME (EST)</th>
+                        <th style="width: 15%;">NO KA</th>
+                        <th style="width: 35%;">NAMA KA & TUJUAN</th>
+                        <th style="width: 15%;">JENIS</th>
+                    </tr>
+                </thead>
+                <tbody id="bottom-schedule-body"></tbody>
+            </table>
+        </div>
     </div>
+    
     <div class="panel-section log-section">
-        <div class="panel-title">COMMUNICATION LOG / RADIO</div>
+        <div class="panel-title" style="color: #ffcc00; letter-spacing: 1px;">COMMUNICATION LOG / RADIO</div>
         <div id="log-content">
             <span class="log-time">[SYSTEM]</span> Interlocking Stasiun Cakung diaktifkan.<br>
         </div>
@@ -119,23 +143,10 @@
     </div>
 </div>
 
-<div id="schedule-modal" class="modal">
-    <div class="modal-content responsive-modal" style="max-width: 650px;">
-        <span class="modal-close" onclick="closeModal('schedule-modal')">✖ TUTUP</span>
-        <h3 class="modal-title" style="color: #00ffcc;">📅 TIMETABLE (JADWAL HARIAN)</h3>
-        <div class="table-container">
-            <table class="schedule-view-table">
-                <thead><tr><th>WAKTU</th><th>NO KA</th><th>NAMA KA</th><th>TUJUAN</th><th>JENIS</th></tr></thead>
-                <tbody id="full-schedule-body"></tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
 <div id="settings-modal" class="modal">
     <div class="modal-content responsive-modal" style="max-width: 450px;">
         <span class="modal-close" onclick="closeModal('settings-modal')">✖ TUTUP</span>
-        <h3 class="modal-title" style="color: #ffcc00;">⚙️ MENU</h3>
+        <h3 class="modal-title" style="color: #ffcc00;">⚙️ MENU PENGATURAN</h3>
         
         <div class="settings-section">
             <h4>🔊 PENGATURAN AUDIO</h4>
@@ -198,16 +209,53 @@
     <div class="modal-content responsive-modal" style="max-width: 450px; border-left: 5px solid #ff8800;">
         <span class="modal-close" onclick="closeModal('masinis-modal')">✖ TUTUP</span>
         <h3 class="modal-title" id="masinis-title" style="color: #ff8800; margin-top:0;">📻 RADIO MASINIS KA ---</h3>
-        
         <p style="color:#ccc; font-size: 13px;">Masinis meminta konfirmasi pelayanan jalan. Pilih instruksi balasan Anda:</p>
-        
-        <select id="masinis-reply" style="width:100%; padding:10px; margin-bottom:15px; background:#000; color:#fff; border:1px solid #555;">
-        </select>
-
+        <select id="masinis-reply" style="width:100%; padding:10px; margin-bottom:15px; background:#000; color:#fff; border:1px solid #555;"></select>
         <button onclick="replyToMasinis()" style="width:100%; padding:12px; background:#ff8800; color:#000; font-weight:bold; border:none; border-radius:4px; cursor:pointer; transition: 0.2s;">KIRIM INSTRUKSI KE MASINIS</button>
     </div>
 </div>
 
+<div id="welcome-modal" class="modal active">
+    <div class="modal-content responsive-modal" style="max-width: 600px; border-top: 5px solid #00ccff; box-shadow: 0 10px 40px rgba(0, 204, 255, 0.2);">
+        <h2 style="color: #00ccff; margin-top: 0; text-align: center; letter-spacing: 1px;">🚆 SELAMAT DATANG DI CTC CAKUNG</h2>
+        <p style="color: #ccc; text-align: center; font-size: 14px; margin-bottom: 20px; line-height: 1.5;">
+            Anda bertugas sebagai <b>Pengatur Perjalanan Kereta Api (PPKA)</b>. Tugas Anda adalah memastikan keamanan dan kelancaran lalu lintas KRL maupun KAJJ di wilayah Stasiun Cakung.
+        </p>
+        
+        <div style="background: #111; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #333;">
+            <div class="guide-item" style="margin-bottom: 12px; background: #1a1a1c; border-left-color: #00ccff;">
+                <h4 style="color:#00ccff;">📞 1. Sistem Komunikasi (Wajib)</h4>
+                <p>KRL tidak akan masuk ke layar sebelum Anda mengangkat/membalas telepon. Anda juga tidak bisa memberikan sinyal keluar jika belum meminta izin ke stasiun tujuan.</p>
+            </div>
+            
+            <div class="guide-item" style="margin-bottom: 12px; background: #1a1a1c; border-left-color: #00ff00;">
+                <h4 style="color:#00ff00;">🚦 2. Interlocking Sinyal & Wesel</h4>
+                <p>Klik kotak wesel untuk mengubah rute, lalu klik tiang sinyal untuk memberi izin (S5 Hijau / S6 Kuning). Sistem <i>interlocking</i> akan otomatis menolak jika rute menabrak atau terisi kereta lain.</p>
+            </div>
+            
+            <div class="guide-item" style="margin-bottom: 12px; background: #1a1a1c; border-left-color: #ff8800;">
+                <h4 style="color:#ff8800;">📻 3. Radio Masinis & Jalur Darurat</h4>
+                <p>Klik label kereta yang berkedip merah/oranye untuk menjawab panggilan radio Masinis. Anda bisa mengatur skenario <i>Contraflow</i> (Sepur Salah) dengan Semboyan 6 dari sini.</p>
+            </div>
+            
+            <div class="guide-item" style="background: #1a1a1c; border-left-color: #ff3333;">
+                <h4 style="color:#ff3333;">⚠️ 4. Prioritas KAJJ & KLB</h4>
+                <p>KA Jarak Jauh (KAJJ) dan Kereta Luar Biasa (KLB) akan melintas langsung (LS) dengan kecepatan tinggi. 1 menit sebelum kereta muncul, Anda akan menerima <b>Info PK</b>. Segera sterilkan Jalur 2 atau 3!</p>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px;">
+            <button onclick="closeModal('welcome-modal'); initAudio();" style="flex: 2; padding: 14px; background: #00ccff; color: #000; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: 0.2s; box-shadow: 0 4px 10px rgba(0, 204, 255, 0.3);">
+                ✅ MENGERTI, MULAI SIMULASI
+            </button>
+        </div>
+        <p style="text-align: center; color: #666; font-size: 11px; margin-top: 15px; margin-bottom: 0;">
+            Tip: Panduan ini bisa Anda buka kembali di menu Pengaturan (Menu > Buku Panduan).
+        </p>
+    </div>
+</div>
+
+<script src="api.js"></script> 
 <script src="script.js"></script>
 
 <script>
