@@ -69,11 +69,17 @@ window.keluarSimulasi = function() {
 
 // Fungsi ini dipanggil jika user klik "YA, KELUAR" di modal
 window.prosesKeluar = function() {
-    // Deteksi ketat apakah berjalan di dalam iframe menu utama
-    if (window.parent !== window && typeof window.parent.exitGame === 'function') {
-        window.parent.exitGame();
-    } else {
-        // Paksa kembali ke root jika dibuka langsung tanpa menu utama
+    try {
+        // Coba deteksi dan panggil fungsi exitGame di menu utama
+        if (window.parent !== window && typeof window.parent.exitGame === 'function') {
+            window.parent.exitGame();
+        } else {
+            // Paksa kembali ke root jika dibuka tanpa menu utama
+            window.top.location.replace('../index.html');
+        }
+    } catch (error) {
+        // TANGKAP ERROR: Jika hosting memblokir keamanan iframe (CORS)
+        console.warn("Iframe diblokir oleh server hosting, memaksa keluar...", error);
         window.top.location.replace('../index.html');
     }
 };
