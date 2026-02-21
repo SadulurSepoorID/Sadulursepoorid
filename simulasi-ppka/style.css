@@ -1,0 +1,255 @@
+/* TEMA PROFESIONAL TRAIN DISPATCHER (DARK MODE) */
+:root { --bg-main: #0a0a0c; --panel-dark: #151518; --track-base: #3a3a40; --track-route: #00ff00; --track-occ: #ff0000; --text-light: #e0e0e0; }
+* { box-sizing: border-box; }
+
+/* KUNCI TATA LETAK ANTI-BERANTAKAN */
+body { 
+    background-color: var(--bg-main); color: var(--text-light); font-family: 'Consolas', 'Courier New', monospace; 
+    margin: 0; padding: 0; overflow: hidden; display: flex; flex-direction: column; height: 100vh; width: 100vw; user-select: none; 
+}
+
+header { flex: 0 0 auto; background: #111; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; z-index: 100; flex-wrap: wrap; gap: 10px; }
+.header-left { display: flex; align-items: baseline; gap: 10px; }
+.logo-text { font-size: 18px; font-weight: bold; color: #00ccff; }
+.sub-text { font-size: 14px; color: #aaa; }
+#clock { font-size: 20px; font-weight: bold; color: #ffcc00; text-align: right; min-width: 90px;}
+
+.header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.speed-control { display: flex; flex-direction: column; align-items: flex-start; background: #222; padding: 4px 10px; border-radius: 4px; border: 1px solid #444;}
+.speed-control label { font-size: 10px; font-weight: bold; color: #aaa; margin-bottom: 4px; }
+.speed-inputs { display: flex; align-items: center; gap: 5px; }
+input[type=range] { width: 80px; cursor: pointer; accent-color: #00ffcc; margin: 0; }
+input[type=number] { width: 45px; background: #000; color: #00ffcc; border: 1px solid #555; font-family: monospace; font-weight: bold; font-size: 12px; text-align: center; padding: 2px; border-radius: 3px; }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.speed-inputs span { font-size: 12px; color: #888; font-weight: bold; }
+
+.menu-btn { background: #1a1a1c; color: #ccc; border: 1px solid #555; padding: 8px 12px; cursor: pointer; font-family: monospace; font-weight: bold; border-radius: 4px; transition: all 0.2s; font-size: 12px; }
+.menu-btn:hover { background: #444; color: #fff; border-color: #00ffcc; }
+
+.call-btn { background: #0055ff; color: #fff; border-color: #0077ff; }
+.call-btn.blinking { animation: call-blink 1s linear infinite; }
+@keyframes call-blink { 50% { background-color: #ff3333; box-shadow: 0 0 12px #ff3333; border-color: #ff5555; } }
+
+/* AREA SIMULASI UTAMA (ISOLASI SCROLL) */
+#game-wrapper {
+    flex: 1 1 auto; position: relative; display: flex; overflow: hidden; background: var(--bg-main);
+}
+#game-container {
+    flex: 1; display: flex; overflow: auto; -webkit-overflow-scrolling: touch; cursor: grab;
+}
+#game-container:active { cursor: grabbing; }
+
+/* TATA LETAK PETA YG BISA MEMBESAR & SELALU DI TENGAH */
+#map-area { 
+    position: relative; 
+    margin: auto; /* Ini kunci rahasianya agar selalu ke tengah layar */
+    transform-origin: center center; 
+    transition: width 0.1s, height 0.1s; 
+}
+
+/* TOMBOL ZOOM MELAYANG DI KIRI ATAS PETA */
+#zoom-controls {
+    position: absolute; 
+    top: 15px; 
+    left: 15px; 
+    z-index: 900; 
+    display: flex; 
+    gap: 8px;
+    transition: opacity 0.4s ease, visibility 0.4s ease; /* Transisi halus */
+    opacity: 1;
+    visibility: visible;
+}
+
+#zoom-controls.zoom-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+.btn-zoom {
+    background: rgba(0, 0, 0, 0.75); color: #00ccff; border: 1px solid #00ccff;
+    width: 40px; height: 40px; border-radius: 6px; font-size: 20px; font-weight: bold; 
+    cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+.btn-zoom:active { background: #00ccff; color: #000; }
+
+svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+line { stroke: var(--track-base); stroke-width: 4; stroke-linecap: round; }
+line.route-layer { stroke: var(--track-route); stroke-width: 4; opacity: 0; transition: opacity 0.2s; }
+line.route-layer.active { opacity: 1; }
+line.occupied-layer { stroke: var(--track-occ); stroke-width: 4; opacity: 0; transition: opacity 0.1s; }
+line.occupied-layer.active { opacity: 1; }
+
+.svg-label { fill: #00ccff; font-family: 'Consolas', monospace; font-size: 12px; font-weight: bold; dominant-baseline: central; }
+.svg-platform { fill: #999; font-size: 11px; font-weight: bold; dominant-baseline: central; text-anchor: middle; letter-spacing: 1px; }
+
+#entities { position: absolute; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
+
+.train-entity {
+    position: absolute; color: #fff; background: #0066ff; padding: 2px 6px; border-radius: 4px;
+    border: 1px solid #66aaff; font-weight: bold; font-size: 11px; transform: translate(-50%, -50%); 
+    white-space: nowrap; z-index: 20; box-shadow: 0 2px 5px rgba(0,0,0,0.8); transition: background-color 0.3s;
+    pointer-events: auto; cursor: pointer;      
+}
+.train-docked { background: #ff8800; border-color: #ffcc00; color: #000; } 
+.train-alarm { animation: train-blink 0.6s infinite !important; border-color: #ff0000 !important; z-index: 100; }
+@keyframes train-blink { 0%, 100% { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; color: #fff; transform: translate(-50%, -50%) scale(1.1); } 50% { background-color: #ffffff; box-shadow: 0 0 20px #ffffff; color: #000; transform: translate(-50%, -50%) scale(1.2); } }
+
+.switch-point { position: absolute; width: 16px; height: 16px; background: #222; border: 2px solid #666; cursor: pointer; pointer-events: auto; transform: translate(-50%, -50%); z-index: 15; transition: all 0.2s; }
+.switch-point:hover { background: #444; border-color: #00ff00; transform: translate(-50%, -50%) scale(1.2); }
+
+.signal-housing {
+    position: absolute; width: 42px; height: 16px; background: #111; border: 2px solid #555; border-radius: 4px;
+    transform: translate(-50%, -50%); cursor: pointer; pointer-events: auto; z-index: 30; 
+    display: flex; flex-direction: row; align-items: center; justify-content: space-evenly;
+    padding: 0 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); transition: transform 0.1s;
+}
+.signal-lamp { width: 10px; height: 10px; border-radius: 50%; background: #333; border: 1px solid #222; transition: all 0.2s; }
+.lamp-r.on { background: #ff0000; box-shadow: 0 0 8px #ff0000; border-color: #ff0000;}
+.lamp-y.on { background: #ffcc00; box-shadow: 0 0 8px #ffcc00; border-color: #ffcc00;}
+.lamp-g.on { background: #00ff00; box-shadow: 0 0 8px #00ff00; border-color: #00ff00;}
+.signal-pole { position: absolute; width: 3px; background: #333; transform: translate(-50%, 0); pointer-events: none; z-index: 14; }
+
+/* PANEL BAWAH (LOG & JADWAL) */
+#bottom-panel { 
+    flex: 0 0 210px; 
+    height: 210px; 
+    max-height: 210px; /* Gembok tinggi desktop agar tidak menjebol */
+    background: var(--panel-dark); 
+    border-top: 2px solid #333; 
+    display: flex; 
+    font-size: 12px; 
+    z-index: 100; 
+}
+.panel-section { 
+    flex: 1; 
+    padding: 10px 15px; 
+    border-right: 1px solid #222; 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; /* Potong konten yang melewati batas parent */
+}
+.panel-title { font-weight: bold; color: #888; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 8px; font-size: 13px; }
+
+.tab-btn { font-family: monospace; font-weight: bold; padding: 4px 12px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+.active-tab { background: #00ccff; color: #000; border: 1px solid #00ccff; }
+.inactive-tab { background: #222; color: #ccc; border: 1px solid #444; }
+
+.table-container { 
+    flex: 1; 
+    min-height: 0; /* Kunci rahasia Flexbox agar scroll-nya aktif */
+    overflow-y: auto; 
+    overflow-x: auto; 
+    width: 100%; 
+}
+.table-container::-webkit-scrollbar { width: 6px; height: 6px; }
+.table-container::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
+.modern-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 500px; }
+.modern-table th { position: sticky; top: 0; background: #1a1a1c; padding: 8px 10px; color: #888; font-weight: bold; border-bottom: 2px solid #333; font-size: 11px; text-align: left; }
+.modern-table td { padding: 8px 10px; border-bottom: 1px solid #1f1f22; font-size: 12px; }
+
+.badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-block; white-space: nowrap; }
+.badge-commuter { background: rgba(0, 204, 255, 0.1); color: #00ccff; border: 1px solid rgba(0, 204, 255, 0.3); }
+.badge-kajj { background: rgba(255, 136, 0, 0.1); color: #ffcc00; border: 1px solid rgba(255, 136, 0, 0.3); }
+.badge-green { background: rgba(0, 255, 0, 0.1); color: #00ff00; border: 1px solid rgba(0, 255, 0, 0.3); }
+.badge-red { background: rgba(255, 51, 51, 0.1); color: #ff3333; border: 1px solid rgba(255, 51, 51, 0.3); }
+.badge-yellow { background: rgba(255, 255, 0, 0.1); color: #ffff00; border: 1px solid rgba(255, 255, 0, 0.3); }
+.badge-cyan { background: rgba(0, 255, 255, 0.1); color: #00ffff; border: 1px solid rgba(0, 255, 255, 0.3); }
+
+.log-section { background: #050505; color: #00ff00; line-height: 1.5; overflow-y: auto; }
+.log-time { color: #666; margin-right: 5px; }
+
+/* MODAL & INFO */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
+.modal.active { display: flex; }
+.modal-content { background: #1a1a1c; border: 2px solid #333; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+.modal-title { margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
+.modal-close { float: right; cursor: pointer; color: #ff5555; font-weight: bold; font-family: sans-serif; font-size: 12px; background: #333; padding: 4px 8px; border-radius: 4px;}
+.modal-close:hover { background: #ff5555; color: #fff; }
+.responsive-modal { max-height: 85vh; overflow-y: auto; }
+.responsive-modal::-webkit-scrollbar { width: 8px; }
+.responsive-modal::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+.modal-body { display: flex; flex-direction: column; gap: 15px; }
+.guide-item { background: #222; padding: 12px; border-radius: 6px; border-left: 3px solid #00ccff; }
+.guide-item h4 { margin: 0 0 8px 0; color: #fff; font-size: 14px; }
+.guide-item p, .guide-item ul { margin: 0; padding-left: 20px; color: #ccc; font-size: 13px; line-height: 1.5; }
+
+.settings-section { background: #222; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid #ffcc00; }
+.settings-section h4 { margin: 0 0 10px 0; color: #fff; font-size: 13px; border-bottom: 1px solid #333; padding-bottom: 6px;}
+.setting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: #ccc; }
+.time-input { background:#000; color:#00ffcc; border:1px solid #555; padding:10px; width: 100%; font-family: monospace; font-size: 18px; text-align: center; border-radius: 4px; }
+.reset-btn { width: 100%; background:#cc0000; border:none; color:#fff; padding: 12px; font-weight:bold; cursor:pointer; border-radius:4px; font-size: 14px; transition: background 0.2s; }
+.reset-btn:hover { background: #ff3333; }
+
+/* =======================================================
+   RESPONSIVE MOBILE RULES (Khusus Layar HP / Landscape) 
+   ======================================================= */
+/* =======================================================
+   RESPONSIVE MOBILE RULES (Khusus Layar HP / Landscape) 
+   ======================================================= */
+@media screen and (max-width: 900px), screen and (max-height: 500px) {
+    /* HEADER LEBIH KECIL & PADAT */
+    header { padding: 4px 8px; min-height: 35px; border-bottom: 1px solid #333; }
+    .header-left { gap: 5px; width: auto; margin-bottom: 0; }
+    .header-right { width: auto; flex: 1; justify-content: flex-end; margin-bottom: 0; }
+    .logo-text { font-size: 13px; }
+    .sub-text { display: none; } /* Sembunyikan subteks "(CUK)" agar hemat tempat */
+    
+    /* PENGATURAN TOMBOL TELEPON */
+    .hide-mobile { display: none !important; } 
+    .desktop-only { display: none !important; } /* Sembunyikan telepon header di HP */
+    .mobile-only { display: flex !important; } /* Tampilkan telepon di panel log */
+    
+    #clock { font-size: 14px; min-width: auto; margin-left: 5px; margin-right: 5px; }
+    .menu-btn { padding: 4px 8px; font-size: 10px; }
+    
+    /* SPEED CONTROL LEBIH KECIL */
+    .speed-control { flex-direction: row; align-items: center; padding: 2px 5px; }
+    .speed-control label { margin-bottom: 0; margin-right: 5px; font-size: 9px; }
+    input[type=range] { width: 45px; height: 10px; margin-top: 2px; }
+    input[type=number] { width: 35px; font-size: 10px; padding: 1px; }
+    
+   /* PANEL BAWAH & FIX TABEL MELUBER */
+    #bottom-panel { 
+        flex: 0 0 160px; 
+        height: 160px;
+        max-height: 160px; 
+    } 
+    .panel-section { 
+        padding: 5px 8px; 
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; 
+    }
+    .panel-title { margin-bottom: 4px; padding-bottom: 4px; font-size: 11px; }
+    
+    .table-container { 
+        flex: 1; 
+        min-height: 0; 
+        overflow-y: auto; 
+        width: 100%;
+    }
+    
+    .modern-table th { padding: 4px 6px; font-size: 9px; }
+    .modern-table td { padding: 4px 6px; font-size: 10px; }
+    .badge { font-size: 8px; padding: 2px 4px; }
+    
+    .log-section { font-size: 10px; }
+    .modal-content { padding: 15px; }
+}
+
+/* =======================================================
+   SISTEM PENGUNCI LAYAR (DEVICE LOCK OVERLAY)
+   ======================================================= */
+#device-warning {
+    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(10,10,12,0.95); z-index: 999999; backdrop-filter: blur(10px);
+    flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;
+}
+.warning-icon { font-size: 50px; margin-top: 20px; animation: bounce 2s infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+/* Paksa overlay peringatan muncul jika HP dipegang berdiri (Portrait) */
+@media screen and (orientation: portrait) {
+    #device-warning { display: flex !important; }
+}
+

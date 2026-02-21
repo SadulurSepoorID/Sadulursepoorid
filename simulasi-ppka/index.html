@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Utama - CTC Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body style="display: flex; justify-content: center; align-items: center; background: #0a0a0c;">
+    <div style="text-align: center;">
+        <h1 style="color: #00ccff;">🚆 CTC VDU SIMULATOR</h1>
+        <p style="color: #ccc;">Pilih wilayah pengendalian:</p>
+        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+            <a href="cakung/index.html" class="menu-btn" style="text-decoration: none; padding: 15px 30px;">STASIUN CAKUNG</a>
+            <a href="gambir/index.html" class="menu-btn" style="text-decoration: none; padding: 15px 30px;">STASIUN GAMBIR</a>
+        </div>
+    </div>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CTC VDU - Stasiun Gambir</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="../manifest.json">
+</head>
+<body>
+
+<div id="device-warning">
+    <h1 style="color: #ff3333; margin-bottom: 10px;">⚠️ PERINGATAN SISTEM</h1>
+    <p style="font-size: 14px; line-height: 1.6; color: #ccc; max-width: 500px;">
+        Simulasi CTC VDU ini memiliki antarmuka yang sangat padat dan tidak mendukung tampilan vertikal (Portrait).<br><br>
+        Harap putar perangkat Anda menjadi <b>Horizontal (Landscape)</b>.<br><br>
+        <span style="color: #ffcc00;">Sistem dikunci sementara hingga rotasi layar sesuai.</span>
+    </p>
+</div>
+
+<header>
+    <div class="header-left">
+        <span class="logo-text">SYS_CTC_DAOP1</span>
+        <span class="sub-text">| GAMBIR (GMR)</span>
+    </div>
+    
+    <div class="header-right">
+        <button id="btn-bel" onclick="playArrivalBell()" class="menu-btn" style="background: #a37500; border-color: #ffcc00; color: #fff; font-weight: bold;">
+            🔔 BEL: OFF
+        </button>
+
+        <div class="speed-control">
+            <label>SPEED</label>
+            <div class="speed-inputs">
+                <input type="range" id="speed-slider" min="0" max="100" value="1" oninput="setSpeed(this.value)">
+                <input type="number" id="speed-input" min="0" max="100" value="1" onchange="setSpeed(this.value)">
+                <span>x</span>
+            </div>
+        </div>
+        
+        <button class="menu-btn call-btn desktop-only" id="btn-telepon" onclick="openModal('comm-modal')" style="background: #8e24aa; border-color: #ab47bc;">
+            📞 <span class="hide-mobile">TELEPON</span> <span id="notif-badge">(0)</span>
+        </button>
+        <button class="menu-btn" onclick="openModal('settings-modal')">⚙️ MENU</button>
+        
+        <div id="clock">05:00:00</div>
+    </div>
+</header>
+
+<div id="game-wrapper">
+    <div id="zoom-controls">
+        <button class="btn-zoom" onclick="setMapZoom(1.2)">➕</button>
+        <button class="btn-zoom" onclick="setMapZoom(0.8)">➖</button>
+    </div>
+    <div id="game-container">
+        <div id="map-area" style="width: 1400px; height: 500px;">
+            <svg id="track-layer"></svg>
+            <div id="entities"></div>
+        </div>
+    </div>
+</div>
+
+<div id="bottom-panel">
+    <div class="panel-section schedule-section">
+        <div class="panel-title">
+            <span style="color: #00ccff;">MANIFEST & SCHEDULE</span>
+            <div style="display: flex; gap: 5px;">
+                <button id="tab-btn-live" onclick="switchManifestTab('live')" class="tab-btn active-tab">LIVE</button>
+                <button id="tab-btn-jadwal" onclick="switchManifestTab('jadwal')" class="tab-btn inactive-tab">JADWAL</button>
+            </div>
+        </div>
+        
+        <div id="manifest-live" class="table-container">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">NO KA</th>
+                        <th style="width: 25%;">NAMA KA</th>
+                        <th style="width: 15%;">TUJUAN</th>
+                        <th style="width: 5%;">JALUR</th>
+                        <th style="width: 15%;">POSISI BLOK</th>
+                        <th style="width: 30%;">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="schedule-body"></tbody>
+            </table>
+        </div>
+
+        <div id="manifest-jadwal" class="table-container" style="display: none;">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th style="width: 12%;">NO KA</th>
+                        <th style="width: 33%;">NAMA KA & TUJUAN</th>
+                        <th style="width: 15%;">DATANG (ARR)</th>
+                        <th style="width: 15%;">BRANGKAT (DEP)</th>
+                        <th style="width: 10%;">JALUR</th>
+                        <th style="width: 15%;">JENIS</th>
+                    </tr>
+                </thead>
+                <tbody id="bottom-schedule-body"></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="panel-section log-section">
+        <div class="panel-title" style="color: #ffcc00;">
+            <span>COMMUNICATION LOG</span>
+            <button class="menu-btn call-btn mobile-only" id="btn-telepon-mobile" onclick="openModal('comm-modal')" style="display: none;">
+                📞 <span id="notif-badge-mobile">(0)</span>
+            </button>
+        </div>
+        <div id="log-content">
+            <span class="log-time">[SYSTEM]</span> Interlocking Stasiun Gambir diaktifkan.<br>
+        </div>
+    </div>
+</div>
+
+<div id="comm-modal" class="modal">
+    <div class="modal-content responsive-modal" style="max-width: 550px;">
+        <span class="modal-close" onclick="closeModal('comm-modal')">✖ TUTUP</span>
+        <h3 class="modal-title" style="color: #00ccff; margin-top:0;">📞 PANEL KOMUNIKASI</h3>
+        
+        <div style="display:flex; gap:10px; margin-bottom: 15px;">
+            <button onclick="switchCommTab('masuk')" id="tab-masuk" style="flex:1; padding:10px; background:#333; color:#fff; font-weight:bold; border:1px solid #555; cursor:pointer;">MASUK <span id="tab-notif-badge" style="color:#ff5555;">(0)</span></button>
+            <button onclick="switchCommTab('keluar')" id="tab-keluar" style="flex:1; padding:10px; background:#111; color:#aaa; font-weight:bold; border:1px solid #555; cursor:pointer;">KELUAR</button>
+        </div>
+
+        <div id="panel-masuk" style="display:block;">
+            <div id="incoming-list">
+                <p style="color:#888; text-align:center;">Tidak ada panggilan masuk saat ini.</p>
+            </div>
+        </div>
+
+        <div id="panel-keluar" style="display:none;">
+            <label style="color:#aaa; font-size:12px;">Stasiun Tujuan:</label>
+            <select id="out-station" onchange="updateOutgoingTrainList()" style="width:100%; padding:10px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #555;">
+                <option value="MRI">Manggarai (Arah Selatan)</option>
+                <option value="JAKK">Jakarta Kota (Arah Utara)</option>
+            </select>
+
+            <label style="color:#aaa; font-size:12px;">Pilih KA:</label>
+            <select id="out-noka" style="width:100%; padding:10px; margin-bottom:10px; background:#000; color:#00ffcc; border:1px solid #555; font-family: monospace;">
+                <option value="">-- Tidak ada KA --</option>
+            </select>
+
+            <button onclick="sendOutgoingCall()" id="btn-send-out" style="width:100%; padding:12px; background:#0066ff; color:#fff; font-weight:bold; border:none; border-radius:4px; cursor:pointer;">KIRIM PANGGILAN</button>
+            <div id="out-status" style="margin-top:15px; padding:12px; background:#111; border:1px dashed #444; color:#aaa; font-size: 13px; text-align: center;">Standby.</div>
+        </div>
+    </div>
+</div>
+
+<div id="settings-modal" class="modal">
+    <div class="modal-content responsive-modal" style="max-width: 420px; padding: 0; background: #1a1a1c; border: 1px solid #333;">
+        <div style="padding: 15px 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #222; border-radius: 8px 8px 0 0;">
+            <h3 style="color: #ffcc00; margin: 0; font-size: 15px;">⚙️ PENGATURAN</h3>
+            <button onclick="closeModal('settings-modal')" style="background: #331111; color: #ff5555; border: 1px solid #ff3333; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; transition: 0.2s;">✖ TUTUP</button>
+        </div>
+        
+        <div style="padding: 20px;">
+            <div class="settings-section" style="border-left: 4px solid #ffcc00; background: #111; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                <h4 style="color: #fff; margin-top: 0; margin-bottom: 15px; font-size: 12px;">🔊 AUDIO</h4>
+                <div class="setting-row" style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <label style="color: #aaa; font-size: 12px;">Efek Radio (SFX)</label>
+                    <input type="checkbox" id="check-sfx" checked onchange="toggleSfx(this)" style="transform: scale(1.2); accent-color: #00ccff;">
+                </div>
+                <div class="setting-row" style="display: flex; justify-content: space-between;">
+                    <label style="color: #aaa; font-size: 12px;">Suara Announcer (Voice)</label>
+                    <input type="checkbox" id="check-voice" checked onchange="toggleVoice(this)" style="transform: scale(1.2); accent-color: #00ccff;">
+                </div>
+            </div>
+
+            <div class="settings-section" style="border-left: 4px solid #ffcc00; background: #111; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                <h4 style="color: #fff; margin-top: 0; margin-bottom: 15px; font-size: 12px;">🕒 WAKTU SIMULASI</h4>
+                <label style="color: #ccc; font-size: 11px; display: block; margin-bottom: 8px;">Mulai dari (Format 24 Jam):</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px; justify-content: center;">
+                    <input type="number" id="time-hours" min="0" max="23" value="21" placeholder="HH" style="width: 70px; background: #000; color: #00ffcc; border: 1px solid #333; padding: 10px; font-family: monospace; font-size: 18px; text-align: center; border-radius: 4px;">
+                    <span style="color:#fff; font-size:24px; font-weight:bold; align-self:center;">:</span>
+                    <input type="number" id="time-minutes" min="0" max="59" value="30" placeholder="MM" style="width: 70px; background: #000; color: #00ffcc; border: 1px solid #333; padding: 10px; font-family: monospace; font-size: 18px; text-align: center; border-radius: 4px;">
+                </div>
+                <button onclick="setGameTime()" style="width: 100%; background: #d32f2f; color: white; border: none; padding: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 12px;">♻ RESET PERMAINAN</button>
+            </div>
+
+            <div class="settings-section" style="border-left: 4px solid #00ccff; background: #111; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                <h4 style="color: #fff; margin-top: 0; margin-bottom: 15px; font-size: 12px;">📖 BANTUAN</h4>
+                <button onclick="closeModal('settings-modal'); openModal('welcome-modal');" style="width: 100%; background: #005f73; color: white; border: 1px solid #00ccff; padding: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 11px;">BUKA BUKU PANDUAN</button>
+            </div>
+
+            <div class="settings-section" style="border-left: 4px solid #ff5555; background: #111; padding: 15px; border-radius: 4px;">
+                <button onclick="window.location.href='../index.html'" style="width: 100%; padding: 12px; background: transparent; color:#ff5555; border: 1px solid #ff3333; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 11px;">🏠 KEMBALI KE MENU UTAMA</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="welcome-modal" class="modal active">
+    <div class="modal-content responsive-modal" style="max-width: 600px; border-top: 5px solid #00ccff;">
+        <h2 style="color: #00ccff; margin-top: 0; text-align: center;">🚆 SELAMAT DATANG DI CTC GAMBIR</h2>
+        
+        <div style="background: #111; padding: 15px; border-radius: 6px; border: 1px solid #333; margin-bottom: 20px;">
+            <p style="color: #ccc; text-align: center; font-size: 14px; margin-top: 0;">
+                Anda bertugas sebagai <b>PPKA Stasiun Gambir</b>. Pastikan kelancaran dan keselamatan perjalanan KA.
+            </p>
+            <hr style="border-color: #333; margin: 10px 0;">
+            <ul style="color: #aaa; font-size: 13px; line-height: 1.6; padding-left: 20px; margin-bottom: 0;">
+                <li>Pastikan perangkat dalam posisi <b>Horizontal / Landscape</b>.</li>
+                <li>Gunakan <b>Mouse/Sentuhan</b> untuk menggeser peta (Pan) dan tombol +/- untuk Zoom.</li>
+                <li>Klik <b>Titik Wesel</b> untuk mengubah arah jalur kereta.</li>
+                <li>Klik <b>Rumah Sinyal</b> untuk memberikan indikasi aman.</li>
+            </ul>
+        </div>
+
+        <button onclick="closeModal('welcome-modal'); initAudio(); enterFullscreen();" style="width:100%; padding: 14px; background: #00ccff; color: #000; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 10px rgba(0, 204, 255, 0.3);">
+            ✅ MENGERTI, MULAI SIMULASI
+        </button>
+    </div>
+</div>
+
+<div style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden;">
+    <div id="youtube-audio-player"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
