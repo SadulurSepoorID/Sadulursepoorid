@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ctc-simulator-v4'; // Naikkan versi
+const CACHE_NAME = 'ctc-simulator-v5'; // Naikkan versi
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
