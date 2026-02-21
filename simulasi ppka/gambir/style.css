@@ -156,7 +156,7 @@ line.occupied-layer.active { opacity: 1; }
 .lamp-g.on { background: #00ff00; box-shadow: 0 0 8px #00ff00; border-color: #00ff00;}
 
 /* PANEL BAWAH (LOG & JADWAL FIX OVERFLOW) */
-#bottom-panel { flex: 0 0 220px; height: 220px; background: var(--panel-dark); border-top: 2px solid #333; display: flex; font-size: 12px; z-index: 100; overflow: hidden; }
+#bottom-panel { flex: 0 0 210px; height: 210px; background: var(--panel-dark); border-top: 2px solid #333; display: flex; font-size: 12px; z-index: 100; overflow: hidden; }
 .panel-section { flex: 1; padding: 10px 15px; border-right: 1px solid #222; display: flex; flex-direction: column; overflow: hidden; }
 .panel-title { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #888; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 8px; font-size: 13px; }
 
@@ -235,7 +235,7 @@ line.occupied-layer.active { opacity: 1; }
     input[type=number] { width: 35px; font-size: 10px; padding: 1px; }
     
     /* Penyesuaian panel & zoom untuk layar kecil */
-    #bottom-panel { flex: 0 0 180px !important; height: 180px !important; }    .panel-section { padding: 4px 8px; }
+    #bottom-panel { flex: 0 0 160px !important; height: 160px !important; }    .panel-section { padding: 4px 8px; }
     .panel-title { margin-bottom: 4px; padding-bottom: 4px; font-size: 11px; }
     
     #zoom-controls { bottom: 10px; right: 10px; gap: 8px; }

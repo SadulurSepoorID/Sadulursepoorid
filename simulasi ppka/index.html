@@ -3,45 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Utama - CTC Simulator v2.1.0</title>
+    <title>Menu Utama - CTC VDU Simulator</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #05070a;
+            --bg-card: #0b111a;
+            --accent-blue: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body.menu-body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-body);
+            background-image: linear-gradient(135deg, #05070a 0%, #0a1128 100%);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            padding: 15px; 
+        }
+
+        .menu-container {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px 25px; 
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+            scrollbar-width: none; 
+        }
+
+        .menu-container::-webkit-scrollbar {
+            display: none; 
+        }
+
+        .logo-container {
+            margin-bottom: 15px; 
+        }
+
+        .menu-logo {
+            width: 70px; 
+            height: auto;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .menu-header {
+            margin-bottom: 20px;
+        }
+
+        .menu-header h1 {
+            color: var(--text-main);
+            font-size: 20px; 
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .version-badge {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-blue);
+            border: 1px solid var(--border-color);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .game-description {
+            color: var(--text-muted);
+            font-size: 13px; 
+            line-height: 1.6; /* Disesuaikan sedikit agar teks panjang tetap nyaman dibaca */
+            margin-bottom: 25px; 
+            padding: 0;
+            text-align: justify; /* Dibuat rata kiri-kanan agar rapi */
+        }
+
+        .action-section {
+            margin-bottom: 20px;
+        }
+
+        .action-section p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; 
+        }
+
+        .modern-btn {
+            text-decoration: none;
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 12px 15px; 
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .modern-btn:hover {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #ffffff;
+        }
+
+        .modern-btn:active {
+            transform: scale(0.98);
+        }
+
+        .menu-footer {
+            padding-top: 20px; 
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .menu-footer strong {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        @media screen and (max-width: 480px) {
+            .menu-container {
+                padding: 25px 20px;
+            }
+            .menu-logo {
+                width: 60px;
+            }
+            .menu-header h1 {
+                font-size: 18px;
+            }
+            .modern-btn {
+                font-size: 13px;
+                padding: 10px 15px;
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="menu-body">
 
-    <div id="start-overlay">
-        <h1 style="color: #00ccff; text-shadow: 0 0 15px rgba(0,204,255,0.5);">🚆 KLIK LAYAR UNTUK MEMULAI</h1>
-        <p style="color: #ccc;">Sistem akan masuk ke mode Layar Penuh</p>
-    </div>
-
-    <div id="menu-wrapper">
-        <div id="menu-container">
-            <button class="fullscreen-btn" id="btn-fullscreen">🔲 Toggle Fullscreen Layar</button>
-            
-            <h1>🚆 CTC VDU SIMULATOR</h1>
-            
-            <p class="description">
-                Simulator Centralized Traffic Control (CTC) berbasis web. Dirancang untuk mensimulasikan beban kerja dan pengambilan keputusan Pengatur Perjalanan Kereta Api (PPKA) dalam merutekan dan mengendalikan pergerakan kereta secara presisi.
-            </p>
-
-            <p style="color: #ccc; margin-bottom: 15px; font-size: 13px;">Pilih wilayah pengendalian:</p>
-            
-            <div class="btn-container">
-                <button class="station-btn" data-url="cakung/index.html">STASIUN CAKUNG</button>
-                <button class="station-btn" data-url="gambir/index.html">STASIUN GAMBIR</button>
+    <div class="menu-container">
+        <div class="menu-header">
+            <div class="logo-container">
+                <img src="remove-bg-icon.png" alt="Logo CTC" class="menu-logo">
             </div>
+            <h1>CTC VDU Simulator</h1>
+            <span class="version-badge">v2.1.0</span>
+        </div>
 
-            <div class="footer-info">
-                <span>Developer: <span class="dev-badge">Fathir Ahmad Maulana SS-0098</span></span>
-                <span>Versi 2.1.0</span>
+        <div class="game-description">
+            CTC (Centralized Traffic Control) adalah simulasi menjadi Pengatur Perjalanan Kereta Api (PPKA), yang memegang kendali penuh atas keselamatan dan kelancaran operasional. Uji ketelitian dan ketangkasan Anda dalam mengatur sistem persinyalan, memindahkan wesel, serta mengeksekusi rute untuk persilangan maupun penyusulan kereta api secara <em>real-time</em>.
+        </div>
+
+        <div class="action-section">
+            <p>Pilih Wilayah (Daop)</p>
+            <div class="btn-group">
+                <a href="cakung/index.html" class="modern-btn">Stasiun Cakung</a>
+                <a href="gambir/index.html" class="modern-btn">Stasiun Gambir</a>
             </div>
         </div>
-    </div>
 
-    <div id="game-frame-container">
-        <iframe id="game-frame" src=""></iframe>
+        <div class="menu-footer">
+            <p>Developed by <strong>Fathir Ahmad Maulana SS-0098</strong></p>
+        </div>
     </div>
     
-    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { 
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW Reg Failed:', err)); 
+            });
+        }
+    </script>
 </body>
 </html>
