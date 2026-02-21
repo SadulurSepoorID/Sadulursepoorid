@@ -1157,7 +1157,10 @@ document.addEventListener("DOMContentLoaded", () => {
         zoomControls.classList.add('show');
         clearTimeout(zoomHideTimer);
         zoomHideTimer = setTimeout(() => {
-            zoomControls.classList.remove('show');
+            // Pengaman: Jangan hilangkan tombol jika kursor sedang berada di atasnya
+            if (!zoomControls.matches(':hover')) {
+                zoomControls.classList.remove('show');
+            }
         }, 2500); 
     }
 
@@ -1208,6 +1211,7 @@ window.setMapZoom = function(factor) {
     let area = document.getElementById('map-area');
     let container = document.getElementById('game-container');
     
+    // Asumsi: currentMapW dan currentMapH adalah variabel global
     currentMapW *= factor; 
     currentMapH *= factor;
     
