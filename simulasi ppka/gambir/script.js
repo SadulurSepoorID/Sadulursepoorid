@@ -1020,7 +1020,7 @@ function checkTimetable() {
             if (!t.hasCalled && gameTime >= t.spawnTime - 120) {
                 t.hasCalled = true;
                 let stasiunAsal = t.isEven ? "JAKARTA KOTA" : "MANGGARAI";
-                let msg = `Stasiun Gambir, K A ${t.noKA} persiapan masuk. Aman? Ganti.`;
+                let msg = `Stasiun Gambir, KA ${t.noKA} persiapan masuk. Aman? Ganti.`;
                 
                 incomingCalls.push({
                     id: t.noKA + '_' + gameTime,
