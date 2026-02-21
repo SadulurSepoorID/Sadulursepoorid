@@ -342,13 +342,13 @@ function updateCommUI() {
     if (count > 0) { if(bT) bT.classList.add('blinking'); } else { if(bT) bT.classList.remove('blinking'); }
     
     let listDiv = document.getElementById('incoming-list');
-    if (count === 0) { listDiv.innerHTML = '<p style="color:#888; text-align:center; padding: 20px 0;">Tidak ada panggilan KAJJ masuk.</p>'; } 
+    if (count === 0) { listDiv.innerHTML = '<p style="color:#888; text-align:center; padding: 20px 0;">Tidak ada panggilan KA masuk.</p>'; } 
     else {
         listDiv.innerHTML = incomingCalls.map(c => `
             <div style="background:#222; border-left:4px solid #ffcc00; padding:12px; margin-bottom:12px;">
                 <div style="color:#ffcc00; font-weight:bold; margin-bottom:5px;">📞 DARI: STASIUN ${c.from}</div>
                 <div style="color:#fff; font-size:13px; margin-bottom:10px;">"${c.messageLog}"</div>
-                <button onclick="replyIncomingCall('${c.id}')" style="background:#00ccff; color:#000; font-weight:bold; border:none; padding:8px; cursor:pointer; width:100%;">TERIMA KAJJ DARI ${c.from}</button>
+                <button onclick="replyIncomingCall('${c.id}')" style="background:#00ccff; color:#000; font-weight:bold; border:none; padding:8px; cursor:pointer; width:100%;">TERIMA KA DARI ${c.from}</button>
             </div>`).join('');
     }
 }
@@ -1020,7 +1020,7 @@ function checkTimetable() {
             if (!t.hasCalled && gameTime >= t.spawnTime - 120) {
                 t.hasCalled = true;
                 let stasiunAsal = t.isEven ? "JAKARTA KOTA" : "MANGGARAI";
-                let msg = `Stasiun Gambir, KAJJ ${t.noKA} persiapan masuk. Aman? Ganti.`;
+                let msg = `Stasiun Gambir, K A ${t.noKA} persiapan masuk. Aman? Ganti.`;
                 
                 incomingCalls.push({
                     id: t.noKA + '_' + gameTime,
@@ -1029,7 +1029,7 @@ function checkTimetable() {
                     messageLog: msg
                 });
                 updateCommUI();
-                addLog(`<span style="color:#ffcc00">[TELEPON] PANGGILAN DARI ${stasiunAsal}:</span> Persiapan melayani KAJJ ${t.noKA}`);
+                addLog(`<span style="color:#ffcc00">[TELEPON] PANGGILAN DARI ${stasiunAsal}:</span> Persiapan melayani KA ${t.noKA}`);
                 
                 playCustomAlarmAndSpeak(msg); 
             }
