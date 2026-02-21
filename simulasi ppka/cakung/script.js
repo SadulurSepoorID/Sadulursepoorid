@@ -2,9 +2,24 @@
  * ENGINE DISPATCHER PROFESIONAL (V50 - FINAL ZOOM & ISOLATED SWIPE)
  */
 
-window.addEventListener('beforeunload', function (e) {
-    e.preventDefault(); e.returnValue = 'Simulasi sedang berjalan!';
-});
+// ==========================================
+// FUNGSI KELUAR SIMULASI (SINKRONISASI IFRAME)
+// ==========================================
+window.keluarSimulasi = function() {
+    closeModal('settings-modal'); // Tutup menu setting dulu
+    openModal('exit-modal');      // Buka modal konfirmasi kustom kita (tidak membatalkan fullscreen)
+};
+
+// Fungsi ini dipanggil jika user klik "YA, KELUAR" di modal
+window.prosesKeluar = function() {
+    // Deteksi ketat apakah berjalan di dalam iframe menu utama
+    if (window.parent !== window && typeof window.parent.exitGame === 'function') {
+        window.parent.exitGame();
+    } else {
+        // Paksa kembali ke root jika dibuka langsung tanpa menu utama
+        window.top.location.replace('../index.html');
+    }
+};
 
 // ==========================================
 // -1. SISTEM PENGUNCI LAYAR (DEVICE LOCK)

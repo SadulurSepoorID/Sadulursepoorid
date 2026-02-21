@@ -187,8 +187,7 @@
             </div>
 
             <div class="settings-section" style="border-left: 4px solid #ff5555; background: #111; padding: 15px; border-radius: 4px;">
-                <button onclick="window.location.href='../index.html'" style="width: 100%; padding: 12px; background: transparent; color:#ff5555; border: 1px solid #ff3333; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 11px;">🏠 KEMBALI KE MENU UTAMA</button>
-            </div>
+<button onclick="keluarSimulasi()" style="width: 100%; padding: 12px; background: transparent; color:#ff5555; border: 1px solid #ff3333; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 11px;">🏠 KEMBALI KE MENU UTAMA</button>            </div>
         </div>
     </div>
 </div>
@@ -221,5 +220,15 @@
 </div>
 
 <script src="script.js"></script>
+<div id="exit-modal" class="modal">
+    <div class="modal-content responsive-modal" style="max-width: 400px; text-align: center; border-top: 5px solid #ff3333; box-shadow: 0 10px 40px rgba(255, 51, 51, 0.2);">
+        <h3 style="color: #ff3333; margin-top: 0;">⚠️ KONFIRMASI KELUAR</h3>
+        <p style="color: #ccc; margin-bottom: 20px; font-size: 14px;">Apakah Anda yakin ingin keluar dari simulasi dan kembali ke Menu Utama?</p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button onclick="closeModal('exit-modal')" style="flex: 1; padding: 12px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; transition: 0.2s;">BATAL</button>
+            <button onclick="prosesKeluar()" style="flex: 1; padding: 12px; background: #cc0000; color: #fff; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s;">YA, KELUAR</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

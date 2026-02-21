@@ -235,8 +235,7 @@ line.occupied-layer.active { opacity: 1; }
     input[type=number] { width: 35px; font-size: 10px; padding: 1px; }
     
     /* Penyesuaian panel & zoom untuk layar kecil */
-    #bottom-panel { flex: 0 0 130px !important; height: 130px !important; } 
-    .panel-section { padding: 4px 8px; }
+    #bottom-panel { flex: 0 0 180px !important; height: 180px !important; }    .panel-section { padding: 4px 8px; }
     .panel-title { margin-bottom: 4px; padding-bottom: 4px; font-size: 11px; }
     
     #zoom-controls { bottom: 10px; right: 10px; gap: 8px; }

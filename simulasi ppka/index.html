@@ -3,24 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Utama - CTC Simulator</title>
+    <title>Menu Utama - CTC Simulator v2.1.0</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
 </head>
-<body style="display: flex; justify-content: center; align-items: center; background: #0a0a0c;">
-    <div style="text-align: center;">
-        <h1 style="color: #00ccff;">🚆 CTC VDU SIMULATOR</h1>
-        <p style="color: #ccc;">Pilih wilayah pengendalian:</p>
-        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
-            <a href="cakung/index.html" class="menu-btn" style="text-decoration: none; padding: 15px 30px;">STASIUN CAKUNG</a>
-            <a href="gambir/index.html" class="menu-btn" style="text-decoration: none; padding: 15px 30px;">STASIUN GAMBIR</a>
+<body>
+
+    <div id="start-overlay">
+        <h1 style="color: #00ccff; text-shadow: 0 0 15px rgba(0,204,255,0.5);">🚆 KLIK LAYAR UNTUK MEMULAI</h1>
+        <p style="color: #ccc;">Sistem akan masuk ke mode Layar Penuh</p>
+    </div>
+
+    <div id="menu-wrapper">
+        <div id="menu-container">
+            <button class="fullscreen-btn" id="btn-fullscreen">🔲 Toggle Fullscreen Layar</button>
+            
+            <h1>🚆 CTC VDU SIMULATOR</h1>
+            
+            <p class="description">
+                Simulator Centralized Traffic Control (CTC) berbasis web. Dirancang untuk mensimulasikan beban kerja dan pengambilan keputusan Pengatur Perjalanan Kereta Api (PPKA) dalam merutekan dan mengendalikan pergerakan kereta secara presisi.
+            </p>
+
+            <p style="color: #ccc; margin-bottom: 15px; font-size: 13px;">Pilih wilayah pengendalian:</p>
+            
+            <div class="btn-container">
+                <button class="station-btn" data-url="cakung/index.html">STASIUN CAKUNG</button>
+                <button class="station-btn" data-url="gambir/index.html">STASIUN GAMBIR</button>
+            </div>
+
+            <div class="footer-info">
+                <span>Developer: <span class="dev-badge">Fathir Ahmad Maulana SS-0098</span></span>
+                <span>Versi 2.1.0</span>
+            </div>
         </div>
     </div>
+
+    <div id="game-frame-container">
+        <iframe id="game-frame" src=""></iframe>
+    </div>
     
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
