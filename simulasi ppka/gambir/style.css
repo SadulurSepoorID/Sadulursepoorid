@@ -222,29 +222,31 @@ line.occupied-layer.active { opacity: 1; }
     header { padding: 4px 8px; min-height: 35px; border-bottom: 1px solid #333; }
     .header-left { gap: 5px; }
     .header-right { flex: 1; justify-content: flex-end; }
-    .logo-text { font-size: 13px; }
+    .logo-text { font-size: 11px; } /* Diperkecil dari 13px */
     .sub-text { display: none; } 
     .hide-mobile { display: none !important; } 
     .desktop-only { display: none !important; } 
     .mobile-only { display: flex !important; } 
-    #clock { font-size: 14px; margin-left: 5px; margin-right: 5px; }
-    .menu-btn { padding: 4px 8px; font-size: 10px; }
+    #clock { font-size: 12px; margin-left: 5px; margin-right: 5px; } /* Diperkecil dari 14px */
+    .menu-btn { padding: 3px 6px; font-size: 9px; } /* Diperkecil dari 10px */
     .speed-control { flex-direction: row; align-items: center; padding: 2px 5px; }
-    .speed-control label { margin-bottom: 0; margin-right: 5px; font-size: 9px; }
+    .speed-control label { margin-bottom: 0; margin-right: 5px; font-size: 8px; } /* Diperkecil dari 9px */
     input[type=range] { width: 45px; height: 10px; margin-top: 2px; }
-    input[type=number] { width: 35px; font-size: 10px; padding: 1px; }
+    input[type=number] { width: 30px; font-size: 9px; padding: 1px; } /* Diperkecil dari 35px */
     
     /* Penyesuaian panel & zoom untuk layar kecil */
-    #bottom-panel { flex: 0 0 160px !important; height: 160px !important; }    .panel-section { padding: 4px 8px; }
-    .panel-title { margin-bottom: 4px; padding-bottom: 4px; font-size: 11px; }
+    #bottom-panel { flex: 0 0 140px !important; height: 140px !important; } /* Diperkecil dari 160px */
+    .panel-section { padding: 4px 8px; }
+    .panel-title { margin-bottom: 4px; padding-bottom: 4px; font-size: 10px; } /* Diperkecil dari 11px */
+    .tab-btn { font-size: 9px; padding: 3px 8px; } /* Penyesuaian tab jadwal */
     
     #zoom-controls { bottom: 10px; right: 10px; gap: 8px; }
-    .btn-zoom { width: 38px; height: 38px; font-size: 20px; }
+    .btn-zoom { width: 32px; height: 32px; font-size: 18px; } /* Diperkecil dari 38px */
 
-    .modern-table th { padding: 4px 6px; font-size: 9px; }
-    .modern-table td { padding: 4px 6px; font-size: 10px; }
-    .badge { font-size: 8px; padding: 2px 4px; }
-    #log-content { font-size: 10px; }
+    .modern-table th { padding: 3px 5px; font-size: 8px; } /* Diperkecil dari 9px */
+    .modern-table td { padding: 3px 5px; font-size: 9px; } /* Diperkecil dari 10px */
+    .badge { font-size: 7px; padding: 1px 3px; } /* Diperkecil dari 8px */
+    #log-content { font-size: 9px; } /* Diperkecil dari 10px */
     .modal-content { padding: 15px; }
 }
 
