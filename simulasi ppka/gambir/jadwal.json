@@ -121,6 +121,7 @@
 {"arrives": "09:32:00", "departs": "09:32:00", "noKA": "1235", "namaKA": "Commuter Line Bogor", "destName": "Jakarta Kota", "isCommuter": true},
 {"arrives": null, "departs": "09:35:00", "noKA": "7006", "namaKA": "Batavia", "destName": "Solo Balapan", "isCommuter": false, "jalur": "IV"},
 {"arrives": "09:38:00", "departs": "09:38:00", "noKA": "1220F", "namaKA": "Commuter Line Bogor", "destName": "Depok", "isCommuter": true},
+{"arrives": "09:38:00", "departs": null, "noKA": "KP/10866-1", "namaKA": "R-KLB Rombongan Kementrian Imigrasi", "destName": "Gambir", "isCommuter": false},
 {"arrives": "09:40:00", "departs": null, "noKA": "135", "namaKA": "Parahyangan", "destName": "Gambir", "isCommuter": false, "jalur": "I"},
 {"arrives": "09:43:00", "departs": "09:43:00", "noKA": "1222", "namaKA": "Commuter Line Bogor", "destName": "Bogor", "isCommuter": true},
 {"arrives": "09:47:00", "departs": "09:47:00", "noKA": "1512", "namaKA": "Commuter Line Nambo", "destName": "Nambo", "isCommuter": true},

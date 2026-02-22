@@ -52,7 +52,7 @@ function cekJalurValid(noKA, jalurTujuan) {
 // ==========================================
 const TRAIN_TURNAROUND_MAP = {
     "131": "128", "117": "118", "135": "136", "121": "122",
-    "23": "24", "53F": "58F", "141B": "142B", "43": "44",
+    "23": "24", "53F": "58F", "141B": "142B", "43": "44", "KP/10866-1": "KP/10866",
     "129": "134", "123": "124", "27": "28", "49": "54",
     "47": "48", "119": "120", "21": "22", "139": "140", "125F": "126F"
 };
@@ -902,11 +902,24 @@ function toggleSignal(id) {
             return;
         }
 
-        let isOccupied = trains.some(t => 
-            t.currentNode.includes(`P_${targetPlatform}_`) || 
-            (t.currentTrack && t.currentTrack.to.includes(`P_${targetPlatform}_`))
-        );
-        if (isOccupied) { addLog(`<span style="color:#ff3333;">SYS MENOLAK: Jalur ${targetPlatform} sedang terisi KA!</span>`); return; }
+        // PERBAIKAN: Deteksi okupansi peron secara mutlak (membaca nama jalur, titik sekarang, dan titik tujuan)
+        let isOccupied = trains.some(t => {
+            if (!t.currentTrack) return false;
+            let trackId = t.currentTrack.id;
+            let nodeStr = t.currentNode;
+            let toNodeStr = t.currentTrack.to;
+            
+            return trackId.includes(`_p${targetPlatform}_`) || 
+                   nodeStr.includes(`P_${targetPlatform}_`) || 
+                   nodeStr.includes(`S_${targetPlatform}_`) || 
+                   toNodeStr.includes(`P_${targetPlatform}_`) || 
+                   toNodeStr.includes(`S_${targetPlatform}_`);
+        });
+
+        if (isOccupied) { 
+            addLog(`<span style="color:#ff3333;">SYS MENOLAK: Jalur ${targetPlatform} sedang terisi KA!</span>`); 
+            return; 
+        }
 
         let approachingTrain = trains.find(t => 
             t.currentNode === id || 
