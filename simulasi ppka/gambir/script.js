@@ -1,6 +1,6 @@
 /**
  * ENGINE DISPATCHER PROFESIONAL - STASIUN GAMBIR
- * (V64 - OPTIMIZATION, SIGNAL DELAY & ANTI ZIG-ZAG)
+ * (V65 - FULL INTERLOCKING, DYNAMIC ROUTES & 3-ASPECT TIMERS)
  */
 
 // ==========================================
@@ -79,9 +79,6 @@ window.prosesKeluar = function() {
     }
 };
 
-// ==========================================
-// FUNGSI FULLSCREEN & ORIENTATION LOCK
-// ==========================================
 window.enterFullscreen = function() {
     let elem = document.documentElement;
     if (elem.requestFullscreen) { elem.requestFullscreen(); }
@@ -107,6 +104,10 @@ window.setGameTime = function() {
         if (m < 0) m = 0; if (m > 59) m = 59;
         
         gameTime = (h * 3600) + (m * 60);
+        
+        // Reset timers
+        lastTrainPassedNOut = -999;
+        lastTrainPassedSOut = -999;
         
         [...trains].forEach(tr => tr.despawn());
         trains = [];
@@ -323,7 +324,6 @@ function switchManifestTab(tabName) {
     }
 }
 
-// FIX 1: Optimasi Sistem Render Tabel Jadwal agar tidak menyebabkan lag
 function populateBottomSchedule() {
     let tbody = document.getElementById('bottom-schedule-body'); if(!tbody) return;
     
@@ -352,7 +352,7 @@ function populateBottomSchedule() {
                 <td>${jenisBadge}</td>
             </tr>`;
         });
-        tbody.innerHTML = htmlStr; // Set sekaligus agar browser tidak ngelag
+        tbody.innerHTML = htmlStr; 
     }
 }
 
@@ -607,25 +607,15 @@ function initMap() {
         btn.onclick = () => toggleSwitch(id); entitiesObj.appendChild(btn); 
     }
 
-    // FIX 2: Urutan warna lampu diubah menjadi Hijau, Kuning, Merah
     for (let id in SIGNALS) {
         let n = NODES[id]; let housing = document.createElement('div'); housing.className = 'signal-housing'; housing.id = `sig_housing_${id}`;
         housing.onclick = () => toggleSignal(id); housing.style.cursor = "pointer";
-        
         let yOffset;
         if (n.y === 34 || n.y === 50) { yOffset = -4.5; } else if (n.y === 64 || n.y === 80) { yOffset = 4.5; } else { let isBottom = n.y >= 50; yOffset = isBottom ? 4.5 : -4.5; if (n.y <= 25) yOffset = 4.5; }
-        
         housing.style.left = n.x + '%'; housing.style.top = (n.y + yOffset) + '%';
         
-        // --- LOGIKA BARU: Beda urutan lampu Utara vs Selatan ---
         let lampOrder;
-        if (id.includes('_N_')) {
-            // Sisi Utara (Arah JAKK) POV Masinis: Hijau - Kuning - Merah
-            lampOrder = ['g', 'y', 'r']; 
-        } else {
-            // Sisi Selatan (Arah MRI) POV Masinis: Merah - Kuning - Hijau
-            lampOrder = ['r', 'y', 'g']; 
-        }
+        if (id.includes('_N_')) { lampOrder = ['g', 'y', 'r']; } else { lampOrder = ['r', 'y', 'g']; }
         
         lampOrder.forEach(color => { 
             let lamp = document.createElement('div'); 
@@ -648,6 +638,48 @@ function updateSignalVisual(id) {
     let state = SIGNALS[id]; let rLamp = document.getElementById(`lamp_${id}_r`); let yLamp = document.getElementById(`lamp_${id}_y`); let gLamp = document.getElementById(`lamp_${id}_g`);
     if(rLamp) rLamp.classList.remove('on'); if(yLamp) yLamp.classList.remove('on'); if(gLamp) gLamp.classList.remove('on');
     if (state === 'RED' && rLamp) rLamp.classList.add('on'); else if (state === 'YELLOW' && yLamp) yLamp.classList.add('on'); else if (state === 'GREEN' && gLamp) gLamp.classList.add('on');
+}
+
+function updateSinyalMuka() {
+    let block_N_MUKA_to_IN = ['e_n_ext_2', 'e_n_ext_3', 'e_n_jump', 'e_in_sig_1', 'e_in_sig_2'];
+    let trainInNorthBlock = trains.some(t => t.currentTrack && block_N_MUKA_to_IN.includes(t.currentTrack.id));
+    
+    let oldN = SIGNALS['SIG_N_MUKA'];
+    if (trainInNorthBlock) SIGNALS['SIG_N_MUKA'] = 'RED';
+    else if (SIGNALS['SIG_N_IN'] === 'RED') SIGNALS['SIG_N_MUKA'] = 'YELLOW';
+    else SIGNALS['SIG_N_MUKA'] = 'GREEN';
+    if (oldN !== SIGNALS['SIG_N_MUKA']) updateSignalVisual('SIG_N_MUKA');
+
+    let block_S_MUKA_to_IN = ['w_s_ext_2', 'w_s_ext_3', 'w_s_jump', 'w_in_sig_1', 'w_in_sig_2'];
+    let trainInSouthBlock = trains.some(t => t.currentTrack && block_S_MUKA_to_IN.includes(t.currentTrack.id));
+    
+    let oldS = SIGNALS['SIG_S_MUKA'];
+    if (trainInSouthBlock) SIGNALS['SIG_S_MUKA'] = 'RED';
+    else if (SIGNALS['SIG_S_IN'] === 'RED') SIGNALS['SIG_S_MUKA'] = 'YELLOW';
+    else SIGNALS['SIG_S_MUKA'] = 'GREEN';
+    if (oldS !== SIGNALS['SIG_S_MUKA']) updateSignalVisual('SIG_S_MUKA');
+
+    let oldNOut = SIGNALS['SIG_N_OUT_EXT'];
+    let timeSinceN = gameTime - lastTrainPassedNOut; // Selisih waktu sejak KA lewat (Detik)
+    
+    if (timeSinceN <= 30) SIGNALS['SIG_N_OUT_EXT'] = 'RED';
+    else if (timeSinceN <= 60) SIGNALS['SIG_N_OUT_EXT'] = 'YELLOW';
+    else SIGNALS['SIG_N_OUT_EXT'] = 'GREEN';
+    
+    if (oldNOut !== SIGNALS['SIG_N_OUT_EXT']) updateSignalVisual('SIG_N_OUT_EXT');
+
+    let oldSOut = SIGNALS['SIG_S_OUT_EXT'];
+    let timeSinceS = gameTime - lastTrainPassedSOut; // Selisih waktu sejak KA lewat (Detik)
+    
+    if (timeSinceS <= 30) SIGNALS['SIG_S_OUT_EXT'] = 'RED';
+    else if (timeSinceS <= 60) SIGNALS['SIG_S_OUT_EXT'] = 'YELLOW';
+    else SIGNALS['SIG_S_OUT_EXT'] = 'GREEN';
+    
+    if (oldSOut !== SIGNALS['SIG_S_OUT_EXT']) updateSignalVisual('SIG_S_OUT_EXT');
+
+    if (/* oldN variables check */ oldNOut !== SIGNALS['SIG_N_OUT_EXT'] || oldSOut !== SIGNALS['SIG_S_OUT_EXT']) {
+        updateRoutesVisual();
+    }
 }
 
 function isNorthThroatOccupied() {
@@ -680,7 +712,6 @@ function toggleSwitch(id) {
         if (nSigActive) { addLog(`<span style="color:#ff3333;">SYS MENOLAK: Sinyal Utara sedang aktif!</span>`); return; }
         if (isNorthThroatOccupied()) { addLog(`<span style="color:#ff3333;">SYS MENOLAK: Wesel Terkunci! Ada KA di petak wesel Utara.</span>`); return; }
 
-        // FIX 4: Mencegah Rute Zig-Zag Tidak Masuk Akal (Wesel Salah)
         if (id.startsWith('SW_N_C')) {
             let simC1 = switches['SW_N_C1_BOT'];
             let simC2 = switches['SW_N_C2_TOP'];
@@ -706,24 +737,104 @@ function toggleSwitch(id) {
     updateRoutesVisual();
 }
 
+// FUNGSI BARU: Cek apakah track terhubung secara fisik dengan pelat wesel saat ini (Strict Interlocking)
+function isTrackAligned(t) {
+    let s = switches;
+    const connects = (a, b) => (t.from === a && t.to === b) || (t.from === b && t.to === a);
+
+    // North C1_BOT (Straight: C2_BOT, Diverge: C1_TOP)
+    if (connects('SW_N_C1_BOT', 'SW_N_C2_BOT')) if (!s['SW_N_C1_BOT']) return false;
+    if (connects('SW_N_C1_BOT', 'SW_N_C1_TOP')) if (s['SW_N_C1_BOT']) return false;
+
+    // North C1_TOP (Straight: C2_TOP, Diverge: C1_BOT)
+    if (connects('SW_N_C1_TOP', 'SW_N_C2_TOP')) if (!s['SW_N_C1_TOP']) return false;
+
+    // North C2_BOT (Straight: SW_N_P34, Diverge: C2_TOP)
+    if (connects('SW_N_C2_BOT', 'SW_N_P34')) if (!s['SW_N_C2_BOT']) return false;
+    if (connects('SW_N_C2_BOT', 'SW_N_C2_TOP')) if (s['SW_N_C2_BOT']) return false;
+
+    // North C2_TOP (Straight: SW_N_P12, Diverge: C2_BOT)
+    if (connects('SW_N_C2_TOP', 'SW_N_P12')) if (!s['SW_N_C2_TOP']) return false;
+
+    // North P12 (Straight: S_2_N_OUT, Diverge: S_1_N_OUT)
+    if (connects('SW_N_P12', 'S_2_N_OUT')) if (!s['SW_N_P12']) return false;
+    if (connects('SW_N_P12', 'S_1_N_OUT')) if (s['SW_N_P12']) return false;
+
+    // North P34 (Straight: S_3_N_OUT, Diverge: S_4_N_OUT)
+    if (connects('SW_N_P34', 'S_3_N_OUT')) if (!s['SW_N_P34']) return false;
+    if (connects('SW_N_P34', 'S_4_N_OUT')) if (s['SW_N_P34']) return false;
+
+    // South P12 (Straight: S_2_S_OUT, Diverge: S_1_S_OUT)
+    if (connects('SW_S_P12', 'S_2_S_OUT')) if (!s['SW_S_P12']) return false;
+    if (connects('SW_S_P12', 'S_1_S_OUT')) if (s['SW_S_P12']) return false;
+
+    // South P34 (Straight: S_3_S_OUT, Diverge: S_4_S_OUT)
+    if (connects('SW_S_P34', 'S_3_S_OUT')) if (!s['SW_S_P34']) return false;
+    if (connects('SW_S_P34', 'S_4_S_OUT')) if (s['SW_S_P34']) return false;
+
+    // South X_L_TOP (Straight: X_R_TOP, Diverge: X_R_BOT)
+    if (connects('SW_S_X_L_TOP', 'SW_S_X_R_TOP')) if (!s['SW_S_X_L_TOP']) return false;
+    if (connects('SW_S_X_L_TOP', 'SW_S_X_R_BOT')) if (s['SW_S_X_L_TOP']) return false;
+
+    // South X_L_BOT (Straight: X_R_BOT, Diverge: X_R_TOP)
+    if (connects('SW_S_X_L_BOT', 'SW_S_X_R_BOT')) if (!s['SW_S_X_L_BOT']) return false;
+    if (connects('SW_S_X_L_BOT', 'SW_S_X_R_TOP')) if (s['SW_S_X_L_BOT']) return false;
+
+    // South X_R_TOP (Straight: X_L_TOP, Diverge: X_L_BOT)
+    if (connects('SW_S_X_R_TOP', 'SW_S_X_L_TOP')) if (!s['SW_S_X_R_TOP']) return false;
+    if (connects('SW_S_X_R_TOP', 'SW_S_X_L_BOT')) if (s['SW_S_X_R_TOP']) return false;
+
+    // South X_R_BOT (Straight: X_L_BOT, Diverge: X_L_TOP)
+    if (connects('SW_S_X_R_BOT', 'SW_S_X_L_BOT')) if (!s['SW_S_X_R_BOT']) return false;
+    if (connects('SW_S_X_R_BOT', 'SW_S_X_L_TOP')) if (s['SW_S_X_R_BOT']) return false;
+
+    return true;
+}
+
+// FUNGSI BARU: Deteksi jalur belok mutlak untuk penentuan sinyal kuning
+function isDivergingTrack(t) {
+    const connects = (a, b) => (t.from === a && t.to === b) || (t.from === b && t.to === a);
+    
+    if (connects('SW_N_C1_BOT', 'SW_N_C1_TOP')) return true;
+    if (connects('SW_N_C2_BOT', 'SW_N_C2_TOP')) return true;
+    if (connects('SW_N_P12', 'S_1_N_OUT')) return true;
+    if (connects('SW_N_P34', 'S_4_N_OUT')) return true;
+    
+    if (connects('SW_S_P12', 'S_1_S_OUT')) return true;
+    if (connects('SW_S_P34', 'S_4_S_OUT')) return true;
+    if (connects('SW_S_X_L_TOP', 'SW_S_X_R_BOT')) return true;
+    if (connects('SW_S_X_L_BOT', 'SW_S_X_R_TOP')) return true;
+    
+    return false;
+}
+
+// UPDATE: getNextTrack
 function getNextTrack(node, dir) {
     let candidates = TRACKS.filter(t => t.from === node && t.dir === dir);
     if (candidates.length === 0) return null;
-    if (candidates.length === 1) return candidates[0]; 
-    if (switches.hasOwnProperty(node)) { let targetType = switches[node] ? 'straight' : 'diverge'; return candidates.find(t => t.type === targetType) || null; }
-    return candidates[0];
+    
+    // Blokir nembus jalur yang terputus oleh pelat wesel (termasuk trailing wesel)
+    let alignedCandidates = candidates.filter(t => isTrackAligned(t));
+    if (alignedCandidates.length === 0) return null; 
+    
+    return alignedCandidates[0]; 
 }
 
+// UPDATE: traceRoute
 function traceRoute(startNode, dir) {
     let currNode = startNode; let hasDiverge = false;
     for (let i = 0; i < 20; i++) { 
-        let nextT = getNextTrack(currNode, dir); if (!nextT) break;
-        if (nextT.type === 'diverge') hasDiverge = true; currNode = nextT.to;
+        let nextT = getNextTrack(currNode, dir); if (!nextT) break; // Berhenti tracing jika nyangkut di wesel mati
+        
+        if (isDivergingTrack(nextT)) hasDiverge = true; // Flag jalur belok ketemu
+        
+        currNode = nextT.to;
         if (SIGNALS.hasOwnProperty(currNode) || currNode.includes('_END') || currNode.includes('_START') || currNode.includes('DESPAWN')) break;
     }
     return { endNode: currNode, hasDiverge };
 }
 
+// UPDATE: toggleSignal
 function toggleSignal(id) {
     if (id === 'SIG_N_MUKA' || id === 'SIG_S_MUKA' || id === 'SIG_N_OUT_EXT' || id === 'SIG_S_OUT_EXT') { 
         addLog(`<span style="color:#ffcc00;">SYS INFO: Sinyal otomatis beroperasi mendeteksi blok di depannya.</span>`); 
@@ -745,17 +856,49 @@ function toggleSignal(id) {
 
     let dir = (id === 'SIG_N_IN' || id.includes('_S_OUT')) ? 'east' : 'west';
     let trace = traceRoute(id, dir);
+    let aspect = 'GREEN'; 
 
-    if (id.includes('_N_OUT')) { 
-        if (!trace.endNode.includes('N_OUT_END')) { addLog(`<span style="color:#ff3333;">SYS MENOLAK: Wesel salah arah! KA arah JAKK harus lewat J2.</span>`); return; }
-    } else if (id.includes('_S_OUT')) { 
-        if (!trace.endNode.includes('S_OUT_END')) { addLog(`<span style="color:#ff3333;">SYS MENOLAK: Wesel salah arah! KA arah MRI harus lewat J1.</span>`); return; }
+    // ==========================================
+    // LOGIKA 1: SINYAL KELUAR
+    // ==========================================
+    if (id.includes('_OUT') && !id.includes('EXT')) {
+        // Cek 1: Wesel harus nembus sampai ke luar (N_OUT_END / S_OUT_END), nggak boleh nyangkut/buntu.
+        if (id.includes('_N_OUT') && !trace.endNode.includes('N_OUT_END')) { 
+            addLog(`<span style="color:#ff3333;">SYS MENOLAK: Wesel belum diarahkan dengan sempurna ke jalur keluar!</span>`); 
+            return; 
+        }
+        if (id.includes('_S_OUT') && !trace.endNode.includes('S_OUT_END')) { 
+            addLog(`<span style="color:#ff3333;">SYS MENOLAK: Wesel belum diarahkan dengan sempurna ke jalur keluar!</span>`); 
+            return; 
+        }
+
+        let extSig = id.includes('_N_OUT') ? 'SIG_N_OUT_EXT' : 'SIG_S_OUT_EXT';
+        
+        // Cek 2: Blok di depan aman?
+        if (SIGNALS[extSig] === 'RED') {
+            addLog(`<span style="color:#ff3333;">SYS MENOLAK: Sinyal Keluar terhalang, Blok petak di depannya masih diduduki KA!</span>`);
+            return; 
+        }
+
+        // Cek 3: Ada wesel belok -> KUNING. Wesel lurus & blok hijau -> HIJAU.
+        if (trace.hasDiverge) {
+            aspect = 'YELLOW';
+        } else {
+            aspect = SIGNALS[extSig] === 'YELLOW' ? 'YELLOW' : 'GREEN';
+        }
     }
 
-    let aspect = trace.hasDiverge ? 'YELLOW' : 'GREEN'; 
-
-    if (id === 'SIG_N_IN' || id === 'SIG_S_IN') {
+    // ==========================================
+    // LOGIKA 2: SINYAL MASUK
+    // ==========================================
+    else if (id === 'SIG_N_IN' || id === 'SIG_S_IN') {
         let targetPlatform = trace.endNode.split('_')[1]; 
+        // Cek 1: Wesel harus sampai ke sinyal peron, gak boleh ngambang di tengah throat.
+        if (!targetPlatform || (!trace.endNode.includes('_N_OUT') && !trace.endNode.includes('_S_OUT'))) {
+            addLog(`<span style="color:#ff3333;">SYS MENOLAK: Wesel belum diarahkan dengan sempurna ke peron!</span>`);
+            return;
+        }
+
         let isOccupied = trains.some(t => 
             t.currentNode.includes(`P_${targetPlatform}_`) || 
             (t.currentTrack && t.currentTrack.to.includes(`P_${targetPlatform}_`))
@@ -770,16 +913,20 @@ function toggleSignal(id) {
         if (approachingTrain && !approachingTrain.isCommuter) {
             let romanMap = { '1': 'I', '2': 'II', '3': 'III', '4': 'IV' };
             let targetJalur = romanMap[targetPlatform];
-            
             if (!cekJalurValid(approachingTrain.noKA, targetJalur)) {
-                addLog(`<span style="color:#ff3333;">SYS MENOLAK: KA ${approachingTrain.noKA} salah rute! Wajib masuk Jalur ${jalurWajib[approachingTrain.noKA]}.</span>`);
-                alert(`⚠️ SINYAL TERKUNCI!\n\nKA ${approachingTrain.noKA} salah rute.\nSeharusnya diarahkan masuk ke Jalur ${jalurWajib[approachingTrain.noKA]},\ntetapi wesel Anda mengarah ke Jalur ${targetJalur}.`);
+                addLog(`<span style="color:#ff3333;">SYS MENOLAK: KA ${approachingTrain.noKA} wajib masuk Jalur ${jalurWajib[approachingTrain.noKA]}.</span>`);
                 return; 
             }
         }
 
         let starterSignal = trace.endNode; 
-        aspect = SIGNALS[starterSignal] === 'RED' ? 'YELLOW' : 'GREEN';
+        
+        // Cek 2: Wesel belok ATAU Sinyal di peron masih MERAH -> KUNING. Kalau lurus & peron udh ditarik -> HIJAU.
+        if (trace.hasDiverge || SIGNALS[starterSignal] === 'RED') {
+            aspect = 'YELLOW';
+        } else {
+            aspect = 'GREEN';
+        }
     }
 
     SIGNALS[id] = aspect; 
@@ -789,11 +936,9 @@ function toggleSignal(id) {
 }
 
 function updateRoutesVisual() {
-    // Matikan semua garis hijau terlebih dahulu
     document.querySelectorAll('.route-layer').forEach(e => e.classList.remove('active'));
     const on = (id) => { let el = document.getElementById(`r_${id}`); if(el) el.classList.add('active'); };
 
-    // 1. GARIS HIJAU UNTUK PENANDA ARAH WESEL
     if (switches['SW_N_C1_BOT']) on('e_c1_bot_str'); else on('e_c1_bot_div');
     if (switches['SW_N_C1_TOP']) on('w_c1_top_str'); else on('w_c1_top_div');
     if (switches['SW_N_C2_TOP']) on('e_c2_top_str'); else on('e_c2_top_div');
@@ -809,23 +954,20 @@ function updateRoutesVisual() {
     if (switches['SW_S_X_R_TOP']) on('w_x_rtop_str'); else on('w_x_rtop_div');
     if (switches['SW_S_X_R_BOT']) on('w_x_rbot_str'); else on('w_x_rbot_div');
 
-    // 2. GARIS HIJAU UNTUK JALUR/BLOK YANG MENDAPATKAN SINYAL KUNING/HIJAU
     function illuminateRoute(startNode, dir) {
         let currNode = startNode;
         for (let i = 0; i < 20; i++) {
             let nextT = getNextTrack(currNode, dir);
             if (!nextT) break;
-            on(nextT.id); // Nyalakan hijau pada petak ini
+            on(nextT.id);
             currNode = nextT.to;
-            if (SIGNALS.hasOwnProperty(currNode)) break; // Berhenti tracing saat bertemu sinyal berikutnya
+            if (SIGNALS.hasOwnProperty(currNode)) break; 
         }
     }
 
-    // Lacak dan nyalakan rute dari semua sinyal yang aktif (Kuning/Hijau)
     for (let sig in SIGNALS) {
         if (SIGNALS[sig] !== 'RED') {
             let dir = 'east';
-            // Tentukan arah hadap sinyal untuk tracing
             if (sig === 'SIG_S_IN' || sig === 'SIG_S_MUKA' || sig === 'SIG_N_OUT_EXT' || sig.includes('_N_OUT')) {
                 dir = 'west';
             }
@@ -833,7 +975,6 @@ function updateRoutesVisual() {
         }
     }
 
-    // 3. PLATFORM TERANG JIKA MENDAPATKAN RUTE (DARI MASUK ATAU KELUAR)
     let pActive = { 1: false, 2: false, 3: false, 4: false };
     if (SIGNALS['S_1_N_OUT'] !== 'RED' || SIGNALS['S_1_S_OUT'] !== 'RED') pActive[1] = true;
     if (SIGNALS['S_2_N_OUT'] !== 'RED' || SIGNALS['S_2_S_OUT'] !== 'RED') pActive[2] = true;
@@ -849,41 +990,6 @@ function updateRoutesVisual() {
     if (pActive[4]) { on('e_p4_w'); on('e_p4_mid'); on('e_p4_e'); on('w_p4_e'); on('w_p4_mid'); on('w_p4_w'); }
 }
 
-function updateSinyalMuka() {
-    let block_N_MUKA_to_IN = ['e_n_ext_2', 'e_n_ext_3', 'e_n_jump', 'e_in_sig_1', 'e_in_sig_2'];
-    let trainInNorthBlock = trains.some(t => t.currentTrack && block_N_MUKA_to_IN.includes(t.currentTrack.id));
-    
-    let oldN = SIGNALS['SIG_N_MUKA'];
-    if (trainInNorthBlock) SIGNALS['SIG_N_MUKA'] = 'RED';
-    else if (SIGNALS['SIG_N_IN'] === 'RED') SIGNALS['SIG_N_MUKA'] = 'YELLOW';
-    else SIGNALS['SIG_N_MUKA'] = 'GREEN';
-    if (oldN !== SIGNALS['SIG_N_MUKA']) updateSignalVisual('SIG_N_MUKA');
-
-    let block_S_MUKA_to_IN = ['w_s_ext_2', 'w_s_ext_3', 'w_s_jump', 'w_in_sig_1', 'w_in_sig_2'];
-    let trainInSouthBlock = trains.some(t => t.currentTrack && block_S_MUKA_to_IN.includes(t.currentTrack.id));
-    
-    let oldS = SIGNALS['SIG_S_MUKA'];
-    if (trainInSouthBlock) SIGNALS['SIG_S_MUKA'] = 'RED';
-    else if (SIGNALS['SIG_S_IN'] === 'RED') SIGNALS['SIG_S_MUKA'] = 'YELLOW';
-    else SIGNALS['SIG_S_MUKA'] = 'GREEN';
-    if (oldS !== SIGNALS['SIG_S_MUKA']) updateSignalVisual('SIG_S_MUKA');
-
-    let trainAtN_OUT = trains.some(t => t.currentTrack && t.currentTrack.id === 'w_n_ext_3');
-    let oldNOut = SIGNALS['SIG_N_OUT_EXT'];
-    SIGNALS['SIG_N_OUT_EXT'] = trainAtN_OUT ? 'RED' : 'GREEN';
-    if (oldNOut !== SIGNALS['SIG_N_OUT_EXT']) updateSignalVisual('SIG_N_OUT_EXT');
-
-    let trainAtS_OUT = trains.some(t => t.currentTrack && t.currentTrack.id === 'e_s_ext_3');
-    let oldSOut = SIGNALS['SIG_S_OUT_EXT'];
-    SIGNALS['SIG_S_OUT_EXT'] = trainAtS_OUT ? 'RED' : 'GREEN';
-    if (oldSOut !== SIGNALS['SIG_S_OUT_EXT']) updateSignalVisual('SIG_S_OUT_EXT');
-
-    // Jika sinyal otomatis berubah aspeknya, perbarui juga indikator rute hijaunya
-    if (oldN !== SIGNALS['SIG_N_MUKA'] || oldS !== SIGNALS['SIG_S_MUKA'] || oldNOut !== SIGNALS['SIG_N_OUT_EXT'] || oldSOut !== SIGNALS['SIG_S_OUT_EXT']) {
-        updateRoutesVisual();
-    }
-}
-
 // === CLASS KERETA ===
 class Train {
     constructor(noKA, namaKA, startNode, destName, isCommuter = true) {
@@ -891,7 +997,6 @@ class Train {
         this.isCommuter = isCommuter; this.percent = 0; this.baseSpeed = 0; this.currentTrack = null;
         this.state = 'RUNNING'; this.hasDocked = false; this.lastAspect = 'GREEN';
         
-        // FIX 3: Variabel untuk penundaan keberangkatan dari sinyal merah
         this.waitingAtSignal = false;
         this.signalClearedTime = null;
         
@@ -1049,25 +1154,23 @@ class Train {
             refreshPosition(); return;
         }
 
-        // FIX 3: Logika penundaan keberangkatan ketika sinyal yang tadinya merah diubah jadi hijau
         if (nextPercent >= 98 && isRedSignal) { 
             this.percent = 98; 
             this.updateTable("BERHENTI (S7)"); 
-            this.waitingAtSignal = true; // Tandai bahwa KA pernah tertahan sinyal
+            this.waitingAtSignal = true;
             refreshPosition(); 
             return; 
         }
 
         if (this.percent >= 98 && this.waitingAtSignal && !isRedSignal) {
             if (!this.signalClearedTime) {
-                this.signalClearedTime = gameTime + 5; // Beri waktu 5 detik in-game
+                this.signalClearedTime = gameTime + 5; 
             }
             if (gameTime < this.signalClearedTime) {
                 this.updateTable("PERSIAPAN (TUNGGU AMAN)");
                 refreshPosition();
                 return;
             }
-            // Timer selesai, KA diizinkan jalan
             this.waitingAtSignal = false;
             this.signalClearedTime = null;
         }
@@ -1078,6 +1181,9 @@ class Train {
             let oldLine = document.getElementById(`o_${this.currentTrack.id}`); if(oldLine) oldLine.classList.remove('active');
             let passedNode = this.currentTrack.to; 
             
+            if (passedNode === 'SIG_N_OUT_EXT') lastTrainPassedNOut = gameTime;
+            if (passedNode === 'SIG_S_OUT_EXT') lastTrainPassedSOut = gameTime;
+
             if (SIGNALS[passedNode] !== undefined) {
                 let isMyDirSignal = false;
                 if (this.isEven && (passedNode === 'SIG_N_IN' || passedNode.includes('_S_OUT') || passedNode === 'SIG_S_OUT_EXT' || passedNode === 'SIG_N_MUKA')) isMyDirSignal = true;
@@ -1130,6 +1236,8 @@ function formatTime(totalSecs) { let h = Math.floor(totalSecs / 3600); let m = M
 function addLog(msg) { let logBox = document.getElementById('log-content'); if(!logBox) return; let div = document.createElement('div'); div.innerHTML = `<span class="log-time">[${formatTime(gameTime)}]</span> ${msg}`; logBox.prepend(div); }
 
 let gameTime = 5 * 3600; let timeAccumulator = 0; let trains = []; let TIMETABLE = [];
+let lastTrainPassedNOut = -999;
+let lastTrainPassedSOut = -999;
 
 function checkTimetable() {
     TIMETABLE.forEach(t => { 
@@ -1266,9 +1374,6 @@ function loadJadwalAndInit() {
         .catch(err => { console.error(err); alert("Peringatan: " + err.message); initMap(); });
 }
 
-// ==========================================
-// LOGIKA PANNING (SWIPE) & ZOOM CONTROLS
-// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     const zoomControls = document.getElementById('zoom-controls');
     const gameContainer = document.getElementById('game-container');
