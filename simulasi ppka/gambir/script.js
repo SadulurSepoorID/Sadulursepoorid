@@ -742,49 +742,52 @@ function isTrackAligned(t) {
     let s = switches;
     const connects = (a, b) => (t.from === a && t.to === b) || (t.from === b && t.to === a);
 
-    // North C1_BOT (Straight: C2_BOT, Diverge: C1_TOP)
+    // --- PERBAIKAN WESEL UTARA (Akses ke Peron 1 & 2) ---
+    
+    // North C1_BOT (Lurus ke C2_BOT, Belok ke C1_TOP)
     if (connects('SW_N_C1_BOT', 'SW_N_C2_BOT')) if (!s['SW_N_C1_BOT']) return false;
     if (connects('SW_N_C1_BOT', 'SW_N_C1_TOP')) if (s['SW_N_C1_BOT']) return false;
 
-    // North C1_TOP (Straight: C2_TOP, Diverge: C1_BOT)
-    if (connects('SW_N_C1_TOP', 'SW_N_C2_TOP')) if (!s['SW_N_C1_TOP']) return false;
+    // North C1_TOP (Lurus ke N_OUT_END_BEND, Belok ke C1_BOT)
+    if (connects('SW_N_C1_TOP', 'N_OUT_END_BEND')) if (!s['SW_N_C1_TOP']) return false;
+    if (connects('SW_N_C1_TOP', 'SW_N_C1_BOT')) if (s['SW_N_C1_TOP']) return false;
 
-    // North C2_BOT (Straight: SW_N_P34, Diverge: C2_TOP)
-    if (connects('SW_N_C2_BOT', 'SW_N_P34')) if (!s['SW_N_C2_BOT']) return false;
+    // North C2_BOT (Lurus ke C1_BOT, Belok ke C2_TOP)
+    if (connects('SW_N_C2_BOT', 'SW_N_C1_BOT')) if (!s['SW_N_C2_BOT']) return false;
     if (connects('SW_N_C2_BOT', 'SW_N_C2_TOP')) if (s['SW_N_C2_BOT']) return false;
 
-    // North C2_TOP (Straight: SW_N_P12, Diverge: C2_BOT)
+    // North C2_TOP (Lurus ke SW_N_P12, Belok ke C2_BOT)
     if (connects('SW_N_C2_TOP', 'SW_N_P12')) if (!s['SW_N_C2_TOP']) return false;
+    if (connects('SW_N_C2_TOP', 'SW_N_C2_BOT')) if (s['SW_N_C2_TOP']) return false;
 
-    // North P12 (Straight: S_2_N_OUT, Diverge: S_1_N_OUT)
+    // --- WESEL PERON & SELATAN ---
+
+    // North P12 (Lurus: P2, Belok: P1)
     if (connects('SW_N_P12', 'S_2_N_OUT')) if (!s['SW_N_P12']) return false;
     if (connects('SW_N_P12', 'S_1_N_OUT')) if (s['SW_N_P12']) return false;
 
-    // North P34 (Straight: S_3_N_OUT, Diverge: S_4_N_OUT)
+    // North P34 (Lurus: P3, Belok: P4)
     if (connects('SW_N_P34', 'S_3_N_OUT')) if (!s['SW_N_P34']) return false;
     if (connects('SW_N_P34', 'S_4_N_OUT')) if (s['SW_N_P34']) return false;
 
-    // South P12 (Straight: S_2_S_OUT, Diverge: S_1_S_OUT)
+    // South P12
     if (connects('SW_S_P12', 'S_2_S_OUT')) if (!s['SW_S_P12']) return false;
     if (connects('SW_S_P12', 'S_1_S_OUT')) if (s['SW_S_P12']) return false;
 
-    // South P34 (Straight: S_3_S_OUT, Diverge: S_4_S_OUT)
+    // South P34
     if (connects('SW_S_P34', 'S_3_S_OUT')) if (!s['SW_S_P34']) return false;
     if (connects('SW_S_P34', 'S_4_S_OUT')) if (s['SW_S_P34']) return false;
 
-    // South X_L_TOP (Straight: X_R_TOP, Diverge: X_R_BOT)
+    // South Scissors Cross (X)
     if (connects('SW_S_X_L_TOP', 'SW_S_X_R_TOP')) if (!s['SW_S_X_L_TOP']) return false;
     if (connects('SW_S_X_L_TOP', 'SW_S_X_R_BOT')) if (s['SW_S_X_L_TOP']) return false;
 
-    // South X_L_BOT (Straight: X_R_BOT, Diverge: X_R_TOP)
     if (connects('SW_S_X_L_BOT', 'SW_S_X_R_BOT')) if (!s['SW_S_X_L_BOT']) return false;
     if (connects('SW_S_X_L_BOT', 'SW_S_X_R_TOP')) if (s['SW_S_X_L_BOT']) return false;
 
-    // South X_R_TOP (Straight: X_L_TOP, Diverge: X_L_BOT)
     if (connects('SW_S_X_R_TOP', 'SW_S_X_L_TOP')) if (!s['SW_S_X_R_TOP']) return false;
     if (connects('SW_S_X_R_TOP', 'SW_S_X_L_BOT')) if (s['SW_S_X_R_TOP']) return false;
 
-    // South X_R_BOT (Straight: X_L_BOT, Diverge: X_L_TOP)
     if (connects('SW_S_X_R_BOT', 'SW_S_X_L_BOT')) if (!s['SW_S_X_R_BOT']) return false;
     if (connects('SW_S_X_R_BOT', 'SW_S_X_L_TOP')) if (s['SW_S_X_R_BOT']) return false;
 
