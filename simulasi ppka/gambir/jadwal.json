@@ -47,7 +47,6 @@
 {"arrives": "06:29:00", "departs": "06:29:00", "noKA": "1179", "namaKA": "Commuter Line Bogor", "destName": "Jakarta Kota", "isCommuter": true},
 {"arrives": "06:33:00", "departs": null, "noKA": "63", "namaKA": "Manahan", "destName": "Gambir", "isCommuter": false, "jalur": "IV"},
 {"arrives": null, "departs": "06:35:00", "noKA": "130", "namaKA": "Papandayan", "destName": "Garut", "isCommuter": false, "jalur": "I"},
-{"arrives": null, "departs": "06:35:00", "noKA": "130B", "namaKA": "Papandayan", "destName": "Garut", "isCommuter": false, "jalur": "I"},
 {"arrives": "06:36:00", "departs": "06:36:00", "noKA": "1166", "namaKA": "Commuter Line Bogor", "destName": "Bogor", "isCommuter": true},
 {"arrives": "06:37:00", "departs": "06:37:00", "noKA": "1181", "namaKA": "Commuter Line Bogor", "destName": "Jakarta Kota", "isCommuter": true},
 {"arrives": "06:40:00", "departs": "06:40:00", "noKA": "1168", "namaKA": "Commuter Line Bogor", "destName": "Bogor", "isCommuter": true},

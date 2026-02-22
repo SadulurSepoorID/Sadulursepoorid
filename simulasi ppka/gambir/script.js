@@ -1,12 +1,11 @@
 /**
  * ENGINE DISPATCHER PROFESIONAL - STASIUN GAMBIR
- * (V63 - ADVANCED INTERLOCKING & PLATFORM VALIDATION + STAMFORMASI)
+ * (V64 - OPTIMIZATION, SIGNAL DELAY & ANTI ZIG-ZAG)
  */
 
 // ==========================================
 // DATA JALUR WAJIB KA (DARI MANIFEST)
 // ==========================================
-// Data Jalur Wajib KA (Gambir) - Diperbarui untuk mendukung Nomor KA tanpa Sub Huruf
 const jalurWajib = {
     // --- KA BERANGKAT ---
     "7002A": "III", "7002": "III", "7010B": "IV", "7010": "IV",
@@ -63,26 +62,23 @@ const TURNAROUND_TARGETS = Object.values(TRAIN_TURNAROUND_MAP);
 // FUNGSI KELUAR SIMULASI (SINKRONISASI IFRAME)
 // ==========================================
 window.keluarSimulasi = function() {
-    closeModal('settings-modal'); // Tutup menu setting dulu
-    openModal('exit-modal');      // Buka modal konfirmasi kustom kita (tidak membatalkan fullscreen)
+    closeModal('settings-modal'); 
+    openModal('exit-modal');      
 };
 
-// Fungsi ini dipanggil jika user klik "YA, KELUAR" di modal
 window.prosesKeluar = function() {
     try {
-        // Coba deteksi dan panggil fungsi exitGame di menu utama
         if (window.parent !== window && typeof window.parent.exitGame === 'function') {
             window.parent.exitGame();
         } else {
-            // Paksa kembali ke root jika dibuka tanpa menu utama
             window.top.location.replace('../index.html');
         }
     } catch (error) {
-        // TANGKAP ERROR: Jika hosting memblokir keamanan iframe (CORS)
         console.warn("Iframe diblokir oleh server hosting, memaksa keluar...", error);
         window.top.location.replace('../index.html');
     }
 };
+
 // ==========================================
 // FUNGSI FULLSCREEN & ORIENTATION LOCK
 // ==========================================
@@ -289,12 +285,26 @@ let currentMapW = window.innerWidth < 900 ? 800 : 1400;
 let currentMapH = window.innerWidth < 900 ? 300 : 500;
 function setMapZoom(factor) {
     let area = document.getElementById('map-area');
-    currentMapW *= factor; currentMapH *= factor;
-    if (currentMapW < 900) currentMapW = 900;
-    if (currentMapH < 350) currentMapH = 350;
-    if (currentMapW > 3500) currentMapW = 3500;
-    if (currentMapH > 1200) currentMapH = 1200;
-    area.style.width = currentMapW + 'px'; area.style.height = currentMapH + 'px';
+    let container = document.getElementById('game-container');
+    
+    currentMapW *= factor; 
+    currentMapH *= factor;
+    
+    if (currentMapW < 400) currentMapW = 400;
+    if (currentMapH < 150) currentMapH = 150;
+    if (currentMapW > 4000) currentMapW = 4000;
+    if (currentMapH > 1500) currentMapH = 1500;
+    
+    area.style.width = currentMapW + 'px'; 
+    area.style.height = currentMapH + 'px';
+
+    if(factor > 1) {
+        container.scrollLeft += (container.clientWidth * 0.1);
+        container.scrollTop += (container.clientHeight * 0.1);
+    } else {
+        container.scrollLeft -= (container.clientWidth * 0.1);
+        container.scrollTop -= (container.clientHeight * 0.1);
+    }
 }
 
 let incomingCalls = []; let clearedDepartures = new Set(); 
@@ -313,8 +323,9 @@ function switchManifestTab(tabName) {
     }
 }
 
+// FIX 1: Optimasi Sistem Render Tabel Jadwal agar tidak menyebabkan lag
 function populateBottomSchedule() {
-    let tbody = document.getElementById('bottom-schedule-body'); if(!tbody) return; tbody.innerHTML = '';
+    let tbody = document.getElementById('bottom-schedule-body'); if(!tbody) return;
     
     let upcomingTrains = TIMETABLE.filter(t => t.arrivesTime >= gameTime - 120 || t.spawnTime >= gameTime - 120); 
     let sortedTable = upcomingTrains.sort((a,b) => a.arrivesTime - b.arrivesTime);
@@ -322,6 +333,7 @@ function populateBottomSchedule() {
     if (sortedTable.length === 0) { 
         tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#888;">Tidak ada jadwal.</td></tr>`; 
     } else {
+        let htmlStr = "";
         sortedTable.forEach(t => {
             let delayStr = ""; 
             if (t.offset > 0) delayStr = `<span style="color:#ff5555; font-size:11px; margin-left:5px;">(+${Math.floor(t.offset/60)}m)</span>`;
@@ -330,7 +342,7 @@ function populateBottomSchedule() {
             let jenisBadge = t.isCommuter ? `<span class="badge badge-commuter">COMMUTER</span>` : `<span class="badge badge-kajj">KAJJ</span>`;
             let jalurStr = jalurWajib[t.noKA] || "-";
             
-            tbody.innerHTML += `
+            htmlStr += `
             <tr>
                 <td style="color:#fff; font-family: monospace;">${t.noKA}</td>
                 <td><span style="color:#fff;">${t.namaKA}</span> <span style="color:#aaa;">- ${t.destName}</span></td>
@@ -340,6 +352,7 @@ function populateBottomSchedule() {
                 <td>${jenisBadge}</td>
             </tr>`;
         });
+        tbody.innerHTML = htmlStr; // Set sekaligus agar browser tidak ngelag
     }
 }
 
@@ -573,10 +586,10 @@ function initMap() {
     lblS_Ext_In.setAttribute("x", "98%"); lblS_Ext_In.setAttribute("y", "12.5%"); lblS_Ext_In.setAttribute("class", "svg-label"); lblS_Ext_In.setAttribute("text-anchor", "end"); lblS_Ext_In.textContent = "← J2 (DARI MRI)"; svgObj.appendChild(lblS_Ext_In);
     let lblS_Ext_Out = document.createElementNS("http://www.w3.org/2000/svg", "text"); 
     lblS_Ext_Out.setAttribute("x", "98%"); lblS_Ext_Out.setAttribute("y", "22.5%"); lblS_Ext_Out.setAttribute("class", "svg-label"); lblS_Ext_Out.setAttribute("text-anchor", "end"); lblS_Ext_Out.textContent = "J1 (KE MRI) →"; svgObj.appendChild(lblS_Ext_Out);
-    let lblN1 = document.createElementNS("http://www.w3.org/2000/svg", "text"); lblN1.setAttribute("x", "2%"); lblN1.setAttribute("y", "42.5%"); lblN1.setAttribute("class", "svg-label"); lblN1.textContent = "← J2 KE BLOK ATAS"; svgObj.appendChild(lblN1);
-    let lblN2 = document.createElementNS("http://www.w3.org/2000/svg", "text"); lblN2.setAttribute("x", "2%"); lblN2.setAttribute("y", "56.5%"); lblN2.setAttribute("class", "svg-label"); lblN2.textContent = "J1 DARI BLOK ATAS →"; svgObj.appendChild(lblN2);
-    let lblS1 = document.createElementNS("http://www.w3.org/2000/svg", "text"); lblS1.setAttribute("x", "98%"); lblS1.setAttribute("y", "42.5%"); lblS1.setAttribute("class", "svg-label"); lblS1.setAttribute("text-anchor", "end"); lblS1.textContent = "← J2 DARI BLOK ATAS"; svgObj.appendChild(lblS1);
-    let lblS2 = document.createElementNS("http://www.w3.org/2000/svg", "text"); lblS2.setAttribute("x", "98%"); lblS2.setAttribute("y", "56.5%"); lblS2.setAttribute("class", "svg-label"); lblS2.setAttribute("text-anchor", "end"); lblS2.textContent = "J1 KE BLOK ATAS →"; svgObj.appendChild(lblS2);
+    let lblN1 = document.createElementNS("http://www.w3.org/2000/svg", "text"); lblN1.setAttribute("x", "2%"); lblN1.setAttribute("y", "42.5%"); lblN1.setAttribute("class", "svg-label"); lblN1.textContent = "J2 OUT ↰"; svgObj.appendChild(lblN1);
+    let lblN2 = document.createElementNS("http://www.w3.org/2000/svg", "text"); lblN2.setAttribute("x", "2%"); lblN2.setAttribute("y", "56.5%"); lblN2.setAttribute("class", "svg-label"); lblN2.textContent = "J1 IN ↴"; svgObj.appendChild(lblN2);
+    let lblS1 = document.createElementNS("http://www.w3.org/2000/svg", "text"); lblS1.setAttribute("x", "98%"); lblS1.setAttribute("y", "42.5%"); lblS1.setAttribute("class", "svg-label"); lblS1.setAttribute("text-anchor", "end"); lblS1.textContent = "↱ J2 IN"; svgObj.appendChild(lblS1);
+    let lblS2 = document.createElementNS("http://www.w3.org/2000/svg", "text"); lblS2.setAttribute("x", "98%"); lblS2.setAttribute("y", "56.5%"); lblS2.setAttribute("class", "svg-label"); lblS2.setAttribute("text-anchor", "end"); lblS2.textContent = "↳ J2 OUT"; svgObj.appendChild(lblS2);
 
     TRACKS.forEach(tr => {
         if(tr.type !== 'jump') {
@@ -594,13 +607,33 @@ function initMap() {
         btn.onclick = () => toggleSwitch(id); entitiesObj.appendChild(btn); 
     }
 
+    // FIX 2: Urutan warna lampu diubah menjadi Hijau, Kuning, Merah
     for (let id in SIGNALS) {
         let n = NODES[id]; let housing = document.createElement('div'); housing.className = 'signal-housing'; housing.id = `sig_housing_${id}`;
         housing.onclick = () => toggleSignal(id); housing.style.cursor = "pointer";
+        
         let yOffset;
         if (n.y === 34 || n.y === 50) { yOffset = -4.5; } else if (n.y === 64 || n.y === 80) { yOffset = 4.5; } else { let isBottom = n.y >= 50; yOffset = isBottom ? 4.5 : -4.5; if (n.y <= 25) yOffset = 4.5; }
+        
         housing.style.left = n.x + '%'; housing.style.top = (n.y + yOffset) + '%';
-        ['r', 'y', 'g'].forEach(color => { let lamp = document.createElement('div'); lamp.className = `signal-lamp lamp-${color}`; lamp.id = `lamp_${id}_${color}`; housing.appendChild(lamp); });
+        
+        // --- LOGIKA BARU: Beda urutan lampu Utara vs Selatan ---
+        let lampOrder;
+        if (id.includes('_N_')) {
+            // Sisi Utara (Arah JAKK) POV Masinis: Hijau - Kuning - Merah
+            lampOrder = ['g', 'y', 'r']; 
+        } else {
+            // Sisi Selatan (Arah MRI) POV Masinis: Merah - Kuning - Hijau
+            lampOrder = ['r', 'y', 'g']; 
+        }
+        
+        lampOrder.forEach(color => { 
+            let lamp = document.createElement('div'); 
+            lamp.className = `signal-lamp lamp-${color}`; 
+            lamp.id = `lamp_${id}_${color}`; 
+            housing.appendChild(lamp); 
+        });
+        
         entitiesObj.appendChild(housing); updateSignalVisual(id);
     }
     
@@ -617,34 +650,14 @@ function updateSignalVisual(id) {
     if (state === 'RED' && rLamp) rLamp.classList.add('on'); else if (state === 'YELLOW' && yLamp) yLamp.classList.add('on'); else if (state === 'GREEN' && gLamp) gLamp.classList.add('on');
 }
 
-function updateSinyalMuka() {
-    let trainAtN_IN = trains.some(t => t.currentNode === 'SIG_N_IN' || (t.currentTrack && t.currentTrack.to === 'SIG_N_IN' && t.percent >= 98));
-    if (trainAtN_IN) SIGNALS['SIG_N_MUKA'] = 'RED';
-    else if (SIGNALS['SIG_N_IN'] === 'RED') SIGNALS['SIG_N_MUKA'] = 'YELLOW';
-    else SIGNALS['SIG_N_MUKA'] = 'GREEN';
-    updateSignalVisual('SIG_N_MUKA');
-
-    let trainAtS_IN = trains.some(t => t.currentNode === 'SIG_S_IN' || (t.currentTrack && t.currentTrack.to === 'SIG_S_IN' && t.percent >= 98));
-    if (trainAtS_IN) SIGNALS['SIG_S_MUKA'] = 'RED';
-    else if (SIGNALS['SIG_S_IN'] === 'RED') SIGNALS['SIG_S_MUKA'] = 'YELLOW';
-    else SIGNALS['SIG_S_MUKA'] = 'GREEN';
-    updateSignalVisual('SIG_S_MUKA');
-
-    let trainAtN_OUT = trains.some(t => t.currentNode === 'SIG_N_OUT_EXT' || (t.currentTrack && t.currentTrack.to === 'N_OUT_DESPAWN'));
-    SIGNALS['SIG_N_OUT_EXT'] = trainAtN_OUT ? 'RED' : 'GREEN';
-    updateSignalVisual('SIG_N_OUT_EXT');
-
-    let trainAtS_OUT = trains.some(t => t.currentNode === 'SIG_S_OUT_EXT' || (t.currentTrack && t.currentTrack.to === 'S_OUT_DESPAWN'));
-    SIGNALS['SIG_S_OUT_EXT'] = trainAtS_OUT ? 'RED' : 'GREEN';
-    updateSignalVisual('SIG_S_OUT_EXT');
-}
-
 function isNorthThroatOccupied() {
     return trains.some(t => {
         if (!t.currentTrack) return false;
         let n1 = NODES[t.currentTrack.from]; let n2 = NODES[t.currentTrack.to];
+        let currentY = n1.y + (n2.y - n1.y) * (t.percent / 100);
+        if (currentY <= 32) return false; 
         let currentX = n1.x + (n2.x - n1.x) * (t.percent / 100);
-        return currentX >= 8 && currentX <= 35; 
+        return currentX > 8 && currentX < 35; 
     });
 }
 
@@ -652,8 +665,10 @@ function isSouthThroatOccupied() {
     return trains.some(t => {
         if (!t.currentTrack) return false;
         let n1 = NODES[t.currentTrack.from]; let n2 = NODES[t.currentTrack.to];
+        let currentY = n1.y + (n2.y - n1.y) * (t.percent / 100);
+        if (currentY <= 32) return false; 
         let currentX = n1.x + (n2.x - n1.x) * (t.percent / 100);
-        return currentX >= 65 && currentX <= 92; 
+        return currentX > 65 && currentX < 92; 
     });
 }
 
@@ -664,6 +679,19 @@ function toggleSwitch(id) {
     if (id.startsWith('SW_N')) {
         if (nSigActive) { addLog(`<span style="color:#ff3333;">SYS MENOLAK: Sinyal Utara sedang aktif!</span>`); return; }
         if (isNorthThroatOccupied()) { addLog(`<span style="color:#ff3333;">SYS MENOLAK: Wesel Terkunci! Ada KA di petak wesel Utara.</span>`); return; }
+
+        // FIX 4: Mencegah Rute Zig-Zag Tidak Masuk Akal (Wesel Salah)
+        if (id.startsWith('SW_N_C')) {
+            let simC1 = switches['SW_N_C1_BOT'];
+            let simC2 = switches['SW_N_C2_TOP'];
+            if (id === 'SW_N_C1_BOT' || id === 'SW_N_C1_TOP') simC1 = !simC1;
+            if (id === 'SW_N_C2_BOT' || id === 'SW_N_C2_TOP') simC2 = !simC2;
+
+            if (!simC1 && !simC2) {
+                addLog(`<span style="color:#ff3333;">SYS MENOLAK: Rute Zig-Zag terlarang! Wesel C1 dan C2 tidak bisa menyilang bersamaan.</span>`);
+                return;
+            }
+        }
     }
     if (id.startsWith('SW_S')) {
         if (sSigActive) { addLog(`<span style="color:#ff3333;">SYS MENOLAK: Sinyal Selatan sedang aktif!</span>`); return; }
@@ -734,7 +762,6 @@ function toggleSignal(id) {
         );
         if (isOccupied) { addLog(`<span style="color:#ff3333;">SYS MENOLAK: Jalur ${targetPlatform} sedang terisi KA!</span>`); return; }
 
-        // ====== VALIDASI JALUR (BARU) ======
         let approachingTrain = trains.find(t => 
             t.currentNode === id || 
             (t.currentTrack && t.currentTrack.to === id && t.percent >= 90)
@@ -747,10 +774,9 @@ function toggleSignal(id) {
             if (!cekJalurValid(approachingTrain.noKA, targetJalur)) {
                 addLog(`<span style="color:#ff3333;">SYS MENOLAK: KA ${approachingTrain.noKA} salah rute! Wajib masuk Jalur ${jalurWajib[approachingTrain.noKA]}.</span>`);
                 alert(`⚠️ SINYAL TERKUNCI!\n\nKA ${approachingTrain.noKA} salah rute.\nSeharusnya diarahkan masuk ke Jalur ${jalurWajib[approachingTrain.noKA]},\ntetapi wesel Anda mengarah ke Jalur ${targetJalur}.`);
-                return; // Batalkan penarikan sinyal
+                return; 
             }
         }
-        // ===================================
 
         let starterSignal = trace.endNode; 
         aspect = SIGNALS[starterSignal] === 'RED' ? 'YELLOW' : 'GREEN';
@@ -763,9 +789,11 @@ function toggleSignal(id) {
 }
 
 function updateRoutesVisual() {
+    // Matikan semua garis hijau terlebih dahulu
     document.querySelectorAll('.route-layer').forEach(e => e.classList.remove('active'));
     const on = (id) => { let el = document.getElementById(`r_${id}`); if(el) el.classList.add('active'); };
 
+    // 1. GARIS HIJAU UNTUK PENANDA ARAH WESEL
     if (switches['SW_N_C1_BOT']) on('e_c1_bot_str'); else on('e_c1_bot_div');
     if (switches['SW_N_C1_TOP']) on('w_c1_top_str'); else on('w_c1_top_div');
     if (switches['SW_N_C2_TOP']) on('e_c2_top_str'); else on('e_c2_top_div');
@@ -781,14 +809,31 @@ function updateRoutesVisual() {
     if (switches['SW_S_X_R_TOP']) on('w_x_rtop_str'); else on('w_x_rtop_div');
     if (switches['SW_S_X_R_BOT']) on('w_x_rbot_str'); else on('w_x_rbot_div');
 
-    let staticTracks = [
-        'e_in_sig_1', 'e_in_sig_2', 'e_n_in', 'e_c1_top_str', 'e_c2_bot_str', 'e_s_ltop_in', 'e_s_lbot_in', 'e_x_rtop_str', 'e_x_rbot_str',
-        'e_s_rtop_out_1', 'e_s_rtop_out_2', 'e_s_rbot_out_2', 'w_in_sig_1', 'w_in_sig_2', 'w_s_in', 'w_s_in_bot_1', 'w_s_in_bot_2',
-        'w_x_ltop_str', 'w_x_lbot_str', 'w_n_c2_top_in', 'w_n_c2_bot_in', 'w_c2_top_str', 'w_c1_bot_str', 'w_out_end_2', 'w_out_bot_1', 'w_out_bot_2',
-        'e_n_ext_1', 'e_n_ext_2', 'e_n_ext_3', 'w_n_ext_1', 'w_n_ext_2', 'w_n_ext_3', 'w_s_ext_1', 'w_s_ext_2', 'w_s_ext_3', 'e_s_ext_1', 'e_s_ext_2', 'e_s_ext_3'
-    ];
-    staticTracks.forEach(on);
+    // 2. GARIS HIJAU UNTUK JALUR/BLOK YANG MENDAPATKAN SINYAL KUNING/HIJAU
+    function illuminateRoute(startNode, dir) {
+        let currNode = startNode;
+        for (let i = 0; i < 20; i++) {
+            let nextT = getNextTrack(currNode, dir);
+            if (!nextT) break;
+            on(nextT.id); // Nyalakan hijau pada petak ini
+            currNode = nextT.to;
+            if (SIGNALS.hasOwnProperty(currNode)) break; // Berhenti tracing saat bertemu sinyal berikutnya
+        }
+    }
 
+    // Lacak dan nyalakan rute dari semua sinyal yang aktif (Kuning/Hijau)
+    for (let sig in SIGNALS) {
+        if (SIGNALS[sig] !== 'RED') {
+            let dir = 'east';
+            // Tentukan arah hadap sinyal untuk tracing
+            if (sig === 'SIG_S_IN' || sig === 'SIG_S_MUKA' || sig === 'SIG_N_OUT_EXT' || sig.includes('_N_OUT')) {
+                dir = 'west';
+            }
+            illuminateRoute(sig, dir);
+        }
+    }
+
+    // 3. PLATFORM TERANG JIKA MENDAPATKAN RUTE (DARI MASUK ATAU KELUAR)
     let pActive = { 1: false, 2: false, 3: false, 4: false };
     if (SIGNALS['S_1_N_OUT'] !== 'RED' || SIGNALS['S_1_S_OUT'] !== 'RED') pActive[1] = true;
     if (SIGNALS['S_2_N_OUT'] !== 'RED' || SIGNALS['S_2_S_OUT'] !== 'RED') pActive[2] = true;
@@ -804,12 +849,51 @@ function updateRoutesVisual() {
     if (pActive[4]) { on('e_p4_w'); on('e_p4_mid'); on('e_p4_e'); on('w_p4_e'); on('w_p4_mid'); on('w_p4_w'); }
 }
 
+function updateSinyalMuka() {
+    let block_N_MUKA_to_IN = ['e_n_ext_2', 'e_n_ext_3', 'e_n_jump', 'e_in_sig_1', 'e_in_sig_2'];
+    let trainInNorthBlock = trains.some(t => t.currentTrack && block_N_MUKA_to_IN.includes(t.currentTrack.id));
+    
+    let oldN = SIGNALS['SIG_N_MUKA'];
+    if (trainInNorthBlock) SIGNALS['SIG_N_MUKA'] = 'RED';
+    else if (SIGNALS['SIG_N_IN'] === 'RED') SIGNALS['SIG_N_MUKA'] = 'YELLOW';
+    else SIGNALS['SIG_N_MUKA'] = 'GREEN';
+    if (oldN !== SIGNALS['SIG_N_MUKA']) updateSignalVisual('SIG_N_MUKA');
+
+    let block_S_MUKA_to_IN = ['w_s_ext_2', 'w_s_ext_3', 'w_s_jump', 'w_in_sig_1', 'w_in_sig_2'];
+    let trainInSouthBlock = trains.some(t => t.currentTrack && block_S_MUKA_to_IN.includes(t.currentTrack.id));
+    
+    let oldS = SIGNALS['SIG_S_MUKA'];
+    if (trainInSouthBlock) SIGNALS['SIG_S_MUKA'] = 'RED';
+    else if (SIGNALS['SIG_S_IN'] === 'RED') SIGNALS['SIG_S_MUKA'] = 'YELLOW';
+    else SIGNALS['SIG_S_MUKA'] = 'GREEN';
+    if (oldS !== SIGNALS['SIG_S_MUKA']) updateSignalVisual('SIG_S_MUKA');
+
+    let trainAtN_OUT = trains.some(t => t.currentTrack && t.currentTrack.id === 'w_n_ext_3');
+    let oldNOut = SIGNALS['SIG_N_OUT_EXT'];
+    SIGNALS['SIG_N_OUT_EXT'] = trainAtN_OUT ? 'RED' : 'GREEN';
+    if (oldNOut !== SIGNALS['SIG_N_OUT_EXT']) updateSignalVisual('SIG_N_OUT_EXT');
+
+    let trainAtS_OUT = trains.some(t => t.currentTrack && t.currentTrack.id === 'e_s_ext_3');
+    let oldSOut = SIGNALS['SIG_S_OUT_EXT'];
+    SIGNALS['SIG_S_OUT_EXT'] = trainAtS_OUT ? 'RED' : 'GREEN';
+    if (oldSOut !== SIGNALS['SIG_S_OUT_EXT']) updateSignalVisual('SIG_S_OUT_EXT');
+
+    // Jika sinyal otomatis berubah aspeknya, perbarui juga indikator rute hijaunya
+    if (oldN !== SIGNALS['SIG_N_MUKA'] || oldS !== SIGNALS['SIG_S_MUKA'] || oldNOut !== SIGNALS['SIG_N_OUT_EXT'] || oldSOut !== SIGNALS['SIG_S_OUT_EXT']) {
+        updateRoutesVisual();
+    }
+}
+
 // === CLASS KERETA ===
 class Train {
     constructor(noKA, namaKA, startNode, destName, isCommuter = true) {
         this.noKA = noKA; this.namaKA = namaKA; this.currentNode = startNode; this.destName = destName;
         this.isCommuter = isCommuter; this.percent = 0; this.baseSpeed = 0; this.currentTrack = null;
         this.state = 'RUNNING'; this.hasDocked = false; this.lastAspect = 'GREEN';
+        
+        // FIX 3: Variabel untuk penundaan keberangkatan dari sinyal merah
+        this.waitingAtSignal = false;
+        this.signalClearedTime = null;
         
         let noAngka = parseInt(this.noKA.replace(/\D/g, ''));
         this.isEven = (noAngka % 2 === 0);
@@ -965,8 +1049,27 @@ class Train {
             refreshPosition(); return;
         }
 
+        // FIX 3: Logika penundaan keberangkatan ketika sinyal yang tadinya merah diubah jadi hijau
         if (nextPercent >= 98 && isRedSignal) { 
-            this.percent = 98; this.updateTable("BERHENTI (S7)"); refreshPosition(); return; 
+            this.percent = 98; 
+            this.updateTable("BERHENTI (S7)"); 
+            this.waitingAtSignal = true; // Tandai bahwa KA pernah tertahan sinyal
+            refreshPosition(); 
+            return; 
+        }
+
+        if (this.percent >= 98 && this.waitingAtSignal && !isRedSignal) {
+            if (!this.signalClearedTime) {
+                this.signalClearedTime = gameTime + 5; // Beri waktu 5 detik in-game
+            }
+            if (gameTime < this.signalClearedTime) {
+                this.updateTable("PERSIAPAN (TUNGGU AMAN)");
+                refreshPosition();
+                return;
+            }
+            // Timer selesai, KA diizinkan jalan
+            this.waitingAtSignal = false;
+            this.signalClearedTime = null;
         }
 
         this.percent = nextPercent; refreshPosition();
@@ -1005,12 +1108,12 @@ class Train {
         let badgeClass = "badge-green";
         
         if(safeStr.includes("S7") || safeStr.includes("SALAH")) badgeClass = "badge-red"; 
-        else if(safeStr.includes("S6") || safeStr.includes("WESEL") || safeStr.includes("HATI-HATI") || safeStr.includes("STAMFORMASI")) badgeClass = "badge-yellow"; 
+        else if(safeStr.includes("S6") || safeStr.includes("WESEL") || safeStr.includes("HATI-HATI") || safeStr.includes("STAMFORMASI") || safeStr.includes("PERSIAPAN")) badgeClass = "badge-yellow"; 
         else if(safeStr.includes("BOARDING") || safeStr.includes("BERUBAH")) badgeClass = "badge-cyan"; 
         else if(safeStr.includes("MELINTAS") || safeStr.includes("MEMASUKI")) badgeClass = "badge-commuter"; 
         
         let statusHtml = `<span class="badge ${badgeClass}">${safeStr}</span>`;
-        let jalurKA = jalurWajib[this.noKA] || (this.isCommuter ? "-" : "M"); // Menampilkan M untuk manual
+        let jalurKA = jalurWajib[this.noKA] || (this.isCommuter ? "-" : "M"); 
         
         if (!row) {
             row = document.createElement('tr'); row.id = `row-${this.noKA}`; 
@@ -1174,19 +1277,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let zoomHideTimer;
     
-    // Fungsi membangunkan tombol zoom saat ada interaksi
     function wakeUpZoomControls() {
         zoomControls.classList.add('show');
         clearTimeout(zoomHideTimer);
         zoomHideTimer = setTimeout(() => {
-            // Pengaman: Jangan hilangkan tombol jika kursor sedang berada di atasnya
             if (!zoomControls.matches(':hover')) {
                 zoomControls.classList.remove('show');
             }
         }, 2500); 
     }
 
-    // --- CUSTOM DRAG TO SCROLL (UNTUK MOUSE PC & LAPTOP) ---
     let isDragging = false;
     let startX, startY, scrollLeft, scrollTop;
 
@@ -1215,29 +1315,24 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         const x = e.pageX - gameContainer.offsetLeft;
         const y = e.pageY - gameContainer.offsetTop;
-        const walkX = (x - startX) * 1.5; // Angka 1.5 adalah kecepatan geser
+        const walkX = (x - startX) * 1.5; 
         const walkY = (y - startY) * 1.5;
         gameContainer.scrollLeft = scrollLeft - walkX;
         gameContainer.scrollTop = scrollTop - walkY;
         wakeUpZoomControls();
     });
 
-    // --- SCROLL SENTUH (UNTUK SMARTPHONE) ---
-    // Scroll bawaan HP sudah sangat smooth, kita hanya perlu deteksi interaksinya
     gameContainer.addEventListener('scroll', wakeUpZoomControls, { passive: true });
     gameContainer.addEventListener('touchstart', wakeUpZoomControls, { passive: true });
 });
 
-// --- OVERRIDE FUNGSI ZOOM (AGAR SCROLL TERPUSAT SAAT DI-ZOOM) ---
 window.setMapZoom = function(factor) {
     let area = document.getElementById('map-area');
     let container = document.getElementById('game-container');
     
-    // Asumsi: currentMapW dan currentMapH adalah variabel global
     currentMapW *= factor; 
     currentMapH *= factor;
     
-    // Sesuaikan batas minimal untuk layar HP (misal: 400x150)
     if (currentMapW < 400) currentMapW = 400;
     if (currentMapH < 150) currentMapH = 150;
     if (currentMapW > 4000) currentMapW = 4000;
@@ -1246,7 +1341,6 @@ window.setMapZoom = function(factor) {
     area.style.width = currentMapW + 'px'; 
     area.style.height = currentMapH + 'px';
 
-    // Sesuaikan posisi scroll agar tidak melompat jauh ke ujung
     if(factor > 1) {
         container.scrollLeft += (container.clientWidth * 0.1);
         container.scrollTop += (container.clientHeight * 0.1);
