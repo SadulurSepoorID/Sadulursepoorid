@@ -1,6 +1,6 @@
 /**
  * ENGINE DISPATCHER PROFESIONAL - STASIUN GAMBIR
- * (V65 - FULL INTERLOCKING, DYNAMIC ROUTES & 3-ASPECT TIMERS)
+ * (V66 - FIXED QUEUING, THROAT CHECKS & MOBILE FIXES)
  */
 
 // ==========================================
@@ -373,8 +373,20 @@ function updateCommUI() {
     let count = incomingCalls.length;
     let bD = document.getElementById('notif-badge'); if(bD) bD.innerText = `(${count})`; 
     let tB = document.getElementById('tab-notif-badge'); if(tB) tB.innerText = `(${count})`;
+    
+    // M1 FIX: Bind badge dan button untuk versi mobile
+    let bDMobile = document.getElementById('notif-badge-mobile'); if(bDMobile) bDMobile.innerText = `(${count})`;
+    
     let bT = document.getElementById('btn-telepon'); 
-    if (count > 0) { if(bT) bT.classList.add('blinking'); } else { if(bT) bT.classList.remove('blinking'); }
+    let bTMobile = document.getElementById('btn-telepon-mobile'); 
+
+    if (count > 0) { 
+        if(bT) bT.classList.add('blinking'); 
+        if(bTMobile) bTMobile.classList.add('blinking'); 
+    } else { 
+        if(bT) bT.classList.remove('blinking'); 
+        if(bTMobile) bTMobile.classList.remove('blinking'); 
+    }
     
     let listDiv = document.getElementById('incoming-list');
     if (count === 0) { listDiv.innerHTML = '<p style="color:#888; text-align:center; padding: 20px 0;">Tidak ada panggilan KA masuk.</p>'; } 
@@ -737,48 +749,34 @@ function toggleSwitch(id) {
     updateRoutesVisual();
 }
 
-// FUNGSI BARU: Cek apakah track terhubung secara fisik dengan pelat wesel saat ini (Strict Interlocking)
 function isTrackAligned(t) {
     let s = switches;
     const connects = (a, b) => (t.from === a && t.to === b) || (t.from === b && t.to === a);
 
-    // --- PERBAIKAN WESEL UTARA (Akses ke Peron 1 & 2) ---
-    
-    // North C1_BOT (Lurus ke C2_BOT, Belok ke C1_TOP)
     if (connects('SW_N_C1_BOT', 'SW_N_C2_BOT')) if (!s['SW_N_C1_BOT']) return false;
     if (connects('SW_N_C1_BOT', 'SW_N_C1_TOP')) if (s['SW_N_C1_BOT']) return false;
 
-    // North C1_TOP (Lurus ke N_OUT_END_BEND, Belok ke C1_BOT)
     if (connects('SW_N_C1_TOP', 'N_OUT_END_BEND')) if (!s['SW_N_C1_TOP']) return false;
     if (connects('SW_N_C1_TOP', 'SW_N_C1_BOT')) if (s['SW_N_C1_TOP']) return false;
 
-    // North C2_BOT (Lurus ke C1_BOT, Belok ke C2_TOP)
     if (connects('SW_N_C2_BOT', 'SW_N_C1_BOT')) if (!s['SW_N_C2_BOT']) return false;
     if (connects('SW_N_C2_BOT', 'SW_N_C2_TOP')) if (s['SW_N_C2_BOT']) return false;
 
-    // North C2_TOP (Lurus ke SW_N_P12, Belok ke C2_BOT)
     if (connects('SW_N_C2_TOP', 'SW_N_P12')) if (!s['SW_N_C2_TOP']) return false;
     if (connects('SW_N_C2_TOP', 'SW_N_C2_BOT')) if (s['SW_N_C2_TOP']) return false;
 
-    // --- WESEL PERON & SELATAN ---
-
-    // North P12 (Lurus: P2, Belok: P1)
     if (connects('SW_N_P12', 'S_2_N_OUT')) if (!s['SW_N_P12']) return false;
     if (connects('SW_N_P12', 'S_1_N_OUT')) if (s['SW_N_P12']) return false;
 
-    // North P34 (Lurus: P3, Belok: P4)
     if (connects('SW_N_P34', 'S_3_N_OUT')) if (!s['SW_N_P34']) return false;
     if (connects('SW_N_P34', 'S_4_N_OUT')) if (s['SW_N_P34']) return false;
 
-    // South P12
     if (connects('SW_S_P12', 'S_2_S_OUT')) if (!s['SW_S_P12']) return false;
     if (connects('SW_S_P12', 'S_1_S_OUT')) if (s['SW_S_P12']) return false;
 
-    // South P34
     if (connects('SW_S_P34', 'S_3_S_OUT')) if (!s['SW_S_P34']) return false;
     if (connects('SW_S_P34', 'S_4_S_OUT')) if (s['SW_S_P34']) return false;
 
-    // South Scissors Cross (X)
     if (connects('SW_S_X_L_TOP', 'SW_S_X_R_TOP')) if (!s['SW_S_X_L_TOP']) return false;
     if (connects('SW_S_X_L_TOP', 'SW_S_X_R_BOT')) if (s['SW_S_X_L_TOP']) return false;
 
@@ -794,7 +792,6 @@ function isTrackAligned(t) {
     return true;
 }
 
-// FUNGSI BARU: Deteksi jalur belok mutlak untuk penentuan sinyal kuning
 function isDivergingTrack(t) {
     const connects = (a, b) => (t.from === a && t.to === b) || (t.from === b && t.to === a);
     
@@ -811,33 +808,26 @@ function isDivergingTrack(t) {
     return false;
 }
 
-// UPDATE: getNextTrack
 function getNextTrack(node, dir) {
     let candidates = TRACKS.filter(t => t.from === node && t.dir === dir);
     if (candidates.length === 0) return null;
-    
-    // Blokir nembus jalur yang terputus oleh pelat wesel (termasuk trailing wesel)
     let alignedCandidates = candidates.filter(t => isTrackAligned(t));
     if (alignedCandidates.length === 0) return null; 
-    
     return alignedCandidates[0]; 
 }
 
-// UPDATE: traceRoute
 function traceRoute(startNode, dir) {
     let currNode = startNode; let hasDiverge = false;
     for (let i = 0; i < 20; i++) { 
-        let nextT = getNextTrack(currNode, dir); if (!nextT) break; // Berhenti tracing jika nyangkut di wesel mati
-        
-        if (isDivergingTrack(nextT)) hasDiverge = true; // Flag jalur belok ketemu
-        
+        let nextT = getNextTrack(currNode, dir); if (!nextT) break; 
+        if (isDivergingTrack(nextT)) hasDiverge = true; 
         currNode = nextT.to;
         if (SIGNALS.hasOwnProperty(currNode) || currNode.includes('_END') || currNode.includes('_START') || currNode.includes('DESPAWN')) break;
     }
     return { endNode: currNode, hasDiverge };
 }
 
-// UPDATE: toggleSignal
+// UPDATE: toggleSignal (FIX G2: Antre di sinyal blok keluar)
 function toggleSignal(id) {
     if (id === 'SIG_N_MUKA' || id === 'SIG_S_MUKA' || id === 'SIG_N_OUT_EXT' || id === 'SIG_S_OUT_EXT') { 
         addLog(`<span style="color:#ffcc00;">SYS INFO: Sinyal otomatis beroperasi mendeteksi blok di depannya.</span>`); 
@@ -865,7 +855,6 @@ function toggleSignal(id) {
     // LOGIKA 1: SINYAL KELUAR
     // ==========================================
     if (id.includes('_OUT') && !id.includes('EXT')) {
-        // Cek 1: Wesel harus nembus sampai ke luar (N_OUT_END / S_OUT_END), nggak boleh nyangkut/buntu.
         if (id.includes('_N_OUT') && !trace.endNode.includes('N_OUT_END')) { 
             addLog(`<span style="color:#ff3333;">SYS MENOLAK: Wesel belum diarahkan dengan sempurna ke jalur keluar!</span>`); 
             return; 
@@ -877,14 +866,25 @@ function toggleSignal(id) {
 
         let extSig = id.includes('_N_OUT') ? 'SIG_N_OUT_EXT' : 'SIG_S_OUT_EXT';
         
-        // Cek 2: Blok di depan aman?
-        if (SIGNALS[extSig] === 'RED') {
-            addLog(`<span style="color:#ff3333;">SYS MENOLAK: Sinyal Keluar terhalang, Blok petak di depannya masih diduduki KA!</span>`);
-            return; 
+        // Cek Throat Clear saja: KA bisa mengantri jika sudah lewat throat.
+        let isThroatClear = true;
+        let curr = id;
+        for(let i=0; i<20; i++) {
+            let nxtT = getNextTrack(curr, dir);
+            if(!nxtT) break;
+            if(trains.some(t => t.currentTrack && t.currentTrack.id === nxtT.id)) {
+                isThroatClear = false; break;
+            }
+            curr = nxtT.to;
+            if(curr === extSig) break; 
         }
 
-        // Cek 3: Ada wesel belok -> KUNING. Wesel lurus & blok hijau -> HIJAU.
-        if (trace.hasDiverge) {
+        if (!isThroatClear) {
+            addLog(`<span style="color:#ff3333;">SYS MENOLAK: Area throat wesel menuju Sinyal Blok luar masih diduduki KA!</span>`);
+            return;
+        }
+
+        if (trace.hasDiverge || SIGNALS[extSig] === 'RED') {
             aspect = 'YELLOW';
         } else {
             aspect = SIGNALS[extSig] === 'YELLOW' ? 'YELLOW' : 'GREEN';
@@ -896,13 +896,11 @@ function toggleSignal(id) {
     // ==========================================
     else if (id === 'SIG_N_IN' || id === 'SIG_S_IN') {
         let targetPlatform = trace.endNode.split('_')[1]; 
-        // Cek 1: Wesel harus sampai ke sinyal peron, gak boleh ngambang di tengah throat.
         if (!targetPlatform || (!trace.endNode.includes('_N_OUT') && !trace.endNode.includes('_S_OUT'))) {
             addLog(`<span style="color:#ff3333;">SYS MENOLAK: Wesel belum diarahkan dengan sempurna ke peron!</span>`);
             return;
         }
 
-        // PERBAIKAN: Deteksi okupansi peron secara mutlak (membaca nama jalur, titik sekarang, dan titik tujuan)
         let isOccupied = trains.some(t => {
             if (!t.currentTrack) return false;
             let trackId = t.currentTrack.id;
@@ -937,7 +935,6 @@ function toggleSignal(id) {
 
         let starterSignal = trace.endNode; 
         
-        // Cek 2: Wesel belok ATAU Sinyal di peron masih MERAH -> KUNING. Kalau lurus & peron udh ditarik -> HIJAU.
         if (trace.hasDiverge || SIGNALS[starterSignal] === 'RED') {
             aspect = 'YELLOW';
         } else {
@@ -1006,7 +1003,44 @@ function updateRoutesVisual() {
     if (pActive[4]) { on('e_p4_w'); on('e_p4_mid'); on('e_p4_e'); on('w_p4_e'); on('w_p4_mid'); on('w_p4_w'); }
 }
 
-// === CLASS KERETA ===
+let currentCommTrain = null;
+
+window.openTrainComm = function(noKA) {
+    currentCommTrain = trains.find(t => t.noKA === noKA);
+    if (!currentCommTrain) return;
+    document.getElementById('train-comm-noka').innerText = noKA;
+    openModal('train-comm-modal');
+};
+
+window.sendTrainMessage = function() {
+    if (!currentCommTrain) return;
+    let msgType = document.getElementById('train-comm-msg').value;
+    let noKA = currentCommTrain.noKA;
+    let voiceMsg = "";
+    
+    // Matikan alarm visual
+    currentCommTrain.alertTriggered = false; 
+    currentCommTrain.waitingTime = 0; 
+    currentCommTrain.element.classList.remove('train-alert');
+
+    if (msgType === 'segera') {
+        voiceMsg = `Masinis KA ${noKA}, segera dilayani, persiapan masuk.`;
+        addLog(`<span style="color:#00ffcc;">[RADIO] ANDA -> KA ${noKA}: Segera dilayani, persiapan.</span>`);
+    } else {
+        voiceMsg = `Masinis KA ${noKA}, belum bisa dilayani, tunggu aspek aman.`;
+        addLog(`<span style="color:#ffcc00;">[RADIO] ANDA -> KA ${noKA}: Belum bisa dilayani, tunggu aspek aman.</span>`);
+    }
+    
+    speakVoice(voiceMsg);
+    setTimeout(() => {
+        speakVoice(`Dimengerti Gambir, KA ${noKA} standby.`);
+        addLog(`<span style="color:#aaa;">[RADIO] KA ${noKA} -> ANDA: Dimengerti, standby.</span>`);
+    }, 4500); // Balasan masinis
+    
+    closeModal('train-comm-modal');
+};
+
+// === UPDATE PADA CLASS KERETA ===
 class Train {
     constructor(noKA, namaKA, startNode, destName, isCommuter = true) {
         this.noKA = noKA; this.namaKA = namaKA; this.currentNode = startNode; this.destName = destName;
@@ -1015,6 +1049,8 @@ class Train {
         
         this.waitingAtSignal = false;
         this.signalClearedTime = null;
+        this.waitingTime = 0; // Waktu tunggu sinyal
+        this.alertTriggered = false; // Status alarm masinis
         
         let noAngka = parseInt(this.noKA.replace(/\D/g, ''));
         this.isEven = (noAngka % 2 === 0);
@@ -1026,6 +1062,12 @@ class Train {
         this.element = document.createElement('div'); 
         this.element.className = 'train-entity' + (this.isCommuter ? ' commuter' : ''); 
         this.element.innerText = noKA; 
+        
+        // Event klik untuk panggil radio
+        this.element.onclick = (e) => {
+            e.stopPropagation();
+            window.openTrainComm(this.noKA);
+        };
         
         let entLayer = document.getElementById('entities'); 
         if(entLayer) entLayer.appendChild(this.element);
@@ -1129,16 +1171,33 @@ class Train {
             let trackLength = Math.sqrt(Math.pow(n2_ini.x - n1_ini.x, 2) + Math.pow(n2_ini.y - n1_ini.y, 2));
             let visualMultiplier = 18 / (trackLength || 18); 
             let targetSpeed = speedCfgNormal; let statusStr = "BERJALAN (S5)";
+            
             if (this.currentTrack.type === 'diverge') { targetSpeed = speedCfgSwitch; statusStr = "WESEL BELOK (S6)"; } 
             else if (this.lastAspect === 'YELLOW') { targetSpeed = speedCfgSwitch; statusStr = "HATI-HATI (S6)"; }
+            
+            let trainAheadSameTrack = trains.find(other => other !== this && other.currentTrack && other.currentTrack.id === this.currentTrack.id && other.percent > this.percent);
+            if (trainAheadSameTrack) {
+                let maxAllowed = trainAheadSameTrack.percent - 18; 
+                if (this.percent >= maxAllowed) {
+                    targetSpeed = 0; 
+                    statusStr = "MENGANTRI BLOK";
+                }
+            }
+
             this.baseSpeed = targetSpeed * visualMultiplier;
             if(this.isCommuter && statusStr === "BERJALAN (S5)") statusStr = "MELINTAS LANGSUNG (LS)";
             this.updateTable(statusStr);
         }
 
         let nextPercent = this.percent + (this.baseSpeed * dt);
-        let nextNode = this.currentTrack.to;
         
+        let trainAheadSameTrack2 = trains.find(other => other !== this && other.currentTrack && other.currentTrack.id === this.currentTrack.id && other.percent > this.percent);
+        if (trainAheadSameTrack2) {
+            let maxAllowed = trainAheadSameTrack2.percent - 18;
+            if (nextPercent > maxAllowed) nextPercent = Math.max(this.percent, maxAllowed);
+        }
+
+        let nextNode = this.currentTrack.to;
         let isRedSignal = false;
         let isMySignalOut = false;
         
@@ -1172,6 +1231,17 @@ class Train {
 
         if (nextPercent >= 98 && isRedSignal) { 
             this.percent = 98; 
+            
+            // LOGIKA 90 DETIK MASINIS TANYA
+            this.waitingTime += dt;
+            if (this.waitingTime >= 90 && !this.alertTriggered) {
+                this.alertTriggered = true;
+                this.element.classList.add('train-alert');
+                let voiceTalk = `PPKA Gambir, KA ${this.noKA} tertahan sinyal, mohon arahan, ganti.`;
+                playCustomAlarmAndSpeak(voiceTalk);
+                addLog(`<span style="color:#ff3333;">[RADIO] Masinis KA ${this.noKA}: Tertahan sinyal, mohon arahan!</span>`);
+            }
+            
             this.updateTable("BERHENTI (S7)"); 
             this.waitingAtSignal = true;
             refreshPosition(); 
@@ -1179,6 +1249,11 @@ class Train {
         }
 
         if (this.percent >= 98 && this.waitingAtSignal && !isRedSignal) {
+            // Sinyal aman, reset timer masinis
+            this.waitingTime = 0;
+            this.alertTriggered = false;
+            this.element.classList.remove('train-alert');
+
             if (!this.signalClearedTime) {
                 this.signalClearedTime = gameTime + 5; 
             }
@@ -1230,7 +1305,7 @@ class Train {
         let badgeClass = "badge-green";
         
         if(safeStr.includes("S7") || safeStr.includes("SALAH")) badgeClass = "badge-red"; 
-        else if(safeStr.includes("S6") || safeStr.includes("WESEL") || safeStr.includes("HATI-HATI") || safeStr.includes("STAMFORMASI") || safeStr.includes("PERSIAPAN")) badgeClass = "badge-yellow"; 
+        else if(safeStr.includes("S6") || safeStr.includes("WESEL") || safeStr.includes("HATI-HATI") || safeStr.includes("STAMFORMASI") || safeStr.includes("PERSIAPAN") || safeStr.includes("MENGANTRI")) badgeClass = "badge-yellow"; 
         else if(safeStr.includes("BOARDING") || safeStr.includes("BERUBAH")) badgeClass = "badge-cyan"; 
         else if(safeStr.includes("MELINTAS") || safeStr.includes("MEMASUKI")) badgeClass = "badge-commuter"; 
         

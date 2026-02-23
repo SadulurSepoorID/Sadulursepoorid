@@ -219,6 +219,21 @@
     <div id="youtube-audio-player"></div>
 </div>
 
+<div id="train-comm-modal" class="modal">
+    <div class="modal-content responsive-modal" style="max-width: 400px; text-align: center; border-top: 5px solid #ffcc00; box-shadow: 0 10px 40px rgba(255, 204, 0, 0.2);">
+        <span class="modal-close" onclick="closeModal('train-comm-modal')">✖ TUTUP</span>
+        <h3 style="color: #ffcc00; margin-top: 0;">📻 RADIO LOKOMOTIF</h3>
+        <p style="color: #ccc; font-size: 13px; margin-bottom: 15px;">Kirim perintah ke Masinis KA <span id="train-comm-noka" style="font-weight:bold; color:#00ffcc; font-size: 15px;"></span></p>
+        
+        <select id="train-comm-msg" style="width: 100%; padding: 12px; margin-bottom: 15px; background: #000; color: #fff; border: 1px solid #555; font-family: 'Consolas', monospace;">
+            <option value="segera">KA segera dilayani, persiapan.</option>
+            <option value="tunggu">KA belum bisa dilayani, tunggu aman.</option>
+        </select>
+        
+        <button onclick="sendTrainMessage()" style="width: 100%; padding: 12px; background: #00ccff; color: #000; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">KIRIM INSTRUKSI</button>
+    </div>
+</div>
+
 <script src="script.js?v=2"></script>
 <div id="exit-modal" class="modal">
     <div class="modal-content responsive-modal" style="max-width: 400px; text-align: center; border-top: 5px solid #ff3333; box-shadow: 0 10px 40px rgba(255, 51, 51, 0.2);">
