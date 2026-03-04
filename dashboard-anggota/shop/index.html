@@ -21,9 +21,7 @@
                 extend: {
                     fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
                     colors: { 
-                        // Luxury Blue Palette
                         brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 800: '#1e40af', 900: '#1e3a8a' },
-                        // Darker Slate for Text
                         primary: '#0f172a',
                     },
                     boxShadow: {
@@ -88,6 +86,9 @@
                     <button onclick="switchTab('admin-orders'); toggleSidebar()" class="nav-item w-full text-left group">
                         <i class="fa-solid fa-clipboard-check nav-icon"></i> <span>Pesanan Masuk</span>
                     </button>
+                    <button onclick="switchTab('admin-voucher'); toggleSidebar()" class="nav-item w-full text-left group">
+                        <i class="fa-solid fa-ticket nav-icon"></i> <span>Kelola Voucher</span>
+                    </button>
                 </div>
             </div>
         </nav>
@@ -133,7 +134,14 @@
         </header>
 
         <section id="view-catalog" class="view-section">
-            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"></div>
+        </section>
+
+        <section id="view-product-detail" class="view-section hidden max-w-5xl mx-auto animate-fade-up">
+            <button onclick="closeProductDetail()" class="mb-6 flex items-center gap-2 text-slate-500 hover:text-brand-600 font-bold text-sm transition-colors">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Katalog
+            </button>
+            <div id="product-detail-container" class="bg-white rounded-[32px] p-6 md:p-10 shadow-soft border border-slate-100 flex flex-col md:flex-row gap-8 md:gap-12">
                 </div>
         </section>
 
@@ -175,6 +183,33 @@
             </div>
             <div id="admin-orders-list" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
         </section>
+
+        <section id="view-admin-voucher" class="view-section hidden">
+            <div class="bg-white rounded-[24px] shadow-soft border border-slate-100 overflow-hidden animate-fade-up">
+                <div class="p-6 md:p-8 border-b border-slate-50 flex justify-between items-center">
+                    <div>
+                        <h3 class="font-serif text-xl font-bold text-slate-900">Kode Voucher</h3>
+                        <p class="text-slate-400 text-sm mt-1">Buat kode diskon sekali pakai.</p>
+                    </div>
+                    <button onclick="openVoucherModal()" class="px-6 py-3 bg-slate-900 hover:bg-brand-600 text-white rounded-xl font-bold text-sm transition-all flex items-center gap-2"><i class="fa-solid fa-plus"></i> Buat Voucher</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-50 text-slate-400 text-[10px] uppercase font-bold tracking-widest">
+                            <tr>
+                                <th class="p-5 pl-8">Kode</th>
+                                <th class="p-5">Nilai Diskon</th>
+                                <th class="p-5">Berlaku Sampai</th>
+                                <th class="p-5 text-center">Status</th>
+                                <th class="p-5 text-right pr-8">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-voucher-list" class="divide-y divide-slate-50 text-sm text-slate-600"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <div id="cart-modal" class="fixed inset-0 z-[100] hidden">
@@ -231,10 +266,23 @@
                                     <input type="number" id="prod-stock" class="input-field" value="0">
                                 </div>
                             </div>
-                            <div>
-                                <label class="label-input">Varian (Pisahkan Koma)</label>
-                                <input type="text" id="prod-sizes" class="input-field" placeholder="S, M, L, XL, XXL">
-                            </div>
+                           <div class="col-span-full border border-slate-200 p-4 rounded-xl space-y-4 bg-white">
+    <div class="flex justify-between items-center">
+        <label class="label-input !mb-0">Varian Produk Dinamis</label>
+        <button type="button" onclick="addVariantAttribute()" class="text-[10px] bg-brand-50 text-brand-600 px-3 py-1.5 rounded-lg font-bold hover:bg-brand-100 transition-colors">+ Tambah Jenis</button>
+    </div>
+    
+    <div id="variant-attributes" class="space-y-3"></div>
+    
+    <button type="button" onclick="generateCombinations()" class="w-full bg-slate-100 text-slate-600 text-xs font-bold py-2.5 rounded-xl hover:bg-slate-200 transition-colors border border-slate-200">
+        <i class="fa-solid fa-arrows-rotate mr-1"></i> Buat Kombinasi Harga
+    </button>
+    
+    <div id="variant-combinations" class="mt-4 hidden bg-slate-50 p-3 rounded-xl border border-slate-100">
+        <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Atur Harga Per Varian</p>
+        <div id="combination-list" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-2"></div>
+    </div>
+</div>
                         </div>
                         
                         <div class="space-y-4">
@@ -277,6 +325,11 @@
                         </div>
                     </div>
 
+                    <div class="mt-4">
+                        <label class="label-input">Deskripsi Tambahan</label>
+                        <textarea id="prod-desc" class="input-field min-h-[100px]" placeholder="Masukkan deksripsi detail produk..."></textarea>
+                    </div>
+
                     <div class="flex gap-3 pt-4 border-t border-slate-100">
                         <button type="button" onclick="closeProductModal()" class="flex-1 py-3.5 rounded-xl font-bold text-sm text-slate-500 hover:bg-slate-100 transition-colors">Batal</button>
                         <button type="submit" id="btn-save-prod" class="flex-[2] bg-slate-900 hover:bg-brand-600 text-white py-3.5 rounded-xl font-bold text-sm shadow-xl shadow-slate-900/10 transition-all active:scale-[0.98]">Simpan Produk</button>
@@ -287,175 +340,181 @@
     </div>
 
     <div id="checkout-modal" class="fixed inset-0 z-[200] flex items-center justify-center p-4 hidden">
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeCheckoutForm()"></div>
-    <div class="bg-white w-full max-w-lg rounded-[32px] shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh] animate-scale">
-        
-        <div class="p-6 border-b border-slate-50 flex justify-between items-center bg-white z-10">
-            <div>
-                <h3 class="font-serif text-xl font-bold text-slate-900">Checkout</h3>
-                <p class="text-xs text-slate-400">Selesaikan pembayaran Anda</p>
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeCheckoutForm()"></div>
+        <div class="bg-white w-full max-w-lg rounded-[32px] shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh] animate-scale">
+            
+            <div class="p-6 border-b border-slate-50 flex justify-between items-center bg-white z-10">
+                <div>
+                    <h3 class="font-serif text-xl font-bold text-slate-900">Checkout</h3>
+                    <p class="text-xs text-slate-400">Selesaikan pembayaran Anda</p>
+                </div>
+                <button class="w-8 h-8 rounded-full bg-slate-50 text-slate-400 hover:text-slate-600" onclick="closeCheckoutForm()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <button class="w-8 h-8 rounded-full bg-slate-50 text-slate-400 hover:text-slate-600" onclick="closeCheckoutForm()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
 
-        <div class="flex-1 overflow-y-auto p-6 bg-[#F8FAFC]">
-            <form id="checkout-form" onsubmit="handleCheckout(event)" class="space-y-8">
-                
-                <div>
-                    <label class="label-input mb-3">Barang yang dibeli</label>
-                    <div id="checkout-summary-list" class="space-y-2 mb-2"></div>
-                    <div class="flex justify-between items-center border-t border-dashed border-slate-200 pt-3">
-                        <span class="text-xs font-bold text-slate-500 uppercase">Total Tagihan</span>
-                        <span id="checkout-final-total" class="font-serif font-bold text-xl text-slate-900">Rp 0</span>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="label-input mb-3">Metode Pembayaran</label>
-                    <input type="hidden" id="pay-method" required> <div class="grid grid-cols-1 gap-3">
-                        <div onclick="selectPaymentMethod('QRIS', this)" class="pay-option cursor-pointer bg-white border border-slate-200 p-4 rounded-2xl flex items-center gap-4 hover:border-brand-500 hover:shadow-md transition-all group">
-                            <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-50 group-hover:text-brand-600 transition-colors">
-                                <i class="fa-solid fa-qrcode text-xl"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-slate-700 text-sm group-hover:text-brand-600">QRIS Instant</h4>
-                                <p class="text-[10px] text-slate-400">Gopay, OVO, Dana, ShopeePay</p>
-                            </div>
-                            <div class="check-circle w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center text-white text-[10px] group-hover:border-brand-500"><i class="fa-solid fa-check opacity-0"></i></div>
+            <div class="flex-1 overflow-y-auto p-6 bg-[#F8FAFC]">
+                <form id="checkout-form" onsubmit="handleCheckout(event)" class="space-y-8">
+                    
+                    <div>
+                        <label class="label-input mb-3">Barang yang dibeli</label>
+                        <div id="checkout-summary-list" class="space-y-2 mb-2"></div>
+                        
+                        <div class="flex justify-between items-center border-t border-dashed border-slate-200 pt-3">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Total Tagihan</span>
+                            <span id="checkout-final-total" class="font-serif font-bold text-xl text-slate-900">Rp 0</span>
                         </div>
 
-                        <div onclick="selectPaymentMethod('Transfer Bank BTN', this)" class="pay-option cursor-pointer bg-white border border-slate-200 p-4 rounded-2xl flex items-center gap-4 hover:border-brand-500 hover:shadow-md transition-all group">
-                            <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
-                                <i class="fa-solid fa-building-columns text-xl"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-slate-700 text-sm group-hover:text-brand-600">Transfer Bank BTN</h4>
-                                <p class="text-[10px] text-slate-400">Cek Otomatis</p>
-                            </div>
-                            <div class="check-circle w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center text-white text-[10px] group-hover:border-brand-500"><i class="fa-solid fa-check opacity-0"></i></div>
+                        <div id="discount-row" class="hidden flex justify-between items-center border-t border-dashed border-slate-200 pt-2 mt-2">
+                            <span class="text-xs font-bold text-green-500">Diskon (<span id="discount-code-display"></span>)</span>
+                            <span id="discount-amount" class="font-bold text-sm text-green-500">- Rp 0</span>
                         </div>
 
-                        <div onclick="selectPaymentMethod('Gopay', this)" class="pay-option cursor-pointer bg-white border border-slate-200 p-4 rounded-2xl flex items-center gap-4 hover:border-brand-500 hover:shadow-md transition-all group">
-                            <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-green-50 group-hover:text-green-600 transition-colors">
-                                <i class="fa-solid fa-wallet text-xl"></i>
+                        <div class="mt-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <label class="label-input">Punya Kode Promo?</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="voucher-input" class="input-field uppercase text-xs !py-2" placeholder="Masukkan kode...">
+                                <button type="button" onclick="applyVoucher()" id="btn-apply-voucher" class="bg-slate-900 text-white px-4 rounded-lg text-xs font-bold hover:bg-brand-600 transition-colors">Pakai</button>
                             </div>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-slate-700 text-sm group-hover:text-brand-600">E-Wallet Manual</h4>
-                                <p class="text-[10px] text-slate-400">Kirim ke nomor Admin</p>
-                            </div>
-                            <div class="check-circle w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center text-white text-[10px] group-hover:border-brand-500"><i class="fa-solid fa-check opacity-0"></i></div>
+                            <p id="voucher-msg" class="text-[10px] mt-1 font-bold hidden"></p>
                         </div>
                     </div>
-                </div>
 
-                <div id="payment-info-container" class="hidden animate-fade-up"></div>
+                    <div>
+                        <label class="label-input mb-3">Metode Pembayaran</label>
+                        <input type="hidden" id="pay-method" required> 
+                        <div class="grid grid-cols-1 gap-3">
+                            <div onclick="selectPaymentMethod('QRIS', this)" class="pay-option cursor-pointer bg-white border border-slate-200 p-4 rounded-2xl flex items-center gap-4 hover:border-brand-500 hover:shadow-md transition-all group">
+                                <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-50 group-hover:text-brand-600 transition-colors">
+                                    <i class="fa-solid fa-qrcode text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-slate-700 text-sm group-hover:text-brand-600">QRIS Instant</h4>
+                                    <p class="text-[10px] text-slate-400">Gopay, OVO, Dana, ShopeePay</p>
+                                </div>
+                                <div class="check-circle w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center text-white text-[10px] group-hover:border-brand-500"><i class="fa-solid fa-check opacity-0"></i></div>
+                            </div>
 
-                <div class="grid grid-cols-2 gap-4">
-    <label class="cursor-pointer group relative transition-transform active:scale-95">
-        <input type="radio" name="pay-type" value="full" class="peer hidden" checked onchange="toggleCicilanInput()">
-        <div class="p-4 text-center border border-slate-200 rounded-2xl bg-white 
-                    hover:border-brand-400 hover:shadow-md transition-all duration-200 
-                    peer-checked:border-brand-600 peer-checked:bg-brand-50 peer-checked:text-brand-700 peer-checked:ring-1 peer-checked:ring-brand-600 shadow-sm">
-            <span class="text-xs font-bold"><i class="fa-solid fa-check-circle mr-1"></i> Bayar Lunas</span>
-        </div>
-    </label>
+                            <div onclick="selectPaymentMethod('Transfer Bank BTN', this)" class="pay-option cursor-pointer bg-white border border-slate-200 p-4 rounded-2xl flex items-center gap-4 hover:border-brand-500 hover:shadow-md transition-all group">
+                                <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                                    <i class="fa-solid fa-building-columns text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-slate-700 text-sm group-hover:text-brand-600">Transfer Bank BTN</h4>
+                                    <p class="text-[10px] text-slate-400">Cek Otomatis</p>
+                                </div>
+                                <div class="check-circle w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center text-white text-[10px] group-hover:border-brand-500"><i class="fa-solid fa-check opacity-0"></i></div>
+                            </div>
 
-    <label class="cursor-pointer group relative transition-transform active:scale-95" id="label-cicilan">
-        <input type="radio" name="pay-type" value="cicil" class="peer hidden" onchange="toggleCicilanInput()">
-        <div id="div-cicilan" class="p-4 text-center border border-slate-200 rounded-2xl bg-white 
-                    hover:border-orange-300 hover:bg-orange-50 hover:shadow-md transition-all duration-200 
-                    peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:text-orange-700 peer-checked:ring-1 peer-checked:ring-orange-500 shadow-sm">
-            <span class="text-xs font-bold"><i class="fa-solid fa-clock mr-1"></i> Cicilan / DP</span>
-        </div>
-    </label>
-</div>
-
-                <div id="cicilan-group" class="hidden animate-fade-up p-4 bg-orange-50 rounded-2xl border border-orange-100">
-                    <label class="text-[10px] font-bold text-orange-800 uppercase tracking-wide mb-1 block">Nominal DP (Rp)</label>
-                    <input type="number" id="pay-nominal-input" class="w-full p-3 bg-white border border-orange-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-400 text-orange-900 font-bold placeholder-orange-300 text-sm" placeholder="Min. 50.000">
-                </div>
-
-                <div>
-                    <label class="label-input mb-3">Bukti Pembayaran</label>
-                    <div class="relative w-full h-28 border-2 border-dashed border-slate-300 rounded-2xl hover:bg-white hover:border-brand-400 transition-all cursor-pointer group flex flex-col items-center justify-center bg-slate-50 overflow-hidden">
-                        <input type="file" id="pay-proof" accept="image/*" required onchange="previewFile()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div id="drop-content-text" class="text-center group-hover:scale-105 transition-transform duration-300">
-                            <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-300 group-hover:text-brand-500 mb-2 transition-colors"></i>
-                            <p class="text-xs font-bold text-slate-500">Tap untuk upload bukti</p>
+                            <div onclick="selectPaymentMethod('Gopay', this)" class="pay-option cursor-pointer bg-white border border-slate-200 p-4 rounded-2xl flex items-center gap-4 hover:border-brand-500 hover:shadow-md transition-all group">
+                                <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-green-50 group-hover:text-green-600 transition-colors">
+                                    <i class="fa-solid fa-wallet text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-slate-700 text-sm group-hover:text-brand-600">E-Wallet Manual</h4>
+                                    <p class="text-[10px] text-slate-400">Kirim ke nomor Admin</p>
+                                </div>
+                                <div class="check-circle w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center text-white text-[10px] group-hover:border-brand-500"><i class="fa-solid fa-check opacity-0"></i></div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <button type="submit" id="btn-confirm-pay" class="w-full bg-slate-900 hover:bg-brand-600 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-slate-900/20 active:scale-[0.98] transition-all">
-                    Konfirmasi Pesanan
-                </button>
-            </form>
+                    <div id="payment-info-container" class="hidden animate-fade-up"></div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="cursor-pointer group relative transition-transform active:scale-95">
+                            <input type="radio" name="pay-type" value="full" class="peer hidden" checked onchange="toggleCicilanInput()">
+                            <div class="p-4 text-center border border-slate-200 rounded-2xl bg-white 
+                                        hover:border-brand-400 hover:shadow-md transition-all duration-200 
+                                        peer-checked:border-brand-600 peer-checked:bg-brand-50 peer-checked:text-brand-700 peer-checked:ring-1 peer-checked:ring-brand-600 shadow-sm">
+                                <span class="text-xs font-bold"><i class="fa-solid fa-check-circle mr-1"></i> Bayar Lunas</span>
+                            </div>
+                        </label>
+
+                        <label class="cursor-pointer group relative transition-transform active:scale-95" id="label-cicilan">
+                            <input type="radio" name="pay-type" value="cicil" class="peer hidden" onchange="toggleCicilanInput()">
+                            <div id="div-cicilan" class="p-4 text-center border border-slate-200 rounded-2xl bg-white 
+                                        hover:border-orange-300 hover:bg-orange-50 hover:shadow-md transition-all duration-200 
+                                        peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:text-orange-700 peer-checked:ring-1 peer-checked:ring-orange-500 shadow-sm">
+                                <span class="text-xs font-bold"><i class="fa-solid fa-clock mr-1"></i> Cicilan / DP</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div id="cicilan-group" class="hidden animate-fade-up p-4 bg-orange-50 rounded-2xl border border-orange-100">
+                        <label class="text-[10px] font-bold text-orange-800 uppercase tracking-wide mb-1 block">Nominal DP (Rp)</label>
+                        <input type="number" id="pay-nominal-input" class="w-full p-3 bg-white border border-orange-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-400 text-orange-900 font-bold placeholder-orange-300 text-sm" placeholder="Min. 50.000">
+                    </div>
+
+                    <div>
+                        <label class="label-input mb-3">Bukti Pembayaran</label>
+                        <div class="relative w-full h-28 border-2 border-dashed border-slate-300 rounded-2xl hover:bg-white hover:border-brand-400 transition-all cursor-pointer group flex flex-col items-center justify-center bg-slate-50 overflow-hidden">
+                            <input type="file" id="pay-proof" accept="image/*" required onchange="previewFile()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            <div id="drop-content-text" class="text-center group-hover:scale-105 transition-transform duration-300">
+                                <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-300 group-hover:text-brand-500 mb-2 transition-colors"></i>
+                                <p class="text-xs font-bold text-slate-500">Tap untuk upload bukti</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-confirm-pay" class="w-full bg-slate-900 hover:bg-brand-600 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-slate-900/20 active:scale-[0.98] transition-all">
+                        Konfirmasi Pesanan
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-   <div id="receipt-modal" class="fixed inset-0 z-[250] flex items-center justify-center p-4 hidden">
-    <div class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm transition-opacity" onclick="closeReceiptModal()"></div>
-    
-    <div class="relative w-full max-w-[320px] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-scale transform transition-all">
-        
-        <div class="bg-slate-900 pt-5 pb-6 px-6 text-center shrink-0 relative z-10">
-            <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-2 backdrop-blur-md text-green-400 border border-white/10 shadow-glow">
-                <i class="fa-solid fa-check text-sm"></i>
-            </div>
-            <h3 class="font-serif font-bold text-white text-base tracking-wide">Pembayaran Sukses</h3>
-            <p class="text-slate-400 text-[10px] mt-0.5">Terima kasih telah berbelanja</p>
-
-            <div class="absolute -bottom-3 -left-3 w-6 h-6 bg-[#F8FAFC] rounded-full z-20"></div> 
-            <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-[#F8FAFC] rounded-full z-20"></div> 
-        </div>
-
-        <div class="relative bg-white flex-1 overflow-y-auto custom-scrollbar px-6 pt-6 pb-2">
-            
-            <div class="text-center border-b border-dashed border-slate-200 pb-4 mb-4">
-                <span id="receipt-status" class="inline-block mb-1 px-3 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border">Lunas</span>
-                <h2 id="receipt-total" class="font-sans font-bold text-2xl text-slate-900 tracking-tight">Rp 0</h2>
+    <div id="receipt-modal" class="fixed inset-0 z-[250] flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm transition-opacity" onclick="closeReceiptModal()"></div>
+        <div class="relative w-full max-w-[320px] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-scale transform transition-all">
+            <div class="bg-slate-900 pt-5 pb-6 px-6 text-center shrink-0 relative z-10">
+                <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-2 backdrop-blur-md text-green-400 border border-white/10 shadow-glow">
+                    <i class="fa-solid fa-check text-sm"></i>
+                </div>
+                <h3 class="font-serif font-bold text-white text-base tracking-wide">Pembayaran Sukses</h3>
+                <p class="text-slate-400 text-[10px] mt-0.5">Terima kasih telah berbelanja</p>
+                <div class="absolute -bottom-3 -left-3 w-6 h-6 bg-[#F8FAFC] rounded-full z-20"></div> 
+                <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-[#F8FAFC] rounded-full z-20"></div> 
             </div>
 
-            <div class="space-y-2 mb-4 text-[10px]">
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-400 font-medium">Tanggal</span>
-                    <span id="receipt-date" class="font-bold text-slate-700">-</span>
+            <div class="relative bg-white flex-1 overflow-y-auto custom-scrollbar px-6 pt-6 pb-2">
+                <div class="text-center border-b border-dashed border-slate-200 pb-4 mb-4">
+                    <span id="receipt-status" class="inline-block mb-1 px-3 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border">Lunas</span>
+                    <h2 id="receipt-total" class="font-sans font-bold text-2xl text-slate-900 tracking-tight">Rp 0</h2>
                 </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-400 font-medium">Metode</span>
-                    <span id="receipt-method" class="font-bold text-slate-700">-</span>
-                </div>
-                <div class="flex justify-between items-start">
-                    <span class="text-slate-400 font-medium mt-0.5">Pembeli</span>
-                    <span id="receipt-name" class="font-bold text-slate-700 text-right max-w-[140px] leading-tight">-</span>
-                </div>
-            </div>
 
-            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 mb-4">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">Rincian Barang</p>
-                <div id="receipt-details" class="space-y-2">
+                <div class="space-y-2 mb-4 text-[10px]">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-medium">Tanggal</span><span id="receipt-date" class="font-bold text-slate-700">-</span>
                     </div>
-            </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-medium">Metode</span><span id="receipt-method" class="font-bold text-slate-700">-</span>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <span class="text-slate-400 font-medium mt-0.5">Pembeli</span><span id="receipt-name" class="font-bold text-slate-700 text-right max-w-[140px] leading-tight">-</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 mb-4">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">Rincian Barang</p>
+                    <div id="receipt-details" class="space-y-2"></div>
+                </div>
 
                 <div class="flex flex-col items-center justify-center pb-4">
-            <div class="p-1.5 bg-white border border-slate-200 rounded-lg shadow-sm mb-1">
-                <div id="barcode-display" class="w-[70px] h-[70px] opacity-90 mix-blend-multiply flex items-center justify-center [&_img]:w-full [&_img]:h-full [&_canvas]:w-full [&_canvas]:h-full"></div>
+                    <div class="p-1.5 bg-white border border-slate-200 rounded-lg shadow-sm mb-1">
+                        <div id="barcode-display" class="w-[70px] h-[70px] opacity-90 mix-blend-multiply flex items-center justify-center [&_img]:w-full [&_img]:h-full [&_canvas]:w-full [&_canvas]:h-full"></div>
+                    </div>
+                    <p class="text-[9px] text-slate-400 font-mono tracking-widest" id="receipt-id">ID-0000</p>
+                </div>
             </div>
-            <p class="text-[9px] text-slate-400 font-mono tracking-widest" id="receipt-id">ID-0000</p>
-        </div>
-        </div>
 
-        <div class="p-4 bg-slate-50 border-t border-slate-100 shrink-0 z-10 flex gap-3">
-            <button onclick="closeReceiptModal()" class="flex-1 py-2.5 text-slate-500 font-bold text-[10px] rounded-xl hover:bg-slate-200 transition-colors uppercase tracking-wide">
-                Tutup
-            </button>
-            <button onclick="window.print()" class="flex-[1.5] bg-slate-900 text-white font-bold text-[10px] py-2.5 rounded-xl hover:bg-brand-600 transition-all shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 uppercase tracking-wide">
-                <i class="fa-solid fa-download"></i> Simpan Bukti
-            </button>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 shrink-0 z-10 flex gap-3">
+                <button onclick="closeReceiptModal()" class="flex-1 py-2.5 text-slate-500 font-bold text-[10px] rounded-xl hover:bg-slate-200 transition-colors uppercase tracking-wide">Tutup</button>
+                <button onclick="window.print()" class="flex-[1.5] bg-slate-900 text-white font-bold text-[10px] py-2.5 rounded-xl hover:bg-brand-600 transition-all shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 uppercase tracking-wide">
+                    <i class="fa-solid fa-download"></i> Simpan Bukti
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
     <div id="scanner-modal" class="fixed inset-0 z-[300] flex items-center justify-center p-4 hidden">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity" onclick="closeScannerModal()"></div>
@@ -474,49 +533,74 @@
     </div>
 
     <div id="installment-modal" class="fixed inset-0 z-[200] flex items-center justify-center p-4 hidden">
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeInstallmentModal()"></div>
-    <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl relative z-10 flex flex-col animate-scale overflow-hidden">
-        
-        <div class="p-6 border-b border-slate-50 bg-slate-50 flex justify-between items-center">
-            <div>
-                <h3 class="font-serif text-lg font-bold text-slate-900">Bayar Cicilan</h3>
-                <p class="text-[10px] text-slate-400 font-mono mt-0.5" id="inst-order-id">#ID-000</p>
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeInstallmentModal()"></div>
+        <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl relative z-10 flex flex-col animate-scale overflow-hidden">
+            <div class="p-6 border-b border-slate-50 bg-slate-50 flex justify-between items-center">
+                <div>
+                    <h3 class="font-serif text-lg font-bold text-slate-900">Bayar Cicilan</h3>
+                    <p class="text-[10px] text-slate-400 font-mono mt-0.5" id="inst-order-id">#ID-000</p>
+                </div>
+                <button class="w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-slate-600 hover:border-slate-300 transition-all" onclick="closeInstallmentModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <button class="w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-slate-600 hover:border-slate-300 transition-all" onclick="closeInstallmentModal()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-
-        <div class="p-6 space-y-5">
-            <form id="installment-form" onsubmit="submitInstallment(event)">
-                <input type="hidden" id="inst-id-hidden">
-                
-                <div class="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-center mb-4">
-                    <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Sisa Tagihan</p>
-                    <h2 id="inst-sisa-tagihan" class="font-serif text-2xl font-bold text-blue-900">Rp 0</h2>
-                </div>
-
-                <div class="space-y-2 mb-4">
-                    <label class="label-input">Nominal Pembayaran</label>
-                    <input type="number" id="inst-nominal" class="input-field font-bold text-slate-700" placeholder="Minimal 10.000" required>
-                </div>
-
-                <div class="space-y-2 mb-6">
-                    <label class="label-input">Bukti Transfer Terbaru</label>
-                    <div class="relative w-full h-24 border-2 border-dashed border-slate-200 rounded-2xl hover:bg-slate-50 hover:border-brand-400 transition-all cursor-pointer group flex flex-col items-center justify-center bg-white overflow-hidden">
-                        <input type="file" id="inst-proof" accept="image/*" required onchange="previewInstFile()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div id="inst-drop-text" class="text-center group-hover:scale-105 transition-transform duration-300">
-                            <i class="fa-solid fa-camera text-xl text-slate-300 group-hover:text-brand-500 mb-1 transition-colors"></i>
-                            <p class="text-[10px] font-bold text-slate-400">Upload Bukti</p>
+            <div class="p-6 space-y-5">
+                <form id="installment-form" onsubmit="submitInstallment(event)">
+                    <input type="hidden" id="inst-id-hidden">
+                    <div class="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-center mb-4">
+                        <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Sisa Tagihan</p>
+                        <h2 id="inst-sisa-tagihan" class="font-serif text-2xl font-bold text-blue-900">Rp 0</h2>
+                    </div>
+                    <div class="space-y-2 mb-4">
+                        <label class="label-input">Nominal Pembayaran</label>
+                        <input type="number" id="inst-nominal" class="input-field font-bold text-slate-700" placeholder="Minimal 10.000" required>
+                    </div>
+                    <div class="space-y-2 mb-6">
+                        <label class="label-input">Bukti Transfer Terbaru</label>
+                        <div class="relative w-full h-24 border-2 border-dashed border-slate-200 rounded-2xl hover:bg-slate-50 hover:border-brand-400 transition-all cursor-pointer group flex flex-col items-center justify-center bg-white overflow-hidden">
+                            <input type="file" id="inst-proof" accept="image/*" required onchange="previewInstFile()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            <div id="inst-drop-text" class="text-center group-hover:scale-105 transition-transform duration-300">
+                                <i class="fa-solid fa-camera text-xl text-slate-300 group-hover:text-brand-500 mb-1 transition-colors"></i>
+                                <p class="text-[10px] font-bold text-slate-400">Upload Bukti</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <button type="submit" id="btn-submit-inst" class="w-full bg-slate-900 hover:bg-brand-600 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-slate-900/10 transition-all active:scale-[0.98]">
+                        Kirim Pembayaran
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                <button type="submit" id="btn-submit-inst" class="w-full bg-slate-900 hover:bg-brand-600 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-slate-900/10 transition-all active:scale-[0.98]">
-                    Kirim Pembayaran
-                </button>
+    <div id="voucher-modal" class="fixed inset-0 z-[200] flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="closeVoucherModal()"></div>
+        <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl relative z-10 flex flex-col animate-scale overflow-hidden">
+            <div class="p-6 border-b border-slate-50 flex justify-between items-center">
+                <h3 class="font-serif text-xl font-bold text-slate-900">Buat Voucher</h3>
+                <button class="w-8 h-8 rounded-full bg-slate-50 text-slate-400 hover:text-red-500" onclick="closeVoucherModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="saveVoucher(event)" class="p-6 space-y-4 bg-[#F8FAFC]">
+                <div>
+                    <label class="label-input">Kode (Tanpa Spasi)</label>
+                    <input type="text" id="vch-kode" class="input-field uppercase" required placeholder="Contoh: KETUA100">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="label-input">Tipe Diskon</label>
+                        <select id="vch-tipe" class="input-field"><option value="Nominal">Nominal (Rp)</option><option value="Persen">Persentase (%)</option></select>
+                    </div>
+                    <div>
+                        <label class="label-input">Nilai Potongan</label>
+                        <input type="number" id="vch-nilai" class="input-field font-bold" required placeholder="0">
+                    </div>
+                </div>
+                <div>
+                    <label class="label-input">Berlaku Sampai</label>
+                    <input type="date" id="vch-berlaku" class="input-field" required>
+                </div>
+                <button type="submit" id="btn-save-vch" class="w-full bg-slate-900 hover:bg-brand-600 text-white py-3.5 rounded-xl font-bold shadow-xl shadow-slate-900/10 active:scale-95 transition-all mt-4">Simpan Voucher</button>
             </form>
         </div>
     </div>
-</div>
 
     <script src="../config.js"></script>
     <script src="script.js"></script>

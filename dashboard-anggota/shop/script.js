@@ -7,8 +7,14 @@ let pendingOrderIdForScan = null;
 
 // --- GLOBAL VARS UNTUK MULTI-UPLOAD ---
 let activeSlotIndex = null;
+let activeVariantComboId = null; 
 let tempImages = [null, null, null];
 let deletedIndexes = [];
+
+// --- GLOBAL VARS UNTUK VOUCHER & VARIAN ---
+let appliedVoucher = null;
+let currentSubtotal = 0;
+let variantCombinationsMemory = [];
 
 // --- SIDEBAR & NAV ---
 function toggleSidebar() {
@@ -26,8 +32,7 @@ function toggleSidebar() {
 function logoutLocal() { localStorage.removeItem('user_session'); window.location.replace("../login/index.html"); }
 
 // --- INIT ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Validasi Role
+document.addEventListener('DOMContentLoaded', async () => {
     const allowedRoles = ['ketua', 'pengurus', 'bendahara', 'wakil', 'sdm'];
     const userRole = (currentUser.jabatan || "").toLowerCase();
     const isAdmin = currentUser.nia === 'SS-0098' || allowedRoles.some(r => userRole.includes(r));
@@ -35,8 +40,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if(isAdmin) document.getElementById('admin-sidebar-links').classList.remove('hidden');
 
     renderSkeleton();
-    fetchProducts();
+    await fetchProducts(); 
     updateCartUI(); 
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('product');
+    if (productId) { openProductDetail(productId); }
 });
 
 // --- CORE UTILS ---
@@ -59,21 +68,18 @@ function showToast(message, type = 'info') {
 }
 
 function switchTab(tabName) {
-    // Hide all sections
     document.querySelectorAll('.view-section').forEach(el => { el.classList.add('hidden'); el.classList.remove('animate-fade-up'); });
-    
-    // Reset active nav state
     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active-tab'));
     
     const target = document.getElementById('view-' + tabName);
     if(target) { target.classList.remove('hidden'); void target.offsetWidth; target.classList.add('animate-fade-up'); }
     
-    // Update Header Text
     const titleEl = document.getElementById('page-title'); const subEl = document.getElementById('page-subtitle');
     if(tabName === 'catalog') { titleEl.innerText = 'Katalog Terbaru'; subEl.innerText = 'Koleksi eksklusif merchandise Sadulur Sepoor.'; }
     else if(tabName === 'my-orders') { titleEl.innerText = 'Riwayat Pesanan'; subEl.innerText = 'Pantau status pembayaran dan pengiriman Anda.'; fetchMyOrders(); }
     else if(tabName === 'admin-product') { titleEl.innerText = 'Kelola Produk'; subEl.innerText = 'Manajemen inventaris toko.'; }
     else if(tabName === 'admin-orders') { titleEl.innerText = 'Pesanan Masuk'; subEl.innerText = 'Verifikasi pembayaran dan update resi.'; fetchAdminOrders(); }
+    else if(tabName === 'admin-voucher') { titleEl.innerText = 'Kelola Voucher'; subEl.innerText = 'Manajemen kode promo toko.'; fetchAdminVouchers(); }
 }
 
 function renderSkeleton() {
@@ -112,52 +118,120 @@ function renderProducts(list) {
         const harga = parseInt(p.harga);
         const diskon = parseInt(p.diskon || 0);
         
-        // Multi Image Logic
-        let images = [];
-        if (Array.isArray(p.gambar)) { images = p.gambar.filter(x => x); } 
-        else if (typeof p.gambar === 'string' && p.gambar) { images = [p.gambar]; }
-        if(images.length === 0) images = ['https://placehold.co/400x400/f1f5f9/94a3b8?text=No+Image'];
+        let varianObj = {attributes:[], combinations:[]}; 
+        try { varianObj = typeof p.varian === 'string' ? JSON.parse(p.varian) : p.varian; } catch(e){}
+        if(varianObj.sizes && !varianObj.attributes) { varianObj.attributes = [{name: "Ukuran", values: varianObj.sizes}]; varianObj.combinations = varianObj.sizes.map(s => ({id: s, price: harga, discount: 0})); }
+        
+        // AUTO-DETECT SMART IMAGE LOGIC
+        let allImages = [];
+        let variantImageMap = {}; 
+        let hasVariantImage = false;
+        
+        if (varianObj && varianObj.combinations) {
+            varianObj.combinations.forEach(combo => {
+                if (combo.image) {
+                    hasVariantImage = true;
+                    if(!allImages.includes(combo.image)) allImages.push(combo.image);
+                    variantImageMap[combo.id] = allImages.indexOf(combo.image); 
+                }
+            });
+        }
+        
+        // Jika tidak ada foto varian satupun, pakai foto produk utama
+        if (!hasVariantImage) {
+            allImages = Array.isArray(p.gambar) ? p.gambar.filter(x => x) : (typeof p.gambar === 'string' && p.gambar ? [p.gambar] : []);
+        }
+        if (allImages.length === 0) allImages = ['https://placehold.co/400x400/f1f5f9/94a3b8?text=No+Image'];
 
-        // Slider Logic
+        window[`varianData_${p.id}`] = varianObj;
+        window[`varianImageMap_${p.id}`] = variantImageMap;
+
         let sliderHtml = '';
-        if (images.length > 1) {
-            const slides = images.map(src => `<div class="snap-center shrink-0 w-full h-full"><img src="${src}" loading="lazy" class="w-full h-full object-cover"></div>`).join('');
-            const dots = images.map((_, i) => `<div class="img-dot ${i===0?'active':''}" id="dot-${p.id}-${i}"></div>`).join('');
-            sliderHtml = `<div class="flex overflow-x-auto snap-x scrollbar-hide w-full h-full relative z-10" onscroll="updateDots(this, '${p.id}', ${images.length})">${slides}</div><div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20 pointer-events-none">${dots}</div>`;
+        if (allImages.length > 1) {
+            const slides = allImages.map(src => `<div class="snap-center shrink-0 w-full h-full"><img src="${src}" loading="lazy" class="w-full h-full object-cover"></div>`).join('');
+            const dots = allImages.map((_, i) => `<div class="img-dot ${i===0?'active':''}" id="dot-${p.id}-${i}"></div>`).join('');
+            sliderHtml = `<div id="catalog-slider-${p.id}" class="flex overflow-x-auto snap-x scrollbar-hide w-full h-full relative z-10 scroll-smooth" onscroll="updateDots(this, '${p.id}', ${allImages.length})">${slides}</div><div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20 pointer-events-none">${dots}</div>`;
         } else {
-            sliderHtml = `<img src="${images[0]}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">`;
+            sliderHtml = `<div id="catalog-slider-${p.id}" class="w-full h-full"><img src="${allImages[0]}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"></div>`;
         }
 
-        let priceHtml = `<span class="font-bold text-slate-900 text-lg">Rp ${harga.toLocaleString('id-ID')}</span>`;
-        if(diskon > 0) priceHtml = `<div class="flex flex-col leading-tight"><span class="text-[10px] text-slate-400 line-through">Rp ${(harga + diskon).toLocaleString('id-ID')}</span><span class="font-bold text-red-500 text-lg">Rp ${harga.toLocaleString('id-ID')}</span></div>`;
+        let priceHtml = `<div id="catalog-price-box-${p.id}"><span class="font-bold text-slate-900 text-lg">Rp ${harga.toLocaleString('id-ID')}</span></div>`;
+        if(diskon > 0) priceHtml = `<div id="catalog-price-box-${p.id}" class="flex flex-col leading-tight"><span class="text-[10px] text-slate-400 line-through">Rp ${(harga + diskon).toLocaleString('id-ID')}</span><span class="font-bold text-red-500 text-lg">Rp ${harga.toLocaleString('id-ID')}</span></div>`;
         
         let badge = isPO ? `<span class="absolute top-3 left-3 z-30 bg-white/90 backdrop-blur text-brand-600 text-[9px] font-bold px-2.5 py-1 rounded-full shadow-sm uppercase tracking-wide">Pre-Order</span>` : `<span class="absolute top-3 left-3 z-30 bg-white/90 backdrop-blur text-slate-600 text-[9px] font-bold px-2.5 py-1 rounded-full shadow-sm uppercase tracking-wide">Ready</span>`;
         if(isHabis) badge = `<span class="absolute top-3 left-3 z-30 bg-slate-900 text-white text-[9px] font-bold px-2.5 py-1 rounded-full shadow-sm uppercase tracking-wide">Sold Out</span>`;
         
-        let varianObj = {sizes:[]}; try { varianObj = typeof p.varian === 'string' ? JSON.parse(p.varian) : p.varian; } catch(e){}
-        let selectHtml = (varianObj && varianObj.sizes && varianObj.sizes.length > 0) ? `<select class="size-select-${p.id} w-full mt-3 p-2 text-xs bg-slate-50 border-none rounded-lg font-medium text-slate-600 outline-none cursor-pointer hover:bg-slate-100 transition-colors">${varianObj.sizes.map(s => `<option value="${s}">${s}</option>`).join('')}</select>` : `<input type="hidden" class="size-select-${p.id}" value="All Size"><div class="mt-3"></div>`;
+        let selectHtml = '';
+        if (varianObj.attributes && varianObj.attributes.length > 0) {
+            selectHtml = `<div class="mt-3 space-y-2">`;
+            varianObj.attributes.forEach((attr) => {
+                selectHtml += `<select class="var-select-catalog-${p.id} w-full p-2 text-xs bg-slate-50 border-none rounded-lg font-medium text-slate-600 outline-none cursor-pointer hover:bg-slate-100 transition-colors" data-name="${attr.name}" onchange="updateCatalogVariant('${p.id}')" onclick="event.stopPropagation()">
+                    ${attr.values.map(v => `<option value="${v}">${attr.name}: ${v}</option>`).join('')}
+                </select>`;
+            });
+            selectHtml += `</div>`;
+        } else {
+            selectHtml = `<input type="hidden" class="var-select-catalog-${p.id}" value="All Size"><div class="mt-3"></div>`;
+        }
 
         grid.innerHTML += `
             <div class="group bg-white rounded-[24px] p-3 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative flex flex-col border border-slate-50 stagger-${(index%3)+1} animate-fade-up">
-                <div class="relative aspect-[4/5] rounded-[20px] overflow-hidden bg-slate-100 mb-3 isolate">
-                    ${badge}
-                    ${sliderHtml}
+                <div class="cursor-pointer" onclick="openProductDetail('${p.id}')">
+                    <div class="relative aspect-[4/5] rounded-[20px] overflow-hidden bg-slate-100 mb-3 isolate">
+                        ${badge}
+                        ${sliderHtml}
+                    </div>
+                    <div class="px-1 flex-1 flex flex-col">
+                        <h3 class="font-serif font-bold text-slate-900 text-lg leading-snug line-clamp-2 mb-1 group-hover:text-brand-600 transition-colors">${p.nama}</h3>
+                        <div class="mb-1">${priceHtml}</div>
+                    </div>
                 </div>
-                
-                <div class="px-1 pb-1 flex-1 flex flex-col">
-                    <h3 class="font-serif font-bold text-slate-900 text-lg leading-snug line-clamp-2 mb-1 group-hover:text-brand-600 transition-colors">${p.nama}</h3>
-                    <div class="mb-1">${priceHtml}</div>
-                    
-                    <div class="mt-auto">
-                        ${selectHtml}
-                        <div class="flex gap-2 mt-2">
-                            <button onclick="addToCart('${p.id}')" ${isHabis?'disabled':''} class="w-10 h-10 bg-slate-50 text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-xl text-sm font-bold transition-all flex items-center justify-center active:scale-95 ${isHabis ? 'opacity-50 cursor-not-allowed':''}"><i class="fa-solid fa-cart-plus"></i></button>
-                            <button onclick="buyNow('${p.id}')" ${isHabis?'disabled':''} class="flex-1 h-10 bg-slate-900 text-white hover:bg-brand-600 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 active:scale-95 ${isHabis ? 'bg-slate-300 shadow-none cursor-not-allowed':''}">${isHabis ? 'Habis' : 'Beli'}</button>
-                        </div>
+                <div class="px-1 pb-1 mt-auto">
+                    ${selectHtml}
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="addToCart('${p.id}', false); event.stopPropagation();" ${isHabis?'disabled':''} class="w-10 h-10 bg-slate-50 text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-xl text-sm font-bold transition-all flex items-center justify-center active:scale-95 ${isHabis ? 'opacity-50 cursor-not-allowed':''}"><i class="fa-solid fa-cart-plus"></i></button>
+                        <button onclick="buyNow('${p.id}', false); event.stopPropagation();" ${isHabis?'disabled':''} class="flex-1 h-10 bg-slate-900 text-white hover:bg-brand-600 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 active:scale-95 ${isHabis ? 'bg-slate-300 shadow-none cursor-not-allowed':''}">${isHabis ? 'Habis' : 'Beli'}</button>
                     </div>
                 </div>
             </div>`;
+            
+        // Trigger harga & swipe awal untuk katalog
+        setTimeout(()=>updateCatalogVariant(p.id), 50);
     });
+}
+
+function updateCatalogVariant(id) {
+    const varianData = window[`varianData_${id}`];
+    if(!varianData || !varianData.combinations) return;
+
+    const selects = document.querySelectorAll(`.var-select-catalog-${id}`);
+    if(selects.length === 0) return;
+
+    const selectedValues = Array.from(selects).map(s => s.value);
+    const comboId = selectedValues.join(' - ');
+    const combo = varianData.combinations.find(c => c.id === comboId);
+
+    if(combo) {
+        const prod = products.find(p => p.id == id);
+        const harga = combo.price;
+        const diskon = combo.discount > 0 ? combo.discount : parseInt(prod.diskon || 0);
+        
+        const box = document.getElementById(`catalog-price-box-${id}`);
+        if(box) {
+            if(diskon > 0) box.innerHTML = `<span class="text-[10px] text-slate-400 line-through">Rp ${(harga).toLocaleString('id-ID')}</span><span class="font-bold text-red-500 text-lg block leading-tight">Rp ${(harga - diskon).toLocaleString('id-ID')}</span>`;
+            else box.innerHTML = `<span class="font-bold text-slate-900 text-lg block leading-tight">Rp ${harga.toLocaleString('id-ID')}</span>`;
+        }
+
+        const imageMap = window[`varianImageMap_${id}`];
+        if (imageMap && imageMap[comboId] !== undefined) {
+            const imgIndex = imageMap[comboId];
+            const slider = document.getElementById(`catalog-slider-${id}`);
+            if (slider && slider.children.length > 1) {
+                const slideWidth = slider.offsetWidth;
+                slider.scrollTo({ left: slideWidth * imgIndex, behavior: 'smooth' });
+            }
+        }
+    }
 }
 
 function updateDots(el, id, count) {
@@ -168,42 +242,222 @@ function updateDots(el, id, count) {
     }
 }
 
-function addToCart(id) {
-    const prod = products.find(p => p.id == id); 
-    if (!prod) return;
-    const size = document.querySelector(`.size-select-${id}`)?.value || "All Size";
-    const existing = cart.find(c => c.id == id && c.size == size);
-    let firstImg = Array.isArray(prod.gambar) ? (prod.gambar[0] || 'https://placehold.co/100') : prod.gambar;
-    
-    if (existing) { 
-        if(prod.tipe_stok === 'Ready' && existing.qty >= prod.stok) return showToast("Stok maksimal tercapai!", "error"); 
-        existing.qty++; 
-        existing.checked = true; // Tambahkan ini
-    } else { 
-        cart.push({ ...prod, qty: 1, size: size, gambar: firstImg, checked: true }); // Tambahkan checked: true
-    }
-    saveCart(); 
-    showToast("Produk ditambahkan ke keranjang", "success");
+// --- PRODUCT DETAIL LOGIC ---
+function copyProductLink(id) {
+    const link = window.location.origin + window.location.pathname + "?product=" + id;
+    navigator.clipboard.writeText(link).then(() => { showToast("Link produk disalin!", "success"); });
 }
 
-function buyNow(id) {
-    const prod = products.find(p => p.id == id); 
-    if (!prod) return;
-    
-    // Ambil data ukuran & gambar
-    const size = document.querySelector(`.size-select-${id}`)?.value || "All Size";
-    let firstImg = Array.isArray(prod.gambar) ? (prod.gambar[0] || 'https://placehold.co/100') : prod.gambar;
+function openProductDetail(id) {
+    const prod = products.find(p => p.id == id);
+    if (!prod) return showToast("Produk tidak ditemukan", "error");
 
-    // Buat Objek Sementara (Tidak disimpan ke localStorage)
-    const tempItem = {
-        ...prod,
-        qty: 1,
-        size: size,
-        gambar: firstImg,
-        checked: true
-    };
+    document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+    let detailSection = document.getElementById('view-product-detail');
+    if(!detailSection) return;
+    detailSection.classList.remove('hidden');
+
+    const newUrl = window.location.origin + window.location.pathname + "?product=" + id;
+    window.history.pushState({ path: newUrl }, '', newUrl);
+
+    document.getElementById('page-title').innerText = "Detail Produk";
+    document.getElementById('page-subtitle').innerText = prod.nama;
+
+    const isPO = prod.tipe_stok === 'PO';
+    const isHabis = !isPO && prod.stok <= 0;
+    const harga = parseInt(prod.harga);
+    const diskon = parseInt(prod.diskon || 0);
     
-    // Panggil form checkout dengan mode Direct Buy
+    // Dynamic Variant Setup
+    let varianObj = {attributes:[], combinations:[]}; 
+    try { varianObj = typeof prod.varian === 'string' ? JSON.parse(prod.varian) : prod.varian; } catch(e){}
+    if(varianObj.sizes && !varianObj.attributes) { varianObj.attributes = [{name: "Ukuran", values: varianObj.sizes}]; varianObj.combinations = varianObj.sizes.map(s => ({id: s, price: harga, discount: 0})); }
+    window[`varianData_${prod.id}`] = varianObj;
+
+    // SMART IMAGE LOGIC UNTUK DETAIL
+    let allImages = [];
+    let variantImageMap = {}; 
+    let hasVariantImage = false;
+    
+    if (varianObj && varianObj.combinations) {
+        varianObj.combinations.forEach(combo => {
+            if (combo.image) {
+                hasVariantImage = true;
+                if(!allImages.includes(combo.image)) allImages.push(combo.image);
+                variantImageMap[combo.id] = allImages.indexOf(combo.image); 
+            }
+        });
+    }
+    
+    if(!hasVariantImage) {
+        allImages = Array.isArray(prod.gambar) ? prod.gambar.filter(x => x) : (typeof prod.gambar === 'string' && prod.gambar ? [prod.gambar] : []);
+    }
+    if(allImages.length === 0) allImages = ['https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image'];
+    window[`varianImageMap_${prod.id}`] = variantImageMap;
+
+    let sliderHtml = '';
+    if (allImages.length > 1) {
+        const slides = allImages.map(src => `<div class="snap-center shrink-0 w-full h-full"><img src="${src}" class="w-full h-full object-cover"></div>`).join('');
+        sliderHtml = `<div id="detail-slider-${prod.id}" class="flex overflow-x-auto snap-x scrollbar-hide w-full h-full rounded-2xl isolate transition-all duration-300 scroll-smooth">${slides}</div>`;
+    } else {
+        sliderHtml = `<div id="detail-slider-${prod.id}" class="w-full h-full"><img src="${allImages[0]}" class="w-full h-full object-cover rounded-2xl"></div>`;
+    }
+
+    let selectHtml = '';
+    if (varianObj.attributes && varianObj.attributes.length > 0) {
+        selectHtml = `<div class="mt-6 space-y-4">`;
+        varianObj.attributes.forEach((attr) => {
+            selectHtml += `
+                <div>
+                    <label class="label-input">${attr.name}</label>
+                    <select class="var-select-${prod.id}-detail w-full p-3 text-sm bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 outline-none cursor-pointer hover:bg-white transition-colors focus:border-brand-500 shadow-sm" data-name="${attr.name}" onchange="updateDetailPrice('${prod.id}')">
+                        ${attr.values.map(v => `<option value="${v}">${v}</option>`).join('')}
+                    </select>
+                </div>
+            `;
+        });
+        selectHtml += `</div>`;
+    } else {
+         selectHtml = `<input type="hidden" class="var-select-${prod.id}-detail" value="All Size">`;
+    }
+
+    document.getElementById('product-detail-container').innerHTML = `
+        <div class="md:w-1/2 flex flex-col gap-4">
+            <div class="aspect-square bg-slate-100 rounded-3xl relative p-2 border border-slate-100 shadow-sm overflow-hidden">
+                ${sliderHtml}
+            </div>
+        </div>
+        <div class="md:w-1/2 flex flex-col">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest">${prod.tipe_stok}</span>
+                <span class="${prod.stok > 0 ? 'text-green-500 bg-green-50' : 'text-red-500 bg-red-50'} px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">${prod.stok > 0 ? 'Sisa ' + prod.stok : 'Habis'}</span>
+            </div>
+            
+            <h2 class="font-serif font-bold text-3xl md:text-4xl text-slate-900 leading-tight mb-2">${prod.nama}</h2>
+            <div class="mb-6" id="detail-price-box-${prod.id}"></div>
+
+            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 mb-6">
+                <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Deskripsi Produk</h4>
+                <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line">${prod.deskripsi ? prod.deskripsi : "Belum ada deskripsi untuk produk ini."}</p>
+            </div>
+
+            ${selectHtml}
+
+            <div class="flex gap-3 mt-8">
+                <button onclick="copyProductLink('${prod.id}')" class="w-14 h-14 bg-white border-2 border-slate-100 text-slate-400 hover:text-brand-600 hover:border-brand-200 rounded-2xl transition-all flex items-center justify-center active:scale-95"><i class="fa-solid fa-share-nodes"></i></button>
+                <button onclick="addToCart('${prod.id}', true)" ${isHabis?'disabled':''} class="w-14 h-14 bg-brand-50 text-brand-600 hover:bg-brand-100 rounded-2xl transition-all flex items-center justify-center active:scale-95 ${isHabis ? 'opacity-50 cursor-not-allowed':''}"><i class="fa-solid fa-cart-plus"></i></button>
+                <button onclick="buyNow('${prod.id}', true)" ${isHabis?'disabled':''} class="flex-1 bg-slate-900 text-white hover:bg-brand-600 rounded-2xl font-bold uppercase tracking-widest shadow-xl shadow-slate-900/10 active:scale-95 transition-all ${isHabis ? 'bg-slate-300 shadow-none cursor-not-allowed':''}">${isHabis ? 'Stok Habis' : 'Beli Langsung'}</button>
+            </div>
+        </div>
+    `;
+
+    updateDetailPrice(prod.id);
+}
+
+function updateDetailPrice(id) {
+    const varianData = window[`varianData_${id}`];
+    if(!varianData || !varianData.combinations) return;
+
+    const selects = document.querySelectorAll(`.var-select-${id}-detail`);
+    let comboId = "All Size";
+    if(selects.length > 0) comboId = Array.from(selects).map(s => s.value).join(' - ');
+    
+    const combo = varianData.combinations.find(c => c.id === comboId);
+
+    if(combo) {
+        const prod = products.find(p => p.id == id);
+        const harga = combo.price;
+        const diskon = combo.discount > 0 ? combo.discount : parseInt(prod.diskon || 0);
+        
+        const box = document.getElementById(`detail-price-box-${id}`);
+        if(box) {
+            if(diskon > 0) box.innerHTML = `<span class="text-sm text-slate-400 line-through">Rp ${(harga).toLocaleString('id-ID')}</span><span class="font-bold text-red-500 text-3xl block mt-1">Rp ${(harga - diskon).toLocaleString('id-ID')}</span>`;
+            else box.innerHTML = `<span class="font-bold text-brand-600 text-3xl">Rp ${harga.toLocaleString('id-ID')}</span>`;
+        }
+
+        const imageMap = window[`varianImageMap_${id}`];
+        if (imageMap && imageMap[comboId] !== undefined) {
+            const imgIndex = imageMap[comboId];
+            const slider = document.getElementById(`detail-slider-${id}`);
+            if (slider && slider.children.length > 1) {
+                const slideWidth = slider.offsetWidth;
+                slider.scrollTo({ left: slideWidth * imgIndex, behavior: 'smooth' });
+            }
+        }
+    }
+}
+
+function closeProductDetail() {
+    const base = window.location.origin + window.location.pathname;
+    window.history.pushState({ path: base }, '', base);
+    switchTab('catalog');
+}
+
+// --- VARIANT & CART LOGIC ---
+function getSelectedVariant(id, isDetail) {
+    const selectorClass = isDetail ? `.var-select-${id}-detail` : `.var-select-catalog-${id}`;
+    const selects = document.querySelectorAll(selectorClass);
+    
+    if(selects.length === 0) return { string: "All Size", price: null, discount: null, image: null };
+    
+    const selectedValues = Array.from(selects).map(s => s.value);
+    const comboId = selectedValues.join(' - ');
+    
+    const varianData = window[`varianData_${id}`];
+    let price = null; let discount = null; let image = null;
+    if(varianData && varianData.combinations) {
+         const combo = varianData.combinations.find(c => c.id === comboId);
+         if(combo) { price = combo.price; discount = combo.discount; image = combo.image; }
+    }
+    
+    const displayArr = Array.from(selects).map(s => `${s.getAttribute('data-name')}: ${s.value}`);
+    return { string: displayArr.join(', '), id: comboId, price: price, discount: discount, image: image };
+}
+
+function addToCart(id, isDetail = true) {
+    const prod = products.find(p => p.id == id); if (!prod) return;
+    
+    const variantData = getSelectedVariant(id, isDetail);
+    const basePrice = variantData.price !== null ? variantData.price : parseInt(prod.harga);
+    const disc = variantData.discount > 0 ? variantData.discount : parseInt(prod.diskon || 0);
+    const finalPrice = basePrice - disc;
+    
+    // Auto-detect fallback image untuk cart
+    let fallbackImg = Array.isArray(prod.gambar) ? (prod.gambar[0] || 'https://placehold.co/100') : prod.gambar;
+    if (window[`varianImageMap_${id}`]) {
+        const firstVariantImgId = Object.keys(window[`varianImageMap_${id}`])[0];
+        const vData = window[`varianData_${id}`].combinations.find(c => c.id === firstVariantImgId);
+        if (vData && vData.image) fallbackImg = vData.image; 
+    }
+    let firstImg = variantData.image || fallbackImg;
+    
+    const existing = cart.find(c => c.id == id && c.size == variantData.string);
+    if (existing) { 
+        if(prod.tipe_stok === 'Ready' && existing.qty >= prod.stok) return showToast("Stok maksimal tercapai!", "error"); 
+        existing.qty++; existing.checked = true;
+    } else { 
+        cart.push({ ...prod, qty: 1, size: variantData.string, harga: finalPrice, gambar: firstImg, checked: true });
+    }
+    saveCart(); showToast("Produk ditambahkan", "success");
+}
+
+function buyNow(id, isDetail = true) {
+    const prod = products.find(p => p.id == id); if (!prod) return;
+    
+    const variantData = getSelectedVariant(id, isDetail);
+    const basePrice = variantData.price !== null ? variantData.price : parseInt(prod.harga);
+    const disc = variantData.discount > 0 ? variantData.discount : parseInt(prod.diskon || 0);
+    const finalPrice = basePrice - disc;
+    
+    let fallbackImg = Array.isArray(prod.gambar) ? (prod.gambar[0] || 'https://placehold.co/100') : prod.gambar;
+    if (window[`varianImageMap_${id}`]) {
+        const firstVariantImgId = Object.keys(window[`varianImageMap_${id}`])[0];
+        const vData = window[`varianData_${id}`].combinations.find(c => c.id === firstVariantImgId);
+        if (vData && vData.image) fallbackImg = vData.image; 
+    }
+    let firstImg = variantData.image || fallbackImg;
+
+    const tempItem = { ...prod, qty: 1, size: variantData.string, harga: finalPrice, gambar: firstImg, checked: true };
     openCheckoutForm(tempItem);
 }
 
@@ -221,7 +475,6 @@ function toggleCart() {
     else { modal.classList.add('hidden'); } 
 }
 
-// --- UPDATE CART LOGIC (CHECKLIST) ---
 function renderCartItems() {
     const container = document.getElementById('cart-items'); 
     container.innerHTML = ""; 
@@ -232,10 +485,8 @@ function renderCartItems() {
         return; 
     }
     
-    // LOGIKA BARU: Cek apakah semua item statusnya checked
     const allChecked = cart.length > 0 && cart.every(item => item.checked);
 
-    // Header Select All (Perhatikan penambahan ${allChecked ? 'checked' : ''})
     container.innerHTML += `
     <div class="flex items-center gap-3 mb-4 pb-2 border-b border-slate-100">
         <input type="checkbox" id="check-all" onchange="toggleSelectAll(this)" ${allChecked ? 'checked' : ''} class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-gray-300 cursor-pointer">
@@ -251,7 +502,7 @@ function renderCartItems() {
             <img src="${item.gambar}" class="w-16 h-16 rounded-xl object-cover bg-slate-100 border border-slate-50">
             <div class="flex-1 min-w-0">
                 <h4 class="font-bold text-slate-800 text-sm truncate">${item.nama}</h4>
-                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wide mt-0.5 mb-1">${item.size}</div>
+                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wide mt-0.5 mb-1 truncate">${item.size}</div>
                 <div class="flex items-center justify-between">
                     <span class="text-brand-600 font-bold text-sm">Rp ${item.harga.toLocaleString()}</span>
                     <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-2 py-1">
@@ -266,24 +517,11 @@ function renderCartItems() {
     recalculateCartTotal();
 }
 
-function updateItemCheck(index, el) {
-    cart[index].checked = el.checked;
-    saveCart(); // Simpan state checked ke localstorage
-    recalculateCartTotal();
-}
-
-function toggleSelectAll(el) {
-    const isChecked = el.checked;
-    cart.forEach(item => item.checked = isChecked);
-    saveCart();
-    renderCartItems(); // Re-render untuk update checkbox individu
-}
-
+function updateItemCheck(index, el) { cart[index].checked = el.checked; saveCart(); recalculateCartTotal(); }
+function toggleSelectAll(el) { const isChecked = el.checked; cart.forEach(item => item.checked = isChecked); saveCart(); renderCartItems(); }
 function recalculateCartTotal() {
     let total = 0;
-    cart.forEach(item => {
-        if(item.checked) total += item.harga * item.qty;
-    });
+    cart.forEach(item => { if(item.checked) total += item.harga * item.qty; });
     document.getElementById('cart-total').innerText = "Rp " + total.toLocaleString('id-ID');
 }
 function removeItem(idx) { cart.splice(idx, 1); saveCart(); renderCartItems(); }
@@ -292,6 +530,13 @@ function removeItem(idx) { cart.splice(idx, 1); saveCart(); renderCartItems(); }
 function triggerUpload(index) {
     if(tempImages[index] && tempImages[index] !== "EXISTING") return; 
     activeSlotIndex = index;
+    activeVariantComboId = null;
+    document.getElementById('hidden-file-input').value = "";
+    document.getElementById('hidden-file-input').click();
+}
+function triggerVariantUpload(comboId) {
+    activeVariantComboId = comboId;
+    activeSlotIndex = null;
     document.getElementById('hidden-file-input').value = "";
     document.getElementById('hidden-file-input').click();
 }
@@ -308,35 +553,52 @@ function handleFileSelect(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
-function cancelCrop() {
-    document.getElementById('cropper-wrapper').classList.add('hidden');
-    if(cropper) { cropper.destroy(); cropper = null; }
-    activeSlotIndex = null;
+function cancelCrop() { 
+    document.getElementById('cropper-wrapper').classList.add('hidden'); 
+    if(cropper) { cropper.destroy(); cropper = null; } 
+    activeSlotIndex = null; activeVariantComboId = null;
 }
 function applyCrop() {
-    if(!cropper || activeSlotIndex === null) return;
+    if(!cropper) return;
     const base64 = cropper.getCroppedCanvas({ width: 600, height: 600, fillColor: '#fff' }).toDataURL('image/jpeg', 0.85);
-    tempImages[activeSlotIndex] = base64;
     
-    const slot = document.getElementById(`slot-${activeSlotIndex}`);
-    slot.style.backgroundImage = `url(${base64})`;
-    slot.classList.add('filled');
-    slot.querySelector('.slot-placeholder').classList.add('hidden');
-    slot.querySelector('.btn-remove').classList.remove('hidden');
+    if (activeVariantComboId !== null) {
+        updateComboMemory(activeVariantComboId, 'image_base64', base64);
+        const previewDiv = document.getElementById(`var-img-preview-${activeVariantComboId}`);
+        if(previewDiv) {
+            previewDiv.querySelector('img').src = base64;
+            previewDiv.classList.remove('hidden');
+            document.getElementById(`var-img-label-${activeVariantComboId}`).innerText = 'Ganti Foto';
+        }
+    } else if (activeSlotIndex !== null) {
+        tempImages[activeSlotIndex] = base64;
+        const slot = document.getElementById(`slot-${activeSlotIndex}`);
+        slot.style.backgroundImage = `url(${base64})`; slot.classList.add('filled');
+        slot.querySelector('.slot-placeholder').classList.add('hidden');
+        slot.querySelector('.btn-remove').classList.remove('hidden');
+    }
     cancelCrop();
 }
 function removeImage(e, index) {
-    e.stopPropagation();
-    tempImages[index] = null;
+    e.stopPropagation(); tempImages[index] = null;
     if(document.getElementById('prod-is-edit').value === "true") { if(!deletedIndexes.includes(index)) deletedIndexes.push(index); }
     const slot = document.getElementById(`slot-${index}`);
-    slot.style.backgroundImage = '';
-    slot.classList.remove('filled');
+    slot.style.backgroundImage = ''; slot.classList.remove('filled');
     slot.querySelector('.slot-placeholder').classList.remove('hidden');
     slot.querySelector('.btn-remove').classList.add('hidden');
 }
+function removeVariantImage(comboId) {
+    updateComboMemory(comboId, 'image_base64', null);
+    updateComboMemory(comboId, 'image', null);
+    const previewDiv = document.getElementById(`var-img-preview-${comboId}`);
+    if(previewDiv) {
+        previewDiv.classList.add('hidden');
+        previewDiv.querySelector('img').src = '';
+        document.getElementById(`var-img-label-${comboId}`).innerText = '+ Foto';
+    }
+}
 
-// --- ADMIN PRODUCTS ---
+// --- ADMIN PRODUCTS & DYNAMIC VARIANTS ---
 function renderAdminProductList(list) {
     const tbody = document.getElementById('admin-product-list'); if(!tbody) return; tbody.innerHTML = "";
     list.forEach(p => { 
@@ -363,22 +625,136 @@ function renderAdminProductList(list) {
         </tr>`; 
     });
 }
+
+function addVariantAttribute(name = "", values = "") {
+    const container = document.getElementById('variant-attributes');
+    const idx = container.children.length;
+    const html = `
+        <div class="flex gap-2 items-start variant-row" data-idx="${idx}">
+            <div class="w-1/3">
+                <input type="text" class="input-field !py-2 text-xs var-name" placeholder="Cth: Warna" value="${name}">
+            </div>
+            <div class="flex-1">
+                <input type="text" class="input-field !py-2 text-xs var-values" placeholder="Cth: Hitam, Putih (Koma)" value="${values}">
+            </div>
+            <button type="button" onclick="this.parentElement.remove(); generateCombinations();" class="w-[38px] h-[38px] rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0 hover:bg-red-100 transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+}
+
+function generateCombinations() {
+    const rows = document.querySelectorAll('.variant-row');
+    let attrs = [];
+    rows.forEach(row => {
+        const name = row.querySelector('.var-name').value.trim();
+        const vals = row.querySelector('.var-values').value.split(',').map(v => v.trim()).filter(v => v);
+        if (name && vals.length > 0) attrs.push({ name, values: vals });
+    });
+
+    const listContainer = document.getElementById('combination-list');
+    const comboWrapper = document.getElementById('variant-combinations');
+
+    if (attrs.length === 0) { comboWrapper.classList.add('hidden'); listContainer.innerHTML = ''; return; }
+
+    const combine = (arr) => arr.reduce((a, b) => a.flatMap(x => b.values.map(y => [...x, y])), [[]]);
+    const combos = combine(attrs);
+    const basePrice = parseInt(document.getElementById('prod-price').value) || 0;
+    
+    listContainer.innerHTML = '';
+
+    combos.forEach(combo => {
+        const comboId = combo.join(' - ');
+        const mem = variantCombinationsMemory.find(c => c.id === comboId);
+        const price = mem ? mem.price : basePrice;
+        const discount = mem ? (mem.discount || 0) : 0;
+        const hasImage = mem && (mem.image || mem.image_base64);
+        const imgSrc = mem ? (mem.image_base64 || mem.image) : '';
+
+        listContainer.innerHTML += `
+            <div class="flex flex-col bg-white p-3 rounded-xl border border-slate-200 combo-row shadow-sm gap-2" data-id="${comboId}">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                    <span class="text-xs font-bold text-slate-700">${comboId}</span>
+                    <button type="button" onclick="triggerVariantUpload('${comboId}')" class="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-600 hover:bg-brand-50 hover:text-brand-600 font-bold transition-colors flex items-center gap-1">
+                        <i class="fa-solid fa-camera"></i> <span id="var-img-label-${comboId}">${hasImage ? 'Ganti Foto' : '+ Foto'}</span>
+                    </button>
+                </div>
+                <div class="flex items-center justify-between gap-4">
+                    <div class="flex-1">
+                        <label class="text-[9px] font-bold text-slate-400 uppercase">Harga Khusus</label>
+                        <div class="flex items-center gap-1 mt-0.5">
+                            <span class="text-[10px] font-bold text-slate-400">Rp</span>
+                            <input type="number" class="input-field !py-1 !px-2 w-full text-xs font-bold combo-price text-slate-700 bg-slate-50 border-none" value="${price}" onchange="updateComboMemory('${comboId}', 'price', this.value)">
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <label class="text-[9px] font-bold text-red-400 uppercase">Diskon Varian</label>
+                        <div class="flex items-center gap-1 mt-0.5">
+                            <span class="text-[10px] font-bold text-red-400">Rp</span>
+                            <input type="number" class="input-field !py-1 !px-2 w-full text-xs font-bold combo-disc text-red-500 bg-red-50 border-none" value="${discount}" onchange="updateComboMemory('${comboId}', 'discount', this.value)">
+                        </div>
+                    </div>
+                </div>
+                <div id="var-img-preview-${comboId}" class="${hasImage ? '' : 'hidden'} mt-2 relative w-12 h-12 rounded-lg border border-slate-200 overflow-hidden group">
+                    <img src="${imgSrc}" class="w-full h-full object-cover">
+                    <button type="button" onclick="removeVariantImage('${comboId}')" class="absolute inset-0 bg-red-500/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                </div>
+            </div>
+        `;
+    });
+    comboWrapper.classList.remove('hidden');
+}
+
+function updateComboMemory(id, key, value) {
+    let combo = variantCombinationsMemory.find(c => c.id === id);
+    if(!combo) { combo = { id: id, price: 0, discount: 0 }; variantCombinationsMemory.push(combo); }
+    if (key === 'price' || key === 'discount') { combo[key] = parseInt(value) || 0; } 
+    else { combo[key] = value; }
+}
+
+function getVariantDataJSON() {
+    const attrs = [];
+    document.querySelectorAll('.variant-row').forEach(row => {
+        const name = row.querySelector('.var-name').value.trim();
+        const vals = row.querySelector('.var-values').value.split(',').map(v => v.trim()).filter(v => v);
+        if(name && vals.length > 0) attrs.push({name, values: vals});
+    });
+    const combos = [];
+    document.querySelectorAll('.combo-row').forEach(row => {
+        const id = row.getAttribute('data-id');
+        const price = parseInt(row.querySelector('.combo-price').value) || 0;
+        const discount = parseInt(row.querySelector('.combo-disc').value) || 0;
+        const mem = variantCombinationsMemory.find(c => c.id === id);
+        const comboObj = { id, price, discount };
+        if (mem && mem.image_base64) comboObj.image_base64 = mem.image_base64;
+        else if (mem && mem.image) comboObj.image = mem.image;
+        combos.push(comboObj);
+    });
+    return { attributes: attrs, combinations: combos };
+}
+
 function openProductModal() {
     document.getElementById('product-form').reset();
     document.getElementById('prod-id').value = "";
     document.getElementById('prod-is-edit').value = "false";
     document.getElementById('modal-title').innerText = "Tambah Produk";
     document.getElementById('btn-save-prod').innerText = "Simpan Produk";
+    const descEl = document.getElementById('prod-desc'); if(descEl) descEl.value = "";
+    
+    document.getElementById('variant-attributes').innerHTML = '';
+    document.getElementById('combination-list').innerHTML = '';
+    document.getElementById('variant-combinations').classList.add('hidden');
+    variantCombinationsMemory = [];
+
     tempImages = [null, null, null]; deletedIndexes = [];
     document.getElementById('cropper-wrapper').classList.add('hidden');
     for(let i=0; i<3; i++) {
-        const slot = document.getElementById(`slot-${i}`);
-        slot.style.backgroundImage = ''; slot.classList.remove('filled');
-        slot.querySelector('.slot-placeholder').classList.remove('hidden');
-        slot.querySelector('.btn-remove').classList.add('hidden');
+        const slot = document.getElementById(`slot-${i}`); slot.style.backgroundImage = ''; slot.classList.remove('filled');
+        slot.querySelector('.slot-placeholder').classList.remove('hidden'); slot.querySelector('.btn-remove').classList.add('hidden');
     }
     document.getElementById('product-modal').classList.remove('hidden');
 }
+
 function openEditProduct(id) {
     const p = products.find(x => x.id == id); if(!p) return;
     document.getElementById('prod-id').value = p.id;
@@ -388,51 +764,100 @@ function openEditProduct(id) {
     document.getElementById('prod-disc').value = p.diskon || 0;
     document.getElementById('prod-type').value = p.tipe_stok;
     document.getElementById('prod-stock').value = p.stok;
-    let sizes = ""; try { const v = JSON.parse(p.varian); if(v.sizes) sizes = v.sizes.join(", "); } catch(e){} document.getElementById('prod-sizes').value = sizes;
+    const descEl = document.getElementById('prod-desc'); if(descEl) descEl.value = p.deskripsi || "";
     toggleStockInput();
+    
+    document.getElementById('variant-attributes').innerHTML = '';
+    document.getElementById('combination-list').innerHTML = '';
+    variantCombinationsMemory = [];
+    
+    let varianObj = {attributes:[], combinations:[]}; 
+    try { varianObj = typeof p.varian === 'string' ? JSON.parse(p.varian) : p.varian; } catch(e){}
+    
+    if(varianObj && varianObj.sizes && !varianObj.attributes) {
+        varianObj.attributes = [{name: "Ukuran", values: varianObj.sizes}];
+        varianObj.combinations = varianObj.sizes.map(s => ({id: s, price: p.harga, discount: 0}));
+    }
+
+    if(varianObj && varianObj.attributes) {
+        varianObj.attributes.forEach(attr => addVariantAttribute(attr.name, attr.values.join(', ')));
+        variantCombinationsMemory = varianObj.combinations || [];
+        generateCombinations();
+    } else {
+        document.getElementById('variant-combinations').classList.add('hidden');
+    }
+
     document.getElementById('modal-title').innerText = "Edit Produk";
     tempImages = [null, null, null]; deletedIndexes = [];
     document.getElementById('cropper-wrapper').classList.add('hidden');
     for(let i=0; i<3; i++) {
-        const slot = document.getElementById(`slot-${i}`);
-        slot.style.backgroundImage = ''; slot.classList.remove('filled');
-        slot.querySelector('.slot-placeholder').classList.remove('hidden');
-        slot.querySelector('.btn-remove').classList.add('hidden');
+        const slot = document.getElementById(`slot-${i}`); slot.style.backgroundImage = ''; slot.classList.remove('filled');
+        slot.querySelector('.slot-placeholder').classList.remove('hidden'); slot.querySelector('.btn-remove').classList.add('hidden');
     }
     let currentImages = Array.isArray(p.gambar) ? p.gambar : [p.gambar];
     currentImages.forEach((url, i) => {
         if(i < 3 && url) {
-            tempImages[i] = "EXISTING";
-            const slot = document.getElementById(`slot-${i}`);
-            slot.style.backgroundImage = `url(${url})`;
-            slot.classList.add('filled');
-            slot.querySelector('.slot-placeholder').classList.add('hidden');
-            slot.querySelector('.btn-remove').classList.remove('hidden');
+            tempImages[i] = "EXISTING"; const slot = document.getElementById(`slot-${i}`);
+            slot.style.backgroundImage = `url(${url})`; slot.classList.add('filled');
+            slot.querySelector('.slot-placeholder').classList.add('hidden'); slot.querySelector('.btn-remove').classList.remove('hidden');
         }
     });
     document.getElementById('product-modal').classList.remove('hidden');
 }
+
 function closeProductModal() { document.getElementById('product-modal').classList.add('hidden'); if(cropper) { cropper.destroy(); cropper = null; } }
 function toggleStockInput() { document.getElementById('stok-group').style.display = document.getElementById('prod-type').value === 'Ready' ? 'block' : 'none'; }
+
 async function saveProduct(e) {
-    e.preventDefault(); const btn = document.getElementById('btn-save-prod'); const ot = btn.innerText; btn.innerText = "Mengupload..."; btn.disabled = true;
-    const sizes = document.getElementById('prod-sizes').value.split(',').map(s=>s.trim()).filter(s=>s);
+    e.preventDefault(); 
+    const btn = document.getElementById('btn-save-prod'); const ot = btn.innerText; 
+    btn.innerText = "Mengupload..."; btn.disabled = true;
+    
     const isEdit = document.getElementById('prod-is-edit').value === "true";
+    const descEl = document.getElementById('prod-desc');
+    
     const newImages = [];
     tempImages.forEach((img, idx) => { if(img && img !== "EXISTING" && img.startsWith('data:image')) newImages.push({ index: idx, base64: img }); });
     
-    const payload = { action: 'shop_save_product', id: document.getElementById('prod-id').value, nama: document.getElementById('prod-name').value, harga: document.getElementById('prod-price').value, diskon: document.getElementById('prod-disc').value, tipe_stok: document.getElementById('prod-type').value, stok: document.getElementById('prod-stock').value, varian: { sizes: sizes }, new_images: newImages, deleted_indexes: deletedIndexes, is_edit: isEdit };
-    try { await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }); closeProductModal(); fetchProducts(); showToast(isEdit ? "Produk diperbarui" : "Produk disimpan", "success"); } catch(err) { showToast("Gagal menyimpan", "error"); }
+    const complexVariantJSON = getVariantDataJSON();
+
+    const payload = { 
+        action: 'shop_save_product', 
+        id: document.getElementById('prod-id').value, 
+        nama: document.getElementById('prod-name').value, 
+        harga: document.getElementById('prod-price').value, 
+        diskon: document.getElementById('prod-disc').value, 
+        tipe_stok: document.getElementById('prod-type').value, 
+        stok: document.getElementById('prod-stock').value, 
+        varian: complexVariantJSON, 
+        new_images: newImages, 
+        deleted_indexes: deletedIndexes, 
+        is_edit: isEdit,
+        deskripsi: descEl ? descEl.value : ""
+    };
+    
+    try { 
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }); 
+        closeProductModal(); await fetchProducts(); showToast(isEdit ? "Produk diperbarui" : "Produk disimpan", "success"); 
+    } catch(err) { showToast("Gagal menyimpan", "error"); }
     btn.innerText = ot; btn.disabled = false;
 }
+
 async function deleteProduct(id) { if(!confirm("Hapus produk ini permanen?")) return; await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'shop_delete_product', id: id }) }); fetchProducts(); showToast("Produk dihapus", "info"); }
 
-// --- CHECKOUT LOGIC (SELECTED ITEMS ONLY) ---
-let checkoutItems = []; // Variabel global sementara
+// --- CHECKOUT LOGIC ---
+let checkoutItems = []; 
+let isDirectBuy = false;
 
 function openCheckoutForm(directItem = null) { 
-    
-    // 1. SET DATA ITEM (Cepat, Sync)
+    appliedVoucher = null; 
+    document.getElementById('voucher-input').value = "";
+    document.getElementById('voucher-input').disabled = false;
+    document.getElementById('btn-apply-voucher').disabled = false;
+    document.getElementById('btn-apply-voucher').innerText = "Pakai";
+    document.getElementById('voucher-msg').classList.add('hidden');
+    document.getElementById('discount-row').classList.add('hidden');
+
     if (directItem) {
         isDirectBuy = true;
         checkoutItems = [directItem];
@@ -445,134 +870,123 @@ function openCheckoutForm(directItem = null) {
         return showToast("Pilih minimal 1 barang untuk checkout", "error"); 
     }
     
-    // 2. RESET FORM & UI (Cepat, Sync)
     document.getElementById('checkout-form').reset();
     document.getElementById('payment-info-container').innerHTML = ''; 
     document.getElementById('payment-info-container').classList.add('hidden');
     document.getElementById('cicilan-group').classList.add('hidden');
     
-    // 3. RENDER SUMMARY ITEM (Cepat, Sync)
     const summaryList = document.getElementById('checkout-summary-list');
     summaryList.innerHTML = '';
-    let totalCheckout = 0;
     
+    currentSubtotal = 0; 
     checkoutItems.forEach(item => {
-        totalCheckout += item.harga * item.qty;
+        currentSubtotal += item.harga * item.qty;
         summaryList.innerHTML += `
         <div class="flex justify-between text-xs text-slate-600 border-b border-dashed border-slate-100 pb-1 last:border-0">
             <span class="truncate max-w-[200px]">${item.nama} <span class="text-slate-400">(${item.size})</span></span>
             <span class="font-bold">x${item.qty}</span>
         </div>`;
     });
-    document.getElementById('checkout-final-total').innerText = "Rp " + totalCheckout.toLocaleString('id-ID');
+    document.getElementById('checkout-final-total').innerText = "Rp " + currentSubtotal.toLocaleString('id-ID');
 
-    // Reset Style Pembayaran
     document.querySelectorAll('.pay-option').forEach(el => {
         el.classList.remove('border-brand-500', 'bg-brand-50', 'ring-1', 'ring-brand-500');
         el.querySelector('.check-circle').classList.remove('bg-brand-500', 'border-brand-500');
         el.querySelector('.check-circle i').classList.add('opacity-0');
     });
 
-    // 4. SETUP LOGIKA CICILAN (TAMPILKAN LOADING DULU)
     const radioCicil = document.querySelector('input[value="cicil"]');
     const containerCicil = document.getElementById('div-cicilan');
     const labelCicil = document.getElementById('label-cicilan');
 
-    // Default: Disable dulu & Tampilkan Loading
     disableCicilanOption(radioCicil, containerCicil, "Memuat status...");
     containerCicil.querySelector('span').innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Cek Status...`;
 
-    // Pastikan Opsi Lunas Tercentang Awal
     document.querySelector('input[value="full"]').checked = true;
     toggleCicilanInput();
 
-    // 5. TAMPILKAN MODAL LANGSUNG (Instant Feedback)
     document.getElementById('cart-modal').classList.add('hidden'); 
     document.getElementById('checkout-modal').classList.remove('hidden'); 
 
-    // 6. JALANKAN PENGECEKAN DI BACKGROUND (Async)
     runCicilanCheck(checkoutItems, radioCicil, containerCicil, labelCicil);
 }
 
-// FUNGSI BARU: Pengecekan Terpisah
-async function runCicilanCheck(items, radio, div, label) {
-    // Cek 1: Jumlah Barang
-    if (items.length > 1) {
-        return disableCicilanOption(radio, div, "Hanya untuk 1 barang");
-    } 
-    // Cek 2: Qty Barang
-    if (items[0].qty > 1) {
-        return disableCicilanOption(radio, div, "Maksimal Qty 1");
-    }
+async function applyVoucher() {
+    const kode = document.getElementById('voucher-input').value.trim();
+    const msgEl = document.getElementById('voucher-msg');
+    const btn = document.getElementById('btn-apply-voucher');
+    
+    if(!kode) return;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
 
-    // Cek 3: Hutang ke Server (Ini yang bikin lama)
     try {
-        const hasDebt = await checkUserDebt();
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'shop_validate_voucher', kode: kode }) });
+        const data = await res.json();
         
-        if (hasDebt) {
-            disableCicilanOption(radio, div, "Lunasi tagihan lama");
+        msgEl.classList.remove('hidden');
+        if(data.status) {
+            appliedVoucher = data.data;
+            msgEl.className = "text-[10px] mt-1 font-bold text-green-500";
+            msgEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Voucher berhasil diterapkan!`;
+            document.getElementById('voucher-input').disabled = true;
+            btn.innerText = "Aktif";
+            
+            let discount = appliedVoucher.tipe === 'Persen' ? currentSubtotal * (parseInt(appliedVoucher.nilai) / 100) : parseInt(appliedVoucher.nilai);
+            if(discount > currentSubtotal) discount = currentSubtotal; 
+            
+            const totalAfter = currentSubtotal - discount;
+            
+            document.getElementById('discount-row').classList.remove('hidden');
+            document.getElementById('discount-code-display').innerText = appliedVoucher.kode;
+            document.getElementById('discount-amount').innerText = "- Rp " + discount.toLocaleString('id-ID');
+            document.getElementById('checkout-final-total').innerText = "Rp " + totalAfter.toLocaleString('id-ID');
         } else {
-            // JIKA LOLOS SEMUA SYARAT -> ENABLE TOMBOL
-            enableCicilanOption(radio, div, label);
+            msgEl.className = "text-[10px] mt-1 font-bold text-red-500";
+            msgEl.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${data.message}`;
+            btn.disabled = false; btn.innerText = "Pakai";
         }
-    } catch (e) {
-        // Jika error koneksi/server, aman-nya disable saja atau allow (tergantung kebijakan)
-        // Disini kita allow saja agar user tidak macet
-        enableCicilanOption(radio, div, label);
-    }
+    } catch(e) { btn.disabled = false; btn.innerText = "Pakai"; }
 }
 
-// HELPER: Mengaktifkan Kembali Tombol Cicilan
-function enableCicilanOption(inputEl, divEl, labelEl) {
-    inputEl.disabled = false;
-    
-    if(labelEl) labelEl.classList.remove('pointer-events-none', 'opacity-60');
+async function runCicilanCheck(items, radio, div, label) {
+    if (items.length > 1) { return disableCicilanOption(radio, div, "Hanya untuk 1 barang"); } 
+    if (items[0].qty > 1) { return disableCicilanOption(radio, div, "Maksimal Qty 1"); }
 
+    try {
+        const hasDebt = await checkUserDebt();
+        if (hasDebt) disableCicilanOption(radio, div, "Lunasi tagihan lama");
+        else enableCicilanOption(radio, div, label);
+    } catch (e) { enableCicilanOption(radio, div, label); }
+}
+
+function enableCicilanOption(inputEl, divEl, labelEl) {
+    inputEl.disabled = false; if(labelEl) labelEl.classList.remove('pointer-events-none', 'opacity-60');
     divEl.classList.remove('bg-slate-100', 'border-slate-200', 'text-slate-400');
-    // Tambahkan class hover dan style aktif
     divEl.classList.add('bg-white', 'hover:border-orange-300', 'hover:bg-orange-50', 'hover:shadow-md'); 
-    
     divEl.querySelector('span').innerHTML = `<i class="fa-solid fa-clock mr-1"></i> Cicilan / DP`;
 }
 
 function disableCicilanOption(inputEl, divEl, reason) {
-    inputEl.disabled = true;
-    
-    // Matikan interaksi pada label pembungkusnya agar tidak bisa di-klik/hover
-    const labelParent = inputEl.closest('label');
-    if(labelParent) {
-        labelParent.classList.add('pointer-events-none', 'opacity-60'); // Tambahkan pointer-events-none
-    }
-
-    // Ubah visual div bagian dalam
+    inputEl.disabled = true; const labelParent = inputEl.closest('label');
+    if(labelParent) labelParent.classList.add('pointer-events-none', 'opacity-60');
     divEl.classList.add('bg-slate-100', 'border-slate-200', 'text-slate-400');
-    divEl.classList.remove('hover:border-orange-300', 'hover:bg-orange-50', 'hover:shadow-md', 'bg-white'); // Hapus class hover
-    
-    // Ubah text
+    divEl.classList.remove('hover:border-orange-300', 'hover:bg-orange-50', 'hover:shadow-md', 'bg-white'); 
     divEl.querySelector('span').innerHTML = `<i class="fa-solid fa-lock mr-1"></i> ${reason}`;
 }
-// Fungsi Helper Cek Hutang ke API
+
 async function checkUserDebt() {
     try {
-        const res = await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({ 
-                action: 'shop_get_orders', 
-                nia: currentUser.nia, 
-                is_admin: false, 
-                _ts: new Date().getTime() 
-            }) 
-        });
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'shop_get_orders', nia: currentUser.nia, is_admin: false, _ts: new Date().getTime() }) });
         const data = await res.json();
         if(data.status && data.orders) {
-            // Cek apakah ada order yang status bayarnya BUKAN 'Lunas'
             const unpaidOrder = data.orders.find(o => o.status_bayar !== 'Lunas');
-            return !!unpaidOrder; // Return true jika ada yang belum lunas
+            return !!unpaidOrder; 
         }
-    } catch(e) { return false; }
-    return false;
+    } catch(e) { return false; } return false;
 }
+
 function closeCheckoutForm() { document.getElementById('checkout-modal').classList.add('hidden'); }
+
 function updatePaymentInfo() {
     const method = document.getElementById('pay-method').value;
     const container = document.getElementById('payment-info-container');
@@ -583,11 +997,23 @@ function updatePaymentInfo() {
     else if (method === 'Gopay') content = `<div class="bg-green-50 rounded-2xl p-4 border border-green-100 flex items-center gap-4"><div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-green-600 shadow-sm"><i class="fa-solid fa-wallet"></i></div><div><p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Gopay / Dana</p><p class="font-mono text-lg font-bold text-slate-800 cursor-pointer hover:text-brand-600 transition-colors" onclick="navigator.clipboard.writeText('082112964343');showToast('Disalin!')">082112964343 <i class="fa-regular fa-copy text-xs ml-1 opacity-50"></i></p><p class="text-xs text-slate-500">a.n Fathir Ahmad Maulana</p></div></div>`;
     container.innerHTML = content;
 }
+
 function toggleCicilanInput() { document.getElementById('cicilan-group').classList.toggle('hidden', document.querySelector('input[name="pay-type"]:checked').value !== 'cicil'); }
 function previewFile() { const input = document.getElementById('pay-proof'); if(input.files && input.files[0]) document.getElementById('drop-content-text').innerHTML = `<div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 text-green-500"><i class="fa-solid fa-check"></i></div><p class="text-xs font-bold text-slate-700 truncate max-w-[150px] mx-auto">${input.files[0].name}</p>`; }
 function toBase64(file) { return new Promise((r, j) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => r(reader.result); reader.onerror = error => j(error); }); }
+
 async function handleCheckout(e) {
     e.preventDefault(); 
+    let finalTotalTagihan = currentSubtotal;
+    let discount = 0;
+    
+    if(appliedVoucher) {
+        if(appliedVoucher.tipe === 'Persen') discount = currentSubtotal * (parseInt(appliedVoucher.nilai) / 100);
+        else discount = parseInt(appliedVoucher.nilai);
+        if(discount > currentSubtotal) discount = currentSubtotal;
+        finalTotalTagihan = currentSubtotal - discount;
+    }
+
     const btn = document.getElementById('btn-confirm-pay'); 
     const ot = btn.innerHTML; 
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memproses...'; 
@@ -596,9 +1022,8 @@ async function handleCheckout(e) {
     const method = document.getElementById('pay-method').value; 
     if(!method) { showToast("Pilih metode pembayaran", "error"); btn.disabled=false; btn.innerHTML=ot; return; }
     
-    const totalTagihan = checkoutItems.reduce((a,b)=>a+(b.harga*b.qty), 0); 
     const tipeBayar = document.querySelector('input[name="pay-type"]:checked').value; 
-    let bayarAwal = totalTagihan;
+    let bayarAwal = finalTotalTagihan;
 
     if (tipeBayar === 'cicil') { 
         bayarAwal = parseInt(document.getElementById('pay-nominal-input').value) || 0; 
@@ -614,34 +1039,28 @@ async function handleCheckout(e) {
             action: 'shop_checkout', 
             nia: currentUser.nia, 
             nama: currentUser.nama, 
-            items: checkoutItems.map(c => ({ id: c.id, nama: c.nama, qty: c.qty, size: c.size, harga: c.harga, gambar: c.gambar })), // Kirim gambar juga utk history
-            total_tagihan: totalTagihan, 
+            items: checkoutItems.map(c => ({ id: c.id, nama: c.nama, qty: c.qty, size: c.size, harga: c.harga, gambar: c.gambar })),
+            total_tagihan: finalTotalTagihan, 
             bayar_awal: bayarAwal, 
             metode: method, 
-            bukti_base64: base64 
+            bukti_base64: base64,
+            voucher_kode: appliedVoucher ? appliedVoucher.kode : ""
         };
         
         const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }); 
         const data = await res.json();
         
-       if(data.status) { 
-    showToast("Pesanan Berhasil!", "success"); 
-
-    if (!isDirectBuy) {
-        cart = cart.filter(item => !item.checked); // Hapus item yang dibeli dari keranjang
-        saveCart(); // Simpan keranjang sisa
-    }
-
-    closeCheckoutForm(); 
-    setTimeout(() => switchTab('my-orders'), 1000);
-        } else { 
-            showToast(data.message, "error"); 
-        }
+        if(data.status) { 
+            showToast("Pesanan Berhasil!", "success"); 
+            if (!isDirectBuy) { cart = cart.filter(item => !item.checked); saveCart(); }
+            closeCheckoutForm(); 
+            setTimeout(() => switchTab('my-orders'), 1000);
+        } else { showToast(data.message, "error"); }
     } catch(err) { showToast("Koneksi gagal", "error"); }
     btn.innerHTML = ot; btn.disabled = false;
 }
 
-// --- UPDATE ORDER HISTORY (WITH IMAGES) ---
+// --- ORDER HISTORY ---
 async function fetchMyOrders() {
     const container = document.getElementById('my-orders-list'); 
     container.innerHTML = '<div class="text-center py-20 text-slate-400"><i class="fa-solid fa-circle-notch fa-spin text-2xl mb-2"></i><p>Memuat riwayat...</p></div>';
@@ -658,7 +1077,6 @@ async function fetchMyOrders() {
                 const logistik = (o.status_logistik || 'Menunggu').trim();
                 const itemsJson = encodeURIComponent(JSON.stringify(o.items));
                 
-                // Button Cicilan Logic
                 let btnCicilanHtml = '';
                 if (!isLunas && sisa > 0) {
                     btnCicilanHtml = `<button onclick="openInstallmentModal('${o.id}', ${sisa})" class="w-full mt-3 py-2.5 rounded-xl bg-orange-50 text-orange-600 font-bold text-xs border border-orange-200 hover:bg-orange-100 transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-wallet"></i> Bayar Sisa Tagihan (Rp ${sisa.toLocaleString()})</button>`;
@@ -683,7 +1101,7 @@ async function fetchMyOrders() {
                             <img src="${i.gambar || 'https://placehold.co/100'}" class="w-12 h-12 rounded-lg object-cover bg-slate-100 border border-slate-50" onerror="this.src='https://placehold.co/100'">
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-bold text-slate-700 truncate">${i.nama}</p>
-                                <p class="text-[10px] text-slate-400">${i.size ? 'Size: '+i.size : 'All Size'}</p>
+                                <p class="text-[10px] text-slate-400 truncate">${i.size ? i.size : 'All Size'}</p>
                             </div>
                             <span class="font-bold text-slate-800 text-xs">x${i.qty}</span>
                          </div>
@@ -707,59 +1125,38 @@ async function fetchMyOrders() {
     } catch(e) { container.innerHTML = "Gagal memuat."; }
 }
 
-// === FUNGSI OPEN RECEIPT (FIXED HEIGHT & SCROLL) ===
 function openReceipt(id, itemsJson, status, total, date, method, name) {
     document.getElementById('receipt-modal').classList.remove('hidden');
-    
-    // Set Data Teks
     document.getElementById('receipt-id').innerText = id;
     document.getElementById('receipt-date').innerText = date;
     document.getElementById('receipt-method').innerText = method;
     document.getElementById('receipt-name').innerText = name || currentUser.nama;
     document.getElementById('receipt-total').innerText = "Rp " + parseInt(total).toLocaleString('id-ID');
     
-    // Status Badge Logic
     const stEl = document.getElementById('receipt-status'); 
     stEl.innerText = status;
     stEl.className = "inline-block mb-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border";
-    
-    if(status === 'Lunas') { 
-        stEl.classList.add("bg-green-50", "text-green-600", "border-green-200"); 
-    } else { 
-        stEl.classList.add("bg-orange-50", "text-orange-600", "border-orange-200"); 
-    }
+    if(status === 'Lunas') { stEl.classList.add("bg-green-50", "text-green-600", "border-green-200"); } 
+    else { stEl.classList.add("bg-orange-50", "text-orange-600", "border-orange-200"); }
 
-    // Render Items
     const items = JSON.parse(decodeURIComponent(itemsJson));
     document.getElementById('receipt-details').innerHTML = items.map(i => `
         <div class="flex justify-between items-start text-[10px] border-b border-dashed border-slate-200 last:border-0 pb-1.5 last:pb-0">
             <div class="flex-1 pr-2">
                 <p class="font-bold text-slate-700 leading-tight line-clamp-2">${i.nama}</p>
-                <p class="text-[9px] text-slate-400 mt-0.5">${i.size ? 'Size: '+i.size : 'All Size'}</p>
+                <p class="text-[9px] text-slate-400 mt-0.5">${i.size ? i.size : 'All Size'}</p>
             </div>
-            <div class="text-right whitespace-nowrap">
-                <span class="font-bold text-slate-900">x${i.qty}</span>
-            </div>
+            <div class="text-right whitespace-nowrap"><span class="font-bold text-slate-900">x${i.qty}</span></div>
         </div>
     `).join('');
 
-    // Generate QR Code (Ukuran Pas: 70px)
-  const container = document.getElementById("barcode-display"); 
+    const container = document.getElementById("barcode-display"); 
     container.innerHTML = ""; 
-    
-    setTimeout(() => { 
-        new QRCode(container, { 
-            text: id, 
-            width: 256,  // Render Resolusi Tinggi (256px)
-            height: 256, 
-            colorDark : "#000000", // Hitam pekat agar kontras tajam
-            colorLight : "#ffffff", 
-            correctLevel : QRCode.CorrectLevel.H // Level 'H' (High) agar lebih detail & padat
-        }); 
-    }, 100);
+    setTimeout(() => { new QRCode(container, { text: id, width: 256, height: 256, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H }); }, 100);
 }
-
 function closeReceiptModal() { document.getElementById('receipt-modal').classList.add('hidden'); }
+
+// --- ADMIN ORDERS & SCANNER ---
 async function fetchAdminOrders() {
     const container = document.getElementById('admin-orders-list'); if(!container) return; container.innerHTML = '<div class="col-span-full text-center py-10 text-slate-400"><i class="fa-solid fa-circle-notch fa-spin mb-2"></i> Loading...</div>';
     try {
@@ -784,8 +1181,8 @@ async function fetchAdminOrders() {
                         </select>
                     </div>
                     
-                    <div class="bg-slate-50/50 rounded-xl p-3 mb-4 text-xs space-y-1 border border-slate-50">
-                        ${o.items.map(i => `<div class="text-slate-600 flex justify-between"><span>${i.nama}</span> <span class="font-bold">x${i.qty}</span></div>`).join('')}
+                    <div class="bg-slate-50/50 rounded-xl p-3 mb-4 text-xs space-y-1 border border-slate-50 max-h-32 overflow-y-auto">
+                        ${o.items.map(i => `<div class="text-slate-600 flex justify-between border-b border-slate-100 pb-1 mb-1 last:border-0 last:pb-0 last:mb-0"><div><span>${i.nama}</span> <br><span class="text-[9px] text-slate-400">${i.size||''}</span></div> <span class="font-bold">x${i.qty}</span></div>`).join('')}
                     </div>
                     
                     <div class="flex justify-between items-center text-sm border-t border-slate-100 pt-3">
@@ -811,6 +1208,7 @@ function handleStatusChange(selectEl, orderId, name, phone) {
 }
 async function updateStatusApi(id, status) { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'shop_update_status', id_transaksi: id, status_baru: status, admin_nia: currentUser.nia }) }); fetchAdminOrders(); }
 function formatWA(num) { if(!num) return ""; num = num.toString().replace(/[^0-9]/g, ""); if(num.startsWith('0')) return '62'+num.substring(1); return num; }
+
 function openScannerModal(expectedId) {
     document.getElementById('scanner-modal').classList.remove('hidden');
     document.getElementById('btn-manual-confirm').onclick = function() {
@@ -827,89 +1225,112 @@ function openScannerModal(expectedId) {
 }
 function closeScannerModal() { document.getElementById('scanner-modal').classList.add('hidden'); if(html5QrcodeScanner) html5QrcodeScanner.clear(); pendingOrderIdForScan = null; fetchAdminOrders(); }
 
-// --- CICILAN HANDLER ---
+// --- INSTALLMENT / CICILAN ---
 function openInstallmentModal(orderId, sisa) {
     document.getElementById('installment-modal').classList.remove('hidden');
     document.getElementById('inst-order-id').innerText = "#" + orderId;
     document.getElementById('inst-id-hidden').value = orderId;
     document.getElementById('inst-sisa-tagihan').innerText = "Rp " + parseInt(sisa).toLocaleString('id-ID');
-    document.getElementById('inst-nominal').value = ""; // Reset input
-    document.getElementById('inst-proof').value = ""; // Reset file
+    document.getElementById('inst-nominal').value = ""; 
+    document.getElementById('inst-proof').value = ""; 
     document.getElementById('inst-drop-text').innerHTML = `<i class="fa-solid fa-camera text-xl text-slate-300 group-hover:text-brand-500 mb-1 transition-colors"></i><p class="text-[10px] font-bold text-slate-400">Upload Bukti</p>`;
 }
-
-function closeInstallmentModal() {
-    document.getElementById('installment-modal').classList.add('hidden');
-}
-
+function closeInstallmentModal() { document.getElementById('installment-modal').classList.add('hidden'); }
 function previewInstFile() {
     const input = document.getElementById('inst-proof');
-    if(input.files && input.files[0]) {
-        document.getElementById('inst-drop-text').innerHTML = `<div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-1 text-green-500"><i class="fa-solid fa-check"></i></div><p class="text-[9px] font-bold text-slate-700 truncate max-w-[100px] mx-auto">${input.files[0].name}</p>`;
-    }
+    if(input.files && input.files[0]) document.getElementById('inst-drop-text').innerHTML = `<div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-1 text-green-500"><i class="fa-solid fa-check"></i></div><p class="text-[9px] font-bold text-slate-700 truncate max-w-[100px] mx-auto">${input.files[0].name}</p>`;
 }
-
 async function submitInstallment(e) {
     e.preventDefault();
-    const btn = document.getElementById('btn-submit-inst');
-    const ot = btn.innerText;
-    btn.innerText = "Mengirim..."; 
-    btn.disabled = true;
+    const btn = document.getElementById('btn-submit-inst'); const ot = btn.innerText;
+    btn.innerText = "Mengirim..."; btn.disabled = true;
 
     const id = document.getElementById('inst-id-hidden').value;
     const nominal = parseInt(document.getElementById('inst-nominal').value);
     const fileInput = document.getElementById('inst-proof');
 
-    if (!nominal || nominal <= 0) { 
-        showToast("Masukkan nominal pembayaran", "error"); 
-        btn.disabled = false; btn.innerText = ot; return; 
-    }
-    if (fileInput.files.length === 0) { 
-        showToast("Upload bukti transfer", "error"); 
-        btn.disabled = false; btn.innerText = ot; return; 
-    }
+    if (!nominal || nominal <= 0) { showToast("Masukkan nominal pembayaran", "error"); btn.disabled = false; btn.innerText = ot; return; }
+    if (fileInput.files.length === 0) { showToast("Upload bukti transfer", "error"); btn.disabled = false; btn.innerText = ot; return; }
 
     try {
         const base64 = await toBase64(fileInput.files[0]);
-        const payload = {
-            action: 'shop_pay_installment',
-            id_transaksi: id,
-            nominal: nominal,
-            bukti_base64: base64
-        };
-
-        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'shop_pay_installment', id_transaksi: id, nominal: nominal, bukti_base64: base64 }) });
         const data = await res.json();
+        if (data.status) { showToast("Pembayaran cicilan berhasil!", "success"); closeInstallmentModal(); fetchMyOrders(); } 
+        else { showToast(data.message, "error"); }
+    } catch (err) { showToast("Koneksi gagal", "error"); }
 
-        if (data.status) {
-            showToast("Pembayaran cicilan berhasil!", "success");
-            closeInstallmentModal();
-            fetchMyOrders(); // Refresh list
-        } else {
-            showToast(data.message, "error");
-        }
-    } catch (err) {
-        showToast("Koneksi gagal", "error");
-    }
-
-    btn.innerText = ot;
-    btn.disabled = false;
+    btn.innerText = ot; btn.disabled = false;
 }
 
 function selectPaymentMethod(value, el) {
     document.getElementById('pay-method').value = value;
-    
-    // Reset All Visuals
     document.querySelectorAll('.pay-option').forEach(opt => {
         opt.classList.remove('border-brand-500', 'bg-brand-50', 'ring-1', 'ring-brand-500');
         opt.querySelector('.check-circle').classList.remove('bg-brand-500', 'border-brand-500');
         opt.querySelector('.check-circle i').classList.add('opacity-0');
     });
-
-    // Set Active Visual
     el.classList.add('border-brand-500', 'bg-brand-50', 'ring-1', 'ring-brand-500');
     el.querySelector('.check-circle').classList.add('bg-brand-500', 'border-brand-500');
     el.querySelector('.check-circle i').classList.remove('opacity-0');
-
     updatePaymentInfo();
+}
+
+// --- ADMIN VOUCHER CRUD ---
+async function fetchAdminVouchers() {
+    const tbody = document.getElementById('admin-voucher-list');
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center p-5 text-slate-400">Loading...</td></tr>';
+    try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'shop_get_vouchers' }) });
+        const data = await res.json();
+        if(data.status) {
+            tbody.innerHTML = '';
+            if(data.data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center p-5 text-slate-400">Belum ada voucher</td></tr>'; return; }
+            data.data.forEach(v => {
+                const diskonTxt = v.tipe === 'Persen' ? `${v.nilai}%` : `Rp ${parseInt(v.nilai).toLocaleString('id-ID')}`;
+                const stClass = v.status === 'Terpakai' ? 'text-red-500 bg-red-50' : 'text-green-500 bg-green-50';
+                tbody.innerHTML += `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="p-5 pl-8 font-mono font-bold text-brand-600">${v.kode}</td>
+                    <td class="p-5 font-bold text-slate-700">${diskonTxt}</td>
+                    <td class="p-5 text-xs text-slate-500">${v.berlaku}</td>
+                    <td class="p-5 text-center"><span class="${stClass} px-2 py-1 rounded text-[10px] font-bold uppercase">${v.status}</span></td>
+                    <td class="p-5 pr-8 text-right">
+                        <button onclick="deleteVoucher('${v.id}')" class="text-slate-400 hover:text-red-600 w-8 h-8 rounded-full hover:bg-red-50"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+        }
+    } catch(e) { tbody.innerHTML = '<tr><td colspan="5" class="text-center p-5 text-red-500">Error memuat data</td></tr>'; }
+}
+
+function openVoucherModal() { document.getElementById('voucher-modal').classList.remove('hidden'); }
+function closeVoucherModal() { document.getElementById('voucher-modal').classList.add('hidden'); }
+
+async function saveVoucher(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-save-vch'); const ot = btn.innerText;
+    btn.innerText = "Menyimpan..."; btn.disabled = true;
+    
+    const payload = {
+        action: 'shop_save_voucher',
+        kode: document.getElementById('vch-kode').value.replace(/\s+/g, ''),
+        tipe: document.getElementById('vch-tipe').value,
+        nilai: document.getElementById('vch-nilai').value,
+        berlaku: document.getElementById('vch-berlaku').value
+    };
+    
+    try {
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        showToast("Voucher berhasil dibuat", "success");
+        closeVoucherModal(); e.target.reset(); fetchAdminVouchers();
+    } catch(e) { showToast("Gagal menyimpan voucher", "error"); }
+    btn.innerText = ot; btn.disabled = false;
+}
+
+async function deleteVoucher(id) {
+    if(!confirm("Hapus voucher ini?")) return;
+    await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'shop_delete_voucher', id: id }) });
+    showToast("Voucher dihapus", "success");
+    fetchAdminVouchers();
 }
