@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kelola Keuangan - Sadulur Sepoor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. RESET & VARIABLE --- */
+        :root {
+            --primary: #0056b3;
+            --bg-body: #f1f5f9;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --sidebar-w: 260px;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            margin: 0; padding: 0;
+            color: var(--text-main);
+        }
+
+        /* --- 2. LAYOUT UTAMA --- */
+        .app { display: flex; min-height: 100vh; }
+
+        /* Sidebar Desktop */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: #fff;
+            border-right: 1px solid var(--border);
+            position: fixed; top: 0; left: 0; bottom: 0;
+            z-index: 1000;
+            display: flex; flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            height: 70px;
+        }
+        .logo-area { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--primary); }
+        .close-sidebar { display: none; cursor: pointer; font-size: 1.2rem; }
+
+        .nav { flex: 1; padding: 20px 0; overflow-y: auto; }
+        .nav a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 24px; text-decoration: none;
+            color: var(--text-sub); font-weight: 500;
+            transition: 0.2s;
+        }
+        .nav a:hover, .nav a.active {
+            background: #f0f9ff; color: var(--primary);
+            border-right: 3px solid var(--primary);
+        }
+
+        .sidebar-footer { padding: 20px; border-top: 1px solid var(--border); }
+        .btn-logout {
+            width: 100%; padding: 10px; background: #fee2e2; color: #dc2626;
+            border: none; border-radius: 8px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-w); /* Space for sidebar */
+            padding: 24px;
+            width: 100%;
+        }
+
+        /* Header Mobile (Hanya muncul di HP) */
+        .mobile-header {
+            display: none; /* Desktop hidden */
+            align-items: center; justify-content: space-between;
+            background: #fff; padding: 15px; border-radius: 12px;
+            margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .btn-menu { border: none; background: none; font-size: 1.4rem; cursor: pointer; }
+
+        /* --- 3. COMPONENTS --- */
+        
+        /* Grid Layout 2 Kolom (Form & Table) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 350px 1fr; /* Kiri Form, Kanan Tabel */
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* Card */
+        .card {
+            background: #fff; border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+        .card-head {
+            padding: 16px 20px; border-bottom: 1px solid var(--border);
+            font-weight: 700; display: flex; justify-content: space-between; align-items: center;
+        }
+        .card-body { padding: 20px; }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #334155; }
+        .form-input {
+            width: 100%; padding: 12px; font-size: 1rem;
+            border: 1px solid var(--border); border-radius: 8px;
+            background: #f8fafc; color: var(--text-main);
+        }
+        .form-input:focus { outline: none; border-color: var(--primary); background: #fff; }
+
+        .row-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* Radio Type */
+        .type-selector { display: flex; background: #f1f5f9; padding: 4px; border-radius: 8px; }
+        .type-selector label {
+            flex: 1; text-align: center; padding: 10px; cursor: pointer;
+            font-size: 0.9rem; font-weight: 600; color: var(--text-sub);
+            border-radius: 6px; transition: 0.2s;
+        }
+        .type-selector input { display: none; }
+        /* Style saat dipilih */
+        .type-selector input:checked + span { background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .t-masuk input:checked + span { color: #166534; border: 1px solid #dcfce7; }
+        .t-keluar input:checked + span { color: #991b1b; border: 1px solid #fee2e2; }
+
+        /* Button */
+        .btn-save {
+            width: 100%; padding: 12px; border: none; border-radius: 8px;
+            background: var(--primary); color: white; font-weight: 600; cursor: pointer;
+            font-size: 1rem; margin-top: 10px;
+        }
+        .btn-cancel {
+            width: 100%; padding: 12px; background: #fff; border: 1px solid var(--border);
+            color: var(--text-sub); font-weight: 600; border-radius: 8px; cursor: pointer;
+            margin-top: 10px; display: none; /* Hidden by default */
+        }
+
+        /* TABLE (Standard & Safe) */
+        .table-responsive {
+            width: 100%; overflow-x: auto; /* Scroll samping jika sempit */
+        }
+        .table {
+            width: 100%; border-collapse: collapse; white-space: nowrap; /* Mencegah teks turun baris berantakan */
+        }
+        .table th {
+            text-align: left; padding: 12px 16px; background: #f8fafc;
+            font-size: 0.75rem; text-transform: uppercase; color: var(--text-sub);
+            border-bottom: 2px solid var(--border);
+        }
+        .table td {
+            padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        
+        /* Badges & Text in Table */
+        .badge { padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .bg-green { background: #dcfce7; color: #166534; }
+        .bg-red { background: #fee2e2; color: #991b1b; }
+        
+        .txt-money { font-family: monospace; font-weight: 700; font-size: 0.95rem; }
+        .txt-green { color: #166534; }
+        .txt-red { color: #dc2626; }
+
+        .btn-action {
+            width: 32px; height: 32px; border-radius: 6px; border: none;
+            cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+        }
+
+        /* Overlay Gelap */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 900;
+            display: none; /* Hidden default */
+        }
+        .overlay.active { display: block; }
+
+        /* --- 4. RESPONSIVE MEDIA QUERIES --- */
+        @media (max-width: 900px) {
+            .grid-container { grid-template-columns: 1fr; } /* Form di atas tabel */
+        }
+
+        @media (max-width: 768px) {
+            /* Sidebar sembunyi */
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            
+            /* Main Content full width */
+            .main { margin-left: 0; padding: 16px; }
+            
+            /* Tampilkan Tombol Menu */
+            .mobile-header { display: flex; }
+            .close-sidebar { display: block; }
+            
+            /* Form Input Stack ke bawah */
+            .row-split { grid-template-columns: 1fr; }
+            
+            /* Sembunyikan greeting desktop */
+            .desktop-greeting { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+<div class="app">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-area">
+                <i class="fa-solid fa-train-subway"></i> Sadulur Sepoor
+            </div>
+            <div class="close-sidebar" onclick="toggleSidebar()">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>
+        <nav class="nav">
+            <a href="../../dashboard/index.html"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="../index.html"><i class="fa-solid fa-chart-line"></i> Ringkasan</a>
+            <a href="index.html" class="active"><i class="fa-solid fa-money-bill-transfer"></i> Kelola Keuangan</a>
+        </nav>
+        <div class="sidebar-footer">
+            <button onclick="logout()" class="btn-logout">
+                <i class="fa-solid fa-right-from-bracket"></i> Keluar
+            </button>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="mobile-header">
+            <button class="btn-menu" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <h3 style="margin:0; font-size:1rem;">Input Transaksi</h3>
+            <div style="width:24px;"></div>
+        </header>
+
+        <div class="desktop-greeting" style="margin-bottom: 24px;">
+            <h2 style="margin:0;">Kelola Keuangan</h2>
+            <p style="margin:5px 0 0; color:#64748b;">Input pemasukan dan pengeluaran kas.</p>
+        </div>
+
+        <div class="grid-container">
+            
+            <div class="card">
+                <div class="card-head" id="formHeader">
+                    <span><i class="fa-regular fa-pen-to-square"></i> Input Baru</span>
+                </div>
+                <div class="card-body">
+                    <form onsubmit="handleFormSubmit(event)">
+                        <input type="hidden" id="trxId">
+
+                        <div class="form-group">
+                            <label class="form-label">Jenis Transaksi</label>
+                            <div class="type-selector">
+                                <label class="t-masuk">
+                                    <input type="radio" name="trxType" value="Masuk" checked onclick="toggleColor('green')">
+                                    <span style="display:block; padding:8px; border-radius:6px;">Masuk</span>
+                                </label>
+                                <label class="t-keluar">
+                                    <input type="radio" name="trxType" value="Keluar" onclick="toggleColor('red')">
+                                    <span style="display:block; padding:8px; border-radius:6px;">Keluar</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Kategori</label>
+                            <select id="trxCategory" class="form-input" onchange="checkOtherOption(this)">
+                                <option value="Iuran Anggota">Iuran Anggota</option>
+                                <option value="Donasi">Donasi / Sponsor</option>
+                                <option value="Penjualan Merchandise">Merchandise</option>
+                                <option value="Kegiatan Operasional">Operasional</option>
+                                <option value="Konsumsi">Konsumsi</option>
+                                <option value="Perlengkapan">Perlengkapan</option>
+                                <option value="Lainnya">Lainnya...</option>
+                            </select>
+                            <input type="text" id="trxCategoryOther" class="form-input" placeholder="Tulis kategori..." style="display:none; margin-top:8px;">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Nominal (Rp)</label>
+                            <input type="text" id="trxNominal" class="form-input" placeholder="0" style="font-weight:bold; font-size:1.1rem;" required>
+                        </div>
+
+                        <div class="form-group row-split">
+                            <div>
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" id="trxDate" class="form-input" required>
+                            </div>
+                            <div>
+                                <label class="form-label">Jam</label>
+                                <input type="time" id="trxTime" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">PIC (Penanggung Jawab)</label>
+                            <input type="text" id="trxPic" class="form-input" placeholder="Nama..." required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Catatan</label>
+                            <textarea id="trxNote" rows="2" class="form-input" placeholder="Opsional..."></textarea>
+                        </div>
+
+                        <button type="submit" id="btnSave" class="btn-save">Simpan Data</button>
+                        <button type="button" id="btnCancel" class="btn-cancel" onclick="cancelEditMode()">Batal</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <span><i class="fa-solid fa-list"></i> Riwayat Transaksi</span>
+                    <i class="fa-solid fa-rotate-right" onclick="loadHistory()" style="cursor:pointer; color:var(--primary);"></i>
+                </div>
+                <div class="card-body" style="padding:0;">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>PIC</th>
+                                    <th>Tipe/Ket</th>
+                                    <th style="text-align:right;">Nominal</th>
+                                    <th style="text-align:center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script src="../../config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

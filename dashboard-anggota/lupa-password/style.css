@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary: #0056b3;
+    --primary-dark: #004494;
+    --accent: #f0f7ff;
+    --text-main: #2c3e50;
+    --text-muted: #6c757d;
+    --white: #ffffff;
+    --bg-page: #f4f7f6;
+    --border: #e0e0e0;
+    --success: #198754;
+    --error: #dc3545;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+body {
+    height: 100vh;
+    background-color: var(--white);
+    overflow: hidden; 
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- VISUAL SIDE (KIRI - BIRU) --- */
+.visual-side {
+    width: 45%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+
+.visual-content { z-index: 2; padding: 20px; max-width: 80%; }
+
+.logo-box {
+    font-size: 3rem; margin-bottom: 20px;
+    background: rgba(255,255,255,0.15);
+    width: 90px; height: 90px; line-height: 90px;
+    border-radius: 50%; margin-inline: auto;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+.desktop-text h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+.desktop-text p { font-size: 1rem; opacity: 0.9; font-weight: 300; line-height: 1.6; }
+
+/* Lingkaran Dekorasi */
+.circle-1, .circle-2 {
+    position: absolute; border-radius: 50%; background: rgba(255,255,255,0.08);
+}
+.circle-1 { width: 300px; height: 300px; top: -100px; left: -100px; }
+.circle-2 { width: 400px; height: 400px; bottom: -150px; right: -50px; }
+
+/* --- FORM SIDE (KANAN) --- */
+.form-side {
+    width: 55%;
+    display: flex; justify-content: center; align-items: center;
+    background: var(--white); padding: 20px; overflow-y: auto;
+}
+
+.form-wrapper { width: 100%; max-width: 450px; padding: 10px; }
+.form-wrapper h2 { font-size: 1.8rem; color: var(--text-main); font-weight: 700; margin-top: 10px; }
+.subtitle { color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem; }
+
+/* INPUT STYLING */
+.input-group { position: relative; margin-bottom: 20px; }
+
+.input-group input {
+    width: 100%; padding: 14px 45px 14px 45px;
+    border: 2px solid var(--border); border-radius: 12px;
+    outline: none; font-size: 0.95rem; color: var(--text-main);
+    background: #fcfcfc; transition: all 0.3s ease;
+}
+
+.input-group i {
+    position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+    color: #b0b0b0; font-size: 1.1rem; transition: 0.3s;
+}
+
+/* Toggle Pass Icon */
+.input-group .toggle-pass { left: auto; right: 15px; cursor: pointer; padding: 5px; z-index: 10; }
+
+.input-group label {
+    position: absolute; left: 45px; top: 50%; transform: translateY(-50%);
+    color: #999; pointer-events: none; transition: 0.3s ease;
+    background: transparent; padding: 0 4px; font-size: 0.95rem;
+}
+
+/* Floating Label Animation */
+.input-group input:focus, .input-group input:not(:placeholder-shown) {
+    border-color: var(--primary); background: var(--white);
+    box-shadow: 0 4px 10px rgba(0, 86, 179, 0.05);
+}
+
+.input-group input:focus ~ label, .input-group input:not(:placeholder-shown) ~ label {
+    top: 0; left: 15px; font-size: 0.75rem;
+    color: var(--primary); background: var(--white);
+    font-weight: 600; height: auto;
+}
+
+.input-group input:focus ~ i { color: var(--primary); }
+
+/* BUTTON */
+button {
+    width: 100%; padding: 16px; background: var(--primary); color: var(--white);
+    border: none; border-radius: 12px; font-size: 1rem; font-weight: 600;
+    cursor: pointer; box-shadow: 0 5px 15px rgba(0,86,179,0.25);
+    transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;
+}
+button:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,86,179,0.3); }
+button:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.bottom-text { text-align: center; margin-top: 25px; font-size: 0.9rem; color: var(--text-muted); }
+.bottom-text a { color: var(--primary); font-weight: 600; text-decoration: none; }
+
+/* RESPONSIVE MOBILE (CURVED HEADER 400PX) */
+@media (max-width: 900px) {
+    body { overflow-y: auto; background-color: var(--bg-page); }
+    .container { flex-direction: column; height: auto; min-height: 100vh; }
+
+    /* Header Biru Melengkung Tajam */
+    .visual-side {
+        width: 100%; height: 100px;
+        border-bottom-left-radius: 400px; /* Lengkungan Khas */
+        border-bottom-right-radius: 400px;
+        justify-content: flex-start; padding-top: 2px; flex-shrink: 0;
+    }
+    .desktop-text { display: none; }
+    .logo-box {
+        width: 70px; height: 70px; line-height: 70px;
+        font-size: 2.2rem; margin-bottom: 0; background: rgba(255,255,255,0.2);
+    }
+
+    /* Form Transparan Naik */
+    .form-side {
+        width: 100%; background: transparent; padding: 0 20px;
+        margin-top: -80px; margin-bottom: 40px;
+        align-items: flex-start; overflow: visible;
+    }
+
+    /* Kartu Putih Melayang */
+    .form-wrapper {
+        background: var(--white); padding: 30px 25px;
+        border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    }
+    .form-wrapper h2 { font-size: 1.5rem; text-align: center; }
+    .subtitle { text-align: center; margin-bottom: 30px; }
+
+    .input-group input { padding: 12px 40px; font-size: 0.9rem; }
+    .input-group label { font-size: 0.85rem; }
+}
