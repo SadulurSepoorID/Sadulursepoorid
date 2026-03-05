@@ -31,8 +31,9 @@
                 }
             }
         }
-        // Auth Check
+        // Auth Check (Dimodifikasi untuk Smart Redirect)
         if (!localStorage.getItem('user_session')) {
+            sessionStorage.setItem('redirect_after_login', window.location.href);
             window.location.replace("../login/index.html");
         }
     </script>
@@ -141,8 +142,8 @@
             <button onclick="closeProductDetail()" class="mb-6 flex items-center gap-2 text-slate-500 hover:text-brand-600 font-bold text-sm transition-colors">
                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Katalog
             </button>
-            <div id="product-detail-container" class="bg-white rounded-[32px] p-6 md:p-10 shadow-soft border border-slate-100 flex flex-col md:flex-row gap-8 md:gap-12">
-                </div>
+            <div id="product-detail-container" class="bg-white rounded-[32px] p-5 md:p-8 shadow-soft border border-slate-100 flex flex-col md:flex-row gap-6 md:gap-10 items-start">
+    </div>
         </section>
 
         <section id="view-my-orders" class="view-section hidden">

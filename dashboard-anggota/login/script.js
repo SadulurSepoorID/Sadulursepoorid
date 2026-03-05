@@ -2,7 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 1. Cek Sesi (Auto Redirect jika sudah login)
     if(localStorage.getItem('user_session')) {
-        window.location.replace("../dashboard/index.html");
+        // Cek jika ada link titipan meski user sudah login
+        const linkTitipan = sessionStorage.getItem('redirect_after_login');
+        if (linkTitipan) {
+            sessionStorage.removeItem('redirect_after_login');
+            window.location.replace(linkTitipan);
+        } else {
+            window.location.replace("../dashboard/index.html");
+        }
     }
 
     // 2. Definisi Elemen (Menggunakan ID agar lebih spesifik dan akurat)
@@ -63,12 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     }));
                     
                     // B. Logika Redirect Pintar (Deep Linking)
-                    // Cek apakah user sebelumnya mau ke halaman khusus (misal: presensi)
-                    const linkTitipan = localStorage.getItem('redirect_after_login');
+                    // PENTING: Gunakan sessionStorage agar sinkron dengan shop/index.html
+                    const linkTitipan = sessionStorage.getItem('redirect_after_login');
 
                     if (linkTitipan) {
-                        localStorage.removeItem('redirect_after_login'); // Hapus jejak
-                        window.location.replace(linkTitipan); // Antar ke tujuan awal
+                        sessionStorage.removeItem('redirect_after_login'); // Hapus jejak
+                        window.location.replace(linkTitipan); // Antar ke tujuan awal (Shop Detail)
                     } else {
                         // Login normal, masuk ke dashboard utama
                         window.location.replace("../dashboard/index.html");

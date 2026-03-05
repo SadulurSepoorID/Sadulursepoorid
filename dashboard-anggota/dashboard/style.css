@@ -79,7 +79,8 @@ a { text-decoration: none; color: inherit; }
 .hero-icon { font-size: 8rem; opacity: 0.15; position: absolute; right: -20px; bottom: -20px; transform: rotate(-15deg); }
 
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
-.stat-card { background: var(--white); padding: 20px; border-radius: var(--radius); display: flex; align-items: center; gap: 20px; box-shadow: var(--shadow); }
+.stat-card { background: var(--white); padding: 20px; border-radius: var(--radius); display: flex; align-items: center; gap: 20px; box-shadow: var(--shadow); transition: 0.2s; }
+.stat-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
 .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; flex-shrink: 0; }
 .icon-box.blue { background: #e3f2fd; color: var(--primary); }
 .icon-box.green { background: #e8f5e9; color: #2e7d32; }
@@ -93,6 +94,47 @@ a { text-decoration: none; color: inherit; }
 .menu-card i { font-size: 2rem; color: var(--primary); margin-bottom: 15px; }
 .menu-card span { font-weight: 600; color: var(--text-dark); font-size: 0.9rem; }
 .menu-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+
+/* --- CHECK-IN HARIAN (E-COMMERCE STYLE) --- */
+.reward-forecast-section { background: var(--white); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 40px; border: 1px solid #f0f0f0; }
+.forecast-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.forecast-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text-dark); }
+.streak-badge { background: #fff8e1; color: #f57f17; padding: 5px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; border: 1px solid #ffe082; }
+
+.forecast-scroller { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none; justify-content: flex-start; }
+.forecast-scroller::-webkit-scrollbar { display: none; }
+
+.day-card { min-width: 75px; flex: 1; background: #fafafa; border: 1px solid #eeeeee; border-radius: 12px; padding: 12px 5px; text-align: center; position: relative; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+/* Koin Icon */
+.coin-icon { font-size: 1.8rem; color: #ffd54f; margin: 8px 0; text-shadow: 0 3px 6px rgba(255, 193, 7, 0.3); }
+
+/* Status: Sudah Diklaim (Centang) */
+.day-card.selesai { opacity: 0.6; background: #f5f5f5; }
+.day-card.selesai .coin-icon { color: #bdbdbd; text-shadow: none; }
+.check-overlay { position: absolute; background: #4caf50; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; top: 30px; border: 2px solid white; }
+
+/* Status: Aktif Hari Ini (Nyala & Bisa Diklik) */
+.day-card.active-klaim { background: #fffde7; border: 1.5px solid #fbc02d; box-shadow: 0 4px 12px rgba(251, 192, 45, 0.2); cursor: pointer; transform: translateY(-3px); }
+.day-card.active-klaim .coin-icon { color: #ffb300; animation: bounceCoin 2s infinite; }
+.active-label { background: #fbc02d; color: #333; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-top: 5px; width: 90%; }
+
+/* Animasi Koin Mantul */
+@keyframes bounceCoin {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-8px); }
+    60% { transform: translateY(-4px); }
+}
+
+.day-label { font-size: 0.75rem; color: var(--text-grey); font-weight: 600; }
+.day-poin { font-size: 0.9rem; font-weight: 800; color: #f57f17; }
+.day-card.selesai .day-poin { color: #9e9e9e; }
+
+.voucher-tag { position: absolute; top: -6px; right: -6px; background: #d32f2f; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 4px; font-weight: 700; box-shadow: 0 2px 4px rgba(211,47,47,0.3); }
+.status-label { margin-top: 8px; font-size: 0.7rem; font-weight: 600; padding: 4px 0; border-radius: 6px; }
+.status-label.bisa { background: #fbc02d; color: #333; cursor: pointer; }
+.status-label.done { background: #4caf50; color: white; }
+.status-label.lock { background: #e0e0e0; color: var(--text-grey); }
 
 /* MODALS */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 1; transition: 0.3s; padding: 20px; }
@@ -112,9 +154,6 @@ a { text-decoration: none; color: inherit; }
 
 /* SIDEBAR OVERLAY */
 #sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
-#loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 99999; display: flex; justify-content: center; align-items: center; }
-.spinner { width: 40px; height: 40px; border: 4px solid #eee; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
-@keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* --- MOBILE RESPONSIVE --- */
 @media (max-width: 900px) {

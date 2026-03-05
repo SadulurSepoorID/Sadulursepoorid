@@ -298,19 +298,19 @@ function openProductDetail(id) {
     let sliderHtml = '';
     if (allImages.length > 1) {
         const slides = allImages.map(src => `<div class="snap-center shrink-0 w-full h-full"><img src="${src}" class="w-full h-full object-cover"></div>`).join('');
-        sliderHtml = `<div id="detail-slider-${prod.id}" class="flex overflow-x-auto snap-x scrollbar-hide w-full h-full rounded-2xl isolate transition-all duration-300 scroll-smooth">${slides}</div>`;
+        sliderHtml = `<div id="detail-slider-${prod.id}" class="flex overflow-x-auto snap-x scrollbar-hide w-full h-full rounded-[20px] md:rounded-[24px] isolate transition-all duration-300 scroll-smooth">${slides}</div>`;
     } else {
-        sliderHtml = `<div id="detail-slider-${prod.id}" class="w-full h-full"><img src="${allImages[0]}" class="w-full h-full object-cover rounded-2xl"></div>`;
+        sliderHtml = `<div id="detail-slider-${prod.id}" class="w-full h-full"><img src="${allImages[0]}" class="w-full h-full object-cover rounded-[20px] md:rounded-[24px]"></div>`;
     }
 
     let selectHtml = '';
     if (varianObj.attributes && varianObj.attributes.length > 0) {
-        selectHtml = `<div class="mt-6 space-y-4">`;
+        selectHtml = `<h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fa-solid fa-layer-group"></i> Pilih Varian</h4><div class="grid grid-cols-1 sm:grid-cols-2 gap-4">`;
         varianObj.attributes.forEach((attr) => {
             selectHtml += `
                 <div>
-                    <label class="label-input">${attr.name}</label>
-                    <select class="var-select-${prod.id}-detail w-full p-3 text-sm bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 outline-none cursor-pointer hover:bg-white transition-colors focus:border-brand-500 shadow-sm" data-name="${attr.name}" onchange="updateDetailPrice('${prod.id}')">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide block mb-1.5">${attr.name}</label>
+                    <select class="var-select-${prod.id}-detail w-full p-3.5 text-sm bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 outline-none cursor-pointer hover:border-brand-300 transition-colors focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-50 shadow-sm" data-name="${attr.name}" onchange="updateDetailPrice('${prod.id}')">
                         ${attr.values.map(v => `<option value="${v}">${v}</option>`).join('')}
                     </select>
                 </div>
@@ -322,31 +322,39 @@ function openProductDetail(id) {
     }
 
     document.getElementById('product-detail-container').innerHTML = `
-        <div class="md:w-1/2 flex flex-col gap-4">
-            <div class="aspect-square bg-slate-100 rounded-3xl relative p-2 border border-slate-100 shadow-sm overflow-hidden">
+        <div class="w-full md:w-5/12 flex flex-col gap-4">
+            <div class="aspect-[4/5] md:aspect-square bg-slate-100 rounded-[24px] md:rounded-[32px] relative p-1.5 md:p-2 border border-slate-100 shadow-sm overflow-hidden md:sticky md:top-28">
                 ${sliderHtml}
             </div>
         </div>
-        <div class="md:w-1/2 flex flex-col">
-            <div class="flex items-center gap-3 mb-3">
-                <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest">${prod.tipe_stok}</span>
-                <span class="${prod.stok > 0 ? 'text-green-500 bg-green-50' : 'text-red-500 bg-red-50'} px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">${prod.stok > 0 ? 'Sisa ' + prod.stok : 'Habis'}</span>
+
+        <div class="w-full md:w-7/12 flex flex-col md:pl-2">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest">${prod.tipe_stok}</span>
+                <span class="${prod.stok > 0 ? 'text-green-600 bg-green-50 border border-green-100' : 'text-red-600 bg-red-50 border border-red-100'} px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest">${prod.stok > 0 ? 'Sisa ' + prod.stok : 'Habis'}</span>
             </div>
             
-            <h2 class="font-serif font-bold text-3xl md:text-4xl text-slate-900 leading-tight mb-2">${prod.nama}</h2>
-            <div class="mb-6" id="detail-price-box-${prod.id}"></div>
+            <h2 class="font-serif font-bold text-3xl md:text-4xl text-slate-900 leading-tight mb-3">${prod.nama}</h2>
+            <div class="mb-6 pb-6 border-b border-slate-100" id="detail-price-box-${prod.id}"></div>
 
-            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 mb-6">
-                <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Deskripsi Produk</h4>
-                <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line">${prod.deskripsi ? prod.deskripsi : "Belum ada deskripsi untuk produk ini."}</p>
+            <div class="mb-8">
+                <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-align-left"></i> Deskripsi Produk
+                </h4>
+                <div class="text-sm text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50/70 p-5 rounded-2xl border border-slate-100 max-h-[300px] overflow-y-auto custom-scrollbar shadow-inner">
+                    ${prod.deskripsi ? prod.deskripsi : "<span class='italic text-slate-400'>Belum ada deskripsi untuk produk ini.</span>"}
+                </div>
             </div>
 
-            ${selectHtml}
+            <div class="mb-8">
+                ${selectHtml}
+            </div>
 
-            <div class="flex gap-3 mt-8">
-                <button onclick="copyProductLink('${prod.id}')" class="w-14 h-14 bg-white border-2 border-slate-100 text-slate-400 hover:text-brand-600 hover:border-brand-200 rounded-2xl transition-all flex items-center justify-center active:scale-95"><i class="fa-solid fa-share-nodes"></i></button>
-                <button onclick="addToCart('${prod.id}', true)" ${isHabis?'disabled':''} class="w-14 h-14 bg-brand-50 text-brand-600 hover:bg-brand-100 rounded-2xl transition-all flex items-center justify-center active:scale-95 ${isHabis ? 'opacity-50 cursor-not-allowed':''}"><i class="fa-solid fa-cart-plus"></i></button>
-                <button onclick="buyNow('${prod.id}', true)" ${isHabis?'disabled':''} class="flex-1 bg-slate-900 text-white hover:bg-brand-600 rounded-2xl font-bold uppercase tracking-widest shadow-xl shadow-slate-900/10 active:scale-95 transition-all ${isHabis ? 'bg-slate-300 shadow-none cursor-not-allowed':''}">${isHabis ? 'Stok Habis' : 'Beli Langsung'}</button>
+            <div class="fixed bottom-0 left-0 right-0 p-4 pb-6 bg-white/95 backdrop-blur-xl border-t border-slate-200 z-[60] flex gap-3 
+                        md:relative md:p-0 md:pb-0 md:bg-transparent md:border-none md:backdrop-blur-none md:z-auto shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] md:shadow-none">
+                <button onclick="copyProductLink('${prod.id}')" class="w-14 h-14 shrink-0 bg-white border-2 border-slate-200 text-slate-400 hover:text-brand-600 hover:border-brand-300 hover:bg-brand-50 rounded-2xl transition-all flex items-center justify-center active:scale-95"><i class="fa-solid fa-share-nodes text-lg"></i></button>
+                <button onclick="addToCart('${prod.id}', true)" ${isHabis?'disabled':''} class="w-14 h-14 shrink-0 bg-brand-50 text-brand-600 hover:bg-brand-100 rounded-2xl transition-all flex items-center justify-center active:scale-95 ${isHabis ? 'opacity-50 cursor-not-allowed':''}"><i class="fa-solid fa-cart-plus text-lg"></i></button>
+                <button onclick="buyNow('${prod.id}', true)" ${isHabis?'disabled':''} class="flex-1 h-14 bg-slate-900 text-white hover:bg-brand-600 rounded-2xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-slate-900/20 active:scale-95 transition-all ${isHabis ? 'bg-slate-300 shadow-none cursor-not-allowed':''} flex items-center justify-center gap-2">${isHabis ? 'Stok Habis' : 'Beli Langsung <i class="fa-solid fa-arrow-right"></i>'}</button>
             </div>
         </div>
     `;
@@ -371,8 +379,8 @@ function updateDetailPrice(id) {
         
         const box = document.getElementById(`detail-price-box-${id}`);
         if(box) {
-            if(diskon > 0) box.innerHTML = `<span class="text-sm text-slate-400 line-through">Rp ${(harga).toLocaleString('id-ID')}</span><span class="font-bold text-red-500 text-3xl block mt-1">Rp ${(harga - diskon).toLocaleString('id-ID')}</span>`;
-            else box.innerHTML = `<span class="font-bold text-brand-600 text-3xl">Rp ${harga.toLocaleString('id-ID')}</span>`;
+            if(diskon > 0) box.innerHTML = `<span class="text-sm text-slate-400 line-through">Rp ${(harga).toLocaleString('id-ID')}</span><span class="font-bold text-red-500 text-3xl md:text-4xl block mt-1">Rp ${(harga - diskon).toLocaleString('id-ID')}</span>`;
+            else box.innerHTML = `<span class="font-bold text-brand-600 text-3xl md:text-4xl block mt-1">Rp ${harga.toLocaleString('id-ID')}</span>`;
         }
 
         const imageMap = window[`varianImageMap_${id}`];
