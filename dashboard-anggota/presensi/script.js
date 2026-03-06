@@ -507,16 +507,30 @@ async function submitPengajuanIzin() {
         bukti_mime: buktiMime
     };
 
-    try {
+try {
         const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
         const json = await res.json();
         
         if (json.status) {
             showToast(json.message, "success");
+            
+            // --- TAMPILKAN POP UP BUKTI (BARU) ---
+            document.getElementById('bukti-nama').innerText = window.currentUser.nama;
+            document.getElementById('bukti-nia').innerText = window.currentUser.nia;
+            document.getElementById('bukti-kegiatan').innerText = kegiatanObj.nama + " (" + kegiatanObj.tanggal + ")";
+            document.getElementById('bukti-tipe').innerText = tipe;
+            
+            const now = new Date();
+            document.getElementById('bukti-waktu').innerText = now.toLocaleString('id-ID');
+            
+            document.getElementById('modal-bukti-izin').classList.remove('hidden');
+            // ------------------------------------
+
             // Reset form
             document.getElementById('izin-keterangan').value = "";
             fileInput.value = "";
         } else {
+            // Tampilkan error jika duplikat atau gagal
             showToast(json.message, "error");
         }
     } catch(e) {
@@ -638,4 +652,22 @@ async function prosesPengajuanIzin(idIzin, statusAcc) {
     } catch(e) {
         showToast("Error memproses izin.", "error");
     }
+}
+
+// --- FUNGSI PENDUKUNG MODAL IZIN ---
+function closeModalBukti() {
+    document.getElementById('modal-bukti-izin').classList.add('hidden');
+}
+
+function shareIzinKeWA() {
+    const nama = window.currentUser.nama;
+    const nia = window.currentUser.nia;
+    const kegiatan = document.getElementById('bukti-kegiatan').innerText;
+    const tipe = document.getElementById('bukti-tipe').innerText;
+    
+    // Format teks otomatis untuk dikirim ke grup atau admin
+    const text = `*BUKTI PENGAJUAN ${tipe.toUpperCase()}*\n\nNama: ${nama}\nNIA: ${nia}\nKegiatan: ${kegiatan}\nStatus: *Menunggu Persetujuan Admin*\n\nSaya telah mengajukan form izin/sakit melalui Dashboard Sadulur Sepoor. Mohon bantuannya untuk diproses 🙏.`;
+    
+    const waUrl = `https://wa.me/6281299428406?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, '_blank');
 }

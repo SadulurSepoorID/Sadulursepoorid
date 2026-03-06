@@ -191,5 +191,37 @@
 
     <script src="../config.js"></script>
     <script src="script.js"></script>
+
+    <div id="modal-bukti-izin" class="modal-izin-overlay hidden">
+        <div class="modal-izin-content">
+            <div class="modal-izin-header">
+                <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 3rem; margin-bottom: 10px;"></i>
+                <h3 style="margin:0; color:#1e293b;">Pengajuan Berhasil</h3>
+                <p style="margin:0; font-size: 0.85rem; color:#64748b;">Silakan screenshot area di bawah ini</p>
+            </div>
+            <div class="modal-izin-body" id="capture-area">
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <h4 style="margin:0; color:#0056b3; font-size:1.1rem;">Sadulur Sepoor</h4>
+                    <span style="font-size:0.75rem; background:#f1f5f9; padding:2px 8px; border-radius:10px;">Bukti Pengajuan Izin/Sakit</span>
+                </div>
+                <table style="width:100%; font-size:0.85rem; color:#333; text-align:left; border-collapse: collapse;">
+                    <tr><td style="padding:6px 0; border-bottom:1px dashed #e2e8f0; width:35%;">Nama</td><td style="padding:6px 0; border-bottom:1px dashed #e2e8f0;">: <strong id="bukti-nama">...</strong></td></tr>
+                    <tr><td style="padding:6px 0; border-bottom:1px dashed #e2e8f0;">NIA</td><td style="padding:6px 0; border-bottom:1px dashed #e2e8f0;">: <strong id="bukti-nia">...</strong></td></tr>
+                    <tr><td style="padding:6px 0; border-bottom:1px dashed #e2e8f0;">Kegiatan</td><td style="padding:6px 0; border-bottom:1px dashed #e2e8f0;">: <strong id="bukti-kegiatan">...</strong></td></tr>
+                    <tr><td style="padding:6px 0; border-bottom:1px dashed #e2e8f0;">Tipe</td><td style="padding:6px 0; border-bottom:1px dashed #e2e8f0;">: <strong id="bukti-tipe">...</strong></td></tr>
+                    <tr><td style="padding:6px 0; border-bottom:1px dashed #e2e8f0;">Waktu</td><td style="padding:6px 0; border-bottom:1px dashed #e2e8f0;">: <span id="bukti-waktu">...</span></td></tr>
+                </table>
+                <div style="margin-top:15px; text-align:center; font-size:0.8rem; color:#b45309; background:#fef3c7; padding:8px; border-radius:6px; border:1px solid #fde68a;">
+                    Status: <strong>Menunggu Persetujuan Admin</strong>
+                </div>
+            </div>
+            <div class="modal-izin-footer">
+                <button class="btn-presensi btn-outline-presensi" onclick="closeModalBukti()" style="flex:1;">Tutup</button>
+                <button class="btn-presensi" style="background:#25D366; color:white; flex:1;" onclick="shareIzinKeWA()">
+                    <i class="fa-brands fa-whatsapp"></i> Lapor WA
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

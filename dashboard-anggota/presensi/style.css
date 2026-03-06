@@ -221,3 +221,40 @@ a { text-decoration: none; color: inherit; }
     }
 }
 
+/* --- MODAL BUKTI IZIN --- */
+.modal-izin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 4000; display: flex; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(3px); transition: opacity 0.3s ease; }
+.modal-izin-content { background: white; width: 100%; max-width: 340px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transform: scale(0.95); animation: popIn 0.3s forwards; }
+@keyframes popIn { to { transform: scale(1); } }
+.modal-izin-header { text-align: center; padding: 20px; background: #f8fafc; border-bottom: 1px solid #f1f5f9; }
+.modal-izin-body { padding: 20px; position: relative; background: #ffffff; }
+.modal-izin-footer { padding: 0 20px 20px 20px; display: flex; gap: 10px; background: #ffffff; }
+/* --- PERBAIKAN RESPONSIVITAS TABEL MODAL --- */
+.modal-izin-body table {
+    table-layout: fixed; /* Kunci lebar tabel agar tidak melampaui modal */
+    width: 100%;
+}
+
+.modal-izin-body td {
+    word-wrap: break-word; /* Paksa teks panjang turun ke bawah */
+    overflow-wrap: break-word;
+    vertical-align: top; /* Jaga teks tetap sejajar di atas jika barisnya tinggi */
+}
+
+/* Penyesuaian khusus untuk HP dengan layar sangat kecil (seperti iPhone SE / Android kecil) */
+@media (max-width: 400px) {
+    .modal-izin-content {
+        max-width: 95%; /* Biarkan modal mengisi 95% layar */
+    }
+    
+    .modal-izin-header {
+        padding: 15px; /* Kurangi padding header */
+    }
+    
+    .modal-izin-body {
+        padding: 15px; /* Kurangi padding body agar konten lega */
+    }
+    
+    .modal-izin-body table td:first-child {
+        width: 30% !important; /* Perkecil porsi kolom label (Nama, NIA, dll) agar kolom isian lebih lebar */
+    }
+}
