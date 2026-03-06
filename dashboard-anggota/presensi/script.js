@@ -403,3 +403,239 @@ inactivityTime();
 
 history.pushState(null, null, location.href);
 window.onpopstate = function () { history.go(1); };
+
+// ==========================================
+// --- MODUL PENGAJUAN IZIN (USER & ADMIN) ---
+// ==========================================
+
+// [USER] 1. Load Kegiatan untuk Dropdown Form Izin (Hanya H-3 ke atas)
+async function loadKegiatanMendatangIzin() {
+    const select = document.getElementById('izin-kegiatan');
+    try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'get_activities' }) });
+        const json = await res.json();
+        
+        select.innerHTML = '<option value="">-- Pilih Kegiatan (Min. H-3) --</option>';
+        if (json.status && json.data.length > 0) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            json.data.forEach(item => {
+                const eventDate = new Date(item.tanggal_raw);
+                eventDate.setHours(0,0,0,0);
+                
+                // Hitung selisih hari
+                const diffTime = eventDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                // Hanya tampilkan jika kegiatan H-3 atau lebih lama lagi
+                if (diffDays >= 0) {
+                    const opt = document.createElement('option');
+                    // Simpan data lengkap sebagai value (Stringified JSON)
+                    opt.value = JSON.stringify({ nama: item.nama, tanggal: item.tanggal_raw });
+                    opt.text = `${item.nama} (${item.tanggal_display})`;
+                    select.appendChild(opt);
+                }
+            });
+
+            if (select.options.length === 1) {
+                select.innerHTML = '<option value="">-- Tidak ada kegiatan H-3 ke atas --</option>';
+            }
+        }
+    } catch(e) {
+        select.innerHTML = '<option value="">Gagal memuat data</option>';
+    }
+}
+
+// Panggil fungsi di atas saat initMember berjalan
+// Sisipkan kode ini ke dalam fungsi initMember() yang sudah ada
+const originalInitMember = initMember;
+initMember = function() {
+    originalInitMember();
+    loadKegiatanMendatangIzin(); // Panggil fungsi load dropdown izin
+};
+
+// Fungsi Helper untuk Ubah Gambar ke Base64
+function getBase64(file) {
+   return new Promise((resolve, reject) => {
+     const reader = new FileReader();
+     reader.readAsDataURL(file);
+     reader.onload = () => resolve(reader.result);
+     reader.onerror = error => reject(error);
+   });
+}
+
+// [USER] 2. Submit Pengajuan Izin
+async function submitPengajuanIzin() {
+    const selectKegiatan = document.getElementById('izin-kegiatan').value;
+    const tipe = document.getElementById('izin-tipe').value;
+    const keterangan = document.getElementById('izin-keterangan').value;
+    const fileInput = document.getElementById('izin-bukti');
+    const btn = document.getElementById('btn-submit-izin');
+
+    if (!selectKegiatan) return showToast("Pilih kegiatan terlebih dahulu!", "error");
+    if (!keterangan) return showToast("Keterangan alasan wajib diisi!", "error");
+
+    const kegiatanObj = JSON.parse(selectKegiatan);
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+    let buktiBase64 = null;
+    let buktiMime = null;
+
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        if (file.size > 2 * 1024 * 1024) { // Limit 2MB
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Pengajuan';
+            return showToast("Ukuran foto maksimal 2MB!", "error");
+        }
+        buktiBase64 = await getBase64(file);
+        buktiMime = file.type;
+    }
+
+    const payload = {
+        action: 'ajukan_izin',
+        nia: window.currentUser.nia,
+        nama: window.currentUser.nama,
+        nama_kegiatan: kegiatanObj.nama,
+        tanggal_kegiatan: kegiatanObj.tanggal,
+        tipe: tipe,
+        keterangan: keterangan,
+        bukti_base64: buktiBase64,
+        bukti_mime: buktiMime
+    };
+
+    try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const json = await res.json();
+        
+        if (json.status) {
+            showToast(json.message, "success");
+            // Reset form
+            document.getElementById('izin-keterangan').value = "";
+            fileInput.value = "";
+        } else {
+            showToast(json.message, "error");
+        }
+    } catch(e) {
+        showToast("Error Koneksi saat mengirim pengajuan.", "error");
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Pengajuan';
+    }
+}
+
+// [ADMIN] 3. Load Daftar Izin untuk Kegiatan yang Dipilih
+async function loadAdminDaftarIzin() {
+    const listContainer = document.getElementById('admin-list-izin');
+    if (!selectedEvent) return;
+
+    listContainer.innerHTML = '<div style="font-size: 0.85rem; color:#92400e;">Memeriksa pengajuan izin...</div>';
+
+    try {
+        const res = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ 
+                action: 'get_daftar_izin', 
+                nama_kegiatan: selectedEvent.nama,
+                tanggal_kegiatan: selectedEvent.tanggal
+            }) 
+        });
+        const json = await res.json();
+        
+        if (json.status && json.data.length > 0) {
+            listContainer.innerHTML = ''; // Bersihkan
+
+            json.data.forEach(izin => {
+                // Jangan tampilkan jika sudah di proses (bisa dihilangkan kondisinya jika ingin tampil semua riwayat)
+                if(izin.status_acc !== "Menunggu") return;
+
+                const div = document.createElement('div');
+                div.style.background = "white";
+                div.style.padding = "10px";
+                div.style.borderRadius = "6px";
+                div.style.marginBottom = "10px";
+                div.style.border = "1px solid #fde68a";
+                div.style.fontSize = "0.85rem";
+                
+                let linkBukti = izin.bukti ? `<a href="${izin.bukti}" target="_blank" style="color:#2563eb; text-decoration:underline; margin-left:10px;"><i class="fa-solid fa-image"></i> Lihat Bukti</a>` : '';
+
+                div.innerHTML = `
+                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 5px;">${izin.nama} <span style="color:#d97706; background:#fef3c7; padding:2px 6px; border-radius:4px; font-size:0.75rem;">${izin.tipe}</span></div>
+                    <div style="color: #64748b; margin-bottom: 8px;">"${izin.keterangan}" ${linkBukti}</div>
+                    <div style="display:flex; gap:8px;">
+                        <button onclick="prosesPengajuanIzin('${izin.id_izin}', 'Disetujui')" style="background:#10b981; color:white; border:none; padding:5px 12px; border-radius:4px; cursor:pointer; font-weight:600;"><i class="fa-solid fa-check"></i> Acc</button>
+                        <button onclick="prosesPengajuanIzin('${izin.id_izin}', 'Ditolak')" style="background:#ef4444; color:white; border:none; padding:5px 12px; border-radius:4px; cursor:pointer; font-weight:600;"><i class="fa-solid fa-xmark"></i> Tolak</button>
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+
+            if (listContainer.innerHTML === '') {
+                listContainer.innerHTML = '<div style="font-size: 0.85rem; color:#92400e;">Tidak ada pengajuan izin tertunda.</div>';
+            }
+        } else {
+            listContainer.innerHTML = '<div style="font-size: 0.85rem; color:#92400e;">Tidak ada pengajuan izin.</div>';
+        }
+    } catch (e) {
+        listContainer.innerHTML = '<div style="font-size: 0.85rem; color:#ef4444;">Gagal memuat data izin.</div>';
+    }
+}
+
+// Modifikasi event listener select kegiatan di Admin untuk memicu load daftar izin juga
+const originalLoadEventDropdown = loadEventDropdown;
+loadEventDropdown = async function() {
+    await originalLoadEventDropdown(); // Jalankan yg lama
+    
+    // Override listener pada select-nya
+    const select = document.getElementById('sel-kegiatan');
+    // Hapus listener lama dengan clone node (trik cepat JS)
+    const newSelect = select.cloneNode(true);
+    select.parentNode.replaceChild(newSelect, select);
+    
+    newSelect.addEventListener('change', function() {
+        if (this.value) {
+            selectedEvent = JSON.parse(this.value);
+            document.getElementById('admin-actions').classList.remove('hidden');
+            document.getElementById('loc-info').innerText = selectedEvent.lokasi;
+            
+            // PANGGIL 2 FUNGSI: Presensi List & Izin List
+            loadAdminAttendeeList();
+            loadAdminDaftarIzin();
+        } else {
+            selectedEvent = null;
+            document.getElementById('admin-actions').classList.add('hidden');
+        }
+    });
+}
+
+// [ADMIN] 4. Eksekusi Acc / Tolak
+async function prosesPengajuanIzin(idIzin, statusAcc) {
+    if (!confirm(`Apakah Anda yakin ingin ${statusAcc.toUpperCase()} izin ini?`)) return;
+
+    try {
+        const res = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ 
+                action: 'proses_izin', 
+                id_izin: idIzin,
+                status_acc: statusAcc,
+                admin_nia: window.currentUser.nia // Di GAS dicek harus SS-0098
+            }) 
+        });
+        const json = await res.json();
+        
+        if (json.status) {
+            showToast(json.message, "success");
+            // Refresh kedua tabel agar sinkron
+            loadAdminDaftarIzin(); 
+            loadAdminAttendeeList(); 
+        } else {
+            showToast(json.message, "error");
+        }
+    } catch(e) {
+        showToast("Error memproses izin.", "error");
+    }
+}

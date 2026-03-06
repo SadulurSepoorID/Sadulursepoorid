@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="manifest" href="../manifest.json">
+    <link rel="manifest" href="../manifest.json">
     
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -68,6 +68,7 @@
             </header>
 
             <div class="container-presensi">
+                
                 <div id="view-anggota" class="hidden">
                     <div class="card" style="text-align: center; border-top: 4px solid var(--primary);">
                         <div class="card-header" style="justify-content:center; border:none;"><h3>Kartu Tanda Anggota</h3></div>
@@ -76,6 +77,37 @@
                             <h2 id="lbl-nama" style="font-size:1.3rem; color:var(--primary); font-weight:700;">...</h2>
                             <span id="lbl-nia" style="background:#f1f5f9; padding:5px 15px; border-radius:20px; font-size:0.9rem; color:#64748b; font-weight:500;">...</span>
                         </div>
+                    </div>
+
+                    <div class="card" style="border-left: 4px solid #f59e0b;">
+                        <div class="card-header"><h3><i class="fa-solid fa-envelope-open-text" style="color:#f59e0b;"></i> Form Pengajuan Izin</h3></div>
+                        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">
+                            * Pengajuan izin/sakit maksimal <strong>H-3</strong> sebelum kegiatan dimulai.
+                        </div>
+                        <div class="input-group" style="margin-bottom: 15px;">
+                            <label>Pilih Kegiatan Mendatang</label>
+                            <select id="izin-kegiatan" class="form-control-presensi">
+                                <option value="">-- Memuat Data... --</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 15px;">
+                            <label>Tipe Keterangan</label>
+                            <select id="izin-tipe" class="form-control-presensi">
+                                <option value="Izin">Izin (Keperluan Pribadi/Keluarga dll)</option>
+                                <option value="Sakit">Sakit</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 15px;">
+                            <label>Keterangan Tambahan</label>
+                            <textarea id="izin-keterangan" class="form-control-presensi" rows="2" placeholder="Tuliskan alasan lengkap..."></textarea>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 20px;">
+                            <label>Bukti Surat / Foto (Opsional)</label>
+                            <input type="file" id="izin-bukti" class="form-control-presensi" accept="image/*" style="padding: 8px;">
+                        </div>
+                        <button class="btn-presensi" style="background:#f59e0b; color:white;" onclick="submitPengajuanIzin()" id="btn-submit-izin">
+                            <i class="fa-solid fa-paper-plane"></i> Kirim Pengajuan
+                        </button>
                     </div>
 
                     <div class="card">
@@ -107,6 +139,16 @@
                             <select id="sel-kegiatan" class="form-control-presensi"><option value="">-- Memuat Data... --</option></select>
                         </div>
                         <div id="admin-actions" class="hidden" style="margin-top: 25px;">
+                            
+                            <div style="background:#fffbeb; padding:15px; border-radius:8px; border:1px solid #fde68a; margin-bottom:20px;">
+                                <div style="font-size:0.95rem; font-weight:700; color:#b45309; margin-bottom: 10px;">
+                                    <i class="fa-solid fa-envelope-open-text"></i> Menunggu Persetujuan Izin/Sakit
+                                </div>
+                                <div id="admin-list-izin">
+                                    <div style="font-size: 0.85rem; color:#92400e; font-style: italic;">Memuat data pengajuan...</div>
+                                </div>
+                            </div>
+
                             <div style="display:flex; gap:10px; margin-bottom:25px;">
                                 <button class="btn-presensi" onclick="toggleSound()" id="btn-sound" style="width:50px; flex:none; background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd;">
                                     <i class="fa-solid fa-volume-high"></i>
