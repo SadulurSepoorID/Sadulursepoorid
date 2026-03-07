@@ -208,41 +208,41 @@ async function fetchRewardStatus() {
         const data = await response.json();
         
         if (data.status) {
-            // Update Stat Poin di Atas
             statReward.innerHTML = `<span style="color:#f57f17; font-weight:bold;">${data.total_poin}</span> Pts`;
             if (document.getElementById('streak-day')) document.getElementById('streak-day').innerText = data.streak_hari;
             
-            // --- LOGIKA 7 HARI ALA E-COMMERCE (DI-RENDER DI FRONTEND) ---
             let streak = parseInt(data.streak_hari) || 0;
             let bisaKlaim = data.bisa_klaim_hari_ini;
+            let configMap = data.config_map || {}; // Ambil data config dari backend
             
             badgeStreak.innerText = `Streak: ${streak} Hari 🔥`;
 
-            // Tentukan user sedang di hari ke-berapa dalam siklus 1-7
             let posisiHariIni = streak % 7;
             if (posisiHariIni === 0 && streak > 0) posisiHariIni = 7;
             
-            // Jika hari ini belum klaim, berarti kotak yang nyala (aktif) adalah hari selanjutnya
-            // Jika streak putus/baru mulai (streak=0 & bisaKlaim), maka aktif di Hari 1
             let hariTargetKlaim = -1;
+            let baseStreak = streak - posisiHariIni; // Cari tahu user ada di siklus mana
+
             if (bisaKlaim) {
                 hariTargetKlaim = (streak === 0 || posisiHariIni === 7) ? 1 : posisiHariIni + 1;
+                if (streak === 0 || posisiHariIni === 7) baseStreak = streak; // Maju ke siklus baru
             }
 
             let html = '';
             for (let i = 1; i <= 7; i++) {
-                // Konfigurasi Poin Ala Kadarnya (Hari 1: +10, Hari 7: +50)
-                let poinHarian = 10 + ((i - 1) * 5); 
-                if (i === 7) poinHarian = 50; // Bonus hari ke-7
+                // Tentukan hari aslinya untuk mengambil poin yang pas (1-30)
+                let actualDay = baseStreak + i;
+                if (actualDay > 30) actualDay = ((actualDay - 1) % 30) + 1; 
+
+                // Ambil poin dari config, jika tidak ada di config default ke 10
+                let poinHarian = configMap[actualDay] ? configMap[actualDay].poin : 10;
                 
-                let iconClass = i === 7 ? "fa-gift" : "fa-coins"; // Hari ke 7 bentuknya kado
+                let iconClass = i === 7 ? "fa-gift" : "fa-coins";
                 let cardClass = 'day-card';
                 let statusHtml = '';
                 let extraHtml = '';
 
-                // Menentukan Status (Selesai, Aktif, atau Terkunci)
                 if (bisaKlaim && i === hariTargetKlaim) {
-                    // KOTAK NYALA (HARI INI BISA DIKLAIM)
                     cardClass += ' active-klaim';
                     statusHtml = `<div class="active-label">Klaim</div>`;
                     extraHtml = `onclick="claimDailyPoint()"`;
@@ -251,15 +251,11 @@ async function fetchRewardStatus() {
                     (!bisaKlaim && i <= posisiHariIni) || 
                     (bisaKlaim && posisiHariIni !== 7 && i <= posisiHariIni)
                 ) {
-                    // KOTAK REDUP (SUDAH DIKLAIM SEBELUMNYA)
                     cardClass += ' selesai';
                     statusHtml = `<div class="check-overlay"><i class="fa-solid fa-check"></i></div>`;
                 } 
-                else {
-                    // KOTAK BIASA (BESOK / LUSA)
-                    // Tidak ditambah class apa-apa, tapi biarkan bersih
-                }
 
+                // Tampilan tetap menggunakan "Hari ${i}" sesuai request
                 html += `
                     <div class="${cardClass}" ${extraHtml}>
                         ${statusHtml}
@@ -277,6 +273,69 @@ async function fetchRewardStatus() {
     }
 }
 
+async function claimDailyPoint() {
+    // 1. Kunci agar tidak bisa diklik dobel saat lag
+    if (window.isClaimingPoint) return;
+    window.isClaimingPoint = true;
+
+    // 2. Ubah UI Tombol Modal (Jika klaim dari modal)
+    const btnClaim = document.getElementById('btn-claim-daily');
+    let originalBtnText = '';
+    if (btnClaim) {
+        originalBtnText = btnClaim.innerHTML;
+        btnClaim.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+        btnClaim.disabled = true;
+    }
+
+    // 3. Ubah UI Kotak Hari di Dashboard (Jika klaim dari dashboard)
+    const activeLabel = document.querySelector('.active-klaim .active-label');
+    const activeIcon = document.querySelector('.active-klaim .coin-icon');
+    let originalLabelText = '';
+    
+    if (activeLabel) {
+        originalLabelText = activeLabel.innerHTML;
+        activeLabel.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; // Ganti teks Klaim jadi spinner
+    }
+    if (activeIcon) {
+        activeIcon.classList.remove('fa-coins');
+        activeIcon.classList.add('fa-spinner', 'fa-spin'); // Ganti ikon koin jadi spinner berputar
+    }
+
+    try {
+        // Tembak API ke Google Sheet
+        const response = await fetch(API_URL, {
+            method: 'POST', body: JSON.stringify({ action: 'claim_daily', nia: window.currentUser.nia, nama: window.currentUser.nama })
+        });
+        const data = await response.json();
+        
+        if (data.status) {
+            // Tunggu data di-fetch ulang dari server agar UI berubah jadi kotak centang/selesai
+            await fetchRewardStatus(); 
+            // Munculkan notifikasi setelah tampilan UI selesai berubah
+            alert(`🎉 Berhasil! Kamu mendapat ${data.poin_didapat} Poin (Streak Hari ke-${data.streak_baru}).`);
+        } else {
+            alert(data.message);
+            await fetchRewardStatus();
+        }
+    } catch (e) {
+        alert("Gagal menghubungi server. Periksa koneksi internetmu.");
+        
+        // Kembalikan ke tampilan semula jika terjadi error/gagal koneksi
+        if (btnClaim) {
+            btnClaim.innerHTML = originalBtnText;
+            btnClaim.disabled = false;
+        }
+        if (activeLabel) activeLabel.innerHTML = originalLabelText;
+        if (activeIcon) {
+            activeIcon.classList.remove('fa-spinner', 'fa-spin');
+            activeIcon.classList.add('fa-coins');
+        }
+    } finally {
+        // Buka kembali kuncinya
+        window.isClaimingPoint = false;
+    }
+}
+
 function openRewardModal() {
     document.getElementById('reward-modal').classList.remove('hidden');
     fetchRewardStatus(); 
@@ -284,35 +343,6 @@ function openRewardModal() {
 }
 
 function closeRewardModal() { document.getElementById('reward-modal').classList.add('hidden'); }
-
-async function claimDailyPoint() {
-    const btnClaim = document.getElementById('btn-claim-daily');
-    if(btnClaim) {
-        btnClaim.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
-        btnClaim.disabled = true;
-    }
-
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST', body: JSON.stringify({ action: 'claim_daily', nia: window.currentUser.nia, nama: window.currentUser.nama })
-        });
-        const data = await response.json();
-        
-        if (data.status) {
-            alert(`🎉 Berhasil! Kamu mendapat ${data.poin_didapat} Poin (Streak Hari ke-${data.streak_baru}).`);
-            fetchRewardStatus(); 
-        } else {
-            alert(data.message);
-            fetchRewardStatus();
-        }
-    } catch (e) {
-        alert("Gagal menghubungi server.");
-        if(btnClaim) {
-            btnClaim.innerHTML = "Coba Lagi";
-            btnClaim.disabled = false;
-        }
-    }
-}
 
 async function fetchRewardCatalog() {
     const list = document.getElementById('reward-catalog-list');
