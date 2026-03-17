@@ -1,2 +1,2 @@
 // GANTI URL INI DENGAN URL DEPLOY TERBARU KAMU (Cukup ganti di sini saja nantinya)
-const API_URL = "https://script.google.com/macros/s/AKfycbxJNzASI2A-v-wLeuMhcQI3W4AS6aFYtPYso-JJrymC-fiavkFu2J_5c8goYPdDaJfHvw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxAoWRQ4gHf1XDZz6nefAqtV4EuKylwB-iR4FAJPgzR50ZR5T_eAG824aB8IwrpnLik0g/exec";

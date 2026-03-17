@@ -1,194 +1,222 @@
 document.addEventListener('DOMContentLoaded', () => {
-    initDateTime();
-    checkLogin();
+    setDefaultDateTime();
     loadDashboardData();
 });
 
-// --- Auth Check ---
-function checkLogin() {
-    // const session = localStorage.getItem('user_session');
-    // if (!session) window.location.replace("../login/index.html"); 
-}
-
-function logout() {
-    localStorage.removeItem('user_session');
-    window.location.href = '../login/index.html';
+function switchTab(tabId, element) {
+    document.querySelectorAll('.view-section').forEach(sec => sec.style.display = 'none');
+    document.getElementById('view-' + tabId).style.display = 'block';
+    
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+    element.classList.add('active');
+    loadDashboardData();
 }
 
 function toggleSidebar() {
-    document.getElementById('mySidebar').classList.toggle('active');
+    document.getElementById('sidebar').classList.toggle('active');
     document.getElementById('sidebar-overlay').classList.toggle('active');
 }
 
-// --- Logic Dashboard & API ---
+function setDefaultDateTime() {
+    const now = new Date();
+    document.getElementById('tglTrx').value = now.toISOString().split('T')[0];
+    document.getElementById('jamTrx').value = now.toTimeString().slice(0, 5);
+}
 
+function formatRupiah(angka) {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka || 0);
+}
+
+function formatInputRupiah(input) {
+    let value = input.value.replace(/[^,\d]/g, '').toString();
+    if (value) input.value = new Intl.NumberFormat('id-ID').format(value);
+    else input.value = '';
+}
+
+// --- Fetch & Render Data ---
 async function loadDashboardData() {
-    document.getElementById('stat-saldo').innerText = "Memuat...";
-    
     try {
         const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'get_finance_dashboard' })
+            method: 'POST', body: JSON.stringify({ action: 'get_finance_dashboard' })
         });
         const result = await response.json();
 
+        // Pastikan response sukses
         if (result.status) {
-            // 1. Update Kartu Statistik
             document.getElementById('stat-saldo').innerText = formatRupiah(result.saldo);
-            document.getElementById('stat-in').innerText = formatRupiah(result.minggu_masuk);
-            document.getElementById('stat-out').innerText = formatRupiah(result.minggu_keluar);
-
-            // 2. Render Grafik
-            initChart(result.chart);
-
-            // 3. Render Tabel Riwayat
+            document.getElementById('stat-in').innerText = formatRupiah(result.bulan_masuk);
+            document.getElementById('stat-out').innerText = formatRupiah(result.bulan_keluar);
+            
+            initCharts(result);
+            renderTop10(result.top_10_kas || []);
             renderHistoryTable(result.riwayat || []); 
-
         } else {
-            console.error("Gagal load data:", result.message);
-            document.getElementById('stat-saldo').innerText = "Error";
-            document.getElementById('history-table-body').innerHTML = 
-                `<tr><td colspan="4" style="text-align:center; color:red; padding:20px;">Gagal memuat data.</td></tr>`;
+            Swal.fire('Gagal', result.message, 'error');
         }
     } catch (error) {
-        console.error("Error connection:", error);
-        document.getElementById('stat-saldo').innerText = "Offline";
-        document.getElementById('history-table-body').innerHTML = 
-            `<tr><td colspan="4" style="text-align:center; padding:20px;">Koneksi terputus.</td></tr>`;
+        console.error("Detail Error:", error);
+        Swal.fire('Offline / Error Sistem', 'Gagal memuat visualisasi data. Pastikan Google Apps Script sudah di-Deploy versi terbaru!', 'error');
     }
 }
 
-// --- Fungsi Render Tabel (PERBAIKAN DI SINI) ---
-function renderHistoryTable(data) {
-    const tbody = document.getElementById('history-table-body');
-    tbody.innerHTML = ''; 
+// --- INISIASI CHART LENGKAP ---
+let pieSaldo, pieIncome, pieExpense, barTahunan;
+const chartColors = ['#0A58CA', '#10B981', '#F59E0B', '#E11D48', '#8B5CF6', '#14B8A6', '#F97316', '#3B82F6'];
 
-    if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Belum ada data transaksi.</td></tr>`;
-        return;
-    }
+function initCharts(data) {
+    if(pieSaldo) pieSaldo.destroy();
+    if(pieIncome) pieIncome.destroy();
+    if(pieExpense) pieExpense.destroy();
+    if(barTahunan) barTahunan.destroy();
 
-    data.forEach(item => {
-        let badgeClass = 'badge-general';
-        let nominalClass = '';
-        
-        // PENTING: Menggunakan item.category (bukan item.kategori)
-        let labelKategori = item.category || 'Umum'; 
-
-        if (item.tipe === 'Masuk') {
-            badgeClass = 'badge-success';
-            nominalClass = 'text-success';
-        } else {
-            badgeClass = 'badge-danger';
-            nominalClass = 'text-danger';
-        }
-
-        const row = `
-            <tr>
-                <td>${item.tanggal}</td>
-                <td>
-                    <span class="${badgeClass}">${labelKategori}</span>
-                    ${item.note && item.note !== '-' ? `<br><small style="color:#888; font-size:0.8em;">${item.note}</small>` : ''}
-                </td>
-                <td>${item.pic || '-'}</td>
-                <td class="${nominalClass}">
-                    ${formatRupiah(item.nominal)}
-                </td>
-            </tr>
-        `;
-        tbody.innerHTML += row;
-    });
-}
-
-// --- Chart.js Configuration ---
-let financeChartInstance = null;
-
-function initChart(chartData) {
-    const ctx = document.getElementById('financeChart').getContext('2d');
-    
-    if (financeChartInstance) {
-        financeChartInstance.destroy();
-    }
-
-    const labels = chartData ? chartData.labels : [];
-    const dMasuk = chartData ? chartData.masuk : [];
-    const dKeluar = chartData ? chartData.keluar : [];
-
-    financeChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Pemasukan',
-                    data: dMasuk,
-                    borderColor: '#28a745',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    tension: 0.3,
-                    fill: true
-                },
-                {
-                    label: 'Pengeluaran',
-                    data: dKeluar,
-                    borderColor: '#dc3545',
-                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                    tension: 0.3,
-                    fill: true
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'top' },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) label += ': ';
-                            if (context.parsed.y !== null) {
-                                label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(context.parsed.y);
-                            }
-                            return label;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: { 
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return 'Rp ' + value.toLocaleString('id-ID');
-                        }
+    const getPieOptions = () => ({
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: {size: 11} } },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        let val = context.raw;
+                        let persen = total > 0 ? ((val / total) * 100).toFixed(1) + '%' : '0%';
+                        return ` ${context.label}: ${formatRupiah(val)} (${persen})`;
                     }
                 }
             }
         }
     });
-}
 
-// --- Utilities ---
-function initDateTime() {
-    const dateDisplay = document.getElementById('date-display');
-    const now = new Date();
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    if(dateDisplay) dateDisplay.innerText = now.toLocaleDateString('id-ID', options);
-}
-
-function formatRupiah(angka) {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
-}
-
-function downloadPDF() {
-    const element = document.getElementById('laporan-area');
-    const opt = {
-        margin: 0.5,
-        filename: 'Laporan_Keuangan_Sadulur_Sepoor.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    const checkData = (obj) => {
+        if(!obj || !obj.labels || obj.labels.length === 0) return { labels: ['Belum Ada'], data: [1], bg: ['#E2E8F0'] };
+        return { labels: obj.labels, data: obj.data, bg: chartColors };
     };
-    html2pdf().set(opt).from(element).save();
+
+    let pSaldo = checkData(data.sumber_saldo);
+    pieSaldo = new Chart(document.getElementById('pieSaldo'), {
+        type: 'doughnut', data: { labels: pSaldo.labels, datasets: [{ data: pSaldo.data, backgroundColor: pSaldo.bg }] }, options: getPieOptions()
+    });
+
+    let pIn = checkData(data.sumber_income);
+    pieIncome = new Chart(document.getElementById('pieIncome'), {
+        type: 'doughnut', data: { labels: pIn.labels, datasets: [{ data: pIn.data, backgroundColor: pIn.bg }] }, options: getPieOptions()
+    });
+
+    let pOut = checkData(data.sumber_pengeluaran);
+    pieExpense = new Chart(document.getElementById('pieExpense'), {
+        type: 'doughnut', data: { labels: pOut.labels, datasets: [{ data: pOut.data, backgroundColor: pOut.bg }] }, options: getPieOptions()
+    });
+
+    // BAR CHART TAHUNAN (Dilengkapi Safeguard)
+    let grafMasuk = data.grafik_tahunan ? data.grafik_tahunan.masuk : [0,0,0,0,0,0,0,0,0,0,0,0];
+    let grafKeluar = data.grafik_tahunan ? data.grafik_tahunan.keluar : [0,0,0,0,0,0,0,0,0,0,0,0];
+
+    barTahunan = new Chart(document.getElementById('barTahunan'), {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+            datasets: [
+                { label: 'Pemasukan', data: grafMasuk, backgroundColor: '#10B981', borderRadius: 4 },
+                { label: 'Pengeluaran', data: grafKeluar, backgroundColor: '#E11D48', borderRadius: 4 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { tooltip: { callbacks: { label: c => c.dataset.label + ': ' + formatRupiah(c.raw) } } },
+            scales: { y: { ticks: { callback: v => 'Rp ' + (v/1000) + 'K' } } }
+        }
+    });
+}
+
+function renderTop10(data) {
+    const box = document.getElementById('top10List');
+    if(!data || data.length === 0) {
+        box.innerHTML = '<p class="text-center">Belum ada penyumbang kas.</p>';
+        return;
+    }
+    
+    let html = '';
+    data.forEach((item, i) => {
+        let rankHtml = i + 1;
+        if(i === 0) rankHtml = '<i class="fa-solid fa-trophy" style="color:#F59E0B; font-size:1.1rem;"></i>';
+        else if(i === 1) rankHtml = '<i class="fa-solid fa-medal" style="color:#94A3B8; font-size:1.1rem;"></i>';
+        else if(i === 2) rankHtml = '<i class="fa-solid fa-medal" style="color:#B45309; font-size:1.1rem;"></i>';
+        
+        html += `
+            <div class="leaderboard-item">
+                <div class="leaderboard-info">
+                    <span class="leaderboard-rank">${rankHtml}</span>
+                    <span class="leaderboard-name">${item.nama}</span>
+                </div>
+                <div class="leaderboard-total">${formatRupiah(item.total)}</div>
+            </div>`;
+    });
+    box.innerHTML = html;
+}
+
+function renderHistoryTable(data) {
+    const tbody = document.getElementById('history-table-body');
+    if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center" style="padding:20px;">Belum ada data transaksi.</td></tr>`;
+        return;
+    }
+
+    let rowsHtml = ''; 
+    data.forEach(item => {
+        let badgeClass = item.tipe === 'Masuk' ? 'badge-success' : 'badge-danger';
+        let nominalClass = item.tipe === 'Masuk' ? 'text-green' : 'text-red';
+        let prefix = item.tipe === 'Masuk' ? '+' : '-';
+
+        rowsHtml += `
+            <tr>
+                <td><strong>${item.tanggal}</strong></td>
+                <td>
+                    <span class="badge ${badgeClass}">${item.category || 'Umum'}</span>
+                    ${item.note && item.note !== '-' ? `<div style="font-size:0.85rem; color:#64748B; margin-top:5px;">${item.note}</div>` : ''}
+                </td>
+                <td>${item.pic || '-'}</td>
+                <td class="${nominalClass}" style="font-weight:600;">${prefix} ${formatRupiah(item.nominal)}</td>
+            </tr>`;
+    });
+    tbody.innerHTML = rowsHtml;
+}
+
+// --- Submit Transaksi Baru ---
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnSubmit');
+    const oriText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+    btn.disabled = true;
+
+    const rawNominal = document.getElementById('nomTrx').value.replace(/\./g, '');
+
+    const payload = {
+        action: 'input_general', date: document.getElementById('tglTrx').value,
+        time: document.getElementById('jamTrx').value, type: document.getElementById('jenisTrx').value,
+        category: document.getElementById('katTrx').value, nominal: rawNominal,
+        pic: document.getElementById('picTrx').value, note: document.getElementById('ketTrx').value
+    };
+
+    try {
+        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const result = await response.json();
+
+        if (result.status) {
+            Swal.fire({ title: 'Tersimpan!', text: 'Transaksi berhasil dicatat.', icon: 'success', timer: 2000, showConfirmButton: false });
+            document.getElementById('formTransaksi').reset();
+            setDefaultDateTime();
+            loadDashboardData(); 
+        } else {
+            Swal.fire('Gagal Menyimpan', result.message, 'error');
+        }
+    } catch (error) {
+        Swal.fire('Error', 'Gagal terhubung ke server.', 'error');
+    } finally {
+        btn.innerHTML = oriText;
+        btn.disabled = false;
+    }
+}
+
+function logout() {
+    Swal.fire('Logout', 'Anda telah keluar dari halaman bendahara.', 'info');
 }

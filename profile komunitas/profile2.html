@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil Komunitas - Sadulur Sepoor ID</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  
+  <style>
+    /* CSS from index.html for Header and Footer */
+    :root {
+        --primary-color: #1e88e5;
+        --primary-dark: #1565c0;
+        --text-color: #333;
+        --white: #ffffff;
+        --transition: all 0.3s ease;
+    }
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    a {
+        text-decoration: none;
+        color: var(--primary-color);
+        transition: var(--transition);
+    }
+    a:hover {
+        color: var(--primary-dark);
+    }
+    header {
+        background-color: var(--white);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 12px 5%;
+    }
+    header nav { /* Specificity to avoid conflict */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .logo {
+        height: 50px;
+        transition: var(--transition);
+    }
+    .logo:hover {
+        transform: scale(1.05);
+    }
+    .menu {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        position: fixed;
+        top: 74px;
+        right: 0;
+        width: 300px;
+        height: calc(100vh - 74px);
+        background-color: var(--white);
+        transition: var(--transition);
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        padding: 20px 0;
+        z-index: 999;
+        transform: translateX(100%);
+    }
+    .menu.active {
+        transform: translateX(0);
+    }
+    .menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .menu ul li {
+        padding: 12px 25px;
+        border-bottom: 1px solid #eee;
+    }
+    .menu ul li a {
+        color: var(--text-color);
+        font-weight: 500;
+        font-size: 16px;
+        display: block;
+        transition: var(--transition);
+    }
+    .menu ul li a:hover {
+        color: var(--primary-color);
+        transform: translateX(5px);
+    }
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 20px;
+        cursor: pointer;
+        z-index: 1001;
+    }
+    .hamburger .line {
+        width: 100%;
+        height: 3px;
+        background-color: var(--primary-color);
+        transition: var(--transition);
+    }
+    footer {
+        background-color: #333;
+        color: #fff;
+        padding: 60px 0 20px;
+        font-family: 'Arial', sans-serif;
+    }
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+    .footer-section {
+        flex: 1;
+        min-width: 250px;
+        margin-bottom: 30px;
+        padding-right: 20px;
+    }
+    .social-media {
+        display: flex;
+        margin-top: 20px;
+    }
+    .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background-color: #444;
+        border-radius: 50%;
+        margin-right: 10px;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+    .social-icon:hover {
+        background-color: #0078ff;
+        transform: translateY(-3px);
+    }
+    .footer-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    .footer-title:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 2px;
+        background-color: #0078ff;
+    }
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .footer-links li {
+        margin-bottom: 12px;
+    }
+    .footer-links a {
+        color: #ccc;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: block;
+    }
+    .footer-links a:hover {
+        color: #0078ff;
+        padding-left: 5px;
+    }
+    .contact-info p {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        color: #ccc;
+    }
+    .contact-info i {
+        margin-right: 10px;
+        color: #0078ff;
+    }
+    .footer-bottom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        border-top: 1px solid #444;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+    }
+    .footer-bottom p {
+        color: #aaa;
+        font-size: 14px;
+        margin: 0; /* Reset margin */
+    }
+
+    /* CSS from profile2.html */
+    .slider {
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .slider::-webkit-scrollbar {
+      display: none;
+    }
+    .slide-item {
+      flex: 0 0 100%;
+      scroll-snap-align: center;
+    }
+    .table-container {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    .table-container::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+      background: #3b82f6;
+      border-radius: 4px;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover {
+      background: #2563eb;
+    }
+    .tab-button {
+      background: white;
+      color: #1e40af;
+      border: 2px solid #bfdbfe;
+    }
+    .tab-button:hover {
+      background: #dbeafe;
+      border-color: #3b82f6;
+    }
+    .tab-button.active {
+      background: #1e40af;
+      color: white;
+      border-color: #1e40af;
+    }
+    .year-table {
+      display: none;
+    }
+    .year-table.active {
+      display: block;
+    }
+    main {
+        padding-top: 100px; /* To prevent content from hiding behind fixed header */
+    }
+    @media (max-width: 768px) {
+      .table-container {
+        max-height: 300px;
+      }
+       .footer-section {
+            flex-basis: 100%;
+        }
+        .footer-bottom {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+  </style>
+</head>
+<body class="bg-white text-blue-900 font-sans">
+  
+  <header>
+      <nav>
+          <img src="https://i.imgur.com/9rAb7r7.png" alt="Logo" class="logo" onclick="window.location.href='index.html';">
+      </nav>
+  </header>
+
+  <main>
+    <section class="p-6">
+      <h2 class="text-2xl font-semibold mb-4 text-center">Daftar Realisasi Kegiatan Periode 2023-2025</h2>
+      
+      <div class="flex flex-wrap justify-center mb-6 bg-blue-50 p-2 rounded-lg">
+        <button id="tab-2025" class="tab-button px-4 py-2 mx-1 mb-2 rounded-md font-medium transition-all duration-200" onclick="showYear(2025)">2025</button>
+        <button id="tab-2024" class="tab-button px-4 py-2 mx-1 mb-2 rounded-md font-medium transition-all duration-200" onclick="showYear(2024)">2024</button>
+        <button id="tab-2023" class="tab-button px-4 py-2 mx-1 mb-2 rounded-md font-medium transition-all duration-200" onclick="showYear(2023)">2023</button>
+      </div>
+      
+      <div id="kegiatan-container"></div>
+    </section>
+
+    <section class="p-6 bg-blue-50">
+      <h2 class="text-2xl font-semibold mb-4">Kegiatan Selanjutnya</h2>
+      <div id="next-kegiatan" class="text-lg"></div>
+    </section>
+
+    <section class="p-6">
+      <h2 class="text-2xl font-semibold mb-4">Berita Terbaru</h2>
+      <div class="relative max-w-screen-md mx-auto">
+        <div id="berita-slider" class="slider flex overflow-x-auto snap-x transition-all duration-500 w-full">
+        </div>
+        <div class="flex justify-center mt-4 space-x-4">
+          <button id="prev-slide-btn" class="px-4 py-2 bg-blue-800 text-white rounded">Prev</button>
+          <button id="next-slide-btn" class="px-4 py-2 bg-blue-800 text-white rounded">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="p-6 bg-blue-100">
+      <h2 class="text-2xl font-semibold mb-4">Galeri Komunitas</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="gallery"></div>
+    </section>
+  </main>
+  
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+    <div class="bg-white p-6 rounded shadow-md max-w-sm text-center">
+      <p id="modal-text" class="text-blue-800 mb-4"></p>
+      <button onclick="closeModal()" class="px-4 py-2 bg-blue-800 text-white rounded">Tutup</button>
+    </div>
+  </div>
+
+  <footer>
+      <div class="footer-container">
+              <div class="social-media">
+                  <a href="https://www.facebook.com/share/1G32mgyres/?mibextid=qi2Omg" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                  <a href="https://www.tiktok.com/@sadulur.sepoor_official?_t=8puqjiITt58&_r=1" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                  <a href="https://www.instagram.com/sadulursepoor_id?igsh=bHNvcTI4ZmNiejBv" class="social-icon"><i class="fab fa-instagram"></i></a>
+              </div>
+          </div>
+          
+          <div class="footer-section">
+              <h3 class="footer-title">Link Cepat</h3>
+              <ul class="footer-links">
+                  <li><a href="index.html">Beranda</a></li>
+                  <li><a href="index.html#about">Tentang Kami</a></li>
+                  <li><a href="profile2.html">Profil</a></li>
+                  <li><a href="https://wa.me/6285171058989">Kontak</a></li>
+              </ul>
+          </div>
+          
+          <div class="footer-section">
+              <h3 class="footer-title">Layanan Kami</h3>
+              <ul class="footer-links">
+                  <li><a href="index.html#contact">Edukasi Keselamatan di Perlintasan</a></li>
+                  <li><a href="index.html#contact">Kolaborasi dengan Instansi Terkait</a></li>
+                  <li><a href="index.html#contact">Kegitan Komunitas & Kampanye Sosial</a></li>
+                  <li><a href="index.html#contact">Dokumentasi & Pelaporan</a></li>
+              </ul>
+          </div>
+          
+          <div class="footer-section">
+              <h3 class="footer-title">Hubungi Kami</h3>
+              <div class="contact-info">
+                  <p><i class="fas fa-map-marker-alt"></i> Jl. Kemiri Jaya, RT.05 RW.01 Kota Depok, Jawa Barat</p>
+                  <p><i class="fas fa-phone"></i> +62 852 1115 0310</p>
+                  <p><i class="fas fa-envelope"></i> sadulursepoor@gmail.com</p>
+              </div>
+          </div>
+      </div>
+      
+      <div class="footer-bottom">
+          <p>© 2025 Sadulur Sepoor Indonesia. Hak Cipta Dilindungi.</p>
+      </div>
+  </footer>
+
+  <script>
+    // Define variables in a broader scope to be accessed by functions
+    let currentYear = 2025;
+    let currentSlide = 0;
+
+    // Functions that can be called from HTML (onclick) need to be global
+    function showYear(year) {
+      document.querySelectorAll('.year-table').forEach(table => {
+        table.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-button').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(`table-${year}`).classList.add('active');
+      document.getElementById(`tab-${year}`).classList.add('active');
+      currentYear = year;
+    }
+
+    function showModal(text) {
+      document.getElementById('modal-text').innerText = text;
+      document.getElementById('modal').classList.remove('hidden');
+      document.getElementById('modal').classList.add('flex');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+      document.getElementById('modal').classList.remove('flex');
+    }
+
+    // Main logic to fetch data and render the page
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('profile2.json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const { kegiatan, berita, gallery } = data;
+          
+          // --- RENDER KEGIATAN TABLE ---
+          function renderKegiatanTables() {
+            const groupKegiatanByYear = () => {
+              const grouped = {};
+              kegiatan.forEach(item => {
+                const year = dayjs(item.tanggal).year();
+                if (!grouped[year]) {
+                  grouped[year] = [];
+                }
+                grouped[year].push(item);
+              });
+              Object.keys(grouped).forEach(year => {
+                grouped[year].sort((a, b) => dayjs(a.tanggal).diff(dayjs(b.tanggal)));
+                grouped[year].forEach((item, index) => {
+                  item.yearNumber = index + 1;
+                });
+              });
+              return grouped;
+            };
+
+            const container = document.getElementById("kegiatan-container");
+            const groupedKegiatan = groupKegiatanByYear();
+            container.innerHTML = ''; // Clear previous content
+            Object.keys(groupedKegiatan).sort((a, b) => b - a).forEach(year => {
+              const yearTable = document.createElement("div");
+              yearTable.className = `year-table ${year == currentYear ? 'active' : ''}`;
+              yearTable.id = `table-${year}`;
+              const tableContainer = document.createElement("div");
+              tableContainer.className = "table-container";
+              const table = document.createElement("table");
+              table.className = "w-full table-auto border-collapse";
+              const thead = document.createElement("thead");
+              thead.className = "bg-blue-100 sticky top-0";
+              thead.innerHTML = `
+                <tr>
+                  <th class="p-3 border border-blue-300 text-left">No</th>
+                  <th class="p-3 border border-blue-300 text-left">Kegiatan dan Tempat</th>
+                  <th class="p-3 border border-blue-300 text-left">Tanggal Pelaksanaan</th>
+                </tr>`;
+              const tbody = document.createElement("tbody");
+              tbody.className = "text-sm";
+              groupedKegiatan[year].forEach((item, index) => {
+                const row = document.createElement("tr");
+                row.className = index % 2 === 0 ? "bg-white" : "bg-blue-50";
+                row.innerHTML = `
+                  <td class="p-3 border border-blue-200">${item.yearNumber}</td>
+                  <td class="p-3 border border-blue-200">${item.nama}</td>
+                  <td class="p-3 border border-blue-200">${dayjs(item.tanggal).format("D MMMM YYYY")}</td>`;
+                tbody.appendChild(row);
+              });
+              table.appendChild(thead);
+              table.appendChild(tbody);
+              tableContainer.appendChild(table);
+              yearTable.appendChild(tableContainer);
+              container.appendChild(yearTable);
+            });
+          }
+          renderKegiatanTables();
+          document.getElementById(`tab-${currentYear}`).classList.add('active');
+
+
+          // --- RENDER NEXT KEGIATAN ---
+          const now = dayjs();
+          const nextKegiatanList = kegiatan
+              .map(k => ({...k, dateObj: dayjs(k.tanggal, 'YYYY-MM-DD')}))
+              .filter(k => k.dateObj.isAfter(now) || k.dateObj.isSame(now, 'day'))
+              .sort((a,b) => a.dateObj - b.dateObj);
+          const next = nextKegiatanList[0];
+          if (next) {
+              const selisih = next.dateObj.diff(now, 'day');
+              let teksSelisih = (selisih === 0) ? "(hari ini)" : `(${selisih + 1} hari lagi)`;
+              document.getElementById("next-kegiatan").innerText = `${next.nama} - ${next.dateObj.format("D MMMM YYYY")} ${teksSelisih}`;
+          } else {
+              document.getElementById("next-kegiatan").innerText = "Tidak ada kegiatan berikutnya.";
+          }
+
+
+          // --- RENDER BERITA SLIDER ---
+          const beritaSlider = document.getElementById("berita-slider");
+          berita.forEach(b => {
+            const slide = document.createElement("div");
+            slide.className = "slide-item bg-white border p-6 shadow-md rounded mx-auto w-full max-w-screen-md";
+            slide.innerHTML = `<h3 class='text-xl font-bold mb-2'>${b.judul}</h3><p class='text-sm text-blue-500 mb-1'>Sumber: <a href='${b.url}' class='underline' target='_blank'>${b.sumber}</a></p><p>${b.deskripsi}</p>`;
+            beritaSlider.appendChild(slide);
+          });
+          
+          const showSlide = (index) => {
+            beritaSlider.scrollTo({ left: index * beritaSlider.offsetWidth, behavior: 'smooth' });
+            currentSlide = index;
+          };
+          const nextSlide = () => {
+            currentSlide = (currentSlide + 1) % berita.length;
+            showSlide(currentSlide);
+          };
+          const prevSlide = () => {
+            currentSlide = (currentSlide - 1 + berita.length) % berita.length;
+            showSlide(currentSlide);
+          };
+
+          document.getElementById('prev-slide-btn').onclick = prevSlide;
+          document.getElementById('next-slide-btn').onclick = nextSlide;
+          setInterval(nextSlide, 5000);
+
+
+          // --- RENDER GALLERY ---
+          const galeriContainer = document.getElementById("gallery");
+          gallery.forEach(g => {
+            const item = document.createElement("div");
+            item.innerHTML = `
+              <div class="cursor-pointer group">
+                <img src="${g.src}" class="rounded shadow-md transition duration-300 hover:opacity-80" onclick="showModal('${g.deskripsi.replace(/'/g, "\\'")}')">
+              </div>`;
+            galeriContainer.appendChild(item);
+          });
+        })
+        .catch(error => {
+          console.error('Gagal memuat data:', error);
+          document.querySelector('main').innerHTML = '<p class="text-center text-red-500 font-semibold p-10">Gagal memuat konten. Silakan periksa koneksi Anda atau coba lagi nanti.</p>';
+        });
+    });
+  </script>
+</body>
+</html>

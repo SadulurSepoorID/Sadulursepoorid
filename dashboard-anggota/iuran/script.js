@@ -72,106 +72,50 @@ async function initMemberView() {
                 });
             }
 
-            // B. LOGIKA TAGIHAN & ALERT
+            // B. LOGIKA PEMBAYARAN REGULER (Tanpa Tunggakan)
             const alertEl = document.getElementById('event-alert');
             const inputNominal = document.getElementById('pay-nominal');
             const cashOpt = document.getElementById('cash-opt');
             const qrisRadio = document.querySelector('input[value="QRIS"]');
-            
-            const bill = data.bill_status; 
-            const unpaidList = data.unpaid_list || [];
 
-            // --- DETEKSI APAKAH HARI INI ADA KEGIATAN? ---
             let isEventToday = data.is_event_today || false;
-
-            // Fallback: Cek manual di client jika server belum update
             if (!isEventToday && data.next_event && data.next_event.tanggal) {
                 const todayStr = getLocalISODate();
-                if (data.next_event.tanggal === todayStr) {
-                    isEventToday = true;
-                }
+                if (data.next_event.tanggal === todayStr) isEventToday = true;
             }
 
-            // Reset Default State
+            // Reset Input Default (Minimal 5k)
             alertEl.className = "alert-box"; 
             inputNominal.disabled = false;
+            inputNominal.value = 5000;
+            inputNominal.min = 5000;
 
-            // --- LOGIKA UTAMA ---
-            if (bill && bill.count > 0) {
-                // KASUS 1: PUNYA TUNGGAKAN
-                const totalHutang = bill.total_must_pay;
+            if (data.next_event || isEventToday) {
+                // Kasus: Ada Event
+                const namaEvent = data.event_today_name || (data.next_event ? data.next_event.nama : ""); 
+                currentEventRef = "Kegiatan: " + namaEvent; 
+                const lokasi = data.next_event ? data.next_event.lokasi : "";
                 
-                inputNominal.value = totalHutang;
-                inputNominal.min = totalHutang;
-                currentEventRef = bill.label; 
-                const tampilanRinci = formatBillGrouped(unpaidList);
-
-                alertEl.className = "alert-box alert-danger";
-                alertEl.innerHTML = `
-                    <div style="width:100%">
-                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px; border-bottom:1px solid rgba(183, 28, 28, 0.2); padding-bottom:8px;">
-                            <i class="fa-solid fa-triangle-exclamation" style="font-size:1.2rem;"></i> 
-                            <span style="font-size:1rem; font-weight:bold;">TUNGGAKAN (${bill.count} Periode)</span>
-                        </div>
-                        
-                        <div style="font-size:0.9rem; margin-bottom:10px;">
-                            Nominal disesuaikan menjadi <strong>Rp ${totalHutang.toLocaleString('id-ID')}</strong>.
-                        </div>
-
-                        ${tampilanRinci}
-
-                        <div style="margin-top:10px; font-size:0.75rem; color:#b71c1c; font-style:italic;">
-                            *Mohon segera dilunasi demi kebaikan bersama.
-                        </div>
-                    </div>`;
-
-                // Jika MENUNGGAK TAPI HARI INI EVENT -> Boleh Tunai
-                if (isEventToday) {
-                    cashOpt.style.display = 'block';
-                    if(!document.querySelector('input[name="metode"]:checked')) qrisRadio.checked = true;
-                } else {
-                    cashOpt.style.display = 'none'; 
-                    qrisRadio.checked = true;
-                }
-
+                alertEl.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-calendar-check"></i> <span>Kas Kegiatan: <b>${namaEvent}</b> ${lokasi ? `<br><small>(${lokasi})</small>` : ''}</span></div>`;
+                alertEl.classList.add("active-event");
+                
+                if (isEventToday) cashOpt.style.display = 'block'; 
+                else cashOpt.style.display = 'none'; 
+                
+                qrisRadio.checked = true; 
             } else {
-                // KASUS 2: LUNAS (NORMAL)
-                inputNominal.value = 5000;
-                inputNominal.min = 5000;
-
-                if (data.next_event) {
-                    // Ada Event
-                    const namaEvent = data.event_today_name || data.next_event.nama; 
-                    currentEventRef = namaEvent; 
-                    const lokasi = data.next_event.lokasi || "";
-                    
-                    alertEl.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-calendar-check"></i> <span>Kas untuk Kegiatan: <b>${namaEvent}</b> ${lokasi ? `<br><small>(${lokasi})</small>` : ''}</span></div>`;
-                    alertEl.classList.add("active-event");
-                    
-                    // Cek Hari H
-                    if (isEventToday) {
-                        cashOpt.style.display = 'block'; 
-                    } else { 
-                        cashOpt.style.display = 'none'; 
-                    }
-                    qrisRadio.checked = true; 
-
-                } else {
-                    // Minggu Biasa
-                    const today = new Date();
-                    const weekNum = Math.ceil(today.getDate() / 7);
-                    const monthName = today.toLocaleDateString('id-ID', { month: 'long' });
-                    currentEventRef = `Minggu ke-${weekNum} (${monthName})`; 
-                    
-                    alertEl.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-circle-check"></i> <span>Terima Kasih! Iuran Anda lunas hingga saat ini.</span></div>`;
-                    alertEl.style.backgroundColor = "#e8f5e9";
-                    alertEl.style.color = "#2e7d32";
-                    
-                    cashOpt.style.display = 'none';
-                    qrisRadio.checked = true;
-                }
+                // Kasus: Minggu Biasa (Tidak ada event)
+                const today = new Date();
+                const weekNum = Math.ceil(today.getDate() / 7);
+                const monthName = today.toLocaleDateString('id-ID', { month: 'long' });
+                currentEventRef = `Minggu ke-${weekNum} (${monthName})`; 
+                
+                alertEl.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-wallet"></i> <span>Iuran Kas: <b>${currentEventRef}</b></span></div>`;
+                
+                cashOpt.style.display = 'none';
+                qrisRadio.checked = true;
             }
-            toggleQRIS(); // Jalankan toggle untuk set tampilan awal
+            toggleQRIS(); 
         }
     } catch (e) { 
         console.error("Error load member:", e);
@@ -595,12 +539,9 @@ async function checkMemberDebt(nia) {
     const nominalInput = document.getElementById('input-manual-nominal');
     const loading = document.getElementById('debt-loading');
     
-    // Reset Nominal
     nominalInput.value = 5000;
     nominalInput.min = 5000;
-
-    // Reset Container
-    container.innerHTML = '<div style="color:#888; text-align:center; padding-top:20px;">-- Memuat Data... --</div>';
+    container.innerHTML = ''; 
 
     if (!nia) {
         container.innerHTML = '<div style="color:#888; text-align:center; padding-top:20px;">-- Pilih Anggota Terlebih Dahulu --</div>';
@@ -615,36 +556,33 @@ async function checkMemberDebt(nia) {
             body: JSON.stringify({ action: 'get_kas_history', nia: nia }) 
         });
         const data = await res.json();
+        loading.style.display = 'none';
 
-        container.innerHTML = ''; // Bersihkan loading
-
-        // 1. Render Tagihan (Jika ada)
-        if (data.status && data.unpaid_list && data.unpaid_list.length > 0) {
-            data.unpaid_list.forEach(item => {
-                // Buat elemen label pembungkus
-                const label = document.createElement('label');
-                label.className = 'checkbox-item';
-                
-                label.innerHTML = `
-                    <input type="checkbox" value="${item.label}" onchange="calculateManualTotal()">
-                    <span>${item.display}</span>
-                `;
-                container.appendChild(label);
-            });
+        // Tentukan label periode saat ini
+        let currentLabel = "";
+        if (data.next_event || data.is_event_today) {
+            currentLabel = "Kegiatan: " + (data.event_today_name || data.next_event.nama);
         } else {
-            const emptyMsg = document.createElement('div');
-            emptyMsg.style.padding = "10px";
-            emptyMsg.style.color = "green";
-            emptyMsg.innerHTML = "<i class='fa-solid fa-check'></i> Tidak ada tunggakan.";
-            container.appendChild(emptyMsg);
+            const today = new Date();
+            const weekNum = Math.ceil(today.getDate() / 7);
+            const monthName = today.toLocaleDateString('id-ID', { month: 'long' });
+            currentLabel = `Minggu ke-${weekNum} (${monthName})`;
         }
+
+        // Buat 1 opsi checkbox otomatis untuk periode saat ini
+        const label = document.createElement('label');
+        label.className = 'checkbox-item';
+        label.innerHTML = `
+            <input type="checkbox" value="${currentLabel}" onchange="calculateManualTotal()" checked>
+            <span>${currentLabel}</span>
+        `;
+        container.appendChild(label);
         
-        // CATATAN: Opsi "Lainnya" telah DIHAPUS sesuai permintaan.
+        calculateManualTotal(); // Hitung nominal otomatis ke 5000
 
     } catch (e) {
         console.error(e);
-        container.innerHTML = '<div style="color:red; padding:10px;">Gagal memuat tagihan.</div>';
-    } finally {
+        container.innerHTML = '<div style="color:red; padding:10px;">Gagal memuat data.</div>';
         loading.style.display = 'none';
     }
 }

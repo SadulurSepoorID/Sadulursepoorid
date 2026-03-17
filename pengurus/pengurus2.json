@@ -1,0 +1,158 @@
+[
+  {
+    "nama": "Herie Heryadi",
+    "nia": "SS-0001",
+    "jabatan": "Pembina & Penasehat",
+    "tanggal_lahir": "9 Maret 1986",
+    "alamat": "Pademangan, Jakarta Utara",
+    "deskripsi": "Beliau merupakan salah satu pendiri komunitas Sadulur Sepoor.",
+    "foto": "https://i.ibb.co.com/bmH1Dcz/IMG-20240923-184352.jpg",
+    "socials": {
+      "whatsapp": "https://wa.me/6285171058989",
+      "instagram": "https://www.instagram.com/denherie86?igsh=ZDI3d3hhcWNnOGFx"
+    }
+  },
+  {
+    "nama": "Arjuna Pamungkas",
+    "nia": "SS-0004",
+    "jabatan": "Pembina & Penasehat",
+    "tanggal_lahir": "Jakarta",
+    "alamat": "Matraman, Jakarta Timur",
+    "deskripsi": "Beliau juga merupakan salah satu pendiri komunitas Sadulur Sepoor.",
+    "foto": "https://i.ibb.co.com/WV5h00V/IMG-20240923-184411.jpg",
+    "socials": {
+      "whatsapp": "https://wa.me/6285893394792",
+      "instagram": "https://www.google.com/url?q=https%3A%2F%2Finstagram.com%2Farjuna.huwae_&sa=D&sntz=1&usg=AOvVaw29E5rCrMlC3P4EmYpTvzqg"
+    }
+  },
+  {
+    "nama": "Mohammad Walid Ridho",
+    "nia": "SS-0087",
+    "jabatan": "Pembina Anggota",
+    "tanggal_lahir": "14 September 2007",
+    "alamat": "Sawah Besar, Jakarta Pusat",
+    "deskripsi": "M Walid Ridho lahir di Jakarta, saat ini beliau sedang melaksanakan magang di PT. Wolu Studio.",
+    "foto": "https://i.ibb.co.com/gP8vGGr/IMG-20240923-185525.jpg",
+    "socials": {
+      "whatsapp": "https://wa.me/6281381937268",
+      "instagram": "https://www.google.com/url?q=https%3A%2F%2Finstagram.com%2Fridho_railfans_&sa=D&sntz=1&usg=AOvVaw0IMVDUeCMl-sRXH8Y1XUp3"
+    }
+  },
+  {
+    "nama": "Fathir Ahmad Maulana",
+    "nia": "SS-0098",
+    "jabatan": "Ketua Umum",
+    "tanggal_lahir": "14 April 2007",
+    "alamat": "Cakung, Jakarta Timur",
+    "deskripsi": "Fathir Ahmad Maulana lahir di Jakarta, saat ini beliau sedang melaksanakan magang di PT. Wolu Studio.",
+    "foto": "../img/Fathir Ahmad Maulana.jpg",
+    "socials": {
+      "whatsapp": "https://wa.me/6281381937268",
+      "instagram": "https://www.google.com/url?q=https%3A%2F%2Finstagram.com%2Fridho_railfans_&sa=D&sntz=1&usg=AOvVaw0IMVDUeCMl-sRXH8Y1XUp3"
+    }
+  },
+  {
+    "nama": "Ridho Ariotama Adi Danuarta",
+    "nia": "SS-0086",
+    "jabatan": "Wakil Ketua Umum",
+    "tanggal_lahir": "28 Januari 2003",
+    "alamat": null,
+    "deskripsi": "Ridho Ariotama Adi Danuarta lahir di Bekasi pada tanggal 28 Januari 2003.",
+    "foto": "https://i.ibb.co.com/pzWJtvC/IMG-20240923-184158.jpg",
+    "socials": {
+      "whatsapp": "https://wa.me/6285882312761",
+      "instagram": "https://www.instagram.com/ridhoaad_?igsh=bm9vdDRvajZsZmph"
+    }
+  },
+  {
+    "nama": "Akbar Nurhidayanto",
+    "nia": "SS-0234",
+    "jabatan": "Sekretaris",
+    "tanggal_lahir": "25 Desember 2006",
+    "alamat": null,
+    "deskripsi": "Akbar Nurhidayanto lahir di Jakarta pada tanggal 25 Desember 2006.",
+    "foto": "../img/Akbar Nurhidayanto.jpg",
+    "socials": {
+      "whatsapp": "https://wa.me/6283879874942",
+      "instagram": "https://www.instagram.com/ucancallmebar"
+    }
+  },
+  {
+    "nama": "Muhammad Rizky Hidayat",
+    "nia": "SS-0027",
+    "jabatan": "Bendahara",
+    "tanggal_lahir": "29 September 2004",
+    "alamat": null,
+    "deskripsi": "Muhammad Rizky Hidayat lahir di Jakarta pada tanggal 29 September 2004.",
+    "foto": "https://i.ibb.co.com/yQkcrzC/IMG-20240923-184337.jpg",
+    "socials": {
+      "whatsapp": "https://wa.me/6281317467169",
+      "instagram": "https://www.instagram.com/muh_rizky_h?igsh=MTJmOGlsMDF1ZWZoOA=="
+    }
+  },
+  {
+    "nama": "Muhammad Ridwan",
+    "nia": "SS-0096",
+    "jabatan": "Humas Internal",
+    "tanggal_lahir": "01 Juni 2003",
+    "alamat": null,
+    "deskripsi": "Muhammad Ridwan lahir di Jakarta pada tanggal 01 Juni 2003.",
+    "foto": "../img/Muhammad Ridwan.jpg",
+    "socials": {
+      "whatsapp": "https://wa.me/628999136243s",
+      "instagram": "https://www.instagram.com/mhmd.r1dwan_"
+    }
+  },
+  {
+    "nama": "Indah Hurun Aeni",
+    "nia": "SS-0243",
+    "jabatan": "Humas Eksternal",
+    "tanggal_lahir": "13 Mei 2007",
+    "alamat": null,
+    "deskripsi": "Indah Hurun Aeni lahir di Jakarta pada tanggal 13 Mei 2007.",
+    "foto": "../img/Indah Hurun Aeni.jpg",
+    "socials": {
+      "whatsapp": "https://wa.me/6288297784778",
+      "instagram": "https://www.instagram.com/ndahraenn"
+    }
+  },
+  {
+    "nama": "Agil Pramono",
+    "nia": "SS-0063",
+    "jabatan": "Manajemen Sumber Daya Manusia",
+    "tanggal_lahir": "27 April 2006",
+    "alamat": null,
+    "deskripsi": "Agil Pramono lahir di Tegal pada tanggal 27 April 2006.",
+    "foto": "https://i.ibb.co.com/xj4hcyr/IMG-20240923-202033.jpg",
+    "socials": {
+      "whatsapp": "https://wa.me/6281299428406",
+      "instagram": "https://www.instagram.com/agllzqc._?igsh=MmtnMml1d2tidmty"
+    }
+  },
+  {
+    "nama": "Eki Apriandi",
+    "nia": "SS-0019",
+    "jabatan": "Koordinator Kegiatan",
+    "tanggal_lahir": "8 April 1994",
+    "alamat": null,
+    "deskripsi": "Eki Apriandi lahir di Depok pada tanggal 8 April 1994.",
+    "foto": "https://i.imgur.com/8mNmF8o.jpeg",
+    "socials": {
+      "whatsapp": "https://wa.me/6283893331369",
+      "instagram": "https://www.instagram.com/ekiapriandi_asli?igsh=OTZya256ODdxdXA5"
+    }
+  },
+  {
+    "nama": "Muhammad Alfazely Wibisono",
+    "nia": "SS-0213",
+    "jabatan": "Koordinator Dokumentasi",
+    "tanggal_lahir": "11 Mei 2007",
+    "alamat": null,
+    "deskripsi": "Muhammad Alfazely Wibisono lahir di Jakarta pada tanggal 11 Mei 2007.",
+    "foto": "../img/M Alfazely Wibisono.jpeg",
+    "socials": {
+      "whatsapp": "https://wa.me/6285223419008",
+      "instagram": "https://www.instagram.com/kap_mobil?igsh=dHRsdGpocDh4aWVx"
+    }
+  }
+]

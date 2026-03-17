@@ -3,118 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ringkasan Kas - Sadulur Sepoor</title>
-    <link rel="stylesheet" href="style.css"> 
+    <title>Bendahara - Sadulur Sepoor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: { primary: '#0A58CA', 'primary-light': '#eff6ff', }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        /* --- SIDEBAR ORIGINAL CSS (TIDAK DIUBAH) --- */
+        :root { --primary: #0A58CA; --primary-light: #eff6ff; --secondary: #64748B; --danger: #E11D48; --border-color: #E2E8F0; --sidebar-width: 260px; }
+        body { background-color: #F4F7F9; overflow-x: hidden; }
+        .sidebar { width: var(--sidebar-width); height: 100vh; background: #FFF; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; box-shadow: 4px 0 24px rgba(0,0,0,0.02); z-index: 100; }
+        .sidebar-header { padding: 30px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--border-color); }
+        .logo-icon { font-size: 24px; color: var(--primary); }
+        .sidebar-header h2 { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin:0; }
+        .nav-menu { flex: 1; padding: 20px 15px; display: flex; flex-direction: column; gap: 8px; }
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 12px 20px; text-decoration: none; color: var(--secondary); font-weight: 500; border-radius: 10px; transition: all 0.3s; }
+        .nav-link:hover, .nav-link.active { background: var(--primary-light); color: var(--primary); }
+        .sidebar-action { padding: 20px; border-top: 1px solid var(--border-color); }
+        .btn-logout { width: 100%; padding: 12px; border: none; border-radius: 10px; background: #FEF2F2; color: var(--danger); font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; gap: 8px; }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 90; }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); transition: 0.3s; }
+            .sidebar.active { transform: translateX(0); }
+            .sidebar-overlay.active { display: block; }
+        }
+
+        /* --- TAILWIND LAYER ELEMEN INJECT JS --- */
+        @layer components {
+            /* Perbaikan Ekstrem di Leaderboard agar super rapih */
+            .leaderboard-item {
+                @apply flex items-center justify-between p-3.5 bg-white rounded-2xl mb-3 shadow-[0_2px_10px_-3px_rgba(10,88,202,0.08)] border border-slate-100 hover:shadow-[0_8px_20px_-6px_rgba(10,88,202,0.15)] hover:-translate-y-0.5 transition-all duration-300 gap-3;
+            }
+            .leaderboard-item:nth-child(1) { @apply bg-gradient-to-r from-[#FFFBEB]/60 to-white border-l-4 border-l-[#F59E0B]; }
+            .leaderboard-item:nth-child(2) { @apply bg-gradient-to-r from-[#F8FAFC]/80 to-white border-l-4 border-l-[#94A3B8]; }
+            .leaderboard-item:nth-child(3) { @apply bg-gradient-to-r from-[#FEF3C7]/50 to-white border-l-4 border-l-[#B45309]; }
+            .leaderboard-item:nth-child(n+4) { @apply border-l-4 border-l-blue-500/80; }
+
+            /* Kunci flex agar nama panjang terpotong otomatis, tidak merusak nominal */
+            .leaderboard-info { @apply flex items-center gap-3 min-w-0 flex-1; }
+            .leaderboard-rank { @apply font-bold text-slate-300 w-8 text-center text-lg flex-shrink-0; }
+            .leaderboard-name { @apply font-semibold text-slate-700 truncate; }
+            .leaderboard-total { @apply font-bold text-emerald-600 bg-emerald-50/80 px-3 py-1.5 rounded-xl text-[13px] border border-emerald-100/50 flex-shrink-0 whitespace-nowrap shadow-sm; }
+
+            .table-premium th { @apply px-5 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 bg-slate-50/50; }
+            .table-premium td { @apply px-5 py-4 border-b border-slate-50 text-sm align-middle; }
+            .table-premium tbody tr { @apply hover:bg-blue-50/50 transition-colors duration-200; }
+            .badge { @apply px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide shadow-sm; }
+            .badge-success { @apply bg-emerald-50 text-emerald-600 border border-emerald-200; }
+            .badge-danger { @apply bg-rose-50 text-rose-600 border border-rose-200; }
+            .text-green { @apply text-emerald-600; }
+            .text-red { @apply text-rose-600; }
+        }
+
+        /* SCROLLBAR CUSTOM AESTHETIC */
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+    </style>
 </head>
-<body>
+<body class="bg-[#F4F7F9] text-slate-800 font-sans antialiased selection:bg-blue-200">
 
-<div class="app-container">
-    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-    <aside class="sidebar" id="mySidebar">
+<div class="flex min-h-screen">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="mobile-close-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></div>
             <i class="fa-solid fa-train-subway logo-icon"></i>
-            <h2>Sadulur Sepoor</h2>
+            <h2>Bendahara</h2>
         </div>
-
         <nav class="nav-menu">
-             <a href="../dashboard/index.html" class="nav-link">
-                 <i class="fa-solid fa-house"></i> <span>Dashboard</span>
-             </a>
-             <a href="index.html" class="nav-link active">
-                 <i class="fa-solid fa-chart-line"></i> <span>Ringkasan</span>
-             </a>
-            <a href="kelola-keuangan/index.html" class="nav-link">
-                <i class="fa-solid fa-money-bill-transfer"></i> <span>Kelola Keuangan</span>
-            </a>
+            <a href="../dashboard/index.html" class="nav-link"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+            <a href="#" class="nav-link active" onclick="switchTab('ringkasan', this)"><i class="fa-solid fa-chart-pie"></i> Ringkasan</a>
+            <a href="#" class="nav-link" onclick="switchTab('kelola', this)"><i class="fa-solid fa-money-bill-transfer"></i> Kelola Keuangan</a>
         </nav>
-
         <div class="sidebar-action">
-            <button onclick="logout()" class="btn-logout-pink">
-                <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
-            </button>
+            <button onclick="logout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
         </div>
     </aside>
 
-    <main class="main-content">
-        <header class="top-bar">
-            <div class="top-left-group">
-                <button id="hamburger-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-                <div class="greeting">
-                    <h3>Ringkasan Kas</h3>
-                    <p id="date-display">Pantau kondisi keuangan komunitas.</p>
-                </div>
+    <main class="flex-1 ml-0 md:ml-[260px] p-5 md:p-8 lg:p-10 transition-all duration-300 w-full overflow-hidden">
+        
+        <div class="flex md:hidden items-center justify-between bg-white/80 backdrop-blur-md p-4 rounded-2xl mb-6 shadow-sm sticky top-4 z-40 border border-slate-100">
+            <div class="flex items-center gap-4">
+                <button class="text-blue-600 text-xl hover:scale-110 transition-transform" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                <h3 class="font-bold text-lg text-slate-800 m-0">Bendahara</h3>
             </div>
-        </header>
-
-        <div class="content-section" id="laporan-area">
-            
-            <div class="stats-grid">
-                <div class="stat-card blue-card">
-                    <div class="icon-box-lg"><i class="fa-solid fa-vault"></i></div>
-                    <div>
-                        <h4>Total Saldo Kas</h4>
-                        <p class="nominal-lg" id="stat-saldo">Rp 0</p>
-                    </div>
-                </div>
-                <div class="stat-card green-card">
-                    <div class="icon-box green"><i class="fa-solid fa-arrow-trend-up"></i></div>
-                    <div>
-                        <h4>Masuk (Minggu Ini)</h4>
-                        <p class="nominal" id="stat-in">Rp 0</p>
-                    </div>
-                </div>
-                <div class="stat-card red-card">
-                    <div class="icon-box red"><i class="fa-solid fa-arrow-trend-down"></i></div>
-                    <div>
-                        <h4>Keluar (Minggu Ini)</h4>
-                        <p class="nominal" id="stat-out">Rp 0</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" style="margin-top:20px;">
-                <div class="card-header">
-                    <h4><i class="fa-solid fa-chart-area"></i> Tren Arus Kas (30 Hari Terakhir)</h4>
-                </div>
-                <div class="card-body">
-                    <canvas id="financeChart" style="max-height: 300px;"></canvas>
-                </div>
-            </div>
-
-            <div class="card" style="margin-top:20px;">
-                <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-                    <h4><i class="fa-solid fa-clock-rotate-left"></i> Transaksi Terakhir</h4>
-                    <button class="btn-download" onclick="downloadPDF()">
-                        <i class="fa-solid fa-file-pdf"></i> Download PDF
-                    </button>
-                </div>
-                <div class="card-body" style="overflow-x:auto;">
-                    <table class="custom-table" style="width:100%; border-collapse: collapse;">
-                        <thead>
-                            <tr style="background:#f8f9fa; text-align:left;">
-                                <th style="padding:12px;">Tanggal</th>
-                                <th style="padding:12px;">Kategori</th>
-                                <th style="padding:12px;">PIC</th>
-                                <th style="padding:12px;">Nominal</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-table-body">
-                            <tr><td colspan="4" style="padding:20px; text-align:center;">Memuat data...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
         </div>
+        
+        <section id="view-ringkasan" class="view-section active">
+            <div class="mb-8 hidden md:block">
+                <h3 class="text-3xl font-bold bg-gradient-to-r from-blue-700 to-cyan-500 bg-clip-text text-transparent drop-shadow-sm">Dashboard Keuangan</h3>
+                <p class="text-slate-500 mt-2 font-medium">Analisis sumber kas, pengeluaran operasional, dan tren tahunan.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white/80 backdrop-blur-sm rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-white hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(10,88,202,0.1)] transition-all duration-400 flex items-center gap-5 group">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner bg-gradient-to-br from-blue-50 to-blue-100/50 text-blue-600 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300"><i class="fa-solid fa-wallet"></i></div>
+                    <div>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Saldo Kas</p>
+                        <h4 class="text-2xl font-black tracking-tight text-slate-800 drop-shadow-sm" id="stat-saldo">Memuat...</h4>
+                    </div>
+                </div>
+                <div class="bg-white/80 backdrop-blur-sm rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-white hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(16,185,129,0.1)] transition-all duration-400 flex items-center gap-5 group">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner bg-gradient-to-br from-emerald-50 to-emerald-100/50 text-emerald-500 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                    <div>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Pemasukan (Bulan Ini)</p>
+                        <h4 class="text-2xl font-black tracking-tight text-emerald-600 drop-shadow-sm" id="stat-in">Memuat...</h4>
+                    </div>
+                </div>
+                <div class="bg-white/80 backdrop-blur-sm rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-white hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(225,29,72,0.1)] transition-all duration-400 flex items-center gap-5 group">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner bg-gradient-to-br from-rose-50 to-rose-100/50 text-rose-500 group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300"><i class="fa-solid fa-money-bill-wave"></i></div>
+                    <div>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Pengeluaran (Bulan Ini)</p>
+                        <h4 class="text-2xl font-black tracking-tight text-rose-600 drop-shadow-sm" id="stat-out">Memuat...</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100">
+                    <h5 class="font-bold text-xs text-center text-slate-400 uppercase tracking-widest mb-4">Persentase Saldo</h5>
+                    <div class="relative h-56 w-full"><canvas id="pieSaldo"></canvas></div>
+                </div>
+                <div class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100">
+                    <h5 class="font-bold text-xs text-center text-slate-400 uppercase tracking-widest mb-4">Income Bulan Ini</h5>
+                    <div class="relative h-56 w-full"><canvas id="pieIncome"></canvas></div>
+                </div>
+                <div class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100">
+                    <h5 class="font-bold text-xs text-center text-slate-400 uppercase tracking-widest mb-4">Pengeluaran Bulan Ini</h5>
+                    <div class="relative h-56 w-full"><canvas id="pieExpense"></canvas></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <div class="lg:col-span-2 bg-white rounded-[24px] p-7 shadow-[0_4px_25px_rgb(0,0,0,0.02)] border border-slate-100">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-50">
+                        <div class="bg-blue-50 p-2.5 rounded-xl text-blue-600"><i class="fa-solid fa-chart-column"></i></div>
+                        <h4 class="font-bold text-slate-800 text-lg">Arus Kas Tahunan</h4>
+                    </div>
+                    <div class="relative h-[320px] w-full"><canvas id="barTahunan"></canvas></div>
+                </div>
+                
+                <div class="lg:col-span-1 bg-white rounded-[24px] p-7 shadow-[0_4px_25px_rgb(0,0,0,0.02)] border border-slate-100 flex flex-col h-[435px]">
+                    <div class="flex items-center gap-3 mb-5 pb-4 border-b border-slate-50">
+                        <div class="bg-amber-50 p-2.5 rounded-xl text-amber-500"><i class="fa-solid fa-medal"></i></div>
+                        <h4 class="font-bold text-slate-800 text-lg">Top 10 Kas</h4>
+                    </div>
+                    <div id="top10List" class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                        <div class="h-full flex flex-col items-center justify-center text-slate-400 space-y-3">
+                            <i class="fa-solid fa-spinner fa-spin text-2xl text-blue-500"></i>
+                            <p class="text-sm font-medium">Memuat data...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-kelola" class="view-section" style="display: none;">
+            <div class="mb-8 hidden md:block">
+                <h3 class="text-3xl font-bold bg-gradient-to-r from-blue-700 to-cyan-500 bg-clip-text text-transparent">Kelola Transaksi</h3>
+                <p class="text-slate-500 mt-2 font-medium">Catat pengeluaran operasional atau pemasukan lainnya.</p>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+                <div class="xl:col-span-5 bg-white rounded-[24px] p-7 shadow-[0_4px_25px_rgb(0,0,0,0.02)] border border-slate-100 h-fit">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-50">
+                        <div class="bg-blue-50 p-2.5 rounded-xl text-blue-600"><i class="fa-regular fa-pen-to-square"></i></div>
+                        <h4 class="font-bold text-slate-800 text-lg">Input Baru</h4>
+                    </div>
+                    
+                    <form id="formTransaksi" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Tanggal</label>
+                                <input type="date" id="tglTrx" class="w-full px-4 py-3 rounded-xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-slate-700 font-medium" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Jam</label>
+                                <input type="time" id="jamTrx" class="w-full px-4 py-3 rounded-xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-slate-700 font-medium" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Jenis Transaksi</label>
+                            <select id="jenisTrx" class="w-full px-4 py-3 rounded-xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-slate-700 font-medium" required>
+                                <option value="Masuk">Pemasukan (+)</option>
+                                <option value="Keluar">Pengeluaran (-)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Kategori</label>
+                            <select id="katTrx" class="w-full px-4 py-3 rounded-xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-slate-700 font-medium" required>
+                                <option value="Operasional">Operasional</option>
+                                <option value="Konsumsi">Konsumsi</option>
+                                <option value="Perlengkapan">Perlengkapan</option>
+                                <option value="Transportasi">Transportasi</option>
+                                <option value="Donasi">Donasi / Sponsor</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Nominal (Rp)</label>
+                            <input type="text" id="nomTrx" class="w-full px-4 py-3 rounded-xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-slate-800 font-bold text-lg" placeholder="0" oninput="formatInputRupiah(this)" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Penanggung Jawab (PIC)</label>
+                            <input type="text" id="picTrx" class="w-full px-4 py-3 rounded-xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-slate-700 font-medium" placeholder="Nama PIC" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Keterangan</label>
+                            <textarea id="ketTrx" class="w-full px-4 py-3 rounded-xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-slate-700 resize-none font-medium" rows="2" placeholder="Detail transaksi..."></textarea>
+                        </div>
+                        <button type="submit" id="btnSubmit" class="w-full py-4 mt-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold text-lg shadow-[0_8px_20px_rgba(10,88,202,0.25)] hover:shadow-[0_12px_25px_rgba(10,88,202,0.35)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Transaksi
+                        </button>
+                    </form>
+                </div>
+
+                <div class="xl:col-span-7 bg-white rounded-[24px] p-7 shadow-[0_4px_25px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden flex flex-col">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-50">
+                        <div class="bg-blue-50 p-2.5 rounded-xl text-blue-600"><i class="fa-solid fa-list-check"></i></div>
+                        <h4 class="font-bold text-slate-800 text-lg">10 Transaksi Terakhir</h4>
+                    </div>
+                    <div class="overflow-x-auto flex-1 pb-4 custom-scrollbar">
+                        <table class="table-premium w-full whitespace-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Kategori / Note</th>
+                                    <th>PIC</th>
+                                    <th>Nominal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body">
+                                <tr><td colspan="4" class="text-center py-10 text-slate-400">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 </div>
 
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <script src="../config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
