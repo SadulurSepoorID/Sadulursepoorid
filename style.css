@@ -394,12 +394,25 @@ footer {
 }
 #faq-toggle-btn:hover { transform: scale(1.1); background-color: var(--primary-dark); }
 #faq-chatbot-container {
-    position: fixed; bottom: 100px; right: 30px;
-    width: 370px; height: 550px; background-color: var(--white);
-    border-radius: 15px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    z-index: 999; overflow: hidden; display: flex; flex-direction: column;
-    transform: scale(0.5) translateY(100px); opacity: 0; visibility: hidden;
-    transform-origin: bottom right; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, visibility 0.3s;
+    position: fixed; 
+    bottom: 105px; /* Diturunin sedikit biar deket sama tombol */
+    right: 25px;
+    width: 270px; /* Diperkecil lebarnya (awalnya 370px) */
+    max-width: calc(100vw - 50px);
+    height: 380px; /* Diperkecil tingginya (awalnya 550px) */
+    max-height: calc(100vh - 110px); /* KUNCI UTAMA: Otomatis memendek kalau layar user kecil, jadi GAK AKAN kepotong atasnya */
+    background-color: var(--white);
+    border-radius: 15px; 
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    z-index: 999; 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column;
+    transform: scale(0.5) translateY(100px); 
+    opacity: 0; 
+    visibility: hidden;
+    transform-origin: bottom right; 
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, visibility 0.3s;
 }
 #faq-chatbot-container.open { transform: scale(1) translateY(0); opacity: 1; visibility: visible; }
 .faq-header {
@@ -499,3 +512,19 @@ footer {
     #birthday-popup { padding: 30px 20px; max-width: 340px; }
     .footer-section { flex-basis: 100%; text-align: left; }
 }
+
+/* --- RESPONSIVE UNTUK LAYAR KECIL (HP) --- */
+        @media (max-width: 350px) {
+            .widget-header { padding: 10px; font-size: 0.9rem; }
+            .widget-body { padding: 10px; }
+            .question-btn { padding: 8px 10px; font-size: 0.75rem; }
+            .answer-content { padding: 10px; font-size: 0.75rem; }
+            
+            /* Ubah susunan profil anggota jadi ke bawah */
+            .member-card { flex-direction: column; text-align: center; gap: 8px; padding: 10px; }
+            .member-photo { width: 45px; height: 45px; }
+            
+            /* Input chat dirapatkan */
+            #ai-input { padding: 8px 10px; font-size: 0.75rem; }
+            .send-btn { width: 35px; }
+        }

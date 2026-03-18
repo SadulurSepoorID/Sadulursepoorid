@@ -3,303 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cari Tau Kami - Komunitas Sadulur Sepoor</title>
+    <title>FAQ - Komunitas Sadulur Sepoor</title>
+    <link rel="icon" href="../IMG/Logo SS.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="../style.css">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            position: relative; /* Ditambahkan untuk positioning tombol kembali */
-            text-align: center;
-            margin-bottom: 30px;
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        /* Tombol Kembali di Header */
-        .header-back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 15px;
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .header-back-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea 0%, #2d3ec6 100%);
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden; /* Pastikan gambar tidak keluar dari lingkaran */
-        }
+        /* Modifikasi khusus untuk layout FAQ di dalam Glass Card */
+        .faq-wrapper { max-width: 800px; margin: 0 auto; }
         
-        .logo img {
-            width: 100%;
-            height: auto;
-        }
-
-        .title {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #2d3ec6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
-
-        .content-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .content-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-
         .breadcrumb {
-            background: #f8f9fa;
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 12px 20px;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-size: 0.9rem;
-            color: #6c757d;
+            color: var(--text-dark);
+            font-weight: 500;
         }
 
-        .question-list {
-            list-style: none;
-        }
-
-        .question-item {
-            margin-bottom: 15px;
-        }
-
+        .question-list { list-style: none; padding: 0; }
+        .question-item { margin-bottom: 15px; }
         .question-btn {
-            width: 100%;
-            padding: 15px 20px;
-            background: linear-gradient(135deg, #708ffb 0%, #2d3ec6 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 100%; padding: 15px 20px;
+            background: var(--primary-color);
+            color: var(--white); border: none; border-radius: 12px;
+            font-size: 1rem; cursor: pointer; transition: var(--transition);
+            text-align: left; display: flex; justify-content: space-between;
+            align-items: center; font-family: 'Poppins', sans-serif; font-weight: 500;
         }
-
-        .question-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102,126,234,0.4);
-        }
-
-        .question-btn::after {
-            content: '→';
-            font-size: 1.2rem;
-            transition: transform 0.3s ease;
-        }
-
-        .question-btn:hover::after {
-            transform: translateX(5px);
-        }
-
-        .back-btn {
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-            margin-top: 20px;
-        }
-
-        .back-btn:hover {
-            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
-        }
+        .question-btn:hover { background: var(--primary-dark); transform: translateX(5px); }
+        .question-btn::after { content: '→'; font-size: 1.2rem; }
+        
+        .question-btn.back-btn { background: #95a5a6; margin-top: 25px; }
+        .question-btn.back-btn:hover { background: #7f8c8d; }
+        .question-btn.back-btn::after { display: none; }
 
         .answer-content {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-            margin-top: 15px;
-            line-height: 1.6;
-            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px; border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+            margin-top: 15px; line-height: 1.7; margin-bottom: 20px;
         }
 
-        .member-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 10px 0;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .member-photo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #667eea;
-        }
-
-        .member-info h3 {
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-
-        .member-info p {
-            color: #7f8c8d;
-            margin: 4px 0;
-            font-size: 0.9rem;
-        }
-
-        .social-links {
-            margin-top: 10px;
-        }
-
-        .social-links a {
-            display: inline-block;
-            margin-right: 10px;
-            padding: 5px 10px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background: #313cc4;
-            transform: translateY(-1px);
-        }
-
-        .kegiatan-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border-left: 4px solid #667eea;
-        }
-
-        .kegiatan-date {
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 5px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #7f8c8d;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .title {
-                font-size: 2rem;
-            }
-            
-            .content-card {
-                padding: 20px;
-            }
-            
-            .member-card {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .question-btn {
-                padding: 12px 15px;
-                font-size: 0.9rem;
-            }
-
-            .header-back-btn {
-                padding: 8px 10px;
-                font-size: 0.8rem;
-                top: 10px;
-                left: 10px;
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .member-card { background: white; border-radius: 12px; padding: 20px; margin: 10px 0; display: flex; align-items: center; gap: 20px; box-shadow: var(--shadow-lux); }
+        .member-photo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color); }
+        .social-links a { display: inline-block; padding: 5px 12px; background: var(--primary-color); color: white; border-radius: 5px; font-size: 0.85rem; margin-right: 8px; margin-top: 10px; }
+        .social-links a:hover { background: var(--primary-dark); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header fade-in">
-            <a href="../index.html" class="header-back-btn">← Kembali</a>
-            <div class="logo">
-                <img src="https://sadulursepoor.web.id/IMG/Logo%20SS.png" alt="Logo Sadulur Sepoor">
-            </div>
-            
-            <h1 class="title">F A Q</h1>
-            <p class="subtitle">Komunitas Sadulur Sepoor</p>
-        </div>
 
-        <div class="content-card fade-in">
-            <div class="breadcrumb" id="breadcrumb">
-                Beranda
+    <header>
+        <nav>
+            <a href="../index.html"><img src="../IMG/Logo SS.png" alt="Logo" class="logo" style="height: 50px;"></a>
+            <div class="hamburger" onclick="document.getElementById('menu').classList.toggle('active')">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
             </div>
-            <div id="content">
-                <p class="loading">Memuat konten...</p>
+            <div class="menu" id="menu">
+                <ul>
+                    <li><a href="../index.html">Beranda</a></li>
+                    <li><a href="../rekrutmen/">Pendaftaran</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
             </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="faq-wrapper">
+            <section class="glass-card">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h2 class="section-title" style="margin-bottom: 5px;">Pusat Bantuan FAQ</h2>
+                    <p style="color: var(--text-light);">Cari tahu informasi seputar Komunitas Sadulur Sepoor</p>
+                </div>
+                
+                <div class="breadcrumb" id="breadcrumb">Beranda</div>
+                
+                <div id="content">
+                    <p style="text-align:center; padding: 20px; color: var(--text-light);">Memuat konten...</p>
+                </div>
+            </section>
         </div>
-    </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Komunitas Sadulur Sepoor. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     <script>
         // --- DATA & STATE MANAGEMENT ---
@@ -313,6 +109,7 @@
         const content = {
             main: `
                 <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" style="background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);" onclick="showChatbot()">Tanya AI (Beta)</button></li>
                     <li class="question-item"><button class="question-btn" onclick="showSection('general')">Pertanyaan Umum</button></li>
                     <li class="question-item"><button class="question-btn" onclick="showSection('social')">Media Sosial</button></li>
                     <li class="question-item"><button class="question-btn" onclick="showSection('registration')">Pendaftaran Calon Anggota Baru</button></li>
@@ -396,12 +193,12 @@
                 </ul>
             `,
             'registration': `
-    <ul class="question-list">
-        <li class="question-item"><button class="question-btn" onclick="showAnswer('q-syarat', 'Syarat & Ketentuan', '<li>Berusia minimal 15 tahun pada saat mendaftar.</li><br><li>Memiliki antusiasme dan minat yang tinggi terhadap dunia perkeretaapian Indonesia.</li><br><li>Pria atau Wanita</li><br><li>Berkomitmen untuk menjaga nama baik komunitas di manapun berada.</li><br><li>Aktif dalam kegiatan, baik acara internal ataupun eksternal.</li><br><li>Menjadi nilai+ untuk yang menguasai desain grafis</li>')">Syarat & Ketentuan</button></li>
-        <li class="question-item"><button class="question-btn" onclick="redirectTo('/rekrutmen/')">Halaman Pendaftaran Calon Anggota Baru</button></li>
-        <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
-    </ul>
-`,
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-syarat', 'Syarat & Ketentuan', '<li>Berusia minimal 15 tahun pada saat mendaftar.</li><br><li>Memiliki antusiasme dan minat yang tinggi terhadap dunia perkeretaapian Indonesia.</li><br><li>Pria atau Wanita</li><br><li>Berkomitmen untuk menjaga nama baik komunitas di manapun berada.</li><br><li>Aktif dalam kegiatan, baik acara internal ataupun eksternal.</li><br><li>Menjadi nilai+ untuk yang menguasai desain grafis</li>')">Syarat & Ketentuan</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('/rekrutmen/')">Halaman Pendaftaran Calon Anggota Baru</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                </ul>
+            `,
             'website-info': `
                 <ul class="question-list">
                     <li class="question-item"><button class="question-btn" onclick="showWebsiteMaker()">Siapa pembuat website ini?</button></li>
@@ -584,6 +381,76 @@
             window.open(url, '_blank');
         }
 
+        // --- FUNGSI CHATBOT AI (VIA GOOGLE APPS SCRIPT GET METHOD) ---
+        function showChatbot() {
+            currentPath.push('chatbot');
+            updateBreadcrumb();
+            
+            const html = `
+                <h3 style="color: #2c3e50; margin-bottom: 15px;">Tanya AI Sadulur Sepoor</h3>
+                <div id="chat-box" style="height: 300px; overflow-y: auto; background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #00b09b; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="text-align: left;"><span style="background: #e2e8f0; color: #333; padding: 8px 12px; border-radius: 15px; display: inline-block;">Halo! Ada yang mau ditanyain soal Sadulur Sepoor atau kereta api?</span></div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="ai-input" placeholder="Ketik pertanyaanmu..." style="flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px; outline: none;" onkeypress="if(event.key === 'Enter') askGemini()">
+                    <button onclick="askGemini()" style="padding: 12px 20px; background: #00b09b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Kirim</button>
+                </div>
+                <button class="question-btn back-btn" onclick="goBack()" style="margin-top: 20px;">Kembali</button>
+            `;
+            renderContent(html);
+        }
+
+        async function askGemini() {
+            const inputField = document.getElementById('ai-input');
+            const chatBox = document.getElementById('chat-box');
+            const userText = inputField.value.trim();
+            
+            if (!userText) return;
+
+            // 1. Tampilkan pesan user
+            chatBox.innerHTML += `<div style="text-align: right;"><span style="background: #667eea; color: white; padding: 8px 12px; border-radius: 15px; display: inline-block; max-width: 80%;">${userText}</span></div>`;
+            inputField.value = '';
+
+            // 2. Tampilkan loading
+            const loadingId = 'loading-' + Date.now();
+            chatBox.innerHTML += `<div id="${loadingId}" style="color: #7f8c8d; font-size: 0.9rem;"><i>AI sedang memproses...</i></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // URL Web App GAS 
+            const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyb6JDMzJ-nY7epKR_V7qVnvMbuDbJXYDfg1szcS2AB8Zw4W-Py1rFHBYH_Ro5a5Bteeg/exec'; 
+            
+            try {
+                // Konversi teks agar aman ditaruh di dalam URL (GET method)
+                const targetUrl = GAS_WEB_APP_URL + "?text=" + encodeURIComponent(userText);
+
+                // Fetch dengan metode GET (ramah CORS)
+                const response = await fetch(targetUrl, {
+                    method: 'GET'
+                });
+
+                const data = await response.json();
+                
+                // Hapus indikator loading
+                if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
+
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    let aiReply = data.candidates[0].content.parts[0].text;
+                    aiReply = aiReply.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); // Parse bold markdown
+                    
+                    chatBox.innerHTML += `<div style="text-align: left;"><span style="background: #e2e8f0; color: #333; padding: 8px 12px; border-radius: 15px; display: inline-block; max-width: 80%; line-height: 1.4;">${aiReply}</span></div>`;
+                } else {
+                    console.log("ISI ASLI DARI GOOGLE:", data); // <--- Tambahin baris ini
+                    throw new Error("Respon API tidak sesuai format");
+                }
+                
+            } catch (error) {
+                if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
+                chatBox.innerHTML += `<div style="color: red; font-size: 0.9rem;">Maaf, gagal menyambung ke sistem. Coba lagi nanti ya.</div>`;
+                console.error("Fetch Error:", error);
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
         // --- NAVIGATION ---
         function goBack() {
             if (currentPath.length > 1) {
@@ -600,6 +467,7 @@
         
         function updateBreadcrumb() {
             const sectionNames = {
+                'chatbot': 'Tanya AI (Beta)',
                 'general': 'Pertanyaan Umum', 'social': 'Media Sosial', 'registration': 'Pendaftaran',
                 'community-info': 'Informasi Komunitas', 'membership-info': 'Informasi Keanggotaan',
                 'activity-info': 'Informasi Kegiatan', 'website-info': 'Informasi Website',

@@ -3,300 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cari Tau Kami - Komunitas Sadulur Sepoor</title>
+    <title>FAQ Widget - Sadulur Sepoor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary: #1e88e5;
+            --primary-dark: #0d47a1;
+            --bg-color: #f0f4f8;
+            --text-main: #333;
+            --text-muted: #666;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            color: #333;
+        /* RESET & LAYOUT */
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex; flex-direction: column;
+            overflow: hidden; 
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        /* HEADER WIDGET (Lebih Compact) */
+        .widget-header {
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            color: white; padding: 12px 15px;
+            font-size: 1rem; font-weight: 600;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10; flex-shrink: 0;
         }
+        .widget-header i { font-size: 1.2rem; }
 
-        .header {
-            position: relative; /* Ditambahkan untuk positioning tombol kembali */
-            text-align: center;
-            margin-bottom: 30px;
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
+        /* AREA KONTEN */
+        .widget-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; }
 
-        /* Tombol Kembali di Header */
-        .header-back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 15px;
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .header-back-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea 0%, #2d3ec6 100%);
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden; /* Pastikan gambar tidak keluar dari lingkaran */
-        }
-        
-        .logo img {
-            width: 100%;
-            height: auto;
-        }
-
-        .title {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #2d3ec6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
-
-        .content-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .content-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-
+        /* BREADCRUMB */
         .breadcrumb {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            color: #6c757d;
+            background: white; padding: 6px 10px; border-radius: 6px;
+            font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px;
+            font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-left: 3px solid var(--primary);
         }
 
-        .question-list {
-            list-style: none;
-        }
-
-        .question-item {
-            margin-bottom: 15px;
-        }
+        /* TOMBOL MENU (Lebih Rapet) */
+        .question-list { list-style: none; padding: 0; margin: 0; }
+        .question-item { margin-bottom: 8px; }
 
         .question-btn {
-            width: 100%;
-            padding: 15px 20px;
-            background: linear-gradient(135deg, #708ffb 0%, #2d3ec6 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 100%; padding: 10px 14px; background: white;
+            color: var(--text-main); border: 1px solid #e2e8f0; border-radius: 8px;
+            font-size: 0.85rem; font-weight: 500; cursor: pointer;
+            transition: all 0.2s ease; text-align: left;
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Poppins', sans-serif;
         }
 
         .question-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+            border-color: var(--primary); color: var(--primary);
+            transform: translateY(-2px); box-shadow: 0 4px 8px rgba(30, 136, 229, 0.1);
         }
 
         .question-btn::after {
-            content: '→';
-            font-size: 1.2rem;
-            transition: transform 0.3s ease;
+            content: '\f054'; font-family: 'Font Awesome 6 Free';
+            font-weight: 900; font-size: 0.75rem; color: #cbd5e1; transition: all 0.2s ease;
         }
+        .question-btn:hover::after { color: var(--primary); transform: translateX(3px); }
 
-        .question-btn:hover::after {
-            transform: translateX(5px);
-        }
+        .question-btn[style*="background"] { color: white !important; border: none; font-weight: 600; }
+        .question-btn[style*="background"]::after { color: white; }
 
-        .back-btn {
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-            margin-top: 20px;
-        }
+        .question-btn.back-btn { background: #94a3b8; color: white; border: none; margin-top: 5px; }
+        .question-btn.back-btn:hover { background: #64748b; color: white; transform: translateX(-3px); }
+        .question-btn.back-btn::after { content: '\f053'; transform: rotate(0); color: white; }
+        .question-btn.back-btn:hover::after { transform: translateX(-3px); }
 
-        .back-btn:hover {
-            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
-        }
-
+        /* KONTEN JAWABAN TEXT */
         .answer-content {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-            margin-top: 15px;
-            line-height: 1.6;
-            margin-bottom: 20px;
+            background: white; padding: 12px 15px; border-radius: 8px;
+            border-left: 3px solid var(--primary); margin-top: 5px;
+            line-height: 1.5; font-size: 0.8rem; margin-bottom: 15px;
         }
+        h3 { font-size: 0.9rem; color: var(--primary-dark); margin: 0 0 10px 0; }
 
+        /* KARTU ANGGOTA */
         .member-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 10px 0;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 12px; border: 1px solid #e2e8f0;
         }
+        .member-photo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        .member-info h3 { margin: 0 0 3px 0; font-size: 0.85rem; }
+        .member-info p { margin: 0; font-size: 0.75rem; color: var(--text-muted); }
+        .social-links { margin-top: 6px; }
+        .social-links a { color: white; background: var(--primary); padding: 4px 8px; border-radius: 4px; text-decoration: none; font-size: 0.7rem; margin-right: 5px; }
 
-        .member-photo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #667eea;
+        /* ANIMASI */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- STYLING KHUSUS CHATBOT --- */
+        .chat-container { display: flex; flex-direction: column; height: 100%; }
+        #chat-box {
+            flex: 1; overflow-y: auto; background: white; padding: 12px;
+            border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0;
+            display: flex; flex-direction: column; gap: 10px; font-size: 0.8rem;
         }
-
-        .member-info h3 {
-            color: #2c3e50;
-            margin-bottom: 8px;
+        .chat-msg { display: inline-block; padding: 8px 12px; border-radius: 12px; max-width: 85%; line-height: 1.4; }
+        .msg-ai { background: #f1f5f9; color: var(--text-main); border-bottom-left-radius: 4px; border: 1px solid #e2e8f0; }
+        .msg-user { background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+        
+        .chat-input-wrapper { display: flex; gap: 6px; margin-bottom: 10px; }
+        #ai-input {
+            flex: 1; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px;
+            font-family: 'Poppins', sans-serif; outline: none; font-size: 0.8rem; transition: all 0.2s;
         }
-
-        .member-info p {
-            color: #7f8c8d;
-            margin: 4px 0;
-            font-size: 0.9rem;
+        #ai-input:focus { border-color: var(--primary); }
+        .send-btn {
+            background: var(--primary); color: white; border: none; border-radius: 6px;
+            width: 40px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;
         }
-
-        .social-links {
-            margin-top: 10px;
-        }
-
-        .social-links a {
-            display: inline-block;
-            margin-right: 10px;
-            padding: 5px 10px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background: #313cc4;
-            transform: translateY(-1px);
-        }
-
-        .kegiatan-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border-left: 4px solid #667eea;
-        }
-
-        .kegiatan-date {
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 5px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #7f8c8d;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .title {
-                font-size: 2rem;
-            }
-            
-            .content-card {
-                padding: 20px;
-            }
-            
-            .member-card {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .question-btn {
-                padding: 12px 15px;
-                font-size: 0.9rem;
-            }
-
-            .header-back-btn {
-                padding: 8px 10px;
-                font-size: 0.8rem;
-                top: 10px;
-                left: 10px;
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .send-btn:hover { background: var(--primary-dark); }
+        .loading-text { color: #94a3b8; font-size: 0.75rem; font-style: italic; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header fade-in">
-            <div class="logo">
-                <img src="https://sadulursepoor.web.id/IMG/Logo%20SS.png" alt="Logo Sadulur Sepoor">
-            </div>
-            
-            <h1 class="title">F A Q</h1>
-            <p class="subtitle">Komunitas Sadulur Sepoor</p>
-        </div>
+    <div class="widget-header">
+        <i class="fas fa-headset"></i>
+        Pusat Bantuan FAQ
+    </div>
 
-        <div class="content-card fade-in">
-            <div class="breadcrumb" id="breadcrumb">
-                Beranda
-            </div>
-            <div id="content">
-                <p class="loading">Memuat konten...</p>
-            </div>
+    <div class="widget-body">
+        <div class="breadcrumb" id="breadcrumb">Beranda</div>
+        <div id="content" class="fade-in">
+            <p style="text-align: center; color: #888; font-size: 0.85rem; margin-top: 30px;"><i class="fas fa-spinner fa-spin"></i> Memuat...</p>
         </div>
     </div>
 
@@ -312,6 +153,7 @@
         const content = {
             main: `
                 <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" style="background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);" onclick="showChatbot()"><i class="fas fa-robot" style="margin-right: 8px;"></i> Tanya AI (Beta)</button></li>
                     <li class="question-item"><button class="question-btn" onclick="showSection('general')">Pertanyaan Umum</button></li>
                     <li class="question-item"><button class="question-btn" onclick="showSection('social')">Media Sosial</button></li>
                     <li class="question-item"><button class="question-btn" onclick="showSection('registration')">Pendaftaran Calon Anggota Baru</button></li>
@@ -325,24 +167,23 @@
                     <li class="question-item"><button class="question-btn" onclick="showSection('activity-info')">Informasi Kegiatan</button></li>
                     <li class="question-item"><button class="question-btn" onclick="showSection('registration')">Pendaftaran</button></li>
                     <li class="question-item"><button class="question-btn" onclick="showSection('website-info')">Informasi Website</button></li>
-                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
                 </ul>
             `,
             'community-info': `
                 <ul class="question-list">
-                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-apa-itu', 'Apa itu Komunitas Sadulur Sepoor?', 'Komunitas Sadulur Sepoor adalah komunitas pecinta kereta api (railfans) di Indonesia. Nama “Sadulur Sepoor” berasal dari bahasa Jawa, “sadulur” artinya saudara, dan “sepoor” artinya kereta api. Jadi maknanya kurang lebih saudara sesama pecinta kereta api.')">Apa itu Komunitas Sadulur Sepoor?</button></li>
-                    <li class="question-item">
-                    <button class="question-btn" onclick="showAnswer('q-pendiri', 'Siapakah Pendiri dari Komunitas Sadulur Sepoor?', 'Herie Heryadi<br>Arjuna Pamungkas<br>Aldino Arya Saputra<br>Habibi Muhammad Arkam<br>Ahmad Suseno')">Siapakah Pendiri dari Komunitas Sadulur Sepoor?</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-visi-misi', 'Apa Visi dan Misi Komunitas tersebut?', ' <b>Visi</b><br>Menjadi komunitas perkeretaapian terdepan yang bersatu, peduli, dan aktif berkontribusi dalam menciptakan keselamatan, edukasi, serta budaya positif di lingkungan transportasi kereta api.<br>(sadulursepoor.web.id)<br><br> <b>Misi</b><br>1. Menumbuhkan rasa cinta dan kepedulian terhadap perkeretaapian Indonesia.<br>2. Mengedukasi masyarakat tentang pentingnya keselamatan di perlintasan sebidang.<br>3. Menjalin kemitraan dan komunikasi aktif dengan instansi terkait seperti PT KAI dan LRT.<br>4. Mengembangkan komunitas railfans yang beretika, berwawasan, dan bertanggung jawab.<br>5. Membentuk budaya positif di kalangan pecinta kereta api.')">Apa Visi dan Misi Komunitas tersebut?</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-berdiri', 'Tahun berdiri Komunitas Sadulur Sepoor?', '<strong>19 Maret 2019</strong> di Cikini, Jakarta Pusat')">Tahun berdiri Komunitas Sadulur Sepoor?</button></li>
-                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-apa-itu', 'Apa itu Komunitas Sadulur Sepoor?', 'Komunitas Sadulur Sepoor adalah komunitas pecinta kereta api (railfans) di Indonesia. Nama “Sadulur Sepoor” berasal dari bahasa Jawa, “sadulur” artinya saudara, dan “sepoor” artinya kereta api.')">Apa itu Komunitas Sadulur Sepoor?</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-pendiri', 'Siapakah Pendiri Komunitas?', 'Herie Heryadi<br>Arjuna Pamungkas<br>Aldino Arya Saputra<br>Habibi Muhammad Arkam<br>Ahmad Suseno')">Siapakah Pendiri Komunitas?</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-visi-misi', 'Visi dan Misi', ' <b>Visi</b><br>Menjadi komunitas perkeretaapian terdepan yang bersatu, peduli, dan aktif berkontribusi dalam menciptakan keselamatan.<br><br> <b>Misi</b><br>1. Menumbuhkan rasa cinta perkeretaapian Indonesia.<br>2. Mengedukasi pentingnya keselamatan di perlintasan sebidang.<br>3. Menjalin kemitraan dengan instansi seperti PT KAI dan LRT.<br>4. Membentuk budaya positif pecinta kereta api.')">Visi dan Misi</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-berdiri', 'Tahun Berdiri?', '<strong>19 Maret 2019</strong> di Cikini, Jakarta Pusat')">Tahun Berdiri?</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
                 </ul>
             `,
             'membership-info': `
                 <ul class="question-list">
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('/anggota/')">Mencari Nama Anggota</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="showSection('pengurus-info')">Mencari Nama Pengurus</button></li>
-                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('/anggota/')">Cari Nama Anggota</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('pengurus-info')">Cari Nama Pengurus</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
                 </ul>
             `,
             'pengurus-info': `
@@ -351,87 +192,75 @@
                     <li class="question-item"><button class="question-btn" onclick="showPengurusData('ketua')">Ketua Umum</button></li>
                     <li class="question-item"><button class="question-btn" onclick="showPengurusData('wakil-ketua')">Wakil Ketua Umum</button></li>
                     <li class="question-item"><button class="question-btn" onclick="redirectTo('../pengurus2.html')">Lainnya</button></li>
-                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
                 </ul>
             `,
-            'pengurus-lainnya': `<div class="answer-content">Informasi untuk pengurus lainnya belum tersedia.</div><button class="question-btn back-btn" onclick="goBack()">Kembali</button>`,
             'activity-info': `
                 <ul class="question-list">
                     <li class="question-item"><button class="question-btn" onclick="showKegiatanSelanjutnya()">Kegiatan Selanjutnya</button></li>
                     <li class="question-item"><button class="question-btn" onclick="showKegiatanSebelumnya()">Kegiatan Sebelumnya</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="showSection('activity-types-answered')">Kegiatan apa saja yang dilakukan</button></li>
-                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('activity-types-answered')">Jenis Kegiatan</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
                 </ul>
             `,
             'activity-types-answered': `
                 <div class="answer-content">
-                    <b>Kegiatan Utama Sadulur Sepoor</b><br><br>
-                    <b>1. Kampanye keselamatan di perlintasan sebidang</b><br>
-                    Bekerja sama dengan PT KAI Daop 1 Jakarta. Membagikan stiker, brosur, dan gantungan kunci berisi pesan edukasi, serta mengingatkan pengendara agar berhati-hati saat melintas rel.<br>
-                    ➝ <i>Contoh: Edukasi di JPL 18 Kemuning (Mei 2025) dan JPL 46 Pondok Jati (Juli 2025).</i><br><br>
-                    <b>2. Edukasi masyarakat</b><br>
-                    Sosialisasi tentang aturan dan budaya keselamatan naik kereta. Membantu penumpang saat arus mudik & balik Lebaran.<br><br>
-                    <b>3. Kolaborasi dengan instansi transportasi</b><br>
-                    PT KAI (Kereta Api Indonesia) dan LRT Jabodebek (kunjungan dan edukasi bersama).<br><br>
-                    <b>4. Dokumentasi & publikasi perkeretaapian</b><br>
-                    Membuat konten informatif berupa foto dan video di Instagram, Facebook, dan YouTube.<br><br>
-                    <b>5. Partisipasi acara perkeretaapian</b><br>
-                    Ikut serta dalam perayaan ulang tahun KA (contoh: 1 Dekade KA Jayabaya tahun 2024), gathering railfans, dan kegiatan komunitas.<br><br>
-                    <b>6. Program “Ngobrol Bareng”</b><br>
-                    Diskusi santai di media sosial & YouTube seputar dunia kereta api dan peran railfans.
+                    <b>Kegiatan Utama Sadulur Sepoor</b><br>
+                    1. Kampanye keselamatan di perlintasan sebidang<br>
+                    2. Edukasi masyarakat<br>
+                    3. Kolaborasi dengan instansi (PT KAI & LRT)<br>
+                    4. Dokumentasi & publikasi perkeretaapian<br>
+                    5. Partisipasi acara perkeretaapian<br>
+                    6. Program “Ngobrol Bareng”
                 </div>
                 <ul class="question-list">
-                    <li class="question-item"><button class="question-btn" onclick="showSection('public-participation-info')">Apakah orang umum boleh mengikuti kegiatan tersebut?</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('public-participation-info')">Bolehkah umum ikut?</button></li>
                     <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
                 </ul>
             `,
              'public-participation-info': `
                 <div class="answer-content">
-                   Tentu, beberapa kegiatan kami terbuka untuk umum, terutama yang bersifat edukasi dan kampanye keselamatan. Informasi lebih lanjut mengenai kegiatan mana yang terbuka untuk umum dan bagaimana cara berpartisipasi biasanya kami umumkan melalui media sosial resmi Komunitas Sadulur Sepoor.
+                   Tentu, beberapa kegiatan terbuka untuk umum, terutama edukasi dan kampanye keselamatan. Pantau info di media sosial kami.
                 </div>
                 <ul class="question-list">
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://sadulursepoor.web.id/daftarumum.html')">Bagaimana cara mendaftar untuk mengikuti kegiatan tersebut?</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://sadulursepoor.web.id/daftarumum.html')">Cara mendaftar kegiatan?</button></li>
                     <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
                 </ul>
             `,
             'registration': `
-    <ul class="question-list">
-        <li class="question-item"><button class="question-btn" onclick="showAnswer('q-syarat', 'Syarat & Ketentuan', '<li>Berusia minimal 15 tahun pada saat mendaftar.</li><br><li>Memiliki antusiasme dan minat yang tinggi terhadap dunia perkeretaapian Indonesia.</li><br><li>Pria atau Wanita</li><br><li>Berkomitmen untuk menjaga nama baik komunitas di manapun berada.</li><br><li>Aktif dalam kegiatan, baik acara internal ataupun eksternal.</li><br><li>Menjadi nilai+ untuk yang menguasai desain grafis</li>')">Syarat & Ketentuan</button></li>
-        <li class="question-item"><button class="question-btn" onclick="redirectTo('/rekrutmen/')">Halaman Pendaftaran Calon Anggota Baru</button></li>
-        <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
-    </ul>
-`,
+                <ul class="question-list">
+                    <li class="question-item"><button class="question-btn" onclick="showAnswer('q-syarat', 'Syarat & Ketentuan', '• Minimal 15 tahun.<br>• Minat tinggi terhadap kereta api.<br>• Pria/Wanita.<br>• Menjaga nama baik komunitas.<br>• Aktif berkegiatan.<br>• Nilai + jika bisa desain grafis.')">Syarat & Ketentuan</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('/rekrutmen/')">Halaman Pendaftaran Baru</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
+                </ul>
+            `,
             'website-info': `
                 <ul class="question-list">
-                    <li class="question-item"><button class="question-btn" onclick="showWebsiteMaker()">Siapa pembuat website ini?</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="showSection('website-features')">Ada apa saja di website ini?</button></li>
-                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showWebsiteMaker()">Pembuat Website</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="showSection('website-features')">Fitur Website</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
                 </ul>
             `,
             'website-features': `
                 <ul class="question-list">
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('index.html')">Halaman Utama (FAQ)</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('index.html')">Halaman Utama</button></li>
                     <li class="question-item"><button class="question-btn" onclick="redirectTo('/anggota/')">Halaman Anggota</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://sadulursepoor.web.id/saran.html')">Halaman Saran & Kritik</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('/rekrutmen/')">Halaman Pendaftaran Anggota</button></li>
-                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://sadulursepoor.web.id/saran.html')">Saran & Kritik</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('/rekrutmen/')">Pendaftaran Anggota</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
                 </ul>
             `,
             social: `
                 <ul class="question-list">
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('mailto:sadulursepoor@gmail.com')">Email</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://wa.me/6285171058989')">WhatsApp</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://instagram.com/sadulursepoor_id')">Instagram</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://facebook.com/sadulursepoor')">Facebook</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://youtube.com/sadulursepoor_id')">YouTube</button></li>
-                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://tiktok.com/@sadulur.sepoor_official')">TikTok</button></li>
-                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali/Back</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://instagram.com/sadulursepoor_id')"><i class="fab fa-instagram" style="color:#E1306C"></i> Instagram</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('https://wa.me/6285171058989')"><i class="fab fa-whatsapp" style="color:#25D366"></i> WhatsApp</button></li>
+                    <li class="question-item"><button class="question-btn" onclick="redirectTo('mailto:sadulursepoor@gmail.com')"><i class="fas fa-envelope" style="color:#EA4335"></i> Email</button></li>
+                    <li class="question-item"><button class="question-btn back-btn" onclick="goBack()">Kembali</button></li>
                 </ul>
             `
         };
         
         // --- DYNAMIC CONTENT FUNCTIONS ---
-
         function renderContent(html) {
             const contentDiv = document.getElementById('content');
             contentDiv.innerHTML = html;
@@ -443,7 +272,7 @@
         function showSection(section) {
             currentPath.push(section);
             updateBreadcrumb();
-            renderContent(content[section] || '<p class="loading">Konten tidak ditemukan.</p>');
+            renderContent(content[section] || '<p class="loading-text">Konten tidak ditemukan.</p>');
         }
 
         function showAnswer(id, question, answer) {
@@ -451,8 +280,8 @@
             currentPath.push(id);
             updateBreadcrumb();
             
-            const answerHtml = answer ? `<div class="answer-content">${answer}</div>` : `<div class="answer-content">Jawaban untuk pertanyaan ini belum tersedia.</div>`;
-            const finalHtml = `<h3 style="color: #2c3e50; margin-bottom: 15px;">${question}</h3>${answerHtml}<button class="question-btn back-btn" onclick="goBack()">Kembali</button>`;
+            const answerHtml = answer ? `<div class="answer-content">${answer}</div>` : `<div class="answer-content">Jawaban belum tersedia.</div>`;
+            const finalHtml = `<h3>${question}</h3>${answerHtml}<button class="question-btn back-btn" onclick="goBack()">Kembali</button>`;
             renderContent(finalHtml);
         }
 
@@ -468,17 +297,13 @@
             const targetJabatan = jabatanMap[type];
             const foundPengurus = allPengurus.filter(p => p.jabatan === targetJabatan);
 
-            let html = `<h3 style="color: #2c3e50; margin-bottom: 15px;">${targetJabatan}</h3>`;
+            let html = `<h3>${targetJabatan}</h3>`;
 
             if (foundPengurus.length > 0) {
                 foundPengurus.forEach(p => {
                     let socialLinksHtml = '<div class="social-links">';
-                    if (p.socials.whatsapp) {
-                        socialLinksHtml += `<a href="${p.socials.whatsapp}" target="_blank">WhatsApp</a>`;
-                    }
-                    if (p.socials.instagram) {
-                        socialLinksHtml += `<a href="${p.socials.instagram}" target="_blank">Instagram</a>`;
-                    }
+                    if (p.socials.whatsapp) socialLinksHtml += `<a href="${p.socials.whatsapp}" target="_blank"><i class="fab fa-whatsapp"></i></a>`;
+                    if (p.socials.instagram) socialLinksHtml += `<a href="${p.socials.instagram}" target="_blank"><i class="fab fa-instagram"></i></a>`;
                     socialLinksHtml += '</div>';
 
                     html += `
@@ -486,15 +311,13 @@
                             <img src="${p.foto}" alt="${p.nama}" class="member-photo">
                             <div class="member-info">
                                 <h3>${p.nama}</h3>
-                                <p><strong>NIA:</strong> ${p.nia}</p>
-                                <p><strong>Lahir:</strong> ${p.tanggal_lahir}</p>
-                                <p>${p.deskripsi || ''}</p>
+                                <p>NIA: ${p.nia}</p>
                                 ${socialLinksHtml}
                             </div>
                         </div>`;
                 });
             } else {
-                html += `<div class="answer-content">Data untuk posisi ${targetJabatan} tidak ditemukan.</div>`;
+                html += `<div class="answer-content">Data tidak ditemukan.</div>`;
             }
 
             html += `<button class="question-btn back-btn" onclick="goBack()">Kembali</button>`;
@@ -502,24 +325,15 @@
         }
 
         function showWebsiteMaker() {
-            const webMaker = {
-                name: "Fathir Ahmad Maulana",
-                tanggalLahir: "14 April 2007",
-                jabatan: "Keanggotaan/SDM",
-                photoUrl: "https://i.ibb.co.com/Vgrtv9c/IMG-20240923-183645.png",
-                whatsapp: "https://wa.me/6282112964343",
-                instagram: "https://instagram.com/eskopss"
-            };
             const html = `
                 <div class="member-card">
-                    <img src="${webMaker.photoUrl}" alt="${webMaker.name}" class="member-photo">
+                    <img src="https://i.ibb.co.com/Vgrtv9c/IMG-20240923-183645.png" alt="Fathir Ahmad Maulana" class="member-photo">
                     <div class="member-info">
-                        <h3>${webMaker.name}</h3>
-                        <p><strong>Jabatan:</strong> ${webMaker.jabatan}</p>
-                        <p><strong>Tanggal Lahir:</strong> ${webMaker.tanggalLahir}</p>
+                        <h3>Fathir Ahmad Maulana</h3>
+                        <p>Web Developer & SDM</p>
                         <div class="social-links">
-                            <a href="${webMaker.whatsapp}" target="_blank">WhatsApp</a>
-                            <a href="${webMaker.instagram}" target="_blank">Instagram</a>
+                            <a href="https://wa.me/6282112964343" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                            <a href="https://instagram.com/eskopss" target="_blank"><i class="fab fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
@@ -531,23 +345,15 @@
             currentPath.push('kegiatan-selanjutnya');
             updateBreadcrumb();
             
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const upcomingKegiatan = allKegiatan.filter(k => new Date(k.tanggal) >= today).sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
 
-            const upcomingKegiatan = allKegiatan
-                .filter(k => new Date(k.tanggal) >= today)
-                .sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
-
-            let html = '<h3 style="color: #2c3e50; margin-bottom: 15px;">Kegiatan Selanjutnya</h3>';
-            
+            let html = `<h3>Kegiatan Terdekat</h3>`;
             if (upcomingKegiatan.length > 0) {
-                const kegiatanTerdekat = upcomingKegiatan[0];
-                html += `<div class="kegiatan-item">
-                            <div class="kegiatan-date">${new Date(kegiatanTerdekat.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                            <div>${kegiatanTerdekat.nama}</div>
-                         </div>`;
+                const k = upcomingKegiatan[0];
+                html += `<div class="answer-content"><strong>${new Date(k.tanggal).toLocaleDateString('id-ID')}</strong><br>${k.nama}</div>`;
             } else {
-                html += '<div class="answer-content">Belum ada kegiatan yang dijadwalkan.</div>';
+                html += '<div class="answer-content">Belum ada kegiatan terdekat.</div>';
             }
             html += '<button class="question-btn back-btn" onclick="goBack()">Kembali</button>';
             renderContent(html);
@@ -557,38 +363,83 @@
             currentPath.push('kegiatan-sebelumnya');
             updateBreadcrumb();
 
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const pastKegiatan = allKegiatan.filter(k => new Date(k.tanggal) < today).sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
 
-            const pastKegiatan = allKegiatan
-                .filter(k => new Date(k.tanggal) < today)
-                .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-
-            let html = '<h3 style="color: #2c3e50; margin-bottom: 15px;">Kegiatan Sebelumnya</h3>';
-            
+            let html = `<h3>Kegiatan Terakhir</h3>`;
             if (pastKegiatan.length > 0) {
-                const kegiatanTerakhir = pastKegiatan[0];
-                html += `<div class="kegiatan-item">
-                            <div class="kegiatan-date">${new Date(kegiatanTerakhir.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                            <div>${kegiatanTerakhir.nama}</div>
-                         </div>`;
+                const k = pastKegiatan[0];
+                html += `<div class="answer-content"><strong>${new Date(k.tanggal).toLocaleDateString('id-ID')}</strong><br>${k.nama}</div>`;
             } else {
-                 html += '<div class="answer-content">Tidak ada data kegiatan sebelumnya.</div>';
+                 html += '<div class="answer-content">Tidak ada data.</div>';
             }
             html += '<button class="question-btn back-btn" onclick="goBack()">Kembali</button>';
             renderContent(html);
         }
 
-        function redirectTo(url) {
-            window.open(url, '_blank');
+        function redirectTo(url) { window.open(url, '_blank'); }
+
+        // --- FUNGSI CHATBOT AI ---
+        function showChatbot() {
+            currentPath.push('chatbot');
+            updateBreadcrumb();
+            
+            const html = `
+                <div class="chat-container">
+                    <div id="chat-box">
+                        <div style="text-align: left;"><span class="chat-msg msg-ai">Halo! Ada yang mau ditanyain soal kereta api atau Sadulur Sepoor?</span></div>
+                    </div>
+                    <div class="chat-input-wrapper">
+                        <input type="text" id="ai-input" placeholder="Ketik pesan..." onkeypress="if(event.key === 'Enter') askGemini()">
+                        <button class="send-btn" onclick="askGemini()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                    <button class="question-btn back-btn" onclick="goBack()" style="margin-top: 0;">Kembali</button>
+                </div>
+            `;
+            renderContent(html);
+        }
+
+        async function askGemini() {
+            const inputField = document.getElementById('ai-input');
+            const chatBox = document.getElementById('chat-box');
+            const userText = inputField.value.trim();
+            
+            if (!userText) return;
+
+            chatBox.innerHTML += `<div style="text-align: right;"><span class="chat-msg msg-user">${userText}</span></div>`;
+            inputField.value = '';
+
+            const loadingId = 'loading-' + Date.now();
+            chatBox.innerHTML += `<div id="${loadingId}" style="text-align: left;"><span class="loading-text">Mengetik...</span></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyb6JDMzJ-nY7epKR_V7qVnvMbuDbJXYDfg1szcS2AB8Zw4W-Py1rFHBYH_Ro5a5Bteeg/exec'; 
+            
+            try {
+                const targetUrl = GAS_WEB_APP_URL + "?text=" + encodeURIComponent(userText);
+                const response = await fetch(targetUrl, { method: 'GET' });
+                const data = await response.json();
+                
+                if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
+
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    let aiReply = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+                    chatBox.innerHTML += `<div style="text-align: left;"><span class="chat-msg msg-ai">${aiReply}</span></div>`;
+                } else {
+                    throw new Error("Format API Error");
+                }
+            } catch (error) {
+                if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
+                chatBox.innerHTML += `<div style="text-align: center;"><span class="loading-text" style="color:#e74c3c;">Gagal menyambung. Coba lagi.</span></div>`;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         // --- NAVIGATION ---
         function goBack() {
             if (currentPath.length > 1) {
                 currentPath.pop();
-                const lastSection = currentPath[currentPath.length - 1];
-                renderContent(content[lastSection]);
+                renderContent(content[currentPath[currentPath.length - 1]]);
                 updateBreadcrumb();
             } else {
                 currentPath = [];
@@ -599,28 +450,16 @@
         
         function updateBreadcrumb() {
             const sectionNames = {
-                'general': 'Pertanyaan Umum', 'social': 'Media Sosial', 'registration': 'Pendaftaran',
-                'community-info': 'Informasi Komunitas', 'membership-info': 'Informasi Keanggotaan',
-                'activity-info': 'Informasi Kegiatan', 'website-info': 'Informasi Website',
-                'pengurus-info': 'Nama Pengurus', 'pengurus-lainnya': 'Lainnya',
-                'website-features': 'Fitur Website',
-                'kegiatan-selanjutnya': 'Kegiatan Selanjutnya',
-                'kegiatan-sebelumnya': 'Kegiatan Sebelumnya',
-                'pengurus-penasehat-pembina': 'Penasehat & Pembina',
-                'pengurus-ketua': 'Ketua Umum',
-                'pengurus-wakil-ketua': 'Wakil Ketua Umum',
-                'activity-types-answered': 'Jenis Kegiatan',
-                'public-participation-info': 'Partisipasi Umum'
+                'chatbot': 'Tanya AI', 'general': 'Pertanyaan Umum', 'social': 'Media Sosial', 'registration': 'Pendaftaran',
+                'community-info': 'Info Komunitas', 'membership-info': 'Info Anggota', 'activity-info': 'Kegiatan', 
+                'website-info': 'Info Website', 'pengurus-info': 'Pengurus', 'website-features': 'Fitur Web'
             };
 
             let breadcrumbPath = ['Beranda'];
             currentPath.forEach(path => {
                 const name = sectionNames[path] || questionTextMap[path] || 'Detail';
-                if (breadcrumbPath[breadcrumbPath.length - 1] !== name) {
-                    breadcrumbPath.push(name);
-                }
+                if (breadcrumbPath[breadcrumbPath.length - 1] !== name) breadcrumbPath.push(name);
             });
-
             document.getElementById('breadcrumb').textContent = breadcrumbPath.join(' > ');
         }
         
@@ -632,19 +471,12 @@
                 fetch('anggota2.json').then(res => res.ok ? res.json() : Promise.reject('anggota2.json')),
                 fetch('profile2.json').then(res => res.ok ? res.json() : Promise.reject('profile2.json')),
                 fetch('pengurus2.json').then(res => res.ok ? res.json() : Promise.reject('pengurus2.json'))
-            ])
-            .then(([membersData, profileData, pengurusData]) => {
+            ]).then(([membersData, profileData, pengurusData]) => {
                 allMembers = membersData;
                 allKegiatan = profileData.kegiatan || [];
                 allPengurus = pengurusData;
-                console.log("Semua data JSON berhasil dimuat.");
-            })
-            .catch(error => {
-                console.error("Gagal memuat data JSON:", error);
-                const contentDiv = document.getElementById('content');
-                if(contentDiv.querySelector('.loading')) {
-                    contentDiv.innerHTML = `<div class="answer-content">Gagal memuat data dari file: ${error}. Mohon pastikan file tersebut ada dan dapat diakses.</div>`;
-                }
+            }).catch(error => {
+                console.error("Gagal memuat JSON:", error);
             });
         });
     </script>
