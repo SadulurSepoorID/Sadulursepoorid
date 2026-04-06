@@ -10,308 +10,810 @@
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; color: #333; }
     .container { max-width: 800px; margin: 0 auto; padding: 20px; }
     .header { text-align: center; background: white; border-radius: 15px; padding: 30px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; }
-    .home-btn { position: absolute; top: 20px; left: 20px; padding: 8px 12px; background: #2563eb; color: white; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 5px; z-index: 10; }
+    .home-btn { position: absolute; top: 20px; left: 20px; padding: 8px 6px; background: #2563eb; color: white; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 5px; }
     .home-btn:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
     .logo { width: 80px; height: 80px; background: white; border-radius: 50%; margin: 30px auto 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
     .logo img { width: 100%; height: 100%; object-fit: cover; }
     .header h1 { color: #2563eb; font-size: 2.2rem; margin-bottom: 10px; font-weight: 700; }
     .header p { color: #666; font-size: 1.1rem; }
 
-    .description-container { background: white; border-radius: 15px; padding: 30px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); line-height: 1.7; }
-    .description-container h2 { color: #2563eb; font-size: 1.5rem; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; font-weight: 600; }
-    .pic-info { background-color: #f3f4f6; border-left: 4px solid #2563eb; padding: 15px 20px; border-radius: 8px; font-size: 0.95rem; margin: 20px 0; }
-    .pic-info a { color: #2563eb; text-decoration: none; font-weight: 600; }
+    .description-container {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        line-height: 1.7;
+    }
+    .description-container h2 {
+        color: #2563eb;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 10px;
+        font-weight: 600;
+    }
+    .description-container p {
+        margin-bottom: 20px;
+    }
+    .pic-info {
+        background-color: #f3f4f6;
+        border-left: 4px solid #2563eb;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+    }
+    .pic-info strong {
+        display: block;
+        margin-bottom: 5px;
+        color: #374151;
+    }
+    .pic-info span {
+        display: block;
+        margin-top: 5px;
+    }
+    .pic-info a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .pic-info a:hover {
+        text-decoration: underline;
+    }
 
-    #countdown-container { text-align: center; padding: 15px; background-color: #eef2ff; border-radius: 12px; margin-top: 25px; }
-    #countdown-timer { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
-    .time-block { background: #fff; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); min-width: 65px; }
-    .time-block .value { font-size: 1.5rem; font-weight: 700; color: #2563eb; display: block; }
-    .time-block .label { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; }
+    /* Countdown Timer Style */
+    #countdown-container {
+        text-align: center;
+        padding: 15px;
+        background-color: #eef2ff;
+        border-radius: 12px;
+        margin-top: 25px;
+    }
+    #countdown-container p {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 10px;
+    }
+    #countdown-timer {
+        display: flex;
+        justify-content: center;
+        gap: 15px; /* Default gap for larger screens */
+    }
+    .time-block {
+        background: #fff;
+        padding: 10px 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        min-width: 70px; /* Default min-width for larger screens */
+    }
+    .time-block .value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2563eb;
+    }
+    .time-block .label {
+        font-size: 0.8rem;
+        color: #6b7280;
+        text-transform: uppercase;
+    }
 
-    .form-container { background: white; border-radius: 15px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; }
+    .form-container { background: white; border-radius: 15px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; }
     .progress-bar { width: 100%; height: 6px; background: #e5e7eb; border-radius: 3px; margin-bottom: 30px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, #2563eb, #3b82f6); transition: width 0.3s ease; }
-    .step-indicator { display: flex; justify-content: center; margin-bottom: 30px; gap: 15px; }
-    .step { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #2563eb, #3b82f6); border-radius: 3px; transition: width 0.3s ease; }
+    .step-indicator { display: flex; justify-content: center; margin-bottom: 30px; gap: 20px; }
+    .step { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: all 0.3s ease; }
     .step.active { background: #2563eb; color: white; }
     .step.completed { background: #10b981; color: white; }
     .step.inactive { background: #e5e7eb; color: #9ca3af; }
-
     .form-section { display: none; }
-    .form-section.active { display: block; animation: fadeIn 0.4s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .section-title { color: #2563eb; font-size: 1.4rem; margin-bottom: 25px; text-align: center; }
-
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
-    .form-group { margin-bottom: 15px; }
+    .form-section.active { display: block; animation: fadeIn 0.5s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .section-title { color: #2563eb; font-size: 1.5rem; margin-bottom: 25px; text-align: center; font-weight: 600; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .form-group { margin-bottom: 20px; }
     .form-group.full-width { grid-column: 1 / -1; }
-    label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 14px; }
-    input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 15px; transition: all 0.3s ease; background: #fafafa; }
-    input:focus, select:focus, textarea:focus { border-color: #2563eb; background: white; outline: none; }
-    
-    .radio-group { display: flex; gap: 20px; padding: 5px 0; }
-    .radio-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-    .radio-item input { width: auto; cursor: pointer; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; }
+    input, select, textarea { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; background: #fafafa; }
+    input:focus, select:focus, textarea:focus, .ts-control.focus { outline: none; border-color: #2563eb !important; background: white; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important; }
+    .ts-control { padding: 12px 16px !important; border: 2px solid #e5e7eb !important; border-radius: 8px !important; font-size: 16px !important; background: #fafafa !important; }
+    .ts-wrapper.disabled .ts-control { background-color: #e5e7eb !important; opacity: 0.7; }
+    textarea { resize: vertical; min-height: 100px; }
 
-    .navigation-buttons { margin-top: 35px; width: 100%; }
-    .bottom-navigation { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
-    .btn { padding: 14px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .radio-group { display: flex; gap: 20px; flex-wrap: wrap; }
+    .radio-item { display: flex; align-items: center; gap: 8px; }
+    .radio-item input[type="radio"] { width: auto; margin: 0; }
+    .social-media-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    .file-upload { position: relative; display: inline-block; width: 100%; }
+    .file-upload input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+    .file-upload-btn { display: block; padding: 12px 16px; background: #f3f4f6; border: 2px dashed #d1d5db; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+    .file-upload-btn:hover { background: #e5e7eb; border-color: #2563eb; }
+    .navigation-buttons { margin-top: 30px; }
+    .bottom-navigation { display: flex; justify-content: space-between; align-items: center; }
+    .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; }
     .btn-primary { background: #2563eb; color: white; }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+    .btn:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
     .btn-outline { background: transparent; color: #2563eb; border: 2px solid #2563eb; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-outline:hover { background: #2563eb; color: white; }
+    .success-message { display: none; text-align: center; padding: 40px; }
+    .success-message.show { display: block; animation: fadeIn 0.5s ease; }
+    .success-icon { width: 80px; height: 80px; background: #10b981; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 36px; color: white; }
 
-    .success-message { display: none; text-align: center; padding: 30px 0; }
-    .success-message.show { display: block; }
+    /* Responsif untuk Mobile */
+    @media (max-width: 768px) { 
+        .container { padding: 15px; } 
+        .header { padding: 20px; } 
+        .header h1 { font-size: 1.8rem; } 
+        .description-container { padding: 25px; } 
+        .form-container { padding: 25px; } 
+        .form-row { grid-template-columns: 1fr; gap: 15px; } 
+        .step-indicator { gap: 10px; } 
+        .step { width: 35px; height: 35px; font-size: 14px; } 
+        .bottom-navigation { flex-direction: column; gap: 15px; align-items: stretch; } 
+        .btn { width: 100%; padding: 14px 20px; font-size: 16px; } 
+        .bottom-navigation { flex-direction: column-reverse; } 
 
-    @media (max-width: 768px) {
-        .form-container { padding: 25px 20px; }
-        .form-row { grid-template-columns: 1fr; gap: 10px; }
-        .bottom-navigation { flex-direction: column-reverse; width: 100%; }
-        .btn { width: 100%; }
-        .header h1 { font-size: 1.6rem; }
+        /* Countdown Timer Responsif */
+        #countdown-timer {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .time-block { 
+            padding: 8px; 
+            min-width: 45%; 
+            flex-grow: 1; 
+        }
+        .time-block .value { 
+            font-size: 1.5rem; 
+        }
+        .time-block .label { 
+            font-size: 0.7rem; 
+        }
     }
-    </style>
+</style>
 </head>
 <body>
 
     <div class="container">
         <div class="header">
             <a href="../index.html" class="home-btn">Website Utama</a>
-            <div class="logo"><img src="https://sadulursepoor.web.id/img/Logo%20SS.png" alt="Logo SS"></div>
+            <div class="logo"><img src="https://sadulursepoor.web.id/img/Logo%20SS.png" alt="Logo Sadulur Sepoor Indonesia"></div>
             <h1>Sadulur Sepoor Indonesia</h1>
             <p>Formulir Pembaruan Data Anggota</p>
         </div>
 
-        <div class="description-container" id="descView">
+        <div class="description-container">
             <h2>Selamat Datang, Anggota Sadulur Sepoor!</h2>
-            <p>Formulir ini dikhususkan bagi anggota untuk melakukan pembaruan (update) data keanggotaan agar database komunitas kita tetap akurat.</p>
-            
+            <p>
+                Terima kasih atas dedikasi Anda di Sadulur Sepoor Indonesia. Formulir ini dikhususkan bagi anggota untuk melakukan pembaruan (update) data keanggotaan agar database komunitas kita menjadi lebih presisi, akurat, dan terbaru.
+            </p>
+            <p>
+                Silakan isi formulir ini dengan data diri Anda yang paling baru. Pastikan Anda memasukkan Nomor Induk Anggota (NIA) Anda dengan benar untuk keperluan verifikasi.
+            </p>
+
+            <h2>Narahubung (PIC)</h2>
             <div class="pic-info">
-                <strong>Narahubung (PIC)</strong><br>
-                Fathir Ahmad M: <a href="https://wa.me/6282112964343" target="_blank">0821-1296-4343</a>
+                <p>Jika Anda mengalami kendala teknis atau memiliki pertanyaan seputar pembaruan data, jangan ragu untuk menghubungi kami melalui:</p>
+                <strong>Fathir Ahmad M</strong>
+                <span>WhatsApp: <a href="https://wa.me/6282112964343" target="_blank">0821-1296-4343</a> (Hanya Chat)</span>
+                <span>Email: <a href="/cdn-cgi/l/email-protection#375156435f5e45565a77445653425b424544524758584519405255195e53"><span class="__cf_email__" data-cfemail="93f5f2e7fbfae1f2fed3e0f2f7e6ffe6e1e0f6e3fcfce1bde4f6f1bdfaf7">[email&#160;protected]</span></a></span>
             </div>
 
-            <div id="action-container">
-                <div id="countdown-container" style="display: none;">
-                    <p>Formulir dibuka dalam:</p>
-                    <div id="countdown-timer">
-                        <div class="time-block"><span id="days" class="value">0</span><span class="label">Hari</span></div>
-                        <div class="time-block"><span id="hours" class="value">0</span><span class="label">Jam</span></div>
-                        <div class="time-block"><span id="minutes" class="value">0</span><span class="label">Menit</span></div>
-                        <div class="time-block"><span id="seconds" class="value">0</span><span class="label">Detik</span></div>
-                    </div>
+            <div id="action-container" style="margin-top: 20px;">
                 </div>
-                <button id="startButton" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Mulai Isi Formulir →</button>
-            </div>
+
         </div>
-
-        <div class="form-container" id="formView">
+        <div class="form-container">
             <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-            <div class="step-indicator">
-                <div class="step" id="step1">1</div>
-                <div class="step" id="step2">2</div>
-                <div class="step" id="step3">3</div>
-            </div>
-
+            <div class="step-indicator"><div class="step" id="step1">1</div><div class="step" id="step2">2</div><div class="step" id="step3">3</div></div>
             <form id="registrationForm" onsubmit="return false;">
+
                 <div class="form-section" id="section1">
                     <h2 class="section-title">Data Pribadi</h2>
                     <div class="form-row">
-                        <div class="form-group"><label>Email *</label><input type="email" id="email" name="email" required></div>
-                        <div class="form-group"><label>Nomor Telepon (WhatsApp) *</label><input type="tel" id="phone" name="phone" placeholder="628..." required></div>
+                        <div class="form-group"><label for="email">Email *</label><input type="email" id="email" name="email" required></div>
+                        <div class="form-group"><label for="phone">Nomor Telepon *</label><input type="tel" id="phone" name="phone" required></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="fullName" name="fullName" required></div>
-                        <div class="form-group"><label>Nama Panggilan *</label><input type="text" id="nickname" name="nickname" required></div>
+                        <div class="form-group"><label for="fullName">Nama Lengkap *</label><input type="text" id="fullName" name="fullName" required></div>
+                        <div class="form-group"><label for="nickname">Nama Panggilan *</label><input type="text" id="nickname" name="nickname" required></div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="birthPlace">Tempat Lahir *</label><input type="text" id="birthPlace" name="birthPlace" required></div>
+                        <div class="form-group"><label for="birthDate">Tanggal Lahir *</label><input type="date" id="birthDate" name="birthDate" required></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Kelamin *</label>
+                        <div class="radio-group">
+                            <div class="radio-item"><input type="radio" id="male" name="gender" value="Pria" required><label for="male">Pria</label></div>
+                            <div class="radio-item"><input type="radio" id="female" name="gender" value="Wanita" required><label for="female">Wanita</label></div>
+                        </div>
+                    </div>
+
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Tahun Bergabung *</label>
+                            <label for="joinYear">Tahun Bergabung *</label>
                             <select id="joinYear" name="joinYear" required>
-                                <option value="">Pilih...</option>
-                                <option value="2019">2019</option><option value="2020">2020</option>
-                                <option value="2021">2021</option><option value="2022">2022</option>
-                                <option value="2023">2023</option><option value="2024">2024</option>
+                                <option value="">Pilih Tahun...</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
                                 <option value="2025">2025</option>
                             </select>
                         </div>
-                        <div class="form-group"><label>NIA *</label><input type="text" id="nia" name="nia" placeholder="SS-0000" required></div>
+                        <div class="form-group">
+                            <label for="nia">NIA *</label>
+                            <input type="text" id="nia" name="nia" placeholder="Contoh: SS-0000" maxlength="7" required>
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-section" id="section2">
-                    <h2 class="section-title">Alamat & Stasiun</h2>
-                    <div class="form-group full-width"><label>Alamat Lengkap *</label><textarea id="address" name="address" required></textarea></div>
+                    <h2 class="section-title">Alamat Lengkap</h2>
+                    <div class="form-group full-width"><label for="address">Alamat Lengkap *</label><textarea id="address" name="address" required placeholder="Contoh: Jl. Merdeka No. 10, RT 01/RW 02"></textarea></div>
                     <div class="form-row">
-                        <div class="form-group"><label>Provinsi *</label><select id="province" name="province" required></select></div>
-                        <div class="form-group"><label>Kota/Kabupaten *</label><select id="city" name="city" required></select></div>
+                        <div class="form-group"><label for="province">Provinsi *</label><select id="province" name="province" required></select></div>
+                        <div class="form-group"><label for="city">Kota/Kabupaten *</label><select id="city" name="city" required></select></div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="district">Kecamatan *</label><select id="district" name="district" required></select></div>
+                        <div class="form-group"><label for="village">Kelurahan/Desa *</label><select id="village" name="village" required></select></div>
+                    </div>
+
                     <div class="form-group full-width">
-                        <label>Stasiun Terdekat *</label>
-                        <select id="nearestStation" name="nearestStation" required>
-                            <option value="">Pilih Stasiun...</option>
-                            <option value="Ancol">Ancol</option><option value="Angke">Angke</option>
-                            <option value="Batu Ceper">Batu Ceper</option><option value="Bekasi">Bekasi</option>
-                            <option value="Bekasi Timur">Bekasi Timur</option><option value="Bogor">Bogor</option>
-                            <option value="Bojong Gede">Bojong Gede</option><option value="Bojong Indah">Bojong Indah</option>
-                            <option value="Buaran">Buaran</option><option value="Cakung">Cakung</option>
-                            <option value="Catang">Catang</option><option value="Cawang">Cawang</option>
-                            <option value="Cibitung">Cibitung</option><option value="Cibinong">Cibinong</option>
-                            <option value="Cibungur">Cibungur</option><option value="Cicayur">Cicayur</option>
-                            <option value="Cikini">Cikini</option><option value="Cikarang">Cikarang</option>
-                            <option value="Cikeusal">Cikeusal</option><option value="Cikoya">Cikoya</option>
-                            <option value="Cikampek">Cikampek</option><option value="Cilegon">Cilegon</option>
-                            <option value="Cilebut">Cilebut</option><option value="Cilejit">Cilejit</option>
-                            <option value="Cisauk">Cisauk</option><option value="Citayam">Citayam</option>
-                            <option value="Citeras">Citeras</option><option value="Daru">Daru</option>
-                            <option value="Dawuan">Dawuan</option><option value="Depok">Depok</option>
-                            <option value="Depok Baru">Depok Baru</option><option value="Duren Kalibata">Duren Kalibata</option>
-                            <option value="Duri">Duri</option><option value="Gang Sentiong">Gang Sentiong</option>
-                            <option value="Gondangdia">Gondangdia</option><option value="Grogol">Grogol</option>
-                            <option value="Gunung Putri">Gunung Putri</option><option value="Jakarta Kota">Jakarta Kota</option>
-                            <option value="Jambubaru">Jambubaru</option><option value="Jatinegara">Jatinegara</option>
-                            <option value="Jayakarta">Jayakarta</option><option value="Juanda">Juanda</option>
-                            <option value="Jurang Mangu">Jurang Mangu</option><option value="Kali Deres">Kali Deres</option>
-                            <option value="Kampung Bandan">Kampung Bandan</option><option value="Karangantu">Karangantu</option>
-                            <option value="Karawang">Karawang</option><option value="Karet">Karet</option>
-                            <option value="Kebayoran">Kebayoran</option><option value="Kedunggedeh">Kedunggedeh</option>
-                            <option value="Kemayoran">Kemayoran</option><option value="Klari">Klari</option>
-                            <option value="Klender">Klender</option><option value="Klender Baru">Klender Baru</option>
-                            <option value="Kosambi">Kosambi</option><option value="Kramat">Kramat</option>
-                            <option value="Kranji">Kranji</option><option value="Krenceng">Krenceng</option>
-                            <option value="Lemahabang">Lemahabang</option><option value="Lenteng Agung">Lenteng Agung</option>
-                            <option value="Maja">Maja</option><option value="Mangga Besar">Mangga Besar</option>
-                            <option value="Manggarai">Manggarai</option><option value="Matraman">Matraman</option>
-                            <option value="Merak">Merak</option><option value="Metland Telaga Murni">Metland Telaga Murni</option>
-                            <option value="Nambo">Nambo</option><option value="Palmerah">Palmerah</option>
-                            <option value="Parung Panjang">Parung Panjang</option><option value="Pasar Minggu">Pasar Minggu</option>
-                            <option value="Pasar Minggu Baru">Pasar Minggu Baru</option><option value="Pasar Senen">Pasar Senen</option>
-                            <option value="Pesing">Pesing</option><option value="Pondok Cina">Pondok Cina</option>
-                            <option value="Pondok Jati">Pondok Jati</option><option value="Pondok Rajeg">Pondok Rajeg</option>
-                            <option value="Pondok Ranji">Pondok Ranji</option><option value="Poris">Poris</option>
-                            <option value="Purwakarta">Purwakarta</option><option value="Rajawali">Rajawali</option>
-                            <option value="Rangkasbitung">Rangkasbitung</option><option value="Rawa Buaya">Rawa Buaya</option>
-                            <option value="Rawa Buntu">Rawa Buntu</option><option value="Sawah Besar">Sawah Besar</option>
-                            <option value="Serang">Serang</option><option value="Serpong">Serpong</option>
-                            <option value="Sudimara">Sudimara</option><option value="Sudirman">Sudirman</option>
-                            <option value="Tambun">Tambun</option><option value="Tanah Abang">Tanah Abang</option>
-                            <option value="Tanah Tinggi">Tanah Tinggi</option><option value="Tangerang">Tangerang</option>
-                            <option value="Tanjung Barat">Tanjung Barat</option><option value="Tanjung Priok">Tanjung Priok</option>
-                            <option value="Tebet">Tebet</option><option value="Tenjo">Tenjo</option>
-                            <option value="Tigaraksa">Tigaraksa</option><option value="Tonjongbaru">Tonjongbaru</option>
-                            <option value="Univ. Indonesia">Univ. Indonesia</option><option value="Univ. Pancasila">Univ. Pancasila</option>
-                            <option value="Walantaka">Walantaka</option>
-                        </select>
-                    </div>
-                </div>
+    <label for="nearestStation">Stasiun Terdekat *</label>
+    <select id="nearestStation" name="nearestStation" required>
+        <option value="">Pilih Stasiun Terdekat...</option>
+        <option value="Ancol">Ancol</option>
+        <option value="Angke">Angke</option>
+        <option value="Batu Ceper">Batu Ceper</option>
+        <option value="Bekasi">Bekasi</option>
+        <option value="Bekasi Timur">Bekasi Timur</option>
+        <option value="Bogor">Bogor</option>
+        <option value="Bojong Gede">Bojong Gede</option>
+        <option value="Bojong Indah">Bojong Indah</option>
+        <option value="Buaran">Buaran</option>
+        <option value="Cakung">Cakung</option>
+        <option value="Catang">Catang</option>
+        <option value="Cawang">Cawang</option>
+        <option value="Cibitung">Cibitung</option>
+        <option value="Cibinong">Cibinong</option>
+        <option value="Cibungur">Cibungur</option>
+        <option value="Cicayur">Cicayur</option>
+        <option value="Cikini">Cikini</option>
+        <option value="Cikarang">Cikarang</option>
+        <option value="Cikeusal">Cikeusal</option>
+        <option value="Cikoya">Cikoya</option>
+        <option value="Cikampek">Cikampek</option>
+        <option value="Cilegon">Cilegon</option>
+        <option value="Cilebut">Cilebut</option>
+        <option value="Cilejit">Cilejit</option>
+        <option value="Cisauk">Cisauk</option>
+        <option value="Citayam">Citayam</option>
+        <option value="Citeras">Citeras</option>
+        <option value="Daru">Daru</option>
+        <option value="Dawuan">Dawuan</option>
+        <option value="Depok">Depok</option>
+        <option value="Depok Baru">Depok Baru</option>
+        <option value="Duren Kalibata">Duren Kalibata</option>
+        <option value="Duri">Duri</option>
+        <option value="Gang Sentiong">Gang Sentiong</option>
+        <option value="Gondangdia">Gondangdia</option>
+        <option value="Grogol">Grogol</option>
+        <option value="Gunung Putri">Gunung Putri</option>
+        <option value="Jakarta Kota">Jakarta Kota</option>
+        <option value="Jambubaru">Jambubaru</option>
+        <option value="Jatinegara">Jatinegara</option>
+        <option value="Jayakarta">Jayakarta</option>
+        <option value="Juanda">Juanda</option>
+        <option value="Jurang Mangu">Jurang Mangu</option>
+        <option value="Kali Deres">Kali Deres</option>
+        <option value="Kampung Bandan">Kampung Bandan</option>
+        <option value="Karangantu">Karangantu</option>
+        <option value="Karawang">Karawang</option>
+        <option value="Karet">Karet</option>
+        <option value="Kebayoran">Kebayoran</option>
+        <option value="Kedunggedeh">Kedunggedeh</option>
+        <option value="Kemayoran">Kemayoran</option>
+        <option value="Klari">Klari</option>
+        <option value="Klender">Klender</option>
+        <option value="Klender Baru">Klender Baru</option>
+        <option value="Kosambi">Kosambi</option>
+        <option value="Kramat">Kramat</option>
+        <option value="Kranji">Kranji</option>
+        <option value="Krenceng">Krenceng</option>
+        <option value="Lemahabang">Lemahabang</option>
+        <option value="Lenteng Agung">Lenteng Agung</option>
+        <option value="Maja">Maja</option>
+        <option value="Mangga Besar">Mangga Besar</option>
+        <option value="Manggarai">Manggarai</option>
+        <option value="Matraman">Matraman</option>
+        <option value="Merak">Merak</option>
+        <option value="Metland Telaga Murni">Metland Telaga Murni</option>
+        <option value="Nambo">Nambo</option>
+        <option value="Palmerah">Palmerah</option>
+        <option value="Parung Panjang">Parung Panjang</option>
+        <option value="Pasar Minggu">Pasar Minggu</option>
+        <option value="Pasar Minggu Baru">Pasar Minggu Baru</option>
+        <option value="Pasar Senen">Pasar Senen</option>
+        <option value="Pesing">Pesing</option>
+        <option value="Pondok Cina">Pondok Cina</option>
+        <option value="Pondok Jati">Pondok Jati</option>
+        <option value="Pondok Rajeg">Pondok Rajeg</option>
+        <option value="Pondok Ranji">Pondok Ranji</option>
+        <option value="Poris">Poris</option>
+        <option value="Purwakarta">Purwakarta</option>
+        <option value="Rajawali">Rajawali</option>
+        <option value="Rangkasbitung">Rangkasbitung</option>
+        <option value="Rawa Buaya">Rawa Buaya</option>
+        <option value="Rawa Buntu">Rawa Buntu</option>
+        <option value="Sawah Besar">Sawah Besar</option>
+        <option value="Serang">Serang</option>
+        <option value="Serpong">Serpong</option>
+        <option value="Sudimara">Sudimara</option>
+        <option value="Sudirman">Sudirman</option>
+        <option value="Tambun">Tambun</option>
+        <option value="Tanah Abang">Tanah Abang</option>
+        <option value="Tanah Tinggi">Tanah Tinggi</option>
+        <option value="Tangerang">Tangerang</option>
+        <option value="Tanjung Barat">Tanjung Barat</option>
+        <option value="Tanjung Priok">Tanjung Priok</option>
+        <option value="Tebet">Tebet</option>
+        <option value="Tenjo">Tenjo</option>
+        <option value="Tigaraksa">Tigaraksa</option>
+        <option value="Tonjongbaru">Tonjongbaru</option>
+        <option value="Univ. Indonesia">Univ. Indonesia</option>
+        <option value="Univ. Pancasila">Univ. Pancasila</option>
+        <option value="Walantaka">Walantaka</option>
+    </select>
+</div>
 
                 <div class="form-section" id="section3">
                     <h2 class="section-title">Data Tambahan</h2>
-                    <div class="form-group"><label>Profesi *</label><input type="text" name="profession" required></div>
-                    <div class="form-group"><label>Alasan Masih Mau Bergabung *</label><textarea name="reason" required></textarea></div>
+                    <div class="form-group full-width"><label for="profession">Profesi *</label><input type="text" id="profession" name="profession" required></div>
+
+                    <div class="form-group"><label for="reason">Alasan Masih Mau Bergabung *</label><textarea id="reason" name="reason" required placeholder="Ceritakan alasan Anda masih ingin bergabung"></textarea></div>
                     <div class="form-group">
-                        <label>Upload Foto Diri *</label>
-                        <input type="file" id="photo" name="photo" accept="image/*" required>
+                        <label>Media Sosial (Minimal 1 harus diisi) *</label>
+                        <div class="social-media-group">
+                            <div><label for="tiktok">TikTok</label><input type="text" id="tiktok" name="tiktok" placeholder="@username"></div>
+                            <div><label for="instagram">Instagram</label><input type="text" id="instagram" name="instagram" placeholder="@username"></div>
+                            <div><label for="facebook">Facebook</label><input type="text" id="facebook" name="facebook" placeholder="Nama atau link profil"></div>
+                            <div><label for="twitter">Twitter</label><input type="text" id="twitter" name="twitter" placeholder="@username"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="photo">Upload Foto Diri *</label>
+                        <div class="file-upload">
+                            <input type="file" id="photo" name="photo" accept="image/*" required>
+                            <div class="file-upload-btn">📷 Pilih Foto (JPG, PNG, max 5MB)</div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="success-message" id="successMessage">
-                    <h2 style="color: #10b981;">Berhasil!</h2>
-                    <p>Data Anda telah diperbarui di database kami.</p>
+                    <div class="success-icon">✓</div>
+                    <h2 style="color: #10b981; margin-bottom: 15px;">Pembaruan Berhasil!</h2>
+                    <p>Terima kasih. Data Anda telah berhasil diperbarui dan tersimpan di database kami.</p>
                 </div>
             </form>
-
-            <div class="navigation-buttons" id="navContainer">
+            <div class="navigation-buttons" id="navigationButtons">
                 <div class="bottom-navigation">
-                    <button type="button" class="btn btn-outline" id="backBtn">← Kembali</button>
-                    <button type="button" class="btn btn-outline" id="homeBottomBtn">← Beranda</button>
-                    <button type="button" class="btn btn-primary" id="nextBtn">Lanjut →</button>
+                    <a href="#" class="btn btn-outline" id="backToDescBottomBtn">← Beranda</a>
+                    <a href="#" class="btn btn-outline" id="backBtn">← Kembali</a>
+                    <button type="button" class="btn btn-primary" id="nextBtn">Mulai Isi Formulir →</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbxaUWUPvR9ZDmvaI_uUY-jOFVZNq-KkSv2k5YPZCxvwkEuHfVw9rwg0MQ6HFHGzhJ_k/exec';
-        
-        let currentStep = 1;
-        const totalSteps = 3;
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
-        const formView = document.getElementById('formView');
-        const descView = document.getElementById('descView');
-        const startBtn = document.getElementById('startButton');
-        const nextBtn = document.getElementById('nextBtn');
-        const backBtn = document.getElementById('backBtn');
-        const homeBtn = document.getElementById('homeBottomBtn');
-        const sections = document.querySelectorAll('.form-section');
-        const steps = document.querySelectorAll('.step');
-        const progressFill = document.getElementById('progressFill');
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const actionContainer = document.getElementById('action-container');
+    const recruitmentDate = new Date("2025-09-11T00:00:00").getTime();
 
-        // TomSelect Init
-        const provinceSelect = new TomSelect('#province', { valueField: 'id', labelField: 'name', searchField: 'name', placeholder: 'Pilih Provinsi...' });
-        const citySelect = new TomSelect('#city', { valueField: 'id', labelField: 'name', searchField: 'name', placeholder: 'Pilih Kota...' });
-        new TomSelect('#nearestStation', { create: false });
+    actionContainer.innerHTML = `
+        <div id="countdown-container" style="display: none;">
+            <p>Pembaruan Data akan dibuka dalam:</p>
+            <div id="countdown-timer">
+                <div class="time-block"><span id="months" class="value">0</span><span class="label">Bulan</span></div>
+                <div class="time-block"><span id="days" class="value">0</span><span class="label">Hari</span></div>
+                <div class="time-block"><span id="hours" class="value">0</span><span class="label">Jam</span></div>
+                <div class="time-block"><span id="minutes" class="value">0</span><span class="label">Menit</span></div>
+                <div class="time-block"><span id="seconds" class="value">0</span><span class="label">Detik</span></div>
+            </div>
+        </div>
+        <button id="startButton" class="btn btn-primary" style="width: 100%; margin-top: 25px; " disabled>
+            Saya Mengerti dan Lanjutkan →
+        </button>
+    `;
 
-        startBtn.onclick = () => { descView.style.display = 'none'; formView.style.display = 'block'; updateUI(); };
-        homeBtn.onclick = () => { formView.style.display = 'none'; descView.style.display = 'block'; };
+    const startButton = document.getElementById('startButton');
+    const countdownContainer = document.getElementById('countdown-container');
 
-        function updateUI() {
-            sections.forEach((s, i) => s.classList.toggle('active', i + 1 === currentStep));
-            steps.forEach((s, i) => {
-                const num = i + 1;
-                s.className = num < currentStep ? 'step completed' : (num === currentStep ? 'step active' : 'step inactive');
-            });
-            
-            progressFill.style.width = `${((currentStep - 1) / (totalSteps - 1)) * 100}%`;
-            
-            backBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
-            homeBtn.style.display = currentStep === 1 ? 'inline-flex' : 'none';
-            nextBtn.textContent = currentStep === totalSteps ? 'Kirim Data ✓' : 'Lanjut →';
-        }
+    const countdownFunction = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = recruitmentDate - now;
 
-        nextBtn.onclick = async () => {
-            if (currentStep < totalSteps) {
-                currentStep++;
-                updateUI();
+        if (distance < 0) {
+            clearInterval(countdownFunction);
+            countdownContainer.style.display = 'none';
+            startButton.disabled = false;
+        } else {
+            countdownContainer.style.display = 'block';
+            startButton.disabled = true;
+
+            const totalDays = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const totalHours = Math.floor(distance / (1000 * 60 * 60));
+            const totalMinutes = Math.floor(distance / (1000 * 60));
+
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const today = new Date();
+            const target = new Date(recruitmentDate);
+
+            let months = 0;
+            let remainingDays = totalDays;
+
+            if (totalDays >= 30) {
+                const currentMonth = today.getMonth();
+                const currentYear = today.getFullYear();
+                const targetMonth = target.getMonth();
+                const targetYear = target.getFullYear();
+
+                months = (targetYear - currentYear) * 12 + (targetMonth - currentMonth);
+
+                if (target.getDate() < today.getDate()) {
+                    months--;
+                }
+
+                months = Math.max(0, months);
+
+                if (months > 0) {
+                    const tempDate = new Date(today);
+                    tempDate.setMonth(tempDate.getMonth() + months);
+                    remainingDays = Math.floor((target - tempDate) / (1000 * 60 * 60 * 24));
+                }
+            }
+
+            const monthsEl = document.getElementById("months").parentElement;
+            const daysEl = document.getElementById("days").parentElement;
+            const hoursEl = document.getElementById("hours").parentElement;
+            const minutesEl = document.getElementById("minutes").parentElement;
+            const secondsEl = document.getElementById("seconds").parentElement;
+
+            if (totalDays < 30) {
+                monthsEl.style.display = 'none';
+                months = 0;
             } else {
-                // Submit logic here (seperti script sebelumnya)
-                nextBtn.disabled = true;
-                nextBtn.textContent = 'Mengirim...';
-                alert('Proses pengiriman data... (Pastikan script GAS Anda sudah aktif)');
-                // Integrasikan fungsi submitForm() Anda di sini
+                monthsEl.style.display = 'block';
             }
-        };
 
-        backBtn.onclick = () => { if (currentStep > 1) currentStep--; updateUI(); };
-
-        // Phone & NIA Formatter
-        document.getElementById('phone').oninput = (e) => {
-            let v = e.target.value.replace(/\D/g, '');
-            if (v.startsWith('08')) v = '628' + v.substring(2);
-            e.target.value = v;
-        };
-        
-        document.getElementById('nia').oninput = (e) => {
-            let v = e.target.value.replace(/\D/g, '').substring(0, 4);
-            e.target.value = v ? 'SS-' + v : '';
-        };
-
-        // Fetch Provinces
-        fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')
-            .then(r => r.json())
-            .then(data => provinceSelect.addOptions(data));
-
-        provinceSelect.on('change', (id) => {
-            citySelect.clear(); citySelect.clearOptions();
-            if(id) {
-                fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${id}.json`)
-                    .then(r => r.json())
-                    .then(data => citySelect.addOptions(data));
+            if (totalHours < 24) {
+                daysEl.style.display = 'none';
+                remainingDays = 0;
+            } else {
+                daysEl.style.display = 'block';
             }
-        });
+
+            if (totalMinutes < 60) {
+                hoursEl.style.display = 'none';
+            } else {
+                hoursEl.style.display = 'block';
+            }
+
+            minutesEl.style.display = 'block';
+            secondsEl.style.display = 'block';
+
+            document.getElementById("months").innerText = months;
+            document.getElementById("days").innerText = Math.max(0, remainingDays);
+            document.getElementById("hours").innerText = hours;
+            document.getElementById("minutes").innerText = minutes;
+            document.getElementById("seconds").innerText = seconds;
+        }
+    }, 1000);
+
+    // ==========================================
+    // UPDATE API & KONFIGURASI FORM
+    // ==========================================
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxaUWUPvR9ZDmvaI_uUY-jOFVZNq-KkSv2k5YPZCxvwkEuHfVw9rwg0MQ6HFHGzhJ_k/exec';
+    const API_WILAYAH_URL = 'https://www.emsifa.com/api-wilayah-indonesia/api'; // Menggunakan API Emsifa yang lebih stabil
+
+    const form = document.getElementById('registrationForm');
+    const sections = document.querySelectorAll('.form-section');
+    const steps = document.querySelectorAll('.step');
+    const progressFill = document.getElementById('progressFill');
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    const navigationButtons = document.getElementById('navigationButtons');
+    const successMessage = document.getElementById('successMessage');
+    const phoneInput = document.getElementById('phone');
+    const niaInput = document.getElementById('nia');
+    const descriptionContainer = document.querySelector('.description-container');
+    const formContainer = document.querySelector('.form-container');
+    const backToDescBottomBtn = document.getElementById('backToDescBottomBtn');
+
+    formContainer.style.display = 'none';
+
+    startButton.addEventListener('click', () => {
+        descriptionContainer.style.display = 'none';
+        formContainer.style.display = 'block';
+        updateUI(); 
     });
-    </script>
+
+    backToDescBottomBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        formContainer.style.display = 'none';
+        descriptionContainer.style.display = 'block';
+    });
+
+    const initTomSelect = (selector, placeholder) => new TomSelect(selector, { valueField: 'id', labelField: 'name', searchField: 'name', create: false, placeholder: placeholder });
+    const provinceSelect = initTomSelect('#province', 'Memuat provinsi...');
+    const citySelect = initTomSelect('#city', 'Pilih Kota/Kabupaten...');
+    const districtSelect = initTomSelect('#district', 'Pilih Kecamatan...');
+    const villageSelect = initTomSelect('#village', 'Pilih Kelurahan/Desa...');
+
+    const stationSelect = new TomSelect('#nearestStation', { create: false, placeholder: 'Pilih Stasiun Terdekat...' });
+
+    populateProvinces();
+
+    // Fungsi Fetch yang disesuaikan untuk API Emsifa (Array Langsung)
+    async function fetchWilayah(url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Gagal memuat data wilayah.');
+        const json = await response.json();
+        // API Emsifa mengembalikan array langsung, bukan objek dengan properti .data
+        return json.map(item => ({ id: item.id, name: item.name }));
+    }
+
+    async function populateProvinces() {
+        provinceSelect.disable();
+        try {
+            const provinces = await fetchWilayah(`${API_WILAYAH_URL}/provinces.json`);
+            provinceSelect.clearOptions();
+            provinceSelect.addOptions(provinces);
+            provinceSelect.settings.placeholder = 'Pilih Provinsi...';
+            provinceSelect.refreshOptions(false);
+        } catch (error) {
+            console.error(error);
+            alert('Gagal memuat data provinsi. Periksa koneksi internet Anda.');
+        } finally {
+            provinceSelect.enable();
+            citySelect.disable();
+            districtSelect.disable();
+            villageSelect.disable();
+        }
+    }
+
+    async function populateCities(provinceId) {
+        citySelect.clear(); citySelect.clearOptions(); citySelect.disable();
+        citySelect.settings.placeholder = 'Memuat kota...'; citySelect.refreshOptions(false);
+        try {
+            const cities = await fetchWilayah(`${API_WILAYAH_URL}/regencies/${provinceId}.json`);
+            citySelect.addOptions(cities);
+            citySelect.settings.placeholder = 'Pilih Kota/Kabupaten...';
+            citySelect.refreshOptions(false);
+        } catch (error) { console.error(error); }
+        finally { citySelect.enable(); }
+    }
+
+    async function populateDistricts(cityId) {
+        districtSelect.clear(); districtSelect.clearOptions(); districtSelect.disable();
+        districtSelect.settings.placeholder = 'Memuat kecamatan...'; districtSelect.refreshOptions(false);
+        try {
+            const districts = await fetchWilayah(`${API_WILAYAH_URL}/districts/${cityId}.json`);
+            districtSelect.addOptions(districts);
+            districtSelect.settings.placeholder = 'Pilih Kecamatan...';
+            districtSelect.refreshOptions(false);
+        } catch (error) { console.error(error); }
+        finally { districtSelect.enable(); }
+    }
+
+    async function populateVillages(districtId) {
+        villageSelect.clear(); villageSelect.clearOptions(); villageSelect.disable();
+        villageSelect.settings.placeholder = 'Memuat kelurahan...'; villageSelect.refreshOptions(false);
+        try {
+            const villages = await fetchWilayah(`${API_WILAYAH_URL}/villages/${districtId}.json`);
+            villageSelect.addOptions(villages);
+            villageSelect.settings.placeholder = 'Pilih Kelurahan/Desa...';
+            villageSelect.refreshOptions(false);
+        } catch (error) { console.error(error); }
+        finally { villageSelect.enable(); }
+    }
+
+    provinceSelect.on('change', (provinceId) => { 
+        citySelect.clear(); 
+        districtSelect.clear(); 
+        villageSelect.clear(); 
+        if (provinceId) populateCities(provinceId); 
+    });
+
+    citySelect.on('change', (cityId) => { 
+        districtSelect.clear(); 
+        villageSelect.clear(); 
+        if (cityId) populateDistricts(cityId); 
+    });
+
+    districtSelect.on('change', (districtId) => { 
+        villageSelect.clear();
+        if (districtId) populateVillages(districtId); 
+    });
+
+    let currentStep = 1;
+    const totalSteps = 3;
+
+    function updateUI() {
+        if (currentStep === 1) { nextBtn.textContent = 'Lanjut →'; }
+        sections.forEach((section, index) => section.classList.toggle('active', index + 1 === currentStep));
+        steps.forEach((step, index) => { 
+            const stepEl = document.getElementById(`step${index + 1}`); 
+            if (index + 1 < currentStep) { stepEl.className = 'step completed'; } 
+            else if (index + 1 === currentStep) { stepEl.className = 'step active'; } 
+            else { stepEl.className = 'step inactive'; } 
+        });
+        progressFill.style.width = `${(currentStep - 1) / (totalSteps - 1) * 100}%`;
+
+        backBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
+        backToDescBottomBtn.style.display = currentStep === 1 ? 'inline-flex' : 'none';
+
+        nextBtn.textContent = currentStep === totalSteps ? 'Kirim Pembaruan Data ✓' : 'Lanjut →';
+    }
+
+    phoneInput.addEventListener('input', () => { 
+        let value = phoneInput.value.replace(/\D/g, ''); 
+        if (value.startsWith('08')) { value = '628' + value.substring(2); } 
+        phoneInput.value = value; 
+    });
+
+    niaInput.addEventListener('input', function() {
+        let value = this.value.replace(/\D/g, '');
+        value = value.substring(0, 4);
+        if (value.length > 0) { this.value = 'SS-' + value; } 
+        else { this.value = ''; }
+    });
+
+    niaInput.addEventListener('blur', function() {
+        let value = this.value.replace(/\D/g, '');
+        if (value.length > 0 && value.length < 4) {
+            this.value = 'SS-' + value.padStart(4, '0');
+        }
+    });
+
+    document.getElementById('photo').addEventListener('change', function(e) { 
+        const fileName = e.target.files[0]?.name; 
+        const uploadBtn = document.querySelector('.file-upload-btn'); 
+        if (fileName) { uploadBtn.textContent = `📷 ${fileName}`; } 
+    });
+
+    function validateCurrentSection() {
+        const currentSection = document.getElementById(`section${currentStep}`); 
+        const requiredInputs = currentSection.querySelectorAll('[required]'); 
+        let allValid = true;
+
+        requiredInputs.forEach(input => { 
+            let elementToStyle = input; 
+            if (input.tomselect) elementToStyle = input.tomselect.control; 
+            elementToStyle.style.borderColor = ''; 
+            let fieldIsValid = true; 
+
+            if (input.type === 'radio') { 
+                if (!Array.from(currentSection.querySelectorAll(`input[name="${input.name}"]`)).some(r => r.checked)) fieldIsValid = false; 
+            } else if (input.tomselect) { 
+                if (input.tomselect.items.length === 0) fieldIsValid = false; 
+            } else if (input.type === 'file') { 
+                if (input.files.length === 0) fieldIsValid = false; 
+            } else if (!input.value.trim()) { 
+                fieldIsValid = false; 
+            } 
+
+            if (!fieldIsValid) { 
+                allValid = false; 
+                elementToStyle.style.borderColor = '#ef4444'; 
+            } 
+        });
+
+        if(currentStep === 3) { 
+            if (!['tiktok', 'instagram', 'facebook', 'twitter'].some(id => document.getElementById(id).value.trim())) { 
+                alert('Harap isi minimal satu media sosial!'); 
+                allValid = false; 
+            } 
+        } 
+        return allValid;
+    }
+
+    async function checkDuplicates() {
+        nextBtn.disabled = true; nextBtn.textContent = 'Mengecek...'; 
+        const email = document.getElementById('email').value; 
+        const phone = document.getElementById('phone').value; 
+        const nia = document.getElementById('nia').value;
+
+        try { 
+            const emailRes = await fetch(`${GAS_URL}?checkEmail=${encodeURIComponent(email)}`); 
+            const emailData = await emailRes.json(); 
+            if (emailData.exists) { alert('Email sudah terdaftar.'); return false; } 
+
+            const phoneRes = await fetch(`${GAS_URL}?checkPhone=${encodeURIComponent(phone)}`); 
+            const phoneData = await phoneRes.json(); 
+            if (phoneData.exists) { alert('Nomor telepon sudah terdaftar.'); return false; } 
+
+            const niaRes = await fetch(`${GAS_URL}?checkNia=${encodeURIComponent(nia)}`);
+            const niaData = await niaRes.json();
+            if (niaData.exists) { alert('NIA sudah terdaftar.'); return false; }
+
+            return true; 
+        } catch (error) { 
+            console.error('Error saat mengecek duplikat:', error); 
+            alert('Gagal memverifikasi data. Periksa koneksi Anda.'); 
+            return false; 
+        } finally { 
+            nextBtn.disabled = false; updateUI(); 
+        }
+    }
+
+    async function submitForm() {
+        nextBtn.disabled = true; nextBtn.textContent = 'Mengirim...'; 
+        const file = document.getElementById('photo').files[0]; 
+        const reader = new FileReader();
+
+        reader.onload = (event) => { 
+            const base64Data = event.target.result; 
+            const formData = new FormData(form); 
+            const data = Object.fromEntries(formData.entries()); 
+
+            data.province = provinceSelect.options[provinceSelect.getValue()]?.name ?? '';
+            data.city = citySelect.options[citySelect.getValue()]?.name ?? '';
+            data.district = districtSelect.options[districtSelect.getValue()]?.name ?? '';
+            data.village = villageSelect.options[villageSelect.getValue()]?.name ?? '';
+
+            data.photoData = base64Data;
+            data.photoName = file.name;
+
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify(data) })
+                .then(response => response.text()) 
+                .then(text => {
+                    navigationButtons.style.display = 'none';
+                    successMessage.classList.add('show');
+                    document.querySelector('.progress-bar').style.display = 'none';
+                    document.querySelector('.step-indicator').style.display = 'none';
+                    sections.forEach(section => section.style.display = 'none');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Gagal mengirim data: ' + error.message);
+                    nextBtn.disabled = false;
+                    updateUI();
+                });
+        };
+
+        reader.onerror = () => { alert('Gagal membaca file foto.'); nextBtn.disabled = false; updateUI(); }; 
+        reader.readAsDataURL(file);
+    }
+
+    nextBtn.addEventListener('click', async () => {
+        if (!validateCurrentSection()) return;
+        if (currentStep === 1) { 
+            const isUnique = await checkDuplicates(); 
+            if (isUnique) { currentStep++; updateUI(); } 
+        } else if (currentStep < totalSteps) { 
+            currentStep++; updateUI(); 
+        } else { 
+            await submitForm(); 
+        }
+    });
+
+    backBtn.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        if (currentStep > 1) { currentStep--; updateUI(); } 
+    });
+});
+</script>
 </body>
 </html>
