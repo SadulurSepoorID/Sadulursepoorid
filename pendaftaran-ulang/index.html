@@ -16,7 +16,7 @@
     .logo img { width: 100%; height: 100%; object-fit: cover; }
     .header h1 { color: #2563eb; font-size: 2.2rem; margin-bottom: 10px; font-weight: 700; }
     .header p { color: #666; font-size: 1.1rem; }
-
+    
     .description-container {
         background: white;
         border-radius: 15px;
@@ -139,7 +139,7 @@
     .success-message { display: none; text-align: center; padding: 40px; }
     .success-message.show { display: block; animation: fadeIn 0.5s ease; }
     .success-icon { width: 80px; height: 80px; background: #10b981; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 36px; color: white; }
-
+    
     /* Responsif untuk Mobile */
     @media (max-width: 768px) { 
         .container { padding: 15px; } 
@@ -199,7 +199,7 @@
                 <span>WhatsApp: <a href="https://wa.me/6282112964343" target="_blank">0821-1296-4343</a> (Hanya Chat)</span>
                 <span>Email: <a href="/cdn-cgi/l/email-protection#375156435f5e45565a77445653425b424544524758584519405255195e53"><span class="__cf_email__" data-cfemail="93f5f2e7fbfae1f2fed3e0f2f7e6ffe6e1e0f6e3fcfce1bde4f6f1bdfaf7">[email&#160;protected]</span></a></span>
             </div>
-
+            
             <div id="action-container" style="margin-top: 20px;">
                 </div>
 
@@ -208,7 +208,7 @@
             <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
             <div class="step-indicator"><div class="step" id="step1">1</div><div class="step" id="step2">2</div><div class="step" id="step3">3</div></div>
             <form id="registrationForm" onsubmit="return false;">
-
+                
                 <div class="form-section" id="section1">
                     <h2 class="section-title">Data Pribadi</h2>
                     <div class="form-row">
@@ -230,7 +230,7 @@
                             <div class="radio-item"><input type="radio" id="female" name="gender" value="Wanita" required><label for="female">Wanita</label></div>
                         </div>
                     </div>
-
+                    
                     <div class="form-row">
                         <div class="form-group">
                             <label for="joinYear">Tahun Bergabung *</label>
@@ -263,119 +263,111 @@
                         <div class="form-group"><label for="district">Kecamatan *</label><select id="district" name="district" required></select></div>
                         <div class="form-group"><label for="village">Kelurahan/Desa *</label><select id="village" name="village" required></select></div>
                     </div>
-
+                    
                     <div class="form-group full-width">
-    <label for="nearestStation">Stasiun Terdekat *</label>
-    <select id="nearestStation" name="nearestStation" required>
-        <option value="">Pilih Stasiun Terdekat...</option>
-        <option value="Ancol">Ancol</option>
-        <option value="Angke">Angke</option>
-        <option value="Batu Ceper">Batu Ceper</option>
-        <option value="Bekasi">Bekasi</option>
-        <option value="Bekasi Timur">Bekasi Timur</option>
-        <option value="Bogor">Bogor</option>
-        <option value="Bojong Gede">Bojong Gede</option>
-        <option value="Bojong Indah">Bojong Indah</option>
-        <option value="Buaran">Buaran</option>
-        <option value="Cakung">Cakung</option>
-        <option value="Catang">Catang</option>
-        <option value="Cawang">Cawang</option>
-        <option value="Cibitung">Cibitung</option>
-        <option value="Cibinong">Cibinong</option>
-        <option value="Cibungur">Cibungur</option>
-        <option value="Cicayur">Cicayur</option>
-        <option value="Cikini">Cikini</option>
-        <option value="Cikarang">Cikarang</option>
-        <option value="Cikeusal">Cikeusal</option>
-        <option value="Cikoya">Cikoya</option>
-        <option value="Cikampek">Cikampek</option>
-        <option value="Cilegon">Cilegon</option>
-        <option value="Cilebut">Cilebut</option>
-        <option value="Cilejit">Cilejit</option>
-        <option value="Cisauk">Cisauk</option>
-        <option value="Citayam">Citayam</option>
-        <option value="Citeras">Citeras</option>
-        <option value="Daru">Daru</option>
-        <option value="Dawuan">Dawuan</option>
-        <option value="Depok">Depok</option>
-        <option value="Depok Baru">Depok Baru</option>
-        <option value="Duren Kalibata">Duren Kalibata</option>
-        <option value="Duri">Duri</option>
-        <option value="Gang Sentiong">Gang Sentiong</option>
-        <option value="Gondangdia">Gondangdia</option>
-        <option value="Grogol">Grogol</option>
-        <option value="Gunung Putri">Gunung Putri</option>
-        <option value="Jakarta Kota">Jakarta Kota</option>
-        <option value="Jambubaru">Jambubaru</option>
-        <option value="Jatinegara">Jatinegara</option>
-        <option value="Jayakarta">Jayakarta</option>
-        <option value="Juanda">Juanda</option>
-        <option value="Jurang Mangu">Jurang Mangu</option>
-        <option value="Kali Deres">Kali Deres</option>
-        <option value="Kampung Bandan">Kampung Bandan</option>
-        <option value="Karangantu">Karangantu</option>
-        <option value="Karawang">Karawang</option>
-        <option value="Karet">Karet</option>
-        <option value="Kebayoran">Kebayoran</option>
-        <option value="Kedunggedeh">Kedunggedeh</option>
-        <option value="Kemayoran">Kemayoran</option>
-        <option value="Klari">Klari</option>
-        <option value="Klender">Klender</option>
-        <option value="Klender Baru">Klender Baru</option>
-        <option value="Kosambi">Kosambi</option>
-        <option value="Kramat">Kramat</option>
-        <option value="Kranji">Kranji</option>
-        <option value="Krenceng">Krenceng</option>
-        <option value="Lemahabang">Lemahabang</option>
-        <option value="Lenteng Agung">Lenteng Agung</option>
-        <option value="Maja">Maja</option>
-        <option value="Mangga Besar">Mangga Besar</option>
-        <option value="Manggarai">Manggarai</option>
-        <option value="Matraman">Matraman</option>
-        <option value="Merak">Merak</option>
-        <option value="Metland Telaga Murni">Metland Telaga Murni</option>
-        <option value="Nambo">Nambo</option>
-        <option value="Palmerah">Palmerah</option>
-        <option value="Parung Panjang">Parung Panjang</option>
-        <option value="Pasar Minggu">Pasar Minggu</option>
-        <option value="Pasar Minggu Baru">Pasar Minggu Baru</option>
-        <option value="Pasar Senen">Pasar Senen</option>
-        <option value="Pesing">Pesing</option>
-        <option value="Pondok Cina">Pondok Cina</option>
-        <option value="Pondok Jati">Pondok Jati</option>
-        <option value="Pondok Rajeg">Pondok Rajeg</option>
-        <option value="Pondok Ranji">Pondok Ranji</option>
-        <option value="Poris">Poris</option>
-        <option value="Purwakarta">Purwakarta</option>
-        <option value="Rajawali">Rajawali</option>
-        <option value="Rangkasbitung">Rangkasbitung</option>
-        <option value="Rawa Buaya">Rawa Buaya</option>
-        <option value="Rawa Buntu">Rawa Buntu</option>
-        <option value="Sawah Besar">Sawah Besar</option>
-        <option value="Serang">Serang</option>
-        <option value="Serpong">Serpong</option>
-        <option value="Sudimara">Sudimara</option>
-        <option value="Sudirman">Sudirman</option>
-        <option value="Tambun">Tambun</option>
-        <option value="Tanah Abang">Tanah Abang</option>
-        <option value="Tanah Tinggi">Tanah Tinggi</option>
-        <option value="Tangerang">Tangerang</option>
-        <option value="Tanjung Barat">Tanjung Barat</option>
-        <option value="Tanjung Priok">Tanjung Priok</option>
-        <option value="Tebet">Tebet</option>
-        <option value="Tenjo">Tenjo</option>
-        <option value="Tigaraksa">Tigaraksa</option>
-        <option value="Tonjongbaru">Tonjongbaru</option>
-        <option value="Univ. Indonesia">Univ. Indonesia</option>
-        <option value="Univ. Pancasila">Univ. Pancasila</option>
-        <option value="Walantaka">Walantaka</option>
-    </select>
-</div>
+                        <label for="nearestStation">Stasiun Terdekat *</label>
+                        <select id="nearestStation" name="nearestStation" required>
+    <option value="">Pilih Stasiun Terdekat...</option>
+    <option value="Ancol">Ancol</option>
+    <option value="Angke">Angke</option>
+    <option value="Batu Ceper">Batu Ceper</option>
+    <option value="Bekasi">Bekasi</option>
+    <option value="Bekasi Timur">Bekasi Timur</option>
+    <option value="Bogor">Bogor</option>
+    <option value="Bojong Gede">Bojong Gede</option>
+    <option value="Bojong Indah">Bojong Indah</option>
+    <option value="Buaran">Buaran</option>
+    <option value="Cakung">Cakung</option>
+    <option value="Catang">Catang</option>
+    <option value="Cawang">Cawang</option>
+    <option value="Cibitung">Cibitung</option>
+    <option value="Cibinong">Cibinong</option>
+    <option value="Cibungur">Cibungur</option> <option value="Cicayur">Cicayur</option>
+    <option value="Cikini">Cikini</option>
+    <option value="Cikampek">Cikampek</option> <option value="Cikarang">Cikarang</option>
+    <option value="Cikeusal">Cikeusal</option>
+    <option value="Cikoya">Cikoya</option>
+    <option value="Cilegon">Cilegon</option>
+    <option value="Cilebut">Cilebut</option>
+    <option value="Cilejit">Cilejit</option>
+    <option value="Cisauk">Cisauk</option>
+    <option value="Citayam">Citayam</option>
+    <option value="Citeras">Citeras</option>
+    <option value="Daru">Daru</option>
+    <option value="Dawuan">Dawuan</option> <option value="Depok">Depok</option>
+    <option value="Depok Baru">Depok Baru</option>
+    <option value="Duren Kalibata">Duren Kalibata</option>
+    <option value="Duri">Duri</option>
+    <option value="Gang Sentiong">Gang Sentiong</option>
+    <option value="Gondangdia">Gondangdia</option>
+    <option value="Grogol">Grogol</option>
+    <option value="Gunung Putri">Gunung Putri</option>
+    <option value="Jakarta Kota">Jakarta Kota</option>
+    <option value="Jambubaru">Jambubaru</option>
+    <option value="Jatinegara">Jatinegara</option>
+    <option value="Jayakarta">Jayakarta</option>
+    <option value="Juanda">Juanda</option>
+    <option value="Jurang Mangu">Jurang Mangu</option>
+    <option value="Kali Deres">Kali Deres</option>
+    <option value="Kampung Bandan">Kampung Bandan</option>
+    <option value="Karangantu">Karangantu</option>
+    <option value="Karawang">Karawang</option> <option value="Karet">Karet</option>
+    <option value="Kebayoran">Kebayoran</option>
+    <option value="Kedunggedeh">Kedunggedeh</option> <option value="Kemayoran">Kemayoran</option>
+    <option value="Klender">Klender</option>
+    <option value="Klender Baru">Klender Baru</option>
+    <option value="Klari">Klari</option> <option value="Kramat">Kramat</option>
+    <option value="Kranji">Kranji</option>
+    <option value="Krenceng">Krenceng</option>
+    <option value="Kosambi">Kosambi</option> <option value="Lenteng Agung">Lenteng Agung</option>
+    <option value="Lemahabang">Lemahabang</option> <option value="Maja">Maja</option>
+    <option value="Mangga Besar">Mangga Besar</option>
+    <option value="Manggarai">Manggarai</option>
+    <option value="Matraman">Matraman</option>
+    <option value="Merak">Merak</option>
+    <option value="Metland Telaga Murni">Metland Telaga Murni</option>
+    <option value="Nambo">Nambo</option>
+    <option value="Palmerah">Palmerah</option>
+    <option value="Parung Panjang">Parung Panjang</option>
+    <option value="Pasar Minggu">Pasar Minggu</option>
+    <option value="Pasar Minggu Baru">Pasar Minggu Baru</option>
+    <option value="Pasar Senen">Pasar Senen</option>
+    <option value="Pesing">Pesing</option>
+    <option value="Pondok Cina">Pondok Cina</option>
+    <option value="Pondok Jati">Pondok Jati</option>
+    <option value="Pondok Rajeg">Pondok Rajeg</option>
+    <option value="Pondok Ranji">Pondok Ranji</option>
+    <option value="Poris">Poris</option>
+    <option value="Purwakarta">Purwakarta</option> <option value="Rajawali">Rajawali</option>
+    <option value="Rangkasbitung">Rangkasbitung</option>
+    <option value="Rawa Buaya">Rawa Buaya</option>
+    <option value="Rawa Buntu">Rawa Buntu</option>
+    <option value="Sawah Besar">Sawah Besar</option>
+    <option value="Serang">Serang</option>
+    <option value="Serpong">Serpong</option>
+    <option value="Sudimara">Sudimara</option>
+    <option value="Sudirman">Sudirman</option>
+    <option value="Tambun">Tambun</option>
+    <option value="Tanah Abang">Tanah Abang</option>
+    <option value="Tanah Tinggi">Tanah Tinggi</option>
+    <option value="Tangerang">Tangerang</option>
+    <option value="Tanjung Barat">Tanjung Barat</option>
+    <option value="Tanjung Priok">Tanjung Priok</option>
+    <option value="Tebet">Tebet</option>
+    <option value="Tenjo">Tenjo</option>
+    <option value="Tigaraksa">Tigaraksa</option>
+    <option value="Tonjongbaru">Tonjongbaru</option>
+    <option value="Univ. Indonesia">Univ. Indonesia</option>
+    <option value="Univ. Pancasila">Univ. Pancasila</option>
+    <option value="Walantaka">Walantaka</option>
+</select>
+                    </div>
+                </div>
 
                 <div class="form-section" id="section3">
                     <h2 class="section-title">Data Tambahan</h2>
                     <div class="form-group full-width"><label for="profession">Profesi *</label><input type="text" id="profession" name="profession" required></div>
-
+                    
                     <div class="form-group"><label for="reason">Alasan Masih Mau Bergabung *</label><textarea id="reason" name="reason" required placeholder="Ceritakan alasan Anda masih ingin bergabung"></textarea></div>
                     <div class="form-group">
                         <label>Media Sosial (Minimal 1 harus diisi) *</label>
@@ -410,7 +402,7 @@
             </div>
         </div>
     </div>
-
+    
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
 <script>
@@ -452,31 +444,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const totalDays = Math.floor(distance / (1000 * 60 * 60 * 24));
             const totalHours = Math.floor(distance / (1000 * 60 * 60));
             const totalMinutes = Math.floor(distance / (1000 * 60));
-
+            
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             const today = new Date();
             const target = new Date(recruitmentDate);
-
+            
             let months = 0;
             let remainingDays = totalDays;
-
+            
             if (totalDays >= 30) {
                 const currentMonth = today.getMonth();
                 const currentYear = today.getFullYear();
                 const targetMonth = target.getMonth();
                 const targetYear = target.getFullYear();
-
+                
                 months = (targetYear - currentYear) * 12 + (targetMonth - currentMonth);
-
+                
                 if (target.getDate() < today.getDate()) {
                     months--;
                 }
-
+                
                 months = Math.max(0, months);
-
+                
                 if (months > 0) {
                     const tempDate = new Date(today);
                     tempDate.setMonth(tempDate.getMonth() + months);
@@ -548,7 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formContainer.style.display = 'block';
         updateUI(); 
     });
-
+    
     backToDescBottomBtn.addEventListener('click', (e) => {
         e.preventDefault();
         formContainer.style.display = 'none';
@@ -560,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const citySelect = initTomSelect('#city', 'Pilih Kota/Kabupaten...');
     const districtSelect = initTomSelect('#district', 'Pilih Kecamatan...');
     const villageSelect = initTomSelect('#village', 'Pilih Kelurahan/Desa...');
-
+    
     const stationSelect = new TomSelect('#nearestStation', { create: false, placeholder: 'Pilih Stasiun Terdekat...' });
 
     populateProvinces();
@@ -635,13 +627,13 @@ document.addEventListener('DOMContentLoaded', () => {
         villageSelect.clear(); 
         if (provinceId) populateCities(provinceId); 
     });
-
+    
     citySelect.on('change', (cityId) => { 
         districtSelect.clear(); 
         villageSelect.clear(); 
         if (cityId) populateDistricts(cityId); 
     });
-
+    
     districtSelect.on('change', (districtId) => { 
         villageSelect.clear();
         if (districtId) populateVillages(districtId); 
@@ -660,7 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
             else { stepEl.className = 'step inactive'; } 
         });
         progressFill.style.width = `${(currentStep - 1) / (totalSteps - 1) * 100}%`;
-
+        
         backBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
         backToDescBottomBtn.style.display = currentStep === 1 ? 'inline-flex' : 'none';
 
@@ -672,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (value.startsWith('08')) { value = '628' + value.substring(2); } 
         phoneInput.value = value; 
     });
-
+    
     niaInput.addEventListener('input', function() {
         let value = this.value.replace(/\D/g, '');
         value = value.substring(0, 4);
@@ -697,13 +689,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentSection = document.getElementById(`section${currentStep}`); 
         const requiredInputs = currentSection.querySelectorAll('[required]'); 
         let allValid = true;
-
+        
         requiredInputs.forEach(input => { 
             let elementToStyle = input; 
             if (input.tomselect) elementToStyle = input.tomselect.control; 
             elementToStyle.style.borderColor = ''; 
             let fieldIsValid = true; 
-
+            
             if (input.type === 'radio') { 
                 if (!Array.from(currentSection.querySelectorAll(`input[name="${input.name}"]`)).some(r => r.checked)) fieldIsValid = false; 
             } else if (input.tomselect) { 
@@ -713,13 +705,13 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (!input.value.trim()) { 
                 fieldIsValid = false; 
             } 
-
+            
             if (!fieldIsValid) { 
                 allValid = false; 
                 elementToStyle.style.borderColor = '#ef4444'; 
             } 
         });
-
+        
         if(currentStep === 3) { 
             if (!['tiktok', 'instagram', 'facebook', 'twitter'].some(id => document.getElementById(id).value.trim())) { 
                 alert('Harap isi minimal satu media sosial!'); 
@@ -739,11 +731,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const emailRes = await fetch(`${GAS_URL}?checkEmail=${encodeURIComponent(email)}`); 
             const emailData = await emailRes.json(); 
             if (emailData.exists) { alert('Email sudah terdaftar.'); return false; } 
-
+            
             const phoneRes = await fetch(`${GAS_URL}?checkPhone=${encodeURIComponent(phone)}`); 
             const phoneData = await phoneRes.json(); 
             if (phoneData.exists) { alert('Nomor telepon sudah terdaftar.'); return false; } 
-
+            
             const niaRes = await fetch(`${GAS_URL}?checkNia=${encodeURIComponent(nia)}`);
             const niaData = await niaRes.json();
             if (niaData.exists) { alert('NIA sudah terdaftar.'); return false; }
@@ -762,20 +754,20 @@ document.addEventListener('DOMContentLoaded', () => {
         nextBtn.disabled = true; nextBtn.textContent = 'Mengirim...'; 
         const file = document.getElementById('photo').files[0]; 
         const reader = new FileReader();
-
+        
         reader.onload = (event) => { 
             const base64Data = event.target.result; 
             const formData = new FormData(form); 
             const data = Object.fromEntries(formData.entries()); 
-
+            
             data.province = provinceSelect.options[provinceSelect.getValue()]?.name ?? '';
             data.city = citySelect.options[citySelect.getValue()]?.name ?? '';
             data.district = districtSelect.options[districtSelect.getValue()]?.name ?? '';
             data.village = villageSelect.options[villageSelect.getValue()]?.name ?? '';
-
+            
             data.photoData = base64Data;
             data.photoName = file.name;
-
+        
             fetch(GAS_URL, { method: 'POST', body: JSON.stringify(data) })
                 .then(response => response.text()) 
                 .then(text => {
@@ -792,11 +784,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateUI();
                 });
         };
-
+        
         reader.onerror = () => { alert('Gagal membaca file foto.'); nextBtn.disabled = false; updateUI(); }; 
         reader.readAsDataURL(file);
     }
-
+    
     nextBtn.addEventListener('click', async () => {
         if (!validateCurrentSection()) return;
         if (currentStep === 1) { 
